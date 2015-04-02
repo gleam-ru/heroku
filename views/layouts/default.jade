@@ -1,0 +1,47 @@
+doctype
+html
+  head
+    include ./parts/head.jade
+    block postHead
+
+  body
+    //- canvas
+    block canvas
+      .l-canvas.type_wide.col_cont.headerpos_fixed
+        .l-canvas-h
+
+          //- header
+          .l-header
+            .l-header-h
+              .l-subheader.at_middle
+                .l-subheader-h.i-cf
+
+                  //- logo
+                  include ./parts/logo.jade
+                  //- 
+                  
+                  //- nav
+                  include ./parts/navigation.jade
+                  //- 
+          //- eo header
+
+          //- main
+          .l-main
+            .l-main-h
+              block content
+          //- 
+    //- eo canvas
+
+    //- footer
+    .l-footer
+      .l-footer-h
+        .l-subfooter.at_bottom
+          .l-subfooter-h.i-cf
+            .w-copyright
+              |© 2013 All rights reserved. <a href="/">Astra</a>
+    //- eo footer
+
+    //- goto top
+    a(class="w-toplink", href="#")
+      i.fa.fa-angle-up
+    //- eo goto top

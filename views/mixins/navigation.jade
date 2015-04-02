@@ -1,0 +1,33 @@
+mixin Navigation(list)
+  if list
+    nav.w-nav
+      .w-nav-h
+        .w-nav-control
+          i.fa.fa-bars
+        .w-nav-list.layout_hor.width_auto.float_right.level_1
+          .w-nav-list-h
+            //- -------
+            //- level 1
+            //- -------
+            each menuPosition in navigation
+              .w-nav-item.level_1.with_sublevel
+                .w-nav-item-h
+                  a(href=menuPosition.href, class="w-nav-anchor level_1")
+                    span.w-nav-icon
+                      i.fa.fa-star
+                    span.w-nav-title
+                      |#{menuPosition.name}
+                    span.w-nav-hint
+                  //- -------
+                  //- level 2
+                  //- -------
+                  if menuPosition.children
+                    .w-nav-list.place_down.show_onhover.level_2
+                      .w-nav-list-h
+                        each child in menuPosition.children
+                          .w-nav-item.level_2
+                            .w-nav-item-h
+                              a(href=child.href class="w-nav-anchor level_2")
+                                span.w-nav-title
+                                  |#{child.name}
+                                span.w-nav-hint
