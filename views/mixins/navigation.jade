@@ -9,10 +9,11 @@ mixin Navigation(list)
             //- -------
             //- level 1
             //- -------
-            each menuPosition in navigation
+            each menuPosition in list
               .w-nav-item.level_1.with_sublevel
                 .w-nav-item-h
-                  a(href=menuPosition.href, class="w-nav-anchor level_1")
+                  - var href = menuPosition.href ? menuPosition.href : '/'
+                  a(href=href, class="w-nav-anchor level_1")
                     span.w-nav-icon
                       i.fa.fa-star
                     span.w-nav-title
@@ -27,7 +28,8 @@ mixin Navigation(list)
                         each child in menuPosition.children
                           .w-nav-item.level_2
                             .w-nav-item-h
-                              a(href=child.href class="w-nav-anchor level_2")
+                              - var href = menuPosition.href ? menuPosition.href : '/'
+                              a(href=href class="w-nav-anchor level_2")
                                 span.w-nav-title
                                   |#{child.name}
                                 span.w-nav-hint
