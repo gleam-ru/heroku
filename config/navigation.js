@@ -6,9 +6,9 @@ module.exports.navigation = [
         children : [],
     },
     {
-        name     : "Текст",
+        name     : "Видит админ",
         href     : "/",
-        access   : "",
+        access   : "admin",
     },
     {
         name     : "Сервисы",
