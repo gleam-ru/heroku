@@ -10,8 +10,27 @@
  */
 
 module.exports.bootstrap = function(cb) {
+    sails.services.passport.loadStrategies();
 
-    // It's very important to trigger this callback method when you are finished
-    // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
+    if (sails.config.models.refill) {
+        User.create({
+            id: 1,
+            username: 'admin',
+            email: "admin@host.org",
+            access: "admin",
+        })
+        .exec(function(err, user) {
+            console.log(user.toJSON());
+            Passport.create({
+                id: 1,
+                protocol: 'local',
+                password: 'Xa@Bk1rU',
+                user: user.id,
+            })
+            .exec(console.log);
+        });
+        ;
+    }
+
     cb();
 };
