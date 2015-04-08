@@ -1,0 +1,5 @@
+mixin json(data)
+  p #{JSON.stringify(data, null, 4)}
+
+mixin error(data)
+  p.error(style="color: #E74343;") #{data}

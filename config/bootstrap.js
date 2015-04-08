@@ -10,7 +10,7 @@
  */
 
 module.exports.bootstrap = function(cb) {
-    sails.services.passport.loadStrategies();
+    passport.loadStrategies();
 
     if (sails.config.models.refill) {
         User.create({

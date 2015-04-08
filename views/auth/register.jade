@@ -1,0 +1,17 @@
+extends ../layouts/default.jade
+
+block content
+  style
+    | form * {margin-bottom: 5px; max-width: 300px; display: block;}
+
+  .l-submain
+    .l-submain-h.g-html
+      h1 Регистрация (пока не тестировалось)
+      p Уже зарегистрированы? 
+        a(href='/login') Жмите сюда.
+      form(role="form" action="/auth/local/register" method="post")
+        +error(errors)
+        input(type="text" name="username" placeholder="Username")
+        input(type="text" name="email" placeholder="Email")
+        input(type="password" name="password" placeholder="Password")
+        button(type="submit").g-btn.type_default.size_small Регистрация

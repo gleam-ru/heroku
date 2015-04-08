@@ -1,14 +1,31 @@
 module.exports.navigation = [
     {
-        name     : "Главная",
-        href     : "/",
-        access   : "",
-        children : [],
+        name     : "Профиль",
+        href     : "/profile",
+        canSee   : ["admin", "user"],
+        children : [
+            {
+                name     : "Выйти",
+                href     : "/logout",
+            }
+        ],
+    },
+    {
+        name     : "Авторизация",
+        href     : "/login",
+        canSee   : ["ghost"],
+        children : [
+            {
+                name: "Регистрация",
+                href: "/register",
+                canSee: ["ghost"]
+            }
+        ],
     },
     {
         name     : "Видит админ",
         href     : "/",
-        access   : "admin",
+        canSee   : ["admin"],
     },
     {
         name     : "Сервисы",
@@ -22,7 +39,7 @@ module.exports.navigation = [
         ]
     },
     {
-        name     : "Текущий",
-        href     : "/current",
+        name     : "Ми",
+        href     : "/me",
     }
 ];

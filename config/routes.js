@@ -1,12 +1,24 @@
 module.exports.routes = {
 
-    '/'        : {view: 'index'},
+    'get /': {view: 'index'},
+    'get /profile': 'Profile.index',
+    'get /me': 'Profile.index',
 
     /**
      * Необязательно... только чтобы посмотреть страницы
      */
-    '/403'     : {response: 'forbidden'},
-    '/404'     : {response: 'notFound'},
-    '/500'     : {response: 'serverError'},
+    'get /403': {response: 'forbidden'},
+    'get /404': {response: 'notFound'},
+    'get /500': {response: 'serverError'},
+
+
+    /**
+     * Аутентификация/Регистрация
+     */
+    'get /login': 'AuthController.login',
+    'get /logout': 'AuthController.logout',
+    'get /register': 'AuthController.register',
+
+    'post /auth/:action': 'AuthController.action', // 'login', 'register'
 
 };

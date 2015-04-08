@@ -1,0 +1,10 @@
+extends ./layouts/default.jade
+
+block content
+  .l-submain
+    .l-submain-h.g-html
+      h1 Профиль
+      div Информация о тебе:
+        +json(req.user)
+        +json(req.session)
+        p #{text}
