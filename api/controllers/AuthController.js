@@ -13,26 +13,25 @@ var AuthController = {
     //  ╚═╝╚═╝ ╩
 
     login: function (req, res) {
+        // авторизирован? иди в профиль.
+        if (req.isAuthenticated()) return res.redirect('/me');
         // Render the `auth/login` view
         var data = req.flash('form');
-        res.render('auth/login', {
+        return res.render('auth/login', {
             errors: req.flash('error'),
             form: data[0] || {},
         });
     },
 
     logout: function (req, res) {
-        req.logout();
-
-        // mark the user as logged out for auth purposes
-        req.session.authenticated = false;
-        req.session.access = undefined;
-
-        res.redirect('/login');
+        passport.logout(req, res);
+        res.redirect('/login')
     },
 
     register: function (req, res) {
-        res.view({
+        // авторизирован? иди в профиль.
+        if (req.isAuthenticated()) return res.redirect('/me');
+        return res.render('auth/register', {
             errors: req.flash('error')
         });
     },
@@ -65,26 +64,24 @@ var AuthController = {
     //  ╠═╝║ ║╚═╗ ║
     //  ╩  ╚═╝╚═╝ ╩
 
-    action: function (request, response) {
-        passport.init(request, response, function() {
-            passport.authenticate('local', function (err, user, challenges, statuses) {
-                if (err || !user) {
-                    // ошибка или оправдание - показать пользователю
-                    var errorText = err || challenges;
-                    return AuthController.tryAgain(request, response, errorText);
-                }
+    action: function (req, res) {
+        passport.authenticate(['local'], function (err, user, challenges, statuses) {
+            if (err || !user) {
+                // ошибка или оправдание - показать пользователю
+                var errorText = err || challenges;
+                return AuthController.tryAgain(req, res, errorText);
+            }
 
-                request.login(user, function (req, res, err) {
-                    if (err) return tryAgain(err);
-                    // пишем все, что надо, в сессию (не забыть удалить при logout!!!)
-                    request.session.authenticated = true;
-                    request.session.access = user.access || 'user';
-
-                    // и отправляем пользователя в профиль
-                    response.redirect('/me');
+            // аутентификация успешна
+            passport.login(req, res, user, function(err) {
+                // даем токен пользователю
+                passport.rememberme.issue(user, function(err, token) {
+                    if (err) console.error('unable to give token:', err);
+                    res.cookie(sails.config.passport.rememberme.key, token, { path: '/', httpOnly: true, maxAge: 604800000 });
+                    return res.redirect('/me');
                 });
-            })(request, response);
-        });
+            })
+        })(req, res);
     }
 };
 

@@ -1,24 +1,34 @@
 module.exports.routes = {
 
+    //  ╔═╗╔═╗╔═╗╔═╗╔═╗
+    //  ╠═╝╠═╣║ ╦║╣ ╚═╗
+    //  ╩  ╩ ╩╚═╝╚═╝╚═╝
     'get /': {view: 'index'},
-    'get /profile': 'Profile.index',
     'get /me': 'Profile.index',
+    'get /login': 'AuthController.login',
+    'get /register': 'AuthController.register',
 
-    /**
-     * Необязательно... только чтобы посмотреть страницы
-     */
+
+
+
+
+    //  ╔╦╗╔═╗╔═╗╔╦╗
+    //   ║ ║╣ ╚═╗ ║
+    //   ╩ ╚═╝╚═╝ ╩
     'get /403': {response: 'forbidden'},
     'get /404': {response: 'notFound'},
     'get /500': {response: 'serverError'},
 
 
-    /**
-     * Аутентификация/Регистрация
-     */
-    'get /login': 'AuthController.login',
-    'get /logout': 'AuthController.logout',
-    'get /register': 'AuthController.register',
 
+
+
+    //  ╔═╗╔═╗╦
+    //  ╠═╣╠═╝║
+    //  ╩ ╩╩  ╩
+    'get /logout': 'AuthController.logout',
     'post /auth/:action': 'AuthController.action', // 'login', 'register'
+
+
 
 };

@@ -1,7 +1,7 @@
 module.exports.navigation = [
     {
         name     : "Профиль",
-        href     : "/profile",
+        href     : "/me",
         canSee   : ["admin", "user"],
         children : [
             {
@@ -39,7 +39,7 @@ module.exports.navigation = [
         ]
     },
     {
-        name     : "Ми",
-        href     : "/me",
+        name     : "Текущий",
+        href     : "/current",
     }
 ];

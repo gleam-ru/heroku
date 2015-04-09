@@ -1,5 +1,5 @@
 mixin Navigation(list)
-  - var access = req.session.access ? req.session.access : 'ghost';
+  - var access = user.access || 'ghost';
   if list
     nav.w-nav
       .w-nav-h

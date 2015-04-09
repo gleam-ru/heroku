@@ -1,32 +1,17 @@
 /**
- * Policy Mappings
- * (sails.config.policies)
+ * Политики
+ * (методы, которые вызываются ПЕРЕД переходом на страницу)
  *
- * Policies are simple functions which run **before** your controllers.
- * You can apply one or more policies to a given controller, or protect
- * its actions individually.
+ * http://sailsjs.org/#!/documentation/concepts/Policies
  *
- * Any policy file (e.g. `api/policies/authenticated.js`) can be accessed
- * below by its filename, minus the extension, (e.g. "authenticated")
- *
- * For more information on how policies work, see:
- * http://sailsjs.org/#/documentation/concepts/Policies
- *
- * For more information on configuring policies, check out:
- * http://sailsjs.org/#/documentation/reference/sails.config/sails.config.policies.html
  */
-
-
 module.exports.policies = {
-    '*': true,
+    // вдруг уже аутентифицирован?
+    '*': ['rememberMe'],
 
+    // работать с профилем может только аутентифицированный пользователь
     ProfileController: {
-        '*' : ['sessionAuth']
-        // * : ['passport', 'sessionAuth']
-    },
-
-    AuthController: {
-        'action' : true//['sessionAuth']
-    },
+        '*' : ['authenticated']
+    }
 
 };

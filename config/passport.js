@@ -8,5 +8,9 @@ module.exports.passport = {
         successRedirect: '/me',
         failureRedirect: '/login',
         failureFlash: true,
+    },
+
+    rememberme: {
+        key: 'token',
     }
 };

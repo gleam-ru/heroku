@@ -10,7 +10,6 @@
  */
 
 module.exports.bootstrap = function(cb) {
-    passport.loadStrategies();
 
     if (sails.config.models.refill) {
         User.create({
@@ -20,6 +19,10 @@ module.exports.bootstrap = function(cb) {
             access: "admin",
         })
         .exec(function(err, user) {
+            if (err) {
+                console.error(err);
+                return;
+            }
             console.log(user.toJSON());
             Passport.create({
                 id: 1,
