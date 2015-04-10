@@ -1,0 +1,6 @@
+.comment {
+    color: grey;
+    font-style: italic;
+    /* для борьбы с маржином заголовков */
+    margin-top: -20px;
+}
