@@ -19,7 +19,7 @@ passport.login = function(req, res, user, cb) {
         res.locals.user = user;
         return cb();
     });
-},
+};
 
 
 // дропаем сессию для пользователя
@@ -28,21 +28,21 @@ passport.logout = function(req, res, cb) {
     res.locals.user = {};
     res.clearCookie(sails.config.passport.rememberme.key);
     if (cb) return cb();
-},
+};
 
 
 
 // Так написано в доках
-passport.serializeUser(function(user, cb) {
+passport.serializeUser = function(user, cb) {
     cb(null, user.id);
-});
+};
 // Так написано в доках-2
-passport.deserializeUser(function(id, cb) {
+passport.deserializeUser = function(id, cb) {
     User.findOne(id)
         .exec(function(err, user) {
             cb(err, user);
         });
-});
+};
 
 
 
@@ -103,7 +103,7 @@ var auth = function(req, identifier, password, cb) {
             }
         });
     });
-}
+};
 passport.use(new LocalStrategy(opts, auth));
 
 
@@ -119,7 +119,7 @@ passport.rememberme.verify = function(token, cb) {
     var query = {
         protocol: "rememberme",
         token: token,
-    }
+    };
     Passport.findOne(query, function(err, passport) {
         if (err || !passport) return cb(err || 'passport not found');
         User.findOne({

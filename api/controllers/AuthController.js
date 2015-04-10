@@ -25,7 +25,7 @@ var AuthController = {
 
     logout: function (req, res) {
         passport.logout(req, res);
-        return res.redirect('/login')
+        return res.redirect('/login');
     },
 
     register: function (req, res) {
@@ -104,8 +104,8 @@ var AuthController = {
                             return res.redirect('/me');
                         });
                     });
-                })
-            })
+                });
+            });
         }
 
         // WTF?!
@@ -141,9 +141,9 @@ var AuthController = {
                     _(trouble).each(function(instance) {
                         flashes.push(instance.message);
                     });
-                })
+                });
             }
-        })
+        });
         req.flash('error', flashes);
         //*/
 

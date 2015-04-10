@@ -17,8 +17,8 @@ module.exports = function (req, res, cb) {
                 console.error('remember-me verify:', err);
                 return passport.logout(req, res, cb);
             }
-            return passport.login(req, res, user, cb)
-        })(req, res, cb)
+            return passport.login(req, res, user, cb);
+        })(req, res, cb);
     }
     else {
         return cb();

@@ -28,7 +28,7 @@ module.exports.bootstrap = function(cb) {
                 user: user.id,
             })
             .exec(console.log);
-        });
+        })
         ;
     }
 
