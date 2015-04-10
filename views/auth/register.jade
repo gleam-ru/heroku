@@ -9,9 +9,10 @@ block content
       h1 Регистрация (пока не тестировалось)
       p Уже зарегистрированы? 
         a(href='/login') Жмите сюда.
-      form(role="form" action="/auth/local/register" method="post")
-        +error(errors)
-        input(type="text" name="username" placeholder="Username")
-        input(type="text" name="email" placeholder="Email")
-        input(type="password" name="password" placeholder="Password")
+      form(role="form" action="/auth/register" method="post")
+        for error in errors
+          +error(error)
+        input(type="text" name="username" placeholder="Username" value=form.username)
+        input(type="text" name="email" placeholder="Email" value=form.email)
+        input(type="password" name="password" placeholder="Password" value=form.password)
         button(type="submit").g-btn.type_default.size_small Регистрация
