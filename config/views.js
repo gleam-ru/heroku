@@ -12,5 +12,6 @@
  */
 
 module.exports.views = {
+    layout: false, // убрать варны sails
     engine: 'jade',
 };

@@ -33,16 +33,16 @@ passport.logout = function(req, res, cb) {
 
 
 // Так написано в доках
-passport.serializeUser = function(user, cb) {
+passport.serializeUser(function(user, cb) {
     cb(null, user.id);
-};
+});
 // Так написано в доках-2
-passport.deserializeUser = function(id, cb) {
+passport.deserializeUser(function(id, cb) {
     User.findOne(id)
         .exec(function(err, user) {
             cb(err, user);
         });
-};
+});
 
 
 
