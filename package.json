@@ -30,7 +30,8 @@
     "bcryptjs": "^2.1.0",
     "sails-mysql": "^0.10.11",
     "passport-remember-me": "0.0.1",
-    "sails-hook-validation": "^0.2.0"
+    "sails-hook-validation": "^0.2.0",
+    "winston": "^1.0.0"
   },
   "scripts": {
     "start": "node app.js",
