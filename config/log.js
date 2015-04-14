@@ -36,7 +36,7 @@ var _fileParser = new (winston.transports.File)({
 winston.loggers.add('logger', {
     transports: [
         _console,
-        _fileGlobal,
+        // _fileGlobal,
     ]
 });
 var logger = winston.loggers.get('logger');

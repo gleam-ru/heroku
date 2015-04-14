@@ -1,4 +1,4 @@
-var winston = require('winston');
+var log = sails.config.log.custom;
 
 // хакаем консоль.
 var util = require('util');
@@ -23,4 +23,4 @@ console.debug = function(){
 
 // дефолтный логгер, который можно будет вызывать log.*();
 // ну или console.log();
-module.exports = sails.config.log.custom;
+module.exports = log;
