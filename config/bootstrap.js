@@ -7,6 +7,14 @@
  */
 
 module.exports.bootstrap = function(cb) {
+
+    provider.init(function(err) {
+        if (err) {
+            log.error('Provider init failed', err);
+        }
+        // provider.bonds.update();
+    });
+
     // Заполняем модель тестовыми данными
     if (sails.config.models.refill) {
         User.create({

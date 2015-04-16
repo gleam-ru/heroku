@@ -7,5 +7,6 @@
 		"sails": true
 	},
   	"curly": false,
-	"quotmark": false
+	"quotmark": false,
+    "undef": false
 }

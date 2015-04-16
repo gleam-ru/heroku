@@ -46,9 +46,9 @@ var Passport = {
     },
 
 
-    //  ╔╦╗╔═╗╔╦╗╦ ╦╔═╗╔╦╗╔═╗
-    //  ║║║║╣  ║ ╠═╣║ ║ ║║╚═╗
-    //  ╩ ╩╚═╝ ╩ ╩ ╩╚═╝═╩╝╚═╝
+    //  ╦ ╦╔═╗╔═╗╦╔═╔═╗
+    //  ╠═╣║ ║║ ║╠╩╗╚═╗
+    //  ╩ ╩╚═╝╚═╝╩ ╩╚═╝╝
 
     beforeCreate: function (passport, next) {
         hashPassword(passport, next);
