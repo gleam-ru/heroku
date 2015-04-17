@@ -1,9 +1,4 @@
 {
-  "name": "blozhik",
-  "private": true,
-  "version": "0.0.0",
-  "description": "a Sails application",
-  "keywords": [],
   "dependencies": {
     "bcryptjs": "^2.1.0",
     "cheerio": "^0.19.0",
@@ -11,6 +6,8 @@
     "ejs": "~0.8.4",
     "fs-extra": "^0.18.1",
     "grunt": "0.4.2",
+    "grunt-bower-install": "^1.6.0",
+    "grunt-bower-task": "^0.3.4",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.10.1",
     "grunt-contrib-concat": "~0.3.0",
@@ -39,6 +36,11 @@
     "validator": "^3.37.0",
     "winston": "^1.0.0"
   },
+  "name": "blozhik",
+  "private": true,
+  "version": "0.0.0",
+  "description": "a Sails application",
+  "keywords": [],
   "scripts": {
     "start": "node app.js",
     "debug": "node debug app.js"
@@ -49,5 +51,8 @@
     "url": "git://github.com/anonymous node/sails user/blozhik.git"
   },
   "author": "anonymous node/sails user",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "grunt-wiredep": "^2.0.0"
+  }
 }
