@@ -8,6 +8,10 @@ module.exports.routes = {
     'get /login': 'AuthController.login',
     'get /register': 'AuthController.register',
 
+    'get /bonds': 'BondsController',
+    // 'get /bonds/current': 'BondsController.current',
+    'get /bonds/get': 'BondsController.datatable',
+
 
 
 

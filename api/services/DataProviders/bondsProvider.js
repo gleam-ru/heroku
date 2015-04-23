@@ -1,3 +1,4 @@
+var moment = require('moment');
 var parser = require('./bondsParser.js');
 var me = {
     current: []
@@ -104,12 +105,73 @@ function updateCurrent(cb) {
 // сохраняет парс в базу
 // cb(err)
 function saveBonds(bondsArr, cb) {
-    var now = new Date();
+    var now = moment();
     function iterator(item, callback) {
         _.extend(item, {createdAt: now});
-        return Bonds.create(item).exec(callback);
+        var bond = beforeValidate(item);
+        if (!bond) return callback();
+        return Bonds.create(bond).exec(callback);
     }
     return async.eachSeries(bondsArr, iterator, cb);
 }
+
+// орм... баги... входит в традицию -_-
+// описываем хук beforeValidate тут
+function beforeValidate(item) {
+    var bond = _.clone(item);
+    // вечных облигаций не бывыает
+    if (!bond.endDate) return;
+
+    bond.endDate = moment(bond.endDate, 'DD.MM.YYYY');
+    bond.cpDate  = moment(bond.cpDate,  'DD.MM.YYYY');
+
+    bond.rate    = parseFloat(bond.rate);   // номинал
+    bond.cpVal   = parseFloat(bond.cpVal);  // размер купона
+    bond.cpDur   = parseFloat(bond.cpDur);  // длительность купона
+    bond.nkd     = parseFloat(bond.nkd);    // НКД
+    bond.bid     = parseFloat(bond.bid);    // предложение
+
+    // облигации, для которых нет предложения, стоят 100% от номинала
+    if(!bond.bid || bond.bid <= 0) {
+        bond.bid = 100;
+    }
+
+    // облигации, для которых нет спроса, не стоят ничего
+    if(!bond.ask || bond.ask <= 0) {
+        bond.ask = 0;
+    }
+
+    // дней до погашения
+    bond.expiresIn = bond.endDate.diff(bond.createdAt, 'days');
+
+    // должны бы уже выплатить... не следим.
+    if (!bond.expiresIn || bond.expiresIn < 0) return;
+
+    // купонный доход
+    if (bond.cpDur <= 0) {
+        // облигация без купона
+        bond.cpYie = 0;
+    }
+    else {
+        bond.cpYie = (bond.cpVal / bond.rate) * (365 / bond.cpDur);
+    }
+
+    // настоящая цена
+    bond.price = bond.rate * bond.bid / 100 + bond.nkd;
+    // Процентная ставка по облигации
+    bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
+    // Процентная ставка по облигации с учетом налога 13%
+    bond.percentWTaxes = bond.percent * 0.87;
+
+
+    // приводим даты к таймштампу
+    bond.endDate   = bond.endDate.toDate();//.getTime();
+    bond.cpDate    = bond.cpDate.toDate();//.getTime();
+    bond.createdAt = bond.createdAt.toDate();//.getTime();
+
+    return bond;
+}
+
+
 
 module.exports = me;

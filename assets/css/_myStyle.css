@@ -1,6 +1,26 @@
+.pickmeup {z-index: 10000;}
+
+.isolated {margin: 20px 0px;}
+
 .comment {
     color: grey;
     font-style: italic;
     /* для борьбы с маржином заголовков */
     margin-top: -20px;
+}
+
+
+#qwe .g-btn {
+    margin: 0px;
+    padding: 3px 10px;
+}
+
+#qwe th:last-child,
+#qwe tr td:last-child {
+    text-align: center;
+}
+
+
+.selected {
+    color: red !important;
 }

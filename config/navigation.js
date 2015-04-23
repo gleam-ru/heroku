@@ -24,7 +24,7 @@ module.exports.navigation = [
     },
     {
         name     : "Видит админ",
-        href     : "/",
+        href     : "/bonds",
         canSee   : ["admin"],
     },
     {

@@ -3,3 +3,7 @@ mixin json(data)
 
 mixin error(data)
   p.error(style="color: #E74343;") #{data}
+
+mixin button(text)
+  span(class="g-btn type_midnight size_small")
+    span #{text}

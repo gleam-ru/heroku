@@ -8,12 +8,16 @@
 
 module.exports.bootstrap = function(cb) {
 
-    provider.init(function(err) {
-        if (err) {
-            log.error('Provider init failed', err);
-        }
-        // provider.bonds.update();
-    });
+    // Bonds.destroy({}).exec(function(err) {
+        provider.init(function(err) {
+            if (err) {
+                log.error('Provider init failed', err);
+            }
+            // provider.bonds.update();
+        });
+    // });
+    //*/
+
 
     // Заполняем модель тестовыми данными
     if (sails.config.models.refill) {
@@ -39,6 +43,8 @@ module.exports.bootstrap = function(cb) {
         })
         ;
     }
+
+    console.log("i'm listening, my master...")
 
     cb();
 };
