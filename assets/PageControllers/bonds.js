@@ -42,7 +42,7 @@ var locale = {
     monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
 }
 $.pickmeup.format = "d-m-Y";
-$.pickmeup.position = "right";
+$.pickmeup.position = "top";
 $.pickmeup.view = "years";
 $.pickmeup.hide_on_select = true;
 $.pickmeup.locale = locale;
@@ -203,7 +203,7 @@ $.pickmeup.locale = locale;
 
 
     var DatePicker = Vue.extend({
-        template: '<input v-el="datepicker" value={{target.value}} />',
+        template: '<input v-el="datepicker" type="text" value={{target.value}} />',
         data: function() {
             return {
                 date: '00-00-0000',
@@ -228,7 +228,7 @@ $.pickmeup.locale = locale;
 
 
     var TextPicker = Vue.extend({
-        template: '<input v-model="value" value={{target.value}} />',
+        template: '<input v-model="value" type="text" value={{target.value}} />',
         data: function() {
             return {
                 value: '',
@@ -244,9 +244,23 @@ $.pickmeup.locale = locale;
 
 
     new Vue({
-        el: '#test',
-        template: '#cmp',
+        el: '#bonds-table',
+        template: '#my-table',
         data: {
+            additional: [
+                {
+                    name: 'Данные обновлены',
+                    value: '14 минут назад',
+                },
+                {
+                    name: 'Ближайшее обновление',
+                    value: 'через 30 минут',
+                },
+                {
+                    name: 'Всего записей',
+                    value: '1176',
+                },
+            ],
             newFilter: {
                 name: "Безымянный",
                 count: 0,
@@ -294,7 +308,7 @@ $.pickmeup.locale = locale;
                     conditions: [],
                 },
             ],
-            currentFilterIndex: 2,
+            currentFilterIndex: 0,
             editingFilterIndex: -1,
 
             filterTypes: {
@@ -410,7 +424,19 @@ $.pickmeup.locale = locale;
                     }
                 });
                 return res;
-            }
+            },
+
+            // tableInfo: function() {
+            //     var info = [];
+            //     var table = this.dt.table;
+            //     if (!table) return [];
+            //     var settings = table.dataTable().fnSettings();
+            //     info.push({
+            //         name: 'Всего',
+            //         value: settings.fnRecordsTotal(),
+            //     });
+            //     return info;
+            // }
         },
         methods: {
 
@@ -574,11 +600,11 @@ $.pickmeup.locale = locale;
 
 
             // Применяет фильтр к таблице.
-            // Если фильтр не указан - применяет редактируемый.
+            // Если фильтр не указан - применяет редактируемый/активный.
             apply: function(filter) {
                 if (!filter) {
                     // без фильтра? берем редактируемый
-                    filter = this.editingFilter;
+                    filter = this.currentFilter ? this.currentFilter : this.editingFilter;
                     if (!filter) {
                         // нет редактируемого? показываем всю таблицу.
                         filter = {};
@@ -591,31 +617,32 @@ $.pickmeup.locale = locale;
 
                 var vm = this;
                 $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
-                        return _.every(filter.conditions, function(condition) {
-                            var column = vm.getColumn(condition);
+                    return _.every(filter.conditions, function(condition) {
+                        var column = vm.getColumn(condition);
 
-                            // aData == [value, value, ...] - row
-                            var columnIdx = _.findIndex(vm.columns, column);
-                            var data = aData[columnIdx];
+                        // aData == [value, value, ...] - row
+                        var columnIdx = _.findIndex(vm.columns, column);
+                        var data = aData[columnIdx];
 
-                            var types = vm.filterTypes[column.type];
-                            var type = _.find(types, {value: condition.type});
-                            var apply = type.apply;
-                            return apply(data, condition.value);
-                        });
-                    }
+                        var types = vm.filterTypes[column.type];
+                        var type = _.find(types, {value: condition.type});
+                        var apply = type.apply;
+                        return apply(data, condition.value);
+                    });
+                }
                 vm.dt.table.fnDraw();
             },
 
 
             test: function() {
                 debugger;
-                console.log()
+                // console.log()
             }
         },
         compiled: function() {
             var dt = this.$$.dt;
             this.dt.table = $(dt).dataTable(this.dt.config);
+            this.apply();
         },
         components: {
             'date-picker': DatePicker,
