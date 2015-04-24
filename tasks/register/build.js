@@ -4,5 +4,6 @@ module.exports = function (grunt) {
         'copy:dev', // assets + bower
         // 'sync:dev', // assets + bower
         'wiredep', // bower into head
+        'jade2js', // create jade client templates
     ]);
 };

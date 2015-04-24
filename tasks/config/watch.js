@@ -30,7 +30,12 @@ module.exports = function(grunt) {
         tasks: {
             files: ['tasks/**/*'],
             tasks: ['build']
-        }
+        },
+
+        jade2js: {
+            files: ['views/client/**/*'],
+            tasks: ['jade2js']
+        },
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
