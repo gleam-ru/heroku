@@ -1,6 +1,3 @@
-
-
-
 // TODO: вынести в глобал
 function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
@@ -139,13 +136,6 @@ $.pickmeup.locale = locale;
             type: "number",
             visible: false,
         },
-        {
-            width: "10px",
-            targets: -1,
-            data: null,
-            sortable: false,
-            defaultContent: '<a href="" class="g-btn type_midnight size_small"><span>Жмяк</span></a>'
-        },
     ];
 
 
@@ -255,10 +245,6 @@ $.pickmeup.locale = locale;
                 {
                     name: 'Ближайшее обновление',
                     value: 'через 30 минут',
-                },
-                {
-                    name: 'Всего записей',
-                    value: '1176',
                 },
             ],
             newFilter: {
@@ -398,8 +384,9 @@ $.pickmeup.locale = locale;
                     columns: columns,
                     language: russian,
                     ajax: 'bonds/get',
-                    sDom: 'tip',
+                    sDom: 'pt',
                 },
+                tableInfo: [], // динамическое поле
             },
         },
         computed: {
@@ -425,18 +412,6 @@ $.pickmeup.locale = locale;
                 });
                 return res;
             },
-
-            // tableInfo: function() {
-            //     var info = [];
-            //     var table = this.dt.table;
-            //     if (!table) return [];
-            //     var settings = table.dataTable().fnSettings();
-            //     info.push({
-            //         name: 'Всего',
-            //         value: settings.fnRecordsTotal(),
-            //     });
-            //     return info;
-            // }
         },
         methods: {
 
@@ -548,12 +523,6 @@ $.pickmeup.locale = locale;
                 }
             },
 
-            /**
-             *
-             ****************************************************************************
-             ****************************************************************************
-             ****************************************************************************/
-
             // TODO: точно это должно быть описано в "методах"? нет ли более подходящего места?
             // изменилось значение в строке фильтрации
             // !!! дети должны эмитить 'changed'
@@ -640,8 +609,34 @@ $.pickmeup.locale = locale;
             }
         },
         compiled: function() {
+            var vm = this;
             var dt = this.$$.dt;
-            this.dt.table = $(dt).dataTable(this.dt.config);
+            // TODO: покупка
+            this.dt.config.columns.push({
+                width: "10px",
+                targets: -1,
+                data: null,
+                sortable: false,
+                defaultContent: '<span class="buy"><i class="fa fa-plus-circle"></i></span>',
+            });
+            this.dt.table = $(dt).dataTable(_.extend(this.dt.config, {
+                fnDrawCallback: function() {
+                    var info = [];
+                    var table = vm.dt.table;
+                    if (table) {
+                        var settings = table.dataTable().fnSettings();
+                        info.push({
+                                name: 'Всего',
+                                value: settings.fnRecordsTotal(),
+                        });
+                        info.push({
+                            name: 'После фильрации',
+                            value: settings.fnRecordsDisplay(),
+                        });
+                    }
+                    vm.dt.tableInfo = info;
+                }
+            }));
             this.apply();
         },
         components: {

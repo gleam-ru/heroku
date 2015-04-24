@@ -43,7 +43,6 @@ grey: #ecf0f1;
     margin-bottom: 0px;
 }
 
-
 /* top part */
 .my-table .top {
     display: table;
@@ -90,7 +89,6 @@ grey: #ecf0f1;
 
 /* editor part */
 .my-table .filter-editor {
-    margin-bottom: 30px;
     margin-top: 20px;
     background: #ecf0f1;
     border: solid 1px #ccc;
@@ -127,7 +125,24 @@ grey: #ecf0f1;
             font-size: 30px;
             }
             .my-table .filter-editor .row-remover:hover {opacity: 0.7;}
-
+/* table styles */
+.my-table .table {
+    margin-top: 20px;
+    }
+    /* datattables */
+    .my-table .table .dataTables_wrapper.no-footer {
+        margin-top: -40px;
+        }
+    .my-table .table .buy:hover {opacity: 0.8;}
+    .my-table .table .buy {
+        font-size: 24px;
+        display: block;
+        cursor: pointer;
+        opacity: 0.5;
+        }
+        .my-table .table .buy .fa {
+            color: #2c3e50;
+            }
 /* bottom buttons */
 .my-table .control-buttons {
     text-align: right;
