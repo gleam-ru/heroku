@@ -133,6 +133,9 @@ grey: #ecf0f1;
     .my-table .table .dataTables_wrapper.no-footer {
         margin-top: -40px;
         }
+        .my-table .table .dataTables_wrapper.no-footer>table {
+            width: 100% !important;
+            }
     .my-table .table .buy:hover {opacity: 0.8;}
     .my-table .table .buy {
         font-size: 24px;

@@ -51,5 +51,17 @@ script(src='bower/vue/dist/vue.js')
 script(src='bower/pickmeup/js/jquery.pickmeup.js')
 // endbower
 script(src='bower/datatables-customsearch/jquery.datatables.customsearch.min.js')
-
 script(type="text/javascript", src="/js/plugins.js")
+
+//- глобальные методы, локализации, etc...
+script(type="text/javascript", src="/js/main.js")
+
+//- добавляет поддержку moment в datatables
+script(type="text/javascript", src="/js/datatables.moment.patch.js")
+
+//- компиллированные jade шаблоны
+script(type="text/javascript", src="/js/jade_templates.js")
+
+//- Vue Components
+//- TODO: распихать в страницы, где используется, а не в глобальном хеде
+script(type="text/javascript", src="/VueComponents/MyTable.js")

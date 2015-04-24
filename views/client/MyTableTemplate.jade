@@ -1,0 +1,103 @@
+mixin button(text)
+  span(class="g-btn type_midnight size_small")
+    span #{text}
+
+.my-table
+  .top
+    //- 
+    //- additional info
+    //- 
+    .additional
+      ul
+        li(v-repeat='info: additional')
+          |{{info.name}}: {{info.value}}
+        li(v-repeat='info: tableInfo')
+          |{{info.name}}: {{info.value}}
+    //- 
+    //- preview
+    //- 
+    .filters-preview(v-el='preview')
+      h3 Сохраненные фильтры
+      ul
+        li(v-repeat='filter: savedFilters')
+          span(
+            v-on='click: editFilter($index)'
+            v-class='selected: $index == editingFilterIndex'
+            )
+            i.fa.fa-gear
+          span.filters-preview-name(
+            v-on='click: selectFilter($index)'
+            v-class='selected: $index == currentFilterIndex'
+            )
+            | {{filter.name}}
+          span(
+            v-on='click: removeFilter($index)'
+            style='color: red;'
+            )
+            i.fa.fa-times
+      span(
+        v-on='click: addFilter'
+        class='g-btn type_midnight size_small'
+        )
+        span Добавить
+  
+  //- 
+  //- editor
+  //- 
+  .block-for-transition(
+    v-if='editingFilter'
+    v-transition='expand'
+    )
+    .filter-editor(
+    v-el='editor'
+    )
+      h3 Редактирование фильтра: "{{editingFilter.name}}"
+      .row.isolated(
+        v-repeat='condition: editingFilter.conditions'
+        )
+        //- выбор колонки
+        select.column-selector(
+          v-model='condition.column'
+          )
+          option(
+            v-repeat='column: columns'
+            value='{{column.value}}'
+            )
+            | {{column.name}}
+        //- выбор условия фильтрации
+        select.type-selector(
+          v-model='condition.type'
+          )
+          option(
+            v-repeat='type: getTypeOptions(condition)'
+            value='{{type.value}}'
+            )
+            | {{type.name}}
+        //- динамический компонент для ввода значения фильтрации
+        div.value-selector(
+          v-component='{{getValuePicker(condition)}}'
+          v-events='changed: valueChanged'
+          v-with='target: condition'
+          )
+        //- удаление строки
+        span.row-remover(
+          v-on='click: removeCondition($index)'
+          style='color: red; cursor: pointer;'
+          )
+          i.fa.fa-times
+      //- еще строка фильтрации
+      div.isolated
+        span(
+          v-on='click: addCondition'
+          )
+          +button('Добавить условие')
+      .control-buttons
+        span(v-on='click: apply()')
+          +button('Применить')
+        span(v-on='click: saveFilter')
+          +button('Сохранить')
+        span(v-on='click: test')
+          +button('test')
+  .table
+    h3 Данные {{currentFilter ? '(фильтр: "'+currentFilter.name+'")' : ''}}
+    table(v-el='dt')
