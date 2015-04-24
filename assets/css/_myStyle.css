@@ -135,3 +135,15 @@ grey: #ecf0f1;
     .my-table .control-buttons span:not(:last-child) {
         margin-right: 10px;
         }
+
+.my-table .block-for-transition {
+    transition: all 0.3s linear;
+    overflow: hidden;
+    max-height: 700px;
+    box-sizing: border-box;
+}
+.my-table .block-for-transition.expand-enter, .block-for-transition.expand-leave {
+    max-height: 0;
+    overflow: hidden;
+    /*opacity: 0;*/
+}

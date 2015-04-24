@@ -21,7 +21,7 @@ block content
                 ul
                   li(v-repeat='info: additional')
                     |{{info.name}}: {{info.value}}
-                  li(v-repeat='info: tableInfo')
+                  li(v-repeat='info: dt.tableInfo')
                     |{{info.name}}: {{info.value}}
               //- 
               //- preview
@@ -54,58 +54,60 @@ block content
             //- 
             //- editor
             //- 
-            .filter-editor(
-              v-el='editor'
+            .block-for-transition(
               v-if='editingFilter'
               v-transition='expand'
               )
-              h3 Редактирование фильтра: "{{editingFilter.name}}"
-              .row.isolated(
-                v-repeat='condition: editingFilter.conditions'
-                )
-                //- выбор колонки
-                select.column-selector(
-                  v-model='condition.column'
+              .filter-editor(
+              v-el='editor'
+              )
+                h3 Редактирование фильтра: "{{editingFilter.name}}"
+                .row.isolated(
+                  v-repeat='condition: editingFilter.conditions'
                   )
-                  option(
-                    v-repeat='column: columns'
-                    value='{{column.value}}'
+                  //- выбор колонки
+                  select.column-selector(
+                    v-model='condition.column'
                     )
-                    | {{column.name}}
-                //- выбор условия фильтрации
-                select.type-selector(
-                  v-model='condition.type'
-                  )
-                  option(
-                    v-repeat='type: getTypeOptions(condition)'
-                    value='{{type.value}}'
+                    option(
+                      v-repeat='column: columns'
+                      value='{{column.value}}'
+                      )
+                      | {{column.name}}
+                  //- выбор условия фильтрации
+                  select.type-selector(
+                    v-model='condition.type'
                     )
-                    | {{type.name}}
-                //- динамический компонент для ввода значения фильтрации
-                div.value-selector(
-                  v-component='{{getValuePicker(condition)}}'
-                  v-events='changed: valueChanged'
-                  v-with='target: condition'
-                  )
-                //- удаление строки
-                span.row-remover(
-                  v-on='click: removeCondition($index)'
-                  style='color: red; cursor: pointer;'
-                  )
-                  i.fa.fa-times
-              //- еще строка фильтрации
-              div.isolated
-                span(
-                  v-on='click: addCondition'
-                  )
-                  +button('Добавить условие')
-              .control-buttons
-                span(v-on='click: apply()')
-                  +button('Применить')
-                span(v-on='click: saveFilter')
-                  +button('Сохранить')
-                span(v-on='click: test')
-                  +button('test')
+                    option(
+                      v-repeat='type: getTypeOptions(condition)'
+                      value='{{type.value}}'
+                      )
+                      | {{type.name}}
+                  //- динамический компонент для ввода значения фильтрации
+                  div.value-selector(
+                    v-component='{{getValuePicker(condition)}}'
+                    v-events='changed: valueChanged'
+                    v-with='target: condition'
+                    )
+                  //- удаление строки
+                  span.row-remover(
+                    v-on='click: removeCondition($index)'
+                    style='color: red; cursor: pointer;'
+                    )
+                    i.fa.fa-times
+                //- еще строка фильтрации
+                div.isolated
+                  span(
+                    v-on='click: addCondition'
+                    )
+                    +button('Добавить условие')
+                .control-buttons
+                  span(v-on='click: apply()')
+                    +button('Применить')
+                  span(v-on='click: saveFilter')
+                    +button('Сохранить')
+                  span(v-on='click: test')
+                    +button('test')
             .table
               h3 Облигации {{currentFilter ? '(фильтр: "'+currentFilter.name+'")' : ''}}
               table(v-el='dt')
