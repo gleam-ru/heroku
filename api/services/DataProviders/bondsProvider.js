@@ -6,15 +6,16 @@ var me = {
 
 // установка дефолтных значений
 me.init = function(cb) {
-    // заполнить current данынми из базы
-    updateCurrent(function(err, updated) {
-        console.log('bonds provider inited', updated.length);
-        cb(err);
-    });
+    async.series([
+        me.updateCurrent,
+        // me.update,
+    ], cb)
+    // me.update();
 }
 
 // получает список облигаций с текущими значениями
 me.get = function() {
+    // TODO: get from cache
     return me.current;
 }
 
@@ -35,7 +36,7 @@ me.update = function(cb) {
                 log.error('Bonds saving has failed', err.message);
                 return cb(err, me.get());
             }
-            updateCurrent(function(err) {
+            me.updateCurrent(function(err) {
                 if (err) {
                     log.error('Updating bonds has failed', err);
                     return cb(err, me.get());
@@ -67,7 +68,7 @@ me.update = function(cb) {
                 log.error('Bonds saving has failed', err.message, err);
                 return cb(err, me.get());
             }
-            updateCurrent(function(err) {
+           me.updateCurrent(function(err) {
                 if (err) {
                     log.error('Updating bonds has failed', err);
                     return cb(err, me.get());
@@ -80,44 +81,91 @@ me.update = function(cb) {
 }
 
 
+// обновляет me.current значениями из базы
+// cb(err, updated)
+// TODO: Q-style
+// TODO: move to cache
+me.updateCurrent = function(cb) {
+    if (typeof cb !== 'function') cb = function() {};
+    Bonds.find().max('updatedAt').exec(function(err, oldestBonds) {
+        if (err) return cb(err);
+        if (!oldestBonds.length) return cb(new Error('Oldest Bond not found'));
+        var lastDate = oldestBonds[0].updatedAt;
+        Bonds.find({updatedAt: lastDate}).exec(function(err, bonds) {
+            if (err) return cb(err);
+            me.current = [];
+            _.each(bonds, function(bond) {
+                me.current.push(bond.getCurrent());
+            });
+            console.log('current bonds updated:', me.current.length);
+            return cb(err, me.current);
+        });
+    });
+}
+
 
 //  ╔═╗  ╦═╗  ╦  ╦  ╦  ╔═╗  ╔╦╗  ╔═╗
 //  ╠═╝  ╠╦╝  ║  ╚╗╔╝  ╠═╣   ║   ║╣
 //  ╩    ╩╚═  ╩   ╚╝   ╩ ╩   ╩   ╚═╝
 
-// обновляет me.current значениями из базы
-// cb(err, updated)
-// TODO: Q-style
-function updateCurrent(cb) {
-    if (typeof cb !== 'function') cb = function() {};
-    Bonds.find().max('createdAt').exec(function(err, oldestBond) {
-        if (err) return cb(err);
-        if (!oldestBond.length) return cb(new Error('Oldest Bond not found'));
-        var lastDate = oldestBond[0].createdAt;
-        Bonds.find({createdAt: lastDate}).exec(function(err, bonds) {
-            if (err) return cb(err);
-            me.current = bonds;
-            cb(err, bonds);
-        });
-    });
-}
-
 // сохраняет парс в базу
 // cb(err)
 function saveBonds(bondsArr, cb) {
     var now = moment();
-    function iterator(item, callback) {
-        _.extend(item, {createdAt: now});
-        var bond = beforeValidate(item);
-        if (!bond) return callback();
-        return Bonds.create(bond).exec(callback);
+    function iterator(bond, callback) {
+        // текущее время
+        _.extend(bond, {updatedAt: now});
+        return Bonds.findOne({name: bond.name, num: bond.num}, function(err, found) {
+            if (err) log.error(err);
+            // рассчитанные значения
+            bond = prepare(bond);
+            if (!bond) return callback();
+            if (found) {
+                // уже существует значит просто добавляем новое значение
+                return found.newData(bond, callback);
+            }
+            else {
+                // создаем
+                return Bonds.create(bond, callback);
+            }
+        });
     }
     return async.eachSeries(bondsArr, iterator, cb);
 }
 
-// орм... баги... входит в традицию -_-
-// описываем хук beforeValidate тут
-function beforeValidate(item) {
+// подготавливает данные
+function prepare(data) {
+    var bond = calculate(data);
+    if (!bond) return;
+    return {
+        name               : bond.name,
+        num                : bond.num,
+        rate               : bond.rate,
+        cpVal              : bond.cpVal,
+        cpDur              : bond.cpDur,
+        endDate            : bond.endDate,
+        updatedAt          : bond.updatedAt,
+        lastCandle: {
+            // dynamic from parse
+            bid            : bond.bid,
+            ask            : bond.ask,
+            nkd            : bond.nkd,
+            cpDate         : bond.cpDate,
+            dur            : bond.dur,
+            state          : bond.state,
+            // dynamic from calculations (больше места на диске, но быстрее)
+            expiresIn      : bond.expiresIn,
+            cpYie          : bond.cpYie,
+            price          : bond.price,
+            percent        : bond.percent,
+            percentWTaxes  : bond.percentWTaxes,
+        }
+    }
+}
+
+
+// дописываем рассчитанные значения в облигацию
+function calculate(item) {
     var bond = _.clone(item);
     // вечных облигаций не бывыает
     if (!bond.endDate) return;
@@ -142,7 +190,7 @@ function beforeValidate(item) {
     }
 
     // дней до погашения
-    bond.expiresIn = bond.endDate.diff(bond.createdAt, 'days');
+    bond.expiresIn = bond.endDate.diff(bond.updatedAt, 'days');
 
     // должны бы уже выплатить... не следим.
     if (!bond.expiresIn || bond.expiresIn < 0) return;
@@ -163,11 +211,10 @@ function beforeValidate(item) {
     // Процентная ставка по облигации с учетом налога 13%
     bond.percentWTaxes = bond.percent * 0.87;
 
-
-    // приводим даты к таймштампу
+    // приводим даты к виду, ожидаемому базой
     bond.endDate   = bond.endDate.toDate();//.getTime();
     bond.cpDate    = bond.cpDate.toDate();//.getTime();
-    bond.createdAt = bond.createdAt.toDate();//.getTime();
+    bond.updatedAt = bond.updatedAt.toDate();//.getTime();
 
     return bond;
 }
