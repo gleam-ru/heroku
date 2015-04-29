@@ -136,7 +136,7 @@ window.MyTable = Vue.extend({
             }
             else {
                 var column = this.getColumn(condition);
-                type = column.type;
+                type = column.filterType;
             }
             var types = this.filterTypes[type];
             // дефолтный тип при смене "фильтруемой" колонки
@@ -153,7 +153,7 @@ window.MyTable = Vue.extend({
             }
             else {
                 var column = this.getColumn(condition);
-                type = column.type;
+                type = column.filterType;
             }
 
             if (type === 'date') {
@@ -182,7 +182,7 @@ window.MyTable = Vue.extend({
             this.editingFilter.conditions.push({
                 column: column.value,
                 // дефолтное значение селектора типа для дефолтной колонки
-                type: this.filterTypes[column.type][0].value,
+                type: this.filterTypes[column.filterType][0].value,
                 value: '',
             });
         },
@@ -229,7 +229,7 @@ window.MyTable = Vue.extend({
                     var columnIdx = _.findIndex(vm.columns, column);
                     var data = aData[columnIdx];
 
-                    var types = vm.filterTypes[column.type];
+                    var types = vm.filterTypes[column.filterType];
                     var type = _.find(types, {value: condition.type});
                     var apply = type.apply;
                     return apply(data, condition.value);
@@ -262,21 +262,6 @@ window.MyTable = Vue.extend({
 
         // колонки для dt
         vm.dt.columns = vm.columns.slice();
-        _.each(vm.dt.columns, function(column) {
-            // форматирую дату
-            // (dateFormat указан в main.js)
-            if (column.type == "date") {
-                column.mRender = function (data) {
-                    return moment(data).format(dateFormat);
-                };
-            }
-            // И округляю числа
-            else if (column.type == 'float') {
-                column.mRender = function (data) {
-                    return 1 * data.toFixed(2)
-                };
-            }
-        });
 
         // колонка с кнопкой
         vm.dt.columns.push({
@@ -321,7 +306,7 @@ window.MyTable = Vue.extend({
             return {
                 name: column.title,
                 value: column.data,
-                type: column.type || 'string',
+                filterType: column.filterType || 'string',
             }
         });
 

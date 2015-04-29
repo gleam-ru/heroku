@@ -39,12 +39,44 @@ module.exports = {
 
         getCurrent: function() {
             var res = _.clone(this);
+            // доп параметры не нужны
             delete res.additional;
+            // крайняя свечка нужна
             _.extend(res, this.lastCandle);
-            // console.log('qweeeee', this.lastCandle);
+            // удаляем ненужные (клиенту) ключи
             delete res.lastCandle;
+            delete res.updatedAt;
+            delete res.id;
+            // форматируем нужные ключи
+            res = format(res);
             return res;
         },
     },
 
 };
+
+// форматирует облигацию для datatables (там все туго с форматированием :(
+function format(bond) {
+    var moment = require('moment');
+    bond.endDate = moment(bond.endDate).format('DD.MM.YYYY');
+    bond.cpDate  = moment(bond.cpDate).format('DD.MM.YYYY');
+
+    var nums = [
+        'rate',
+        'cpVal',
+        'cpDur',
+        'bid',
+        'ask',
+        'nkd',
+        'dur',
+        'expiresIn',
+        'cpYie',
+        'price',
+        'percent',
+        'percentWTaxes',
+    ];
+    _.each(nums, function(num) {
+        bond[num] = 1 * bond[num].toFixed(2);
+    });
+    return bond;
+}
