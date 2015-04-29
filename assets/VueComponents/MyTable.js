@@ -255,6 +255,11 @@ window.MyTable = Vue.extend({
         // откуда брать данные
         vm.dt.ajax = vm.ajax;
 
+        // speeding up
+        // https://datatables.net/faqs/
+        vm.dt.deferRender = true;
+        vm.dt.orderClasses = false;
+
         // колонки для dt
         vm.dt.columns = vm.columns.slice();
         _.each(vm.dt.columns, function(column) {
