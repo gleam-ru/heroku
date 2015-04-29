@@ -19,56 +19,22 @@ me.get = function() {
     return me.current;
 }
 
-// парс + сохранение
+// парс + сохранение + апдейт
 // cb(err, updated)
 me.update = function(cb) {
     if (typeof cb !== "function") cb = function() {};
-
-    /// TODO: убрать
-    /// Чтобы постоянно не парсить сайты-доноры придуманы костыли
-    var jf = require('jsonfile');
-    var flag = true;
-    var file = './parsed.json';
-    if (flag) {
-        var json = jf.readFileSync(file);
-        return saveBonds(json.parsed, function(err) {
-            if (err) {
-                log.error('Bonds saving has failed', err.message);
-                return cb(err, me.get());
-            }
-            me.updateCurrent(function(err) {
-                if (err) {
-                    log.error('Updating bonds has failed', err);
-                    return cb(err, me.get());
-                }
-                log.info('Bonds parsed, saved and updated');
-                return cb(null, me.get());
-            });
-        });
-    }
-    ///-----
 
     parser.parse(function(err, parsed) {
         if (err)  {
             log.error('Bonds parsing has failed', err);
             return cb(err, me.get());
         }
-
-        /// TODO: убрать
-        if (!flag) {
-            var json = {
-                'parsed': parsed
-            };
-            jf.writeFileSync(file, json);
-        }
-        ///-----
-
         saveBonds(parsed, function(err) {
             if (err) {
                 log.error('Bonds saving has failed', err.message, err);
                 return cb(err, me.get());
             }
-           me.updateCurrent(function(err) {
+            me.updateCurrent(function(err) {
                 if (err) {
                     log.error('Updating bonds has failed', err);
                     return cb(err, me.get());
