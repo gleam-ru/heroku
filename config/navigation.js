@@ -26,6 +26,15 @@ module.exports.navigation = [
         name     : "Видит админ",
         href     : "/bonds",
         canSee   : ["admin"],
+        children : [
+            {
+                name     : "Облигации",
+                href     : "/bonds",
+            },
+            {
+                name     : "Второй",
+            },
+        ]
     },
     {
         name     : "Сервисы",
