@@ -105,19 +105,11 @@ $(document).ready(function() {
             },
         ],
         // доп инфо, которое нужно отобразить слева
-        additional: [
-            {
-                name: 'Данные обновлены',
-                value: '14 минут назад',
-            },
-            {
-                name: 'Ближайшее обновление',
-                value: 'через 30 минут',
-            },
-        ],
+
         editingFilterIndex: 0,
         currentFilterIndex: 0,
         filters: 'bonds/filters',
+        additional: 'bonds/additional',
 
         save: function(cb) {
             if (typeof cb !== 'function') cb = function() {};

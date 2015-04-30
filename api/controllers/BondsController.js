@@ -50,6 +50,22 @@ module.exports = {
         })
     },
 
+    additional: function(req, res) {
+        var additional = [
+            {
+                name: 'Данные обновлены',
+                value: '14 минут назад',
+            },
+            {
+                name: 'Ближайшее обновление',
+                value: 'через 30 минут',
+            },
+        ];
+        return res.send({
+            data: additional
+        })
+    },
+
     bonds: function(req, res) {
         return res.send({
             data: provider.bonds.get()

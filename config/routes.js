@@ -11,6 +11,7 @@ module.exports.routes = {
     'get /bonds': 'BondsController',
     'get /bonds/all': 'BondsController.bonds',
     'get /bonds/filters': 'BondsController.filters',
+    'get /bonds/additional': 'BondsController.additional',
 
 
 

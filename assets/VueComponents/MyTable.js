@@ -313,8 +313,20 @@ window.MyTable = Vue.extend({
             vm.savedFilters = loaded.data;
             // после загрузки - применяем выбранный фильтр
             vm.apply();
-            // и снимаем маску
+        })
+        .fail(function(err) {
+            alert('smth went wrong...');
+            console.error(err);
+        })
+        .always(function() {
+            // снимаем маску
             view.mask(false);
+        });
+
+        // загружаем дополнительную информацию для отображения
+        $.get(vm.additional)
+        .done(function(loaded) {
+            vm.additional = loaded.data;
         });
 
         // наши, "местные" колонки
