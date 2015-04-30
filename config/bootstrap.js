@@ -8,15 +8,12 @@
 
 module.exports.bootstrap = function(cb) {
 
-    // Bonds.destroy({}).exec(function(err) {
-        provider.init(function(err) {
-            if (err) {
-                log.error('Provider init failed', err);
-            }
-            // provider.bonds.update();
-        });
-    // });
-    //*/
+    provider.init(function(err) {
+        if (err) {
+            log.error('Provider init failed', err);
+        }
+        // provider.bonds.update();
+    });
 
 
     // Заполняем модель тестовыми данными

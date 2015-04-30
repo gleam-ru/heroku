@@ -1,14 +1,15 @@
-var provider = {};
-
-// в перспективе
-// provider.share = require('./DataProviders/shareProvider.js');
-// provider.currency = require('./DataProviders/currencyProvider.js');
-
+var provider = {
+    bonds: require('./DataProviders/bondsProvider.js'),
+    // shares: require('./DataProviders/shareProvider.js'),
+    // currencies: require('./DataProviders/currencyProvider.js'),
+};
 
 provider.init = function(cb) {
-    provider.bonds = require('./DataProviders/bondsProvider.js');
-    provider.bonds.init(cb);
+    async.series([
+        provider.bonds.init,
+        // provider.shares.init,
+        // provider.currencies.init,
+    ], cb);
 }
-
 
 module.exports = provider;

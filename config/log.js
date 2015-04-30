@@ -61,7 +61,7 @@ winston.loggers.add('parser', {
 // настройки стандарных логов sails (ну они же уже есть во фреймворке)
 module.exports.log = {
     // level: 'silly', // default level
-    level: 'verbose', // default level
+    level: 'info', // default level
     colors: false, // убираем "цветастость" (криво логгируется)
     custom: logger, // собственно, сам логгер
 };

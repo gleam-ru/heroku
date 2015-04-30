@@ -7,16 +7,21 @@ var me = {
 // установка дефолтных значений
 me.init = function(cb) {
     async.series([
+        // получение из базы
         me.updateCurrent,
+        // получение из парса
         // me.update,
     ], cb)
-    // me.update();
 }
 
 // получает список облигаций с текущими значениями
 me.get = function() {
-    // TODO: get from cache
-    return me.current;
+    var bonds = cache.get('bonds') || [];
+    if (!bonds || bonds.length === 0) {
+        log.debug('Кэш запрошен, но не создан. Создаю.');
+        me.updateCurrent();
+    }
+    return bonds;
 }
 
 // парс + сохранение + апдейт
@@ -59,12 +64,13 @@ me.updateCurrent = function(cb) {
         var lastDate = oldestBonds[0].updatedAt;
         Bonds.find({updatedAt: lastDate}).exec(function(err, bonds) {
             if (err) return cb(err);
-            me.current = [];
+            var results = [];
             _.each(bonds, function(bond) {
-                me.current.push(bond.getCurrent());
+                results.push(bond.getCurrent());
             });
-            console.log('current bonds updated:', me.current.length);
-            return cb(err, me.current);
+            cache.set('bonds', results);
+            console.log('current bonds updated:', results.length);
+            return cb(err, results);
         });
     });
 }
