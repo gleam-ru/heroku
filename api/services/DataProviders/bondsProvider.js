@@ -34,26 +34,13 @@ me.get = function(cb) {
 // cb(err, updated)
 me.update = function(cb) {
     if (typeof cb !== "function") cb = function() {};
-
-    parser.parse(function(err, parsed) {
-        if (err)  {
-            log.error('Bonds parsing has failed', err);
-            return cb(err, me.get());
-        }
-        saveBonds(parsed, function(err) {
-            if (err) {
-                log.error('Bonds saving has failed', err.message, err);
-                return cb(err, me.get());
-            }
-            me.updateCurrent(function(err) {
-                if (err) {
-                    log.error('Updating bonds has failed', err);
-                    return cb(err, me.get());
-                }
-                log.info('Bonds parsed, saved and updated');
-                return cb(null, me.get());
-            });
-        });
+    async.waterfall([
+        parser.parse,
+        saveBonds,
+        me.updateCurrent,
+    ], function(err) {
+        if (err) log.error(err);
+        return cb(err, me.get());
     });
 }
 
@@ -61,13 +48,11 @@ me.update = function(cb) {
 // обновляет me.current значениями из базы
 // cb(err, updated)
 // TODO: Q-style
-// TODO: move to cache
 me.updateCurrent = function(cb) {
     if (typeof cb !== 'function') cb = function() {};
-    Bonds.find().max('updatedAt').exec(function(err, oldestBonds) {
-        if (err) return cb(err);
-        if (!oldestBonds.length) return cb(new Error('Oldest Bond not found'));
-        var lastDate = oldestBonds[0].updatedAt;
+    Statistics.findOne({name: 'bondsUpdatedAt'}, function(err, stat) {
+        if (err || !stat || !stat.data) return cb(err);
+        var lastDate = stat.data;
         Bonds.find({updatedAt: lastDate}).exec(function(err, bonds) {
             if (err) return cb(err);
             var results = [];
@@ -108,7 +93,15 @@ function saveBonds(bondsArr, cb) {
             }
         });
     }
-    return async.eachSeries(bondsArr, iterator, cb);
+    return async.eachSeries(bondsArr, iterator, function(err) {
+        if (err) return cb(err);
+        Statistics.findOrCreate({
+            name: 'bondsUpdatedAt',
+        }, {
+            name: 'bondsUpdatedAt',
+            data: now.toDate(),
+        }, cb);
+    });
 }
 
 // подготавливает данные
