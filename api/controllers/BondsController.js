@@ -5,6 +5,10 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
+var moment = require('moment');
+moment.locale('ru');
+
+
 module.exports = {
     // страница с облигациями
     index: function(req, res) {
@@ -49,19 +53,31 @@ module.exports = {
 
     // получение дополнительной информации о том, что вообще происходит :)
     additional: function(req, res) {
-        var additional = [
-            {
-                name: 'Данные обновлены',
-                value: '14 минут назад',
+        async.series({
+            lastUpdate: function(asyncCb) {
+                Statistics.findOne({name: 'bondsUpdatedAt'}, asyncCb);
             },
-            {
-                name: 'Ближайшее обновление',
-                value: 'через 30 минут',
+            nextUpdate: function(asyncCb) {
+                Statistics.findOne({name: 'bondsNextUpdate'}, asyncCb);
             },
-        ];
-        return res.send({
-            data: additional
-        })
+        }, function(err, results) {
+            if (err) {
+                log.error(err);
+                return res.send(500);
+            }
+            return res.send({
+                data: [
+                    {
+                        name: 'Данные обновлены',
+                        value: moment(results.lastUpdate.data).fromNow(),
+                    },
+                    {
+                        name: 'Ближайшее обновление',
+                        value: 'dunno :(',
+                    },
+                ]
+            });
+        });
     },
 
 
