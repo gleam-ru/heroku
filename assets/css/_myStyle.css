@@ -1,9 +1,40 @@
 /*
 
 blue: #2c3e50;
-grey: #ecf0f1;
+grey: #ecf0f1; rgba(236, 240, 241, 0.99)
 
  */
+
+
+
+/***
+ *  ╔═╗╦  ╔═╗╔╗ ╔═╗╦  ╔═╗
+ *  ║ ╦║  ║ ║╠╩╗╠═╣║  ╚═╗
+ *  ╚═╝╩═╝╚═╝╚═╝╩ ╩╩═╝╚═╝
+ */
+/* http://stackoverflow.com/questions/3296644/hiding-the-scrollbar-on-an-html-page */
+body::-webkit-scrollbar {
+    display: none;
+}
+.l-submain {
+    padding: 20px 10px;
+}
+#mask {
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: #fff;
+    }
+    #mask img {
+        top: 0px;
+        size: 100% 100%;
+        position: absolute;
+        }
+
+
 
 /***
  *  ╔╦╗╔═╗╔╦╗╦ ╦╦  ╔═╗╔═╗
@@ -14,7 +45,6 @@ grey: #ecf0f1;
 .pickmeup {z-index: 10000;}
 .pickmeup {background: #2c3e50;}
 .pickmeup .pmu-instance .pmu-selected {border-radius: 3px;}
-
 
 
 /**

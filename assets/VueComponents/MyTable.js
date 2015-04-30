@@ -246,6 +246,8 @@ window.MyTable = Vue.extend({
     },
     // дефолтные настройки писать сюды
     beforeCompile: function() {
+        var view = $(this.$el);
+        view.mask();
         var vm = this;
 
         //  ╔╦╗╔═╗╔╦╗╔═╗╔╦╗╔═╗╔╗ ╦  ╔═╗╔═╗
@@ -288,18 +290,32 @@ window.MyTable = Vue.extend({
                 });
             }
             vm.tableInfo = info;
-        }
+        };
+
+        // рендереры колонок для dt
+        vm.dt.fnInitComplete = function() {
+            vm.dt.table.mask(false);
+            // view.mask(false);
+        };
 
 
 
         //  ╦  ╔═╗╔═╗╦╔═╗
         //  ║  ║ ║║ ╦║║
         //  ╩═╝╚═╝╚═╝╩╚═╝
-
         // текущий редактируемый фильтр
-        vm.editingFilterIndex = -1;
+        vm.editingFilterIndex = vm.editingFilterIndex !== undefined ? vm.editingFilterIndex : -1;
         // текущий активный фильтр
-        vm.currentFilterIndex = 0;
+        vm.currentFilterIndex = vm.currentFilterIndex !== undefined ? vm.currentFilterIndex : 0;
+        // загружаем данные по фильтрам
+        $.get(vm.filters)
+        .done(function(loaded) {
+            vm.savedFilters = loaded.data;
+            // после загрузки - применяем выбранный фильтр
+            vm.apply();
+            // и снимаем маску
+            view.mask(false);
+        });
 
         // наши, "местные" колонки
         vm.columns = _.map(vm.columns, function(column) {
@@ -405,7 +421,6 @@ window.MyTable = Vue.extend({
             alert($(data[0]).html());
             return false;
         });
-        this.apply();
     },
     components: {
         // pickmeup component

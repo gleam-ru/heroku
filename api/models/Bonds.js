@@ -32,6 +32,7 @@ module.exports = {
 
             additional.candles.push(candle);
             this.additional = jsonpack.pack(additional);
+            this.lastCandle = bond.lastCandle;
             this.updatedAt = bond.updatedAt;
 
             return this.save(next);
@@ -76,7 +77,9 @@ function format(bond) {
         'percentWTaxes',
     ];
     _.each(nums, function(num) {
-        bond[num] = 1 * bond[num].toFixed(2);
+        if (bond[num]) {
+            bond[num] = 1 * bond[num].toFixed(2);
+        }
     });
     return bond;
 }

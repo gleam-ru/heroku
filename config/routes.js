@@ -9,8 +9,9 @@ module.exports.routes = {
     'get /register': 'AuthController.register',
 
     'get /bonds': 'BondsController',
-    // 'get /bonds/current': 'BondsController.current',
-    'get /bonds/get': 'BondsController.datatable',
+    'get /bonds/all': 'BondsController.bonds',
+    'get /bonds/filters': 'BondsController.filters',
+
 
 
 

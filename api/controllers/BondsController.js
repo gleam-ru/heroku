@@ -12,25 +12,48 @@ module.exports = {
         });
     },
 
-    current: function(req, res) {
-        return res.send(provider.bonds.get());
+    filters: function(req, res) {
+        var filters = [
+            {
+                name: "First filter",
+                visibleColumns: [
+                    'name',
+                    'bid',
+                    'ask',
+                    'percentWTaxes',
+                ],
+                conditions: [
+                    {
+                        column: 'name',
+                        type: 'contains',
+                        value: 'ОФЗ',
+                    }
+                ],
+            },
+            {
+                name: "One more",
+                conditions: [
+                    {
+                        column: 'name',
+                        type: 'contains',
+                        value: 'тул',
+                    }
+                ],
+            },
+            {
+                name: "And more...",
+                conditions: [],
+            },
+        ];
+        return res.send({
+            data: filters
+        })
     },
 
-    datatable: function(req, res) {
+    bonds: function(req, res) {
         return res.send({
             data: provider.bonds.get()
         })
-        // var page = req.query.page;
-        // var perPage = req.query.perPage;
-        // Bonds.find().paginate({page: page, limit: perPage}).exec(function(err, bonds) {
-        //     if (err) {
-        //         console.error(err);
-        //         bonds = [];
-        //     }
-        //     return res.send({
-        //         "data": bonds
-        //     });
-        // });
     },
 
 };

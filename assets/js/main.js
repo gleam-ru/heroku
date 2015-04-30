@@ -16,4 +16,19 @@ $(document).ready(function() {
     // datatables
     window.dateFormat = "DD.MM.YYYY";
     $.fn.dataTable.moment(dateFormat);
+
+    // disable interface parts
+    $.fn.mask = function(state) {
+        if(state === undefined || state) {
+            // add mask
+            var mask = $("<div id='mask'><img src='/img/loading.gif' /></div>");
+            if (this.find('#mask').length > 0) return;
+            this.append(mask);
+        }
+        else {
+            // remove mask
+            this.find('#mask').fadeOut(500, function(){ $(this).remove();});
+        }
+    }
+
 });

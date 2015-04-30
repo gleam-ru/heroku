@@ -1,8 +1,9 @@
 $(document).ready(function() {
 
+
     var data = {
         // откуда брать данные
-        ajax: 'bonds/get',
+        ajax: 'bonds/all',
         // описание этих данных
         columns: [
             {
@@ -66,6 +67,7 @@ $(document).ready(function() {
                 data        : "dur",
                 filterType  : "number",
                 visible     : false,
+                defaultContent: '',
             },
             {
                 title       : "Статус",
@@ -113,39 +115,14 @@ $(document).ready(function() {
                 value: 'через 30 минут',
             },
         ],
-        // сохраненные фильтры
-        savedFilters: [
-            {
-                name: "First filter",
-                visibleColumns: [
-                    'name',
-                    'bid',
-                    'ask',
-                    'percentWTaxes',
-                ],
-                conditions: [
-                    {
-                        column: 'name',
-                        type: 'contains',
-                        value: 'ОФЗ',
-                    }
-                ],
-            },
-            {
-                name: "One more",
-                conditions: [
-                    {
-                        column: 'name',
-                        type: 'contains',
-                        value: 'тул',
-                    }
-                ],
-            },
-            {
-                name: "And more...",
-                conditions: [],
-            },
-        ],
+        editingFilterIndex: 0,
+        currentFilterIndex: 0,
+        filters: 'bonds/filters',
+
+        save: function(cb) {
+            if (typeof cb !== 'function') cb = function() {};
+
+        },
     };
 
     new MyTable({
