@@ -108,7 +108,10 @@ $(document).ready(function() {
 
         editingFilterIndex: 0,
         currentFilterIndex: 0,
+
         filters: 'bonds/filters',
+        filters_api: 'bonds/updateFilter',
+
         additional: 'bonds/additional',
 
         save: function(cb) {

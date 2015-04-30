@@ -95,10 +95,25 @@ window.MyTable = Vue.extend({
 
         // удаляет фильтр по индексу
         removeFilter: function(idx) {
-            if(idx < this.currentFilterIndex) {
-                this.currentFilterIndex--;
+            var vm = this;
+            // удаляю фильтр
+            // mask
+            var filter = vm.savedFilters[idx];
+            filter = {
+                remove: true,
+                name: filter.name,
             }
-            this.savedFilters.splice(idx, 1);
+            $.post(vm.filters_api, filter)
+            .done(function() {
+                if(idx < vm.currentFilterIndex) {
+                    vm.currentFilterIndex--;
+                }
+                vm.savedFilters.splice(idx, 1);
+            })
+            .fail(function(err) {
+                alert('smth went wrong...');
+                console.error(err);
+            });
         },
 
         // добавляет новый фильтр
@@ -194,14 +209,21 @@ window.MyTable = Vue.extend({
 
         // сохранить фильтр
         saveFilter: function() {
-            var filter = this.editingFilter;
+            var vm = this;
+            var filter = vm.editingFilter;
             filter = {
                 name: filter.name,
                 conditions: filter.conditions,
                 visibleColumns: filter.visibleColumns,
             }
-            console.log(filter);
-            // делаю пост-запрос
+
+            // сохраняю фильтр
+            // mask
+            $.post(vm.filters_api, filter)
+            .fail(function(err) {
+                alert('smth went wrong...');
+                console.error(err);
+            });
         },
 
         // Применяет фильтр к таблице.

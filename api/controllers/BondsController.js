@@ -40,10 +40,6 @@ module.exports = {
                     }
                 ],
             },
-            {
-                name: "And more...",
-                conditions: [],
-            },
         ];
         return res.send({
             data: filters
@@ -64,6 +60,45 @@ module.exports = {
         return res.send({
             data: additional
         })
+    },
+
+    updateFilter: function(req, res) {
+        var filter = req.body;
+        // пост запрос без фильтра? нахер иди.
+        if (!filter) return res.send();
+
+        // request to find UserSettings
+        var us = {
+            user: req.user.id,
+            page: 'bonds',
+        }
+        // such an idiotic API...
+        UserSettings.findOrCreate(us, us, function(err, settings) {
+            if (err) {
+                log.error('unable findOrCreate UserSettings', err);
+                return res.send(500);
+            }
+
+            var saved = settings.data;
+            var filters = saved.filters || {};
+            if (filter.remove === true) {
+                delete filters[filter.name];
+            }
+            else {
+                filters[filter.name] = filter;
+            }
+            saved.filters = filters;
+            settings.save(function(err) {
+                if (err) {
+                    log.error('filter saving error', err);
+                    return res.send(500);
+                }
+                log.verbose('bonds filter saved', {
+                    user: req.user,
+                });
+                return res.send();
+            });
+        });
     },
 
     bonds: function(req, res) {
