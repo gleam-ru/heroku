@@ -6,46 +6,42 @@
  */
 
 module.exports = {
+    // страница с облигациями
     index: function(req, res) {
         return res.render('bonds', {
             text: 'test',
         });
     },
 
-    filters: function(req, res) {
-        var filters = [
-            {
-                name: "First filter",
-                visibleColumns: [
-                    'name',
-                    'bid',
-                    'ask',
-                    'percentWTaxes',
-                ],
-                conditions: [
-                    {
-                        column: 'name',
-                        type: 'contains',
-                        value: 'ОФЗ',
-                    }
-                ],
-            },
-            {
-                name: "One more",
-                conditions: [
-                    {
-                        column: 'name',
-                        type: 'contains',
-                        value: 'тул',
-                    }
-                ],
-            },
-        ];
+    // список облигаций
+    bonds: function(req, res) {
         return res.send({
-            data: filters
+            data: provider.bonds.get()
         })
     },
 
+    // получение сохраненных фильтров
+    filters: function(req, res) {
+        UserSettings.findOne({
+            user: req.user.id,
+            page: 'bonds',
+        }, function(err, settings) {
+            if (err) {
+                log.error(err);
+                return res.send(500);
+            }
+            var saved = settings ? settings.data.filters : {};
+            var filters = [];
+            _.forOwn(saved, function(v, key) {
+                filters.push(saved[key]);
+            });
+            return res.send({
+                data: filters,
+            })
+        });
+    },
+
+    // получение дополнительной информации о том, что вообще происходит :)
     additional: function(req, res) {
         var additional = [
             {
@@ -62,8 +58,17 @@ module.exports = {
         })
     },
 
+
+
+    // POST
+    // обновление (сохранение/удаление) фильтра
     updateFilter: function(req, res) {
-        var filter = req.body;
+        var filter = {
+            name: 'Безымянный',
+            conditions: [],
+            visibleColumns: [],
+        };
+        _.extend(filter, req.body);
         // пост запрос без фильтра? нахер иди.
         if (!filter) return res.send();
 
@@ -81,7 +86,7 @@ module.exports = {
 
             var saved = settings.data;
             var filters = saved.filters || {};
-            if (filter.remove === true) {
+            if (filter.remove) {
                 delete filters[filter.name];
             }
             else {
@@ -93,18 +98,9 @@ module.exports = {
                     log.error('filter saving error', err);
                     return res.send(500);
                 }
-                log.verbose('bonds filter saved', {
-                    user: req.user,
-                });
                 return res.send();
             });
         });
-    },
-
-    bonds: function(req, res) {
-        return res.send({
-            data: provider.bonds.get()
-        })
     },
 
 };
