@@ -16,12 +16,12 @@ me.init = function(cb) {
 
 // получает список облигаций с текущими значениями
 me.get = function(cb) {
-    var bonds = cache.get('bonds') || [];
+    var bonds = cache.get('bonds');
     if (typeof cb !== 'function') {
         // нет колбека. Ну нет, так нет. Возвращаю то, что есть.
-        return bonds;
+        return bonds || [];
     }
-    if (!bonds || bonds.length === 0) {
+    if (!bonds) {
         log.debug('Кэш запрошен, но не создан. Создаю.');
         return me.updateCurrent(cb);
     }
@@ -99,8 +99,11 @@ function saveBonds(bondsArr, cb) {
             name: 'bondsUpdatedAt',
         }, {
             name: 'bondsUpdatedAt',
-            data: now.toDate(),
-        }, cb);
+        }, function(err, statistics) {
+            if (err) return cb(err);
+            statistics.data = now.toDate();
+            return statistics.save(cb);
+        });
     });
 }
 
