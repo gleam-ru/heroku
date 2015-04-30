@@ -15,13 +15,19 @@ me.init = function(cb) {
 }
 
 // получает список облигаций с текущими значениями
-me.get = function() {
+me.get = function(cb) {
     var bonds = cache.get('bonds') || [];
+    if (typeof cb !== 'function') {
+        // нет колбека. Ну нет, так нет. Возвращаю то, что есть.
+        return bonds;
+    }
     if (!bonds || bonds.length === 0) {
         log.debug('Кэш запрошен, но не создан. Создаю.');
-        me.updateCurrent();
+        return me.updateCurrent(cb);
     }
-    return bonds;
+    else {
+        return cb(null, bonds);
+    }
 }
 
 // парс + сохранение + апдейт
