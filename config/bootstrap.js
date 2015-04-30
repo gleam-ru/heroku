@@ -13,6 +13,9 @@ module.exports.bootstrap = function(cb) {
             log.error('Provider init failed', err);
         }
         // provider.bonds.update();
+
+        // первоначальное заполнение кэша
+        cache.init();
     });
 
 

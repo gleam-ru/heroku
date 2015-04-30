@@ -5,4 +5,8 @@ var options = {
 };
 var cache = LRU(options);
 
+cache.init = function() {
+    provider.bonds.get();
+}
+
 module.exports = cache;
