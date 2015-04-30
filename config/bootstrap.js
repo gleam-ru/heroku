@@ -16,6 +16,8 @@ module.exports.bootstrap = function(cb) {
 
         // первоначальное заполнение кэша
         cache.init();
+        // установка тасков
+        cron.init();
     });
 
 

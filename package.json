@@ -25,6 +25,7 @@
     "jade": "^1.9.2",
     "jsonfile": "^2.0.0",
     "jsonpack": "^1.1.4",
+    "later": "^1.1.6",
     "lru-cache": "^2.6.2",
     "moment": "^2.10.2",
     "passport": "^0.2.1",

@@ -58,7 +58,9 @@ module.exports = {
                 Statistics.findOne({name: 'bondsUpdatedAt'}, asyncCb);
             },
             nextUpdate: function(asyncCb) {
-                Statistics.findOne({name: 'bondsNextUpdate'}, asyncCb);
+                return asyncCb(null, {
+                    data: cron.tasks.bondsParser.next(),
+                });
             },
         }, function(err, results) {
             if (err) {
@@ -73,7 +75,7 @@ module.exports = {
                     },
                     {
                         name: 'Ближайшее обновление',
-                        value: 'dunno :(',
+                        value: moment(results.nextUpdate.data).fromNow(),
                     },
                 ]
             });
