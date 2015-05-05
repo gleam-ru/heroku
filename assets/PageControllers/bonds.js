@@ -120,7 +120,7 @@ $(document).ready(function() {
         },
     };
 
-    new MyTable({
+    window.qwe = new MyTable({
         el: '#bonds-table',
         data: data,
     });

@@ -60,7 +60,7 @@ me.updateCurrent = function(cb) {
                 results.push(bond.getCurrent());
             });
             cache.set('bonds', results);
-            console.log('current bonds updated:', results.length);
+            log.verbose('current bonds updated:', results.length);
             return cb(err, results);
         });
     });
