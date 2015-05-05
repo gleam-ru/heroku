@@ -98,6 +98,10 @@ mixin button(text)
           +button('Сохранить')
         span(v-on='click: test')
           +button('test')
+  
+  //- 
+  //- table
+  //- 
   .table
     h3 Данные {{currentFilter ? '(фильтр: "'+currentFilter.name+'")' : ''}}
     table(v-el='dt')

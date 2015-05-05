@@ -39,8 +39,8 @@ module.exports.bootstrap = function(cb) {
         })
     }
     //*/
-    
-    
+
+
     // TODO: сделать покрасиввее
     var localhost = !sails.config.heroku;
     if (localhost) {
@@ -74,7 +74,7 @@ module.exports.bootstrap = function(cb) {
                 log.error('Provider init failed', err);
             }
             // TODO: убрать!
-            // provider.bonds.update();
+            provider.bonds.update();
         });
     }
 
