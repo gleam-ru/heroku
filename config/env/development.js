@@ -1,5 +1,6 @@
 /**
  * Development environment settings
+ * sails.config.environment
  *
  * This file can include shared settings for a development team,
  * such as API keys or remote database passwords.  If you're using
@@ -17,8 +18,13 @@ module.exports = {
     * environment (see config/connections.js and config/models.js )           *
     ***************************************************************************/
 
-    // models: {
-    //   connection: 'someMongodbServer'
-    // }
+    models: {
+        connection: 'RgpLocalhostMysqlServer',
+    },
+
+    log: {
+        level: 'info',
+        custom: require('winston').loggers.get('logger'),
+    }
 
 };

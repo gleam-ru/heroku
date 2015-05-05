@@ -18,7 +18,7 @@ module.exports.models = {
     *                                                                          *
     ***************************************************************************/
     // connection: 'localDiskDb',
-    connection: 'someMysqlServer',
+    connection: 'RgpLocalhostMysqlServer',
     autoCreatedAt: false,
     autoUpdatedAt: false,
 
@@ -34,6 +34,7 @@ module.exports.models = {
     // 2. alter - auto-migrate, but attempt to keep my existing data (experimental)
     // 3. drop  - wipe/drop ALL my data and rebuild models every time I lift Sails
     migrate: 'alter',
+    // migrate: 'alter' // always enabled in prod config,
 
 
     refill: false

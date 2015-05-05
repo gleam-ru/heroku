@@ -29,10 +29,10 @@ var _fileGlobal = new (winston.transports.File)({
 });
 
 // логи парсера
-var _fileParser = new (winston.transports.File)({
-    level: 'info',
-    filename: dir+'/everything.log',
-});
+// var _fileParser = new (winston.transports.File)({
+//     level: 'warn',
+//     filename: dir+'/everything.log',
+// });
 
 
 
@@ -40,29 +40,46 @@ var _fileParser = new (winston.transports.File)({
 //  ║  ║ ║║ ╦║ ╦║╣ ╠╦╝╚═╗
 //  ╩═╝╚═╝╚═╝╚═╝╚═╝╩╚═╚═╝
 
-// default
+// total log in every transport
+winston.loggers.add('total', {
+    transports: [
+        _console,
+        _fileGlobal,
+    ]
+});
+
+// dev default
 winston.loggers.add('logger', {
     transports: [
         _console,
         // _fileGlobal,
     ]
 });
-var logger = winston.loggers.get('logger');
 
-// parser
-winston.loggers.add('parser', {
+// prod default
+winston.loggers.add('prod_logger', {
     transports: [
-        _console,
-        _fileParser,
+        // _console,
+        _fileGlobal,
     ]
 });
 
 
+
+
+// parser
+// winston.loggers.add('parser', {
+//     transports: [
+//         _console,
+//         _fileParser,
+//     ]
+// });
+
+
 // настройки стандарных логов sails (ну они же уже есть во фреймворке)
 module.exports.log = {
-    // level: 'silly', // default level
     level: 'info', // default level
     colors: false, // убираем "цветастость" (криво логгируется)
-    custom: logger, // собственно, сам логгер
+    custom: winston.loggers.get('total'), // собственно, сам логгер
 };
 

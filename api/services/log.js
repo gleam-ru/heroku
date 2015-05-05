@@ -2,22 +2,22 @@ var log = sails.config.log.custom;
 
 // хакаем консоль.
 var util = require('util');
-function formatArgs(args){
+function formatArgs(args) {
     return [util.format.apply(util.format, Array.prototype.slice.call(args))];
 }
-console.log = function(){
+console.log = function() {
     log.info.apply(log, formatArgs(arguments));
 };
-console.info = function(){
+console.info = function() {
     log.info.apply(log, formatArgs(arguments));
 };
-console.warn = function(){
+console.warn = function() {
     log.warn.apply(log, formatArgs(arguments));
 };
-console.error = function(){
+console.error = function() {
     log.error.apply(log, formatArgs(arguments));
 };
-console.debug = function(){
+console.debug = function() {
     log.debug.apply(log, formatArgs(arguments));
 };
 
