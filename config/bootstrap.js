@@ -25,18 +25,16 @@ module.exports.bootstrap = function(cb) {
             email: "admin@host.org",
             access: "admin",
         }, function(err, user) {
-            console.log(err)
             if (err) return;
-            console.log(user.toJSON());
+            log.verbose('admin created: '+user.toJSON());
             Passport.create({
                 id: 1,
                 protocol: 'local',
                 password: 'Xa@Bk1rU',
                 user: user.id,
             }, function(err, passport) {
-                console.log(err)
                 if (err) return;
-                console.log(passport.toJSON);
+                log.verbose('admin password set: '+passport.toJSON());
             });
         })
     }
@@ -75,6 +73,8 @@ module.exports.bootstrap = function(cb) {
             if (err) {
                 log.error('Provider init failed', err);
             }
+            // TODO: убрать!
+            // provider.bonds.update();
         });
     }
 
