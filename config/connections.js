@@ -42,10 +42,10 @@ module.exports.connections = {
 
     HerokuMysqlServer: {
         adapter: 'sails-mysql',
-        host: 'localhost',
-        user: 'root',
-        password: 'root',
-        database: 'sails_db',
+        host: 'us-cdbr-iron-east-02.cleardb.net',
+        user: 'b04a901b0d63a5',
+        password: '051da92f',
+        database: 'heroku_33fbe7236ec661e',
     },
 
 
