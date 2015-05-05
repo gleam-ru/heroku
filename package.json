@@ -48,16 +48,14 @@
   "keywords": [],
   "scripts": {
     "start": "node app.js",
-    "debug": "node debug app.js"
+    "debug": "node debug app.js",
+    "postinstall": "./node_modules/bower/bin/bower install"
   },
   "main": "app.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/anonymous node/sails user/blozhik.git"
   },
-  "author": "anonymous node/sails user",
-  "license": "",
-  "devDependencies": {
-    "grunt-wiredep": "^2.0.0"
-  }
+  "author": "gleam-ru",
+  "license": ""
 }
