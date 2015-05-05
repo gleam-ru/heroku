@@ -39,6 +39,7 @@
     "sails-disk": "~0.10.0",
     "sails-hook-validation": "^0.2.0",
     "sails-mysql": "^0.10.11",
+    "sails-nedb": "^0.10.1-a3",
     "validator": "^3.37.0",
     "winston": "^1.0.0"
   },

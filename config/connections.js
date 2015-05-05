@@ -21,9 +21,11 @@
 
 module.exports.connections = {
 
-    // Installed by default
-    localDiskDb: {
-        adapter: 'sails-disk',
+    // sqlite analogue
+    sailsDisk: {
+        adapter: 'sails-nedb',
+        filePath: './',
+        fileName: 'sailsDisk',
     },
 
 
@@ -40,13 +42,27 @@ module.exports.connections = {
         database: 'sails_db',
     },
 
+    /**
+     * TODO:
+     * Спросить у дена почему не работает...
+     * table doesn`t exist...
+     *
+     * http://stackoverflow.com/questions/18433124/heroku-and-nodejs-mysql-connection-lost-the-server-closed-the-connection
+     * https://github.com/felixge/node-mysql#server-disconnects
+     * https://github.com/felixge/node-mysql#error-handling
+     *
+     * https://github.com/chadn/heroku-sails/blob/master/lib/authenKey.js
+     *
+     * это все, что я нашел, но все равно не починил :(
+     */
     HerokuMysqlServer: {
         adapter: 'sails-mysql',
+        // url: 'mysql://be50e30cc6b57b:6675390c@us-cdbr-iron-east-02.cleardb.net:3306/heroku_33fbe7236ec661e?reconnect=true',
         host: 'us-cdbr-iron-east-02.cleardb.net',
         user: 'be50e30cc6b57b',
         password: '6675390c',
         database: 'heroku_33fbe7236ec661e',
-        charset: 'utf8',
+        // reconnect: true, // а так можно? оО
     },
 
 

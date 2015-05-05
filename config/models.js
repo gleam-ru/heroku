@@ -17,7 +17,6 @@ module.exports.models = {
     * connections (see `config/connections.js`)                                *
     *                                                                          *
     ***************************************************************************/
-    // connection: 'localDiskDb',
     connection: 'RgpLocalhostMysqlServer',
     autoCreatedAt: false,
     autoUpdatedAt: false,
@@ -35,8 +34,4 @@ module.exports.models = {
     // 3. drop  - wipe/drop ALL my data and rebuild models every time I lift Sails
     migrate: 'alter',
     // migrate: 'alter' // always enabled in prod config,
-
-
-    refill: false
-
 };

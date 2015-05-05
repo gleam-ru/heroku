@@ -7,45 +7,70 @@
  */
 
 module.exports.bootstrap = function(cb) {
+    // TODO: сделать покрасиввее
+    var localhost = !sails.config.environment.heroku;
+    if (localhost) {
+        provider.init(function(err) {
+            if (err) {
+                log.error('Provider init failed', err);
+            }
+            // provider.bonds.update();
 
-    provider.init(function(err) {
-        if (err) {
-            log.error('Provider init failed', err);
-        }
-        // provider.bonds.update();
+            // первоначальное заполнение кэша
+            cache.init();
+            // установка тасков
+            // cron.init();
+        });
+    }
+    else {
+        async.series([
+            function(asyncCb) {
+                provider.init(asyncCb);
+            },
+            function(asyncCb) {
+                cache.init();
+                asyncCb();
+            },
+            function(asyncCb) {
+                cron.init();
+                asyncCb();
+            },
+        ], function(err) {
+            if (err) {
+                log.error('Provider init failed', err);
+            }
+        });
+    }
 
-        // первоначальное заполнение кэша
-        cache.init();
-        // установка тасков
-        cron.init();
-    });
-
+    // TODO: убрать это убожество -_-
+    if (sails.config.models.drop) {
+        require('fs-extra').removeSync('sailsDisk')
+    }
 
     // Заполняем модель тестовыми данными
+    // /*
     if (sails.config.models.refill) {
         User.create({
             id: 1,
             username: 'admin',
             email: "admin@host.org",
             access: "admin",
-        })
-        .exec(function(err, user) {
-            if (err) {
-                console.error(err);
-                return;
-            }
+        }, function(err, user) {
+            if (err) return;
             console.log(user.toJSON());
             Passport.create({
                 id: 1,
                 protocol: 'local',
                 password: 'Xa@Bk1rU',
                 user: user.id,
-            })
-            .exec(console.log);
+            }, function(err, passport) {
+                if (err) return;
+                console.log(passport.toJSON);
+            });
         })
-        ;
     }
-
+    //*/
+    //
     console.log("i'm listening, my master...")
 
     cb();

@@ -13,9 +13,16 @@
 
 module.exports = {
 
+    heroku: true,
+
     models: {
-      connection: 'HerokuMysqlServer',
-      migrate: 'alter',
+        // не работает - читай в connections.js :(
+        // connection: 'HerokuMysqlServer',
+        //
+        connection: 'sailsDisk',
+        refill: true,
+        drop: false,
+        migrate: 'alter',
     },
 
     port: 5000,

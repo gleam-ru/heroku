@@ -20,6 +20,7 @@ module.exports = {
 
     models: {
         connection: 'RgpLocalhostMysqlServer',
+        refill: false,
     },
 
     log: {

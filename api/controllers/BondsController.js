@@ -33,7 +33,7 @@ module.exports = {
     // получение сохраненных фильтров
     filters: function(req, res) {
         UserSettings.findOne({
-            user: req.user.id,
+            user: req.user ? req.user.id : 0,
             page: 'bonds',
         }, function(err, settings) {
             if (err) {
@@ -59,7 +59,7 @@ module.exports = {
             },
             nextUpdate: function(asyncCb) {
                 return asyncCb(null, {
-                    data: cron.tasks.bondsParser.next(),
+                    data: cron.tasks.bondsParser ? cron.tasks.bondsParser.next() : new Date('10000-10-10'),
                 });
             },
         }, function(err, results) {
