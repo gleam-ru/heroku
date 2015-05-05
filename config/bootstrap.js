@@ -6,9 +6,45 @@
  * This gives you an opportunity to set up your data model, run jobs, or perform some special logic.
  */
 
+// TODO:
+// убрать это убожество... -_-
+var drop_db = false;
+if (drop_db) {
+    console.log('nedb droppped');
+    require('fs-extra').removeSync('sailsDisk/*');
+}
+
+
 module.exports.bootstrap = function(cb) {
+    // Заполняем модель тестовыми данными
+    // /*
+    if (sails.config.models.refill) {
+        User.create({
+            id: 1,
+            username: 'admin',
+            email: "admin@host.org",
+            access: "admin",
+        }, function(err, user) {
+            console.log(err)
+            if (err) return;
+            console.log(user.toJSON());
+            Passport.create({
+                id: 1,
+                protocol: 'local',
+                password: 'Xa@Bk1rU',
+                user: user.id,
+            }, function(err, passport) {
+                console.log(err)
+                if (err) return;
+                console.log(passport.toJSON);
+            });
+        })
+    }
+    //*/
+    
+    
     // TODO: сделать покрасиввее
-    var localhost = !sails.config.environment.heroku;
+    var localhost = !sails.config.heroku;
     if (localhost) {
         provider.init(function(err) {
             if (err) {
@@ -28,11 +64,11 @@ module.exports.bootstrap = function(cb) {
                 provider.init(asyncCb);
             },
             function(asyncCb) {
-                cache.init();
+                cron.init();
                 asyncCb();
             },
             function(asyncCb) {
-                cron.init();
+                cache.init();
                 asyncCb();
             },
         ], function(err) {
@@ -42,35 +78,6 @@ module.exports.bootstrap = function(cb) {
         });
     }
 
-    // TODO: убрать это убожество -_-
-    if (sails.config.models.drop) {
-        require('fs-extra').removeSync('sailsDisk')
-    }
-
-    // Заполняем модель тестовыми данными
-    // /*
-    if (sails.config.models.refill) {
-        User.create({
-            id: 1,
-            username: 'admin',
-            email: "admin@host.org",
-            access: "admin",
-        }, function(err, user) {
-            if (err) return;
-            console.log(user.toJSON());
-            Passport.create({
-                id: 1,
-                protocol: 'local',
-                password: 'Xa@Bk1rU',
-                user: user.id,
-            }, function(err, passport) {
-                if (err) return;
-                console.log(passport.toJSON);
-            });
-        })
-    }
-    //*/
-    //
     console.log("i'm listening, my master...")
 
     cb();

@@ -21,7 +21,7 @@ module.exports = {
         //
         connection: 'sailsDisk',
         refill: true,
-        drop: false,
+        // drop: true, // смотри bootstrap
         migrate: 'alter',
     },
 

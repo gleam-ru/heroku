@@ -7,6 +7,7 @@ var cache = LRU(options);
 
 cache.init = function() {
     provider.bonds.get();
+    log.verbose('cache inited');
 }
 
 module.exports = cache;
