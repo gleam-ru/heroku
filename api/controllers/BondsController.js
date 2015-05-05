@@ -59,7 +59,7 @@ module.exports = {
             },
             nextUpdate: function(asyncCb) {
                 return asyncCb(null, {
-                    data: cron.tasks.bondsParser ? cron.tasks.bondsParser.next() : new Date('10000-10-10'),
+                    data: cron.tasks.bondsParser ? cron.tasks.bondsParser.next() : undefined,
                 });
             },
         }, function(err, results) {
@@ -67,8 +67,9 @@ module.exports = {
                 log.error(err);
                 return res.send(500);
             }
-            return res.send({
-                data: [
+            var data = [];
+            if (results && results.lastUpdate && results.nextUpdate) {
+                data = [
                     {
                         name: 'Данные обновлены',
                         value: moment(results.lastUpdate.data).fromNow(),
@@ -77,7 +78,10 @@ module.exports = {
                         name: 'Ближайшее обновление',
                         value: moment(results.nextUpdate.data).fromNow(),
                     },
-                ]
+                ];
+            }
+            return res.send({
+                data: data,
             });
         });
     },
