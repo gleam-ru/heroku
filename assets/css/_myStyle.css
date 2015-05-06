@@ -2,6 +2,7 @@
 
 blue: #2c3e50;
 grey: #ecf0f1; rgba(236, 240, 241, 0.99)
+input-grey: #fafafa;
 
  */
 
@@ -125,6 +126,12 @@ body::-webkit-scrollbar {
     border-radius: 3px;
     padding: 10px;
     }
+    .my-table .filter-editor>input {
+        background-color: #fafafa;
+        border-color: #ccc;
+        width: 40%;
+        margin-top: 10px;
+        }
     .my-table .filter-editor .row {
         width: 100%;
         }
@@ -178,6 +185,7 @@ body::-webkit-scrollbar {
             }
 /* bottom buttons */
 .my-table .control-buttons {
+    margin-top: 30px;
     text-align: right;
     }
     .my-table .control-buttons span:not(:last-child) {
