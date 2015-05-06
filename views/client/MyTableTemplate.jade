@@ -92,12 +92,12 @@ mixin button(text)
           )
           +button('Добавить условие')
       .control-buttons
-        span(v-on='click: apply()')
-          +button('Применить')
+        //- span(v-on='click: apply()')
+        //-   +button('Применить')
         span(v-on='click: saveFilter')
           +button('Сохранить')
-        span(v-on='click: test')
-          +button('test')
+        span(v-on='click: closeEditor')
+          +button('Отмена')
   
   //- 
   //- table

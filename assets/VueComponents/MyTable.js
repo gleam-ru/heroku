@@ -3,8 +3,10 @@ window.MyTable = Vue.extend({
     template: Jade.MyTableTemplate(),
     // ВСЕ используемые данные ДОЛЖНЫ быть объявлены.
     data: function() {
+        var vm = this;
         return {
             editingFilterIndex: 1,
+            editingFilter: {},
             currentFilterIndex: 1,
             tableInfo: [],
             dt: {
@@ -37,16 +39,18 @@ window.MyTable = Vue.extend({
             filterTypes: {},
             newFilter: {
                 name: "Безымянный",
-                count: 0,
                 create: function() {
+                    var maxIdx = _.max(vm.savedFilters, 'id').id;
+                    var id = maxIdx >= 0 ? ++maxIdx : 0;
                     var name = this.name;
-                    if (this.count > 0) {
-                        name += ' (' + this.count + ')';
+                    if (id) {
+                        name += ' ('+id+')';
                     }
-                    this.count++;
                     return {
+                        id: id,
                         name: name,
                         conditions: [],
+                        visibleColumns: [],
                     }
                 }
             },
@@ -57,12 +61,15 @@ window.MyTable = Vue.extend({
         currentFilter: function() {
             return this.savedFilters[this.currentFilterIndex];
         },
-        // фильтр, отображаемый в эдиторе
-        editingFilter: function() {
-            return this.savedFilters[this.editingFilterIndex];
-        },
     },
     methods: {
+
+        createClone: function() {
+            var filter = this.savedFilters[this.editingFilterIndex];
+            window._a = filter;
+            window._b = _.cloneDeep(filter);
+            this.editingFilter = _b;
+        },
 
         //  ╔═╗╦═╗╔═╗╦  ╦╦╔═╗╦ ╦
         //  ╠═╝╠╦╝║╣ ╚╗╔╝║║╣ ║║║
@@ -71,55 +78,35 @@ window.MyTable = Vue.extend({
         // устанавливает текущий редактируемый фильтр
         editFilter: function(idx) {
             if (this.editingFilterIndex === idx) {
+                // клик по самому себе (нужно отключить)
                 this.editingFilterIndex = undefined;
             }
             else {
                 this.editingFilterIndex = idx;
-                this.currentFilterIndex = idx;
+                if (idx !== undefined) {
+                    this.currentFilterIndex = idx;
+                }
             }
+            this.createClone();
+            // применить фильтр
             var filter = this.currentFilter;
             this.apply(filter);
         },
 
         // устанавливает текущий активный фильтр
         selectFilter: function(idx) {
-            if (this.currentFilterIndex == idx) {
+            if (this.currentFilterIndex == idx && this.editingFilterIndex != idx) {
+                // клик по самому себе, нередактируемому
                 this.currentFilterIndex = undefined;
             }
             else {
                 this.currentFilterIndex = idx;
             }
+            // выбрали фильтр, значит уже не редактируем.
+            this.editFilter(undefined)
+            // применяем фильтр на таблицу
             var filter = this.currentFilter;
             this.apply(filter);
-        },
-
-        // удаляет фильтр по индексу
-        removeFilter: function(idx) {
-            var vm = this;
-            // удаляю фильтр
-            // mask
-            var filter = vm.savedFilters[idx];
-            filter = {
-                remove: true,
-                name: filter.name,
-            }
-            $.post(vm.filters_api, filter)
-            .done(function() {
-                if(idx < vm.currentFilterIndex) {
-                    vm.currentFilterIndex--;
-                }
-                vm.savedFilters.splice(idx, 1);
-            })
-            .fail(function(err) {
-                alert('smth went wrong...');
-                console.error(err);
-            });
-        },
-
-        // добавляет новый фильтр
-        addFilter: function() {
-            var filter = this.newFilter.create();
-            this.savedFilters.push(filter);
         },
 
 
@@ -155,7 +142,7 @@ window.MyTable = Vue.extend({
             }
             var types = this.filterTypes[type];
             // дефолтный тип при смене "фильтруемой" колонки
-            condition.type = types[0].value
+            // condition.type = types[0].value
             return types;
         },
 
@@ -188,38 +175,18 @@ window.MyTable = Vue.extend({
         },
 
 
-
-
-        // добавить строку с условием
-        addCondition: function() {
-            // дефолтная колонка при создании нового условия
-            var column = this.columns[0];
-            this.editingFilter.conditions.push({
-                column: column.value,
-                // дефолтное значение селектора типа для дефолтной колонки
-                type: this.filterTypes[column.filterType][0].value,
-                value: '',
-            });
-        },
-
-        // удалить строку с условием
-        removeCondition: function(idx) {
-            this.editingFilter.conditions.splice(idx, 1);
-        },
-
-        // сохранить фильтр
-        saveFilter: function() {
+        // сохранить текущий редактируемый фильтр
+        save: function(cb) {
+            if (typeof cb !== 'function') cb = function() {};
             var vm = this;
             var filter = vm.editingFilter;
-            filter = {
-                name: filter.name,
-                conditions: filter.conditions,
-                visibleColumns: filter.visibleColumns,
-            }
 
             // сохраняю фильтр
             // mask
             $.post(vm.filters_api, filter)
+            .done(function() {
+                cb();
+            })
             .fail(function(err) {
                 alert('smth went wrong...');
                 console.error(err);
@@ -261,10 +228,78 @@ window.MyTable = Vue.extend({
         },
 
 
-        test: function() {
-            debugger;
-            // console.log()
-        }
+
+        //  ╔╗ ╦ ╦╔╦╗╔╦╗╔═╗╔╗╔╔═╗
+        //  ╠╩╗║ ║ ║  ║ ║ ║║║║╚═╗
+        //  ╚═╝╚═╝ ╩  ╩ ╚═╝╝╚╝╚═╝
+
+        // добавляет новый фильтр
+        addFilter: function() {
+            // делаем свежедобавленный фильтр активным
+            var idx = this.savedFilters.length;
+            // создаем фильтр
+            var filter = this.newFilter.create();
+            this.savedFilters.push(filter);
+            // применяем и редактируем
+            this.editFilter(idx);
+            // сохраняем на сервер
+            this.save();
+        },
+
+        // удаляет фильтр по индексу
+        removeFilter: function(idx) {
+            var vm = this;
+            // удаляю фильтр
+            // mask
+            var filter = vm.savedFilters[idx];
+            filter = {
+                remove: true,
+                name: filter.name,
+            }
+            $.post(vm.filters_api, filter)
+            .done(function() {
+                if(idx < vm.currentFilterIndex) {
+                    vm.currentFilterIndex--;
+                }
+                vm.savedFilters.splice(idx, 1);
+            })
+            .fail(function(err) {
+                alert('smth went wrong...');
+                console.error(err);
+            });
+        },
+
+        // добавить строку с условием
+        addCondition: function() {
+            // дефолтная колонка при создании нового условия
+            var column = this.columns[0];
+            this.editingFilter.conditions.push({
+                column: column.value,
+                // дефолтное значение селектора типа для дефолтной колонки
+                // type: this.filterTypes[column.filterType][0].value,
+                value: '',
+            });
+        },
+
+        // удалить строку с условием
+        removeCondition: function(idx) {
+            this.editingFilter.conditions.splice(idx, 1);
+        },
+
+        // кнопочка сохранения в интерфейса
+        saveFilter: function() {
+            var vm = this;
+            vm.save(function() {
+                vm.savedFilters[vm.editingFilterIndex] = _.clone(vm.editingFilter);
+                vm.editFilter(undefined)
+            })
+        },
+
+        // кнопочка "отмена" в интерфейсе
+        closeEditor: function() {
+            var vm = this;
+            vm.editFilter(undefined);
+        },
     },
     // дефолтные настройки писать сюды
     beforeCompile: function() {
@@ -333,6 +368,7 @@ window.MyTable = Vue.extend({
         $.get(vm.filters)
         .done(function(loaded) {
             vm.savedFilters = loaded.data;
+            vm.createClone();
             // после загрузки - применяем выбранный фильтр
             vm.apply();
         })
