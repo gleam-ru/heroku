@@ -354,10 +354,10 @@ window.MyTable = Vue.extend({
             vm.tableInfo = info;
         };
 
-        // рендереры колонок для dt
+        // таблица готова
         vm.dt.fnInitComplete = function() {
-            vm.dt.table.mask(false);
-            // view.mask(false);
+            // vm.dt.table.mask(false);
+            view.mask(false);
         };
 
 
@@ -383,7 +383,7 @@ window.MyTable = Vue.extend({
         })
         .always(function() {
             // снимаем маску
-            view.mask(false);
+            // view.mask(false);
         });
 
         // загружаем дополнительную информацию для отображения
