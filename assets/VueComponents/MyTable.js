@@ -5,9 +5,9 @@ window.MyTable = Vue.extend({
     data: function() {
         var vm = this;
         return {
-            editingFilterIndex: 1,
+            editingFilterIndex: 0,
             editingFilter: {},
-            currentFilterIndex: 1,
+            currentFilterIndex: 0,
             tableInfo: [],
             dt: {
                 sDom: 'pt',
@@ -251,10 +251,18 @@ window.MyTable = Vue.extend({
             }
             $.post(vm.filters_api, filter)
             .done(function() {
-                if(idx < vm.currentFilterIndex) {
+                // удаляю локально
+                vm.savedFilters.splice(idx, 1);
+                // если ничего не осталось - сбрасываю
+                if (vm.savedFilters.length === 0) {
+                    vm.selectFilter(undefined);
+                    return;
+                }
+                // если удалили выше текущего - смещаю текущий
+                // TODO: deprecated... я ввел айдишники, теперь нужно делать не так.
+                if (idx < vm.currentFilterIndex) {
                     vm.currentFilterIndex--;
                 }
-                vm.savedFilters.splice(idx, 1);
             })
             .fail(function(err) {
                 alert('smth went wrong...');

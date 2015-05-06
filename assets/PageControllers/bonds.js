@@ -106,18 +106,13 @@ $(document).ready(function() {
         ],
         // доп инфо, которое нужно отобразить слева
 
-        editingFilterIndex: 0,
-        currentFilterIndex: 0,
+        editingFilterIndex: undefined,
+        // currentFilterIndex: 0,
 
         filters: 'bonds/filters',
         filters_api: 'bonds/updateFilter',
 
         additional: 'bonds/additional',
-
-        save: function(cb) {
-            if (typeof cb !== 'function') cb = function() {};
-
-        },
     };
 
     window.qwe = new MyTable({
