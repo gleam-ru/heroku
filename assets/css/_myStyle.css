@@ -53,7 +53,7 @@ body::-webkit-scrollbar {
  *  ╚═╗ ║ ╚╦╝║  ║╣ ===║  ║  ╠═╣╚═╗╚═╗║╣ ╚═╗
  *  ╚═╝ ╩  ╩ ╩═╝╚═╝   ╚═╝╩═╝╩ ╩╚═╝╚═╝╚═╝╚═╝
  */
-.isolated {margin: 20px 0px;}
+.isolated {margin: 0px 0px 20px 0px;}
 .comment {
     color: grey;
     font-style: italic;
@@ -126,11 +126,14 @@ body::-webkit-scrollbar {
     border-radius: 3px;
     padding: 10px;
     }
+    .my-table .filter-editor h4 {
+        padding: 0px;
+        margin: 0px 0px 10px 0px;
+        }
     .my-table .filter-editor>input {
         background-color: #fafafa;
         border-color: #ccc;
         width: 40%;
-        margin-top: 10px;
         }
     .my-table .filter-editor .row {
         width: 100%;

@@ -106,8 +106,8 @@ $(document).ready(function() {
         ],
         // доп инфо, которое нужно отобразить слева
 
-        editingFilterIndex: undefined,
-        // currentFilterIndex: 0,
+        editingFilterIndex: 0,
+        currentFilterIndex: 0,
 
         filters: 'bonds/filters',
         filters_api: 'bonds/updateFilter',

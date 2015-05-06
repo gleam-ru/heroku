@@ -52,12 +52,13 @@ mixin button(text)
     .filter-editor(
       v-el='editor'
       )
-      h3 Редактирование фильтра:
-      input(
+      h4 Название
+      input.isolated(
         type='text'
         v-model='editingFilter.text'
         value='{{editingFilter.text}}'
         )
+      h4 Условия
       .row.isolated(
         v-repeat='condition: editingFilter.conditions'
         )
@@ -86,17 +87,13 @@ mixin button(text)
           )
           i.fa.fa-times
       //- еще строка фильтрации
-      //- div.isolated
-      //-   span(
-      //-     v-on='click: addCondition'
-      //-     )
-      //-     +button('Добавить условие')
-      .control-buttons
+      div.isolated
         span(
           v-on='click: addCondition'
-          style='float: left;'
           )
           +button('Добавить условие')
+      //- h4 Колонки
+      .control-buttons
         span(v-on='click: saveFilter')
           +button('Сохранить')
         span(v-on='click: closeEditor')
