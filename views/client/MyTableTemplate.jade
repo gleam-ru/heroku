@@ -13,6 +13,7 @@ mixin button(text)
           |{{info.text}}: {{info.value}}
         li(v-repeat='info: tableInfo')
           |{{info.text}}: {{info.value}}
+    
     //- 
     //- preview
     //- 
@@ -28,8 +29,8 @@ mixin button(text)
           span.filters-preview-text(
             v-on='click: selectFilter($index)'
             v-class='selected: $index == currentFilterIndex'
+            v-text='filter.text'
             )
-            | {{filter.text}}
           span(
             v-on='click: removeFilter($index)'
             style='color: red;'
@@ -51,7 +52,11 @@ mixin button(text)
     .filter-editor(
       v-el='editor'
       )
-      h3 Редактирование фильтра: "{{editingFilter.text}}"
+      h3 Редактирование фильтра:
+      input(
+        v-model='editingFilter.text'
+        value='{{editingFilter.text}}'
+        )
       .row.isolated(
         v-repeat='condition: editingFilter.conditions'
         )

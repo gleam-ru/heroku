@@ -41,7 +41,7 @@ window.MyTable = Vue.extend({
                 text: "Безымянный",
                 create: function() {
                     var maxIdx = _.max(vm.savedFilters, 'id').id;
-                    var id = maxIdx >= 0 ? ++maxIdx : 0;
+                    var id = maxIdx > 0 ? ++maxIdx : 1;
                     var text = this.text;
                     if (id) {
                         text += ' ('+id+')';
@@ -76,6 +76,8 @@ window.MyTable = Vue.extend({
     },
     methods: {
 
+        // Обновляет редактируемый фильтр
+        // _.clone не канает.
         updateEditingFilter: function() {
             var filter = this.savedFilters[this.editingFilterIndex];
             this.editingFilter = _.cloneDeep(filter);
@@ -162,12 +164,16 @@ window.MyTable = Vue.extend({
         save: function(cb) {
             if (typeof cb !== 'function') cb = function() {};
             var vm = this;
-            var filter = vm.editingFilter;
+            var existing = vm.savedFilters[vm.editingFilterIndex];
+            var saving = vm.editingFilter;
+
+            _.extend(existing, saving);
 
             // сохраняю фильтр
             // mask
-            $.post(vm.filters_api, filter)
+            $.post(vm.filters_api, saving)
             .done(function() {
+                // обновляю модель после сохранения
                 cb();
             })
             .fail(function(err) {
@@ -240,8 +246,8 @@ window.MyTable = Vue.extend({
             // mask
             var filter = vm.savedFilters[idx];
             filter = {
+                id: filter.id,
                 remove: true,
-                text: filter.text,
             }
             $.post(vm.filters_api, filter)
             .done(function() {
@@ -277,9 +283,8 @@ window.MyTable = Vue.extend({
         saveFilter: function() {
             var vm = this;
             vm.save(function() {
-                vm.savedFilters[vm.editingFilterIndex] = _.clone(vm.editingFilter);
                 vm.editFilter(undefined)
-            })
+            });
         },
 
         // кнопочка "отмена" в интерфейсе

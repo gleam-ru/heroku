@@ -40,13 +40,8 @@ module.exports = {
                 log.error(err);
                 return res.send(500);
             }
-            var saved = settings ? settings.data.filters : {};
-            var filters = [];
-            _.forOwn(saved, function(v, key) {
-                filters.push(saved[key]);
-            });
             return res.send({
-                data: filters,
+                data: settings ? settings.data.filters : [],
             })
         });
     },
@@ -92,6 +87,7 @@ module.exports = {
     // обновление (сохранение/удаление) фильтра
     updateFilter: function(req, res) {
         var filter = {
+            id: "0",
             text: 'Безымянный',
             conditions: [],
             visibleColumns: [],
@@ -113,12 +109,22 @@ module.exports = {
             }
 
             var saved = settings.data;
-            var filters = saved.filters || {};
+            var filters = saved.filters || [];
             if (filter.remove) {
-                delete filters[filter.text];
+                // фильтр содержит запрос на удаление
+                _.remove(filters, {id: filter.id})
             }
             else {
-                filters[filter.text] = filter;
+                // сохранение фильтра
+                var idx = _.findIndex(filters, {id: filter.id})
+                if (idx != -1) {
+                    // такой фильтр уже есть
+                    filters[idx] = filter;
+                }
+                else {
+                    // добавляю новый
+                    filters.push(filter);
+                }
             }
             saved.filters = filters;
             settings.save(function(err) {
