@@ -62,13 +62,23 @@ window.MyTable = Vue.extend({
             return this.savedFilters[this.currentFilterIndex];
         },
     },
+    watch: {
+        currentFilter: function() {
+            // применить фильтр
+            var filter = this.currentFilter;
+            this.apply(filter);
+        },
+        // TODO: пока не работает - уточнить у дена
+        // как починю - почистить использование .apply()
+        editingFilter: function() {
+            this.apply(this.editingFilter);
+        },
+    },
     methods: {
 
         updateEditingFilter: function() {
             var filter = this.savedFilters[this.editingFilterIndex];
-            window._a = filter;
-            window._b = _.cloneDeep(filter);
-            this.editingFilter = _b;
+            this.editingFilter = _.cloneDeep(filter);
         },
 
         //  ╔═╗╦═╗╔═╗╦  ╦╦╔═╗╦ ╦
@@ -88,9 +98,6 @@ window.MyTable = Vue.extend({
                 }
             }
             this.updateEditingFilter();
-            // применить фильтр
-            var filter = this.currentFilter;
-            this.apply(filter);
         },
 
         // устанавливает текущий активный фильтр
@@ -104,9 +111,6 @@ window.MyTable = Vue.extend({
             }
             // выбрали фильтр, значит уже не редактируем.
             this.editFilter(undefined)
-            // применяем фильтр на таблицу
-            var filter = this.currentFilter;
-            this.apply(filter);
         },
 
 
@@ -150,8 +154,7 @@ window.MyTable = Vue.extend({
         // !!! дети должны эмитить 'changed'
         valueChanged: function(value, condition) {
             condition.value = value;
-            // TODO: прицепиться к ЛЮБОМУ изменению
-            // this.apply();
+            this.apply();
         },
 
 
@@ -200,6 +203,10 @@ window.MyTable = Vue.extend({
 
                     var types = vm.filterTypes[column.filterType];
                     var type = _.find(types, {value: condition.type});
+                    if (!type) {
+                        return true;
+                    }
+
                     var apply = type.apply;
                     return apply(data, condition.value);
                 });
@@ -255,9 +262,8 @@ window.MyTable = Vue.extend({
             var column = this.columns[0];
             this.editingFilter.conditions.push({
                 column: column.value,
-                type: '',
                 // дефолтное значение селектора типа для дефолтной колонки
-                // type: this.filterTypes[column.filterType][0].value,
+                type: this.filterTypes[column.filterType][0].value,
                 value: '',
             });
         },

@@ -59,11 +59,13 @@ mixin button(text)
         select.column-selector(
           v-model='condition.column'
           options='columns'
+          v-on='change: apply'
           )
         //- выбор условия фильтрации
         select.type-selector(
           v-model='condition.type'
           options='getTypeOptions(condition)'
+          v-on='change: apply'
           )
         //- динамический компонент для ввода значения фильтрации
         div.value-selector(
