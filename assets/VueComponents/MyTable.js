@@ -156,7 +156,7 @@ window.MyTable = Vue.extend({
         // !!! дети должны эмитить 'changed'
         valueChanged: function(value, condition) {
             condition.value = value;
-            this.apply();
+            this.apply(this.editingFilter);
         },
 
 
@@ -430,6 +430,16 @@ window.MyTable = Vue.extend({
                     value: "not_equal",
                     apply: function(a, b) {
                         return a != b;
+                    },
+                },
+                {
+                    text: "Регулярное выражение",
+                    value: "rexexp",
+                    apply: function(a, b) {
+                        if (!a) a = "";
+                        if (!b) b = "";
+                        var re = new RegExp(b, "i");
+                        return re.test(a);
                     },
                 },
             ],
