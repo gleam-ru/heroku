@@ -32,9 +32,85 @@ module.exports = {
 
     // получение сохраненных фильтров
     filters: function(req, res) {
-        UserSettings.findOne({
+        /**
+         * Типо демо версии.
+         * Пользователи, у которых нет фильтров,
+         * вероятно зашли впервые.
+         *
+         * Я им создам несколько.
+         */
+        var defaultData = {
+            filters: [{
+                "id": "1",
+                "text": "Краткосрочные ОФЗ",
+                "conditions": [{
+                    "column": "expiresIn",
+                    "type": "less",
+                    "value": "100"
+                }, {
+                    "column": "name",
+                    "type": "contains",
+                    "value": "офз"
+                }, {
+                    "column": "ask",
+                    "type": "more",
+                    "value": "0"
+                }],
+                "visibleColumns": []
+            }, {
+                "id": "2",
+                "text": "Долгосрочные ОФЗ",
+                "conditions": [{
+                    "column": "expiresIn",
+                    "type": "more",
+                    "value": "365"
+                }, {
+                    "column": "ask",
+                    "type": "more",
+                    "value": "0"
+                }, {
+                    "column": "name",
+                    "type": "contains",
+                    "value": "офз"
+                }],
+                "visibleColumns": []
+            }, {
+                "id": "4",
+                "text": "Краткосрочные",
+                "conditions": [{
+                    "column": "expiresIn",
+                    "type": "less",
+                    "value": "100"
+                }, {
+                    "column": "ask",
+                    "type": "more",
+                    "value": "0"
+                }],
+                "visibleColumns": []
+            }, {
+                "id": "5",
+                "text": "Долгосрочные",
+                "conditions": [{
+                    "column": "expiresIn",
+                    "type": "more",
+                    "value": "365"
+                }, {
+                    "column": "ask",
+                    "type": "more",
+                    "value": "0"
+                }],
+                "visibleColumns": []
+            }]
+        };
+
+
+        UserSettings.findOrCreate({
             user: req.user ? req.user.id : 0,
             page: 'bonds',
+        }, {
+            user: req.user ? req.user.id : 0,
+            page: 'bonds',
+            data: defaultData,
         }, function(err, settings) {
             if (err) {
                 log.error(err);

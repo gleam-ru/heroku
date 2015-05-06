@@ -70,9 +70,9 @@ window.MyTable = Vue.extend({
         },
         // TODO: пока не работает - уточнить у дена
         // как починю - почистить использование .apply()
-        editingFilter: function() {
-            this.apply(this.editingFilter);
-        },
+        // editingFilter: function() {
+        //     this.filter(this.editingFilter);
+        // },
     },
     methods: {
 
@@ -168,6 +168,7 @@ window.MyTable = Vue.extend({
             var saving = vm.editingFilter;
 
             _.extend(existing, saving);
+            vm.currentFilterIndex = vm.editingFilterIndex;
 
             // сохраняю фильтр
             // mask
@@ -185,6 +186,7 @@ window.MyTable = Vue.extend({
         // Применяет фильтр к таблице.
         // Если фильтр не указан - применяет редактируемый/активный.
         apply: function(filter) {
+            var vm = this;
             if (!filter) {
                 // без фильтра? берем редактируемый
                 filter = this.currentFilter ? this.currentFilter : this.editingFilter;
@@ -193,12 +195,12 @@ window.MyTable = Vue.extend({
                     filter = {};
                 }
             }
+
             var idx = _.findIndex(this.savedFilters, function(savedFilter) {
-                return filter.text == savedFilter.text;
+                return savedFilter.id == filter.id;
             });
             this.currentFilterIndex = idx;
 
-            var vm = this;
             $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
                 return _.every(filter.conditions, function(condition) {
                     var column = vm.getColumn(condition);
@@ -218,6 +220,9 @@ window.MyTable = Vue.extend({
                 });
             }
             vm.dt.table.fnDraw();
+        },
+
+        filter: function(filter) {
         },
 
 
@@ -291,7 +296,7 @@ window.MyTable = Vue.extend({
         saveFilter: function() {
             var vm = this;
             vm.save(function() {
-                vm.editFilter(undefined)
+                vm.editFilter(undefined);
             });
         },
 
@@ -434,7 +439,7 @@ window.MyTable = Vue.extend({
                 },
                 {
                     text: "Регулярное выражение",
-                    value: "rexexp",
+                    value: "regexp",
                     apply: function(a, b) {
                         if (!a) a = "";
                         if (!b) b = "";
