@@ -71,11 +71,11 @@ module.exports = {
             if (results && results.lastUpdate && results.nextUpdate) {
                 data = [
                     {
-                        name: 'Данные обновлены',
+                        text: 'Данные обновлены',
                         value: moment(results.lastUpdate.data).fromNow(),
                     },
                     {
-                        name: 'Ближайшее обновление',
+                        text: 'Ближайшее обновление',
                         value: moment(results.nextUpdate.data).fromNow(),
                     },
                 ];
@@ -92,7 +92,7 @@ module.exports = {
     // обновление (сохранение/удаление) фильтра
     updateFilter: function(req, res) {
         var filter = {
-            name: 'Безымянный',
+            text: 'Безымянный',
             conditions: [],
             visibleColumns: [],
         };
@@ -115,10 +115,10 @@ module.exports = {
             var saved = settings.data;
             var filters = saved.filters || {};
             if (filter.remove) {
-                delete filters[filter.name];
+                delete filters[filter.text];
             }
             else {
-                filters[filter.name] = filter;
+                filters[filter.text] = filter;
             }
             saved.filters = filters;
             settings.save(function(err) {

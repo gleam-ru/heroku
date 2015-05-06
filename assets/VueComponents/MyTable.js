@@ -38,17 +38,17 @@ window.MyTable = Vue.extend({
             savedFilters: [],
             filterTypes: {},
             newFilter: {
-                name: "Безымянный",
+                text: "Безымянный",
                 create: function() {
                     var maxIdx = _.max(vm.savedFilters, 'id').id;
                     var id = maxIdx >= 0 ? ++maxIdx : 0;
-                    var name = this.name;
+                    var text = this.text;
                     if (id) {
-                        name += ' ('+id+')';
+                        text += ' ('+id+')';
                     }
                     return {
                         id: id,
-                        name: name,
+                        text: text,
                         conditions: [],
                         visibleColumns: [],
                     }
@@ -64,7 +64,7 @@ window.MyTable = Vue.extend({
     },
     methods: {
 
-        createClone: function() {
+        updateEditingFilter: function() {
             var filter = this.savedFilters[this.editingFilterIndex];
             window._a = filter;
             window._b = _.cloneDeep(filter);
@@ -87,7 +87,7 @@ window.MyTable = Vue.extend({
                     this.currentFilterIndex = idx;
                 }
             }
-            this.createClone();
+            this.updateEditingFilter();
             // применить фильтр
             var filter = this.currentFilter;
             this.apply(filter);
@@ -117,46 +117,26 @@ window.MyTable = Vue.extend({
 
         // получает instance колонки
         getColumn: function(condition) {
-            var value;
-            if (typeof condition === 'string') {
-                // condition и является value колонки
-                value = condition;
-            }
-            else {
-                value = condition.column;
-            }
+            var value = condition.column;
             var column = _.find(this.columns, {value: value});
             return column;
         },
 
         // получает типы фильтрации при смене колонки
         getTypeOptions: function(condition) {
-            var type;
-            if (typeof condition === 'string') {
-                // condition и является именем типа
-                type = condition;
-            }
-            else {
-                var column = this.getColumn(condition);
-                type = column.filterType;
-            }
+            // выбранная в предыдущем селекте колонка
+            var column = this.getColumn(condition);
+            // тип этой колонки
+            var type = column.filterType;
+            // типы фильтрации
             var types = this.filterTypes[type];
-            // дефолтный тип при смене "фильтруемой" колонки
-            // condition.type = types[0].value
             return types;
         },
 
         // получает НАЗВАНИЕ динамического компонента для выбора значения
         getValuePicker: function(condition) {
-            var type;
-            if (typeof condition === 'string') {
-                // condition и является именем типа
-                type = condition;
-            }
-            else {
-                var column = this.getColumn(condition);
-                type = column.filterType;
-            }
+            var column = this.getColumn(condition);
+            var type = column.filterType;
 
             if (type === 'date') {
                 return 'date-picker';
@@ -205,7 +185,7 @@ window.MyTable = Vue.extend({
                 }
             }
             var idx = _.findIndex(this.savedFilters, function(savedFilter) {
-                return filter.name == savedFilter.name;
+                return filter.text == savedFilter.text;
             });
             this.currentFilterIndex = idx;
 
@@ -254,7 +234,7 @@ window.MyTable = Vue.extend({
             var filter = vm.savedFilters[idx];
             filter = {
                 remove: true,
-                name: filter.name,
+                text: filter.text,
             }
             $.post(vm.filters_api, filter)
             .done(function() {
@@ -275,6 +255,7 @@ window.MyTable = Vue.extend({
             var column = this.columns[0];
             this.editingFilter.conditions.push({
                 column: column.value,
+                type: '',
                 // дефолтное значение селектора типа для дефолтной колонки
                 // type: this.filterTypes[column.filterType][0].value,
                 value: '',
@@ -338,11 +319,11 @@ window.MyTable = Vue.extend({
             if (table) {
                 var settings = table.dataTable().fnSettings();
                 info.push({
-                        name: 'Всего',
+                        text: 'Всего',
                         value: settings.fnRecordsTotal(),
                 });
                 info.push({
-                    name: 'После фильрации',
+                    text: 'После фильрации',
                     value: settings.fnRecordsDisplay(),
                 });
             }
@@ -368,7 +349,7 @@ window.MyTable = Vue.extend({
         $.get(vm.filters)
         .done(function(loaded) {
             vm.savedFilters = loaded.data;
-            vm.createClone();
+            vm.updateEditingFilter();
             // после загрузки - применяем выбранный фильтр
             vm.apply();
         })
@@ -390,7 +371,7 @@ window.MyTable = Vue.extend({
         // наши, "местные" колонки
         vm.columns = _.map(vm.columns, function(column) {
             return {
-                name: column.title,
+                text: column.title,
                 value: column.data,
                 filterType: column.filterType || 'string',
             }
@@ -401,7 +382,7 @@ window.MyTable = Vue.extend({
         vm.filterTypes = {
             string: [
                 {
-                    name: "Содержит",
+                    text: "Содержит",
                     value: "contains",
                     apply: function(a, b) {
                         if (!a) a = "";
@@ -410,7 +391,7 @@ window.MyTable = Vue.extend({
                     },
                 },
                 {
-                    name: "Не содержит",
+                    text: "Не содержит",
                     value: "not_contains",
                     apply: function(a, b) {
                         if (!a) a = "";
@@ -419,14 +400,14 @@ window.MyTable = Vue.extend({
                     },
                 },
                 {
-                    name: "Равно",
+                    text: "Равно",
                     value: "equal",
                     apply: function(a, b) {
                         return a == b;
                     },
                 },
                 {
-                    name: "Не равно",
+                    text: "Не равно",
                     value: "not_equal",
                     apply: function(a, b) {
                         return a != b;
@@ -435,7 +416,7 @@ window.MyTable = Vue.extend({
             ],
             date: [
                 {
-                    name: "Позже",
+                    text: "Позже",
                     value: "after",
                     apply: function(a, b) {
                         // где-то выше было так:
@@ -446,7 +427,7 @@ window.MyTable = Vue.extend({
                     },
                 },
                 {
-                    name: "Раньше",
+                    text: "Раньше",
                     value: "before",
                     apply: function(a, b) {
                         // где-то выше было так:
@@ -459,7 +440,7 @@ window.MyTable = Vue.extend({
             ],
             number: [
                 {
-                    name: "Больше",
+                    text: "Больше",
                     value: "more",
                     apply: function(a, b) {
                         a = parseFloat(a);
@@ -468,7 +449,7 @@ window.MyTable = Vue.extend({
                     },
                 },
                 {
-                    name: "Меньше",
+                    text: "Меньше",
                     value: "less",
                     apply: function(a, b) {
                         a = parseFloat(a);

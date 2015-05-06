@@ -10,9 +10,9 @@ mixin button(text)
     .additional
       ul
         li(v-repeat='info: additional')
-          |{{info.name}}: {{info.value}}
+          |{{info.text}}: {{info.value}}
         li(v-repeat='info: tableInfo')
-          |{{info.name}}: {{info.value}}
+          |{{info.text}}: {{info.value}}
     //- 
     //- preview
     //- 
@@ -25,11 +25,11 @@ mixin button(text)
             v-class='selected: $index == editingFilterIndex'
             )
             i.fa.fa-gear
-          span.filters-preview-name(
+          span.filters-preview-text(
             v-on='click: selectFilter($index)'
             v-class='selected: $index == currentFilterIndex'
             )
-            | {{filter.name}}
+            | {{filter.text}}
           span(
             v-on='click: removeFilter($index)'
             style='color: red;'
@@ -49,30 +49,22 @@ mixin button(text)
     v-transition='expand'
     )
     .filter-editor(
-    v-el='editor'
-    )
-      h3 Редактирование фильтра: "{{editingFilter.name}}"
+      v-el='editor'
+      )
+      h3 Редактирование фильтра: "{{editingFilter.text}}"
       .row.isolated(
         v-repeat='condition: editingFilter.conditions'
         )
         //- выбор колонки
         select.column-selector(
           v-model='condition.column'
+          options='columns'
           )
-          option(
-            v-repeat='column: columns'
-            value='{{column.value}}'
-            )
-            | {{column.name}}
         //- выбор условия фильтрации
         select.type-selector(
           v-model='condition.type'
+          options='getTypeOptions(condition)'
           )
-          option(
-            v-repeat='type: getTypeOptions(condition)'
-            value='{{type.value}}'
-            )
-            | {{type.name}}
         //- динамический компонент для ввода значения фильтрации
         div.value-selector(
           v-component='{{getValuePicker(condition)}}'
@@ -92,8 +84,6 @@ mixin button(text)
           )
           +button('Добавить условие')
       .control-buttons
-        //- span(v-on='click: apply()')
-        //-   +button('Применить')
         span(v-on='click: saveFilter')
           +button('Сохранить')
         span(v-on='click: closeEditor')
@@ -103,5 +93,5 @@ mixin button(text)
   //- table
   //- 
   .table
-    h3 Данные {{currentFilter ? '(фильтр: "'+currentFilter.name+'")' : ''}}
+    h3 Данные {{currentFilter ? '(фильтр: "'+currentFilter.text+'")' : ''}}
     table(v-el='dt')

@@ -104,7 +104,7 @@ body::-webkit-scrollbar {
             vertical-align: middle;
             }
             .filters-preview span .fa {font-size: 18px;}
-            .filters-preview-name {padding: 0px 10px;}
+            .filters-preview-text {padding: 0px 10px;}
         .filters-preview li span {
             cursor: pointer;
             opacity: 0.5;
