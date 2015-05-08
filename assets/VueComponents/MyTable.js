@@ -10,6 +10,7 @@ window.MyTable = Vue.extend({
             currentFilterIndex: 0,
             tableInfo: [],
             dt: {
+                bStateSave: true,
                 sDom: 'pt',
                 language: {
                     "processing": "Подождите...",
@@ -222,9 +223,6 @@ window.MyTable = Vue.extend({
             vm.dt.table.fnDraw();
         },
 
-        filter: function(filter) {
-        },
-
 
 
         //  ╔╗ ╦ ╦╔╦╗╔╦╗╔═╗╔╗╔╔═╗
@@ -355,7 +353,12 @@ window.MyTable = Vue.extend({
         };
 
         // таблица готова
+        // применяем дефолтные настройки
         vm.dt.fnInitComplete = function() {
+            // первая страница по-умолчанию
+            vm.dt.table.fnPageChange(0);
+            // сортировка по-умолчанию
+            vm.dt.table.fnSort([[15, 'desc']]);
             // vm.dt.table.mask(false);
             view.mask(false);
         };

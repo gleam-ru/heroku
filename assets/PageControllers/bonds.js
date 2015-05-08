@@ -18,12 +18,12 @@ $(document).ready(function() {
                 visible     : false,
             },
             {
-                title       : "Спрос",
+                title       : "Предложение",
                 data        : "bid",
                 filterType  : "number",
             },
             {
-                title       : "Предложение",
+                title       : "Спрос",
                 data        : "ask",
                 filterType  : "number",
             },
@@ -90,24 +90,24 @@ $(document).ready(function() {
                 title       : "Цена",
                 data        : "price",
                 filterType  : "number",
+                visible     : false,
             },
             {
                 title       : "Доходность",
                 data        : "percent",
                 filterType  : "number",
-                //      visible: false,
+                className   : "default_sorting",
             },
             {
                 title       : "Доходность -13%",
                 data        : "percentWTaxes",
                 filterType  : "number",
-                visible     : false,
             },
         ],
         // доп инфо, которое нужно отобразить слева
 
-        editingFilterIndex: 0,
-        currentFilterIndex: 0,
+        editingFilterIndex: -1,
+        currentFilterIndex: 1,
 
         filters: 'bonds/filters',
         filters_api: 'bonds/updateFilter',
