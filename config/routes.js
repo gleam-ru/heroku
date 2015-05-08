@@ -3,7 +3,7 @@ module.exports.routes = {
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗
     //  ╠═╝╠═╣║ ╦║╣ ╚═╗
     //  ╩  ╩ ╩╚═╝╚═╝╚═╝
-    'get /': {view: 'index'},
+    'get /': 'Main.index',
     'get /me': 'Profile.index',
     'get /login': 'AuthController.login',
     'get /register': 'AuthController.register',
