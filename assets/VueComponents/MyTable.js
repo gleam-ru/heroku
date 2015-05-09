@@ -288,6 +288,7 @@ window.MyTable = Vue.extend({
         // удалить строку с условием
         removeCondition: function(idx) {
             this.editingFilter.conditions.splice(idx, 1);
+            this.apply(this.editingFilter);
         },
 
         // кнопочка сохранения в интерфейса
