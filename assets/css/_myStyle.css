@@ -30,7 +30,8 @@ body::-webkit-scrollbar {
     background: #fff;
     }
     #mask img {
-        top: 0px;
+        left: calc(50% - 45px);
+        top: calc(50% - 45px);
         size: 100% 100%;
         position: absolute;
         }
