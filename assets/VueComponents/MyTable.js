@@ -1,4 +1,3 @@
-$(document).ready(function() {
 window.MyTable = Vue.extend({
     // шаблон
     template: Jade.MyTableTemplate(),
@@ -552,5 +551,4 @@ window.MyTable = Vue.extend({
             },
         }),
     }
-});
 });

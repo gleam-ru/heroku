@@ -1,6 +1,7 @@
+// compiled jade
+window.Jade = templatizer;
+
 $(document).ready(function() {
-    // compiled jade
-    window.Jade = templatizer;
 
     // pickmeup
     var locale = {
