@@ -12,7 +12,7 @@ moment.locale('ru');
 module.exports = {
     // страница с облигациями
     index: function(req, res) {
-        return res.render('bonds', {
+        return res.render('services/bonds', {
             text: 'test',
         });
     },

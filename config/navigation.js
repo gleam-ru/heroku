@@ -1,13 +1,21 @@
 module.exports.navigation = [
+
+    //
+    // login/register
+    //
     {
         name     : "Профиль",
         href     : "/me",
         canSee   : ["admin", "user"],
         children : [
             {
+                name     : "Настройки",
+                href     : "/settings",
+            },
+            {
                 name     : "Выйти",
                 href     : "/logout",
-            }
+            },
         ],
     },
     {
@@ -22,33 +30,45 @@ module.exports.navigation = [
             }
         ],
     },
+
+    //
+    // Сервисы
+    //
     {
-        name     : "Видит админ",
-        href     : "/bonds",
-        canSee   : ["admin"],
+        name     : "Сервисы",
+        href     : "/services",
         children : [
             {
                 name     : "Облигации",
-                href     : "/bonds",
-            },
-            {
-                name     : "Второй",
+                href     : "/services/bonds",
             },
         ]
     },
+
+    //
+    // About
+    //
     {
-        name     : "Сервисы",
+        name     : "О проекте",
+        href     : "/about",
         children : [
             {
-                name     : "Первый",
+                name     : "Статистика",
+                href     : "/about/statistics",
             },
             {
-                name     : "Второй",
+                name     : "Связаться с автором",
+                href     : "/about/feedback",
             },
         ]
     },
+
+    //
+    // dev
+    //
     {
-        name     : "Текущий",
-        href     : "/current",
-    }
+        name     : "GO",
+        href     : "/services/bonds",
+        canSee   : ["admin"],
+    },
 ];

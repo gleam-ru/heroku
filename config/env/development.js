@@ -23,6 +23,8 @@ module.exports = {
         refill: false,
     },
 
+    port: 1337,
+
     log: {
         level: 'info',
         custom: require('winston').loggers.get('logger'),

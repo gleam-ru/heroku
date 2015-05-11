@@ -1,9 +1,7 @@
 extends ./layouts/default.jade
 
 block content
-  .l-submain
-    .l-submain-h.g-html
-      h1 Главная страница
-      div Contents
-        p #{JSON.stringify(req.user)}
-        p #{text}
+  h1 Главная страница
+  div Contents
+    p #{JSON.stringify(req.user)}
+    p #{text}

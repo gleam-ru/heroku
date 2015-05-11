@@ -7,7 +7,6 @@
 
 module.exports = {
 	index: function(req, res) {
-        return res.redirect('/bonds');
         return res.render('index', {
             text: 'main page',
         });

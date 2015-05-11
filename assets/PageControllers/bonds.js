@@ -1,9 +1,9 @@
 $(document).ready(function() {
-
+    var path = window.location.pathname;
 
     var data = {
         // откуда брать данные
-        ajax: 'bonds/all',
+        ajax: path+'/all',
         // описание этих данных
         columns: [
             {
@@ -109,10 +109,10 @@ $(document).ready(function() {
         editingFilterIndex: -1,
         currentFilterIndex: 1,
 
-        filters: 'bonds/filters',
-        filters_api: 'bonds/updateFilter',
+        filters: path+'/filters',
+        filters_api: path+'/updateFilter',
 
-        additional: 'bonds/additional',
+        additional: path+'/additional',
     };
 
     window.qwe = new MyTable({

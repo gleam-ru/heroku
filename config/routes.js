@@ -1,19 +1,54 @@
 module.exports.routes = {
 
-    //  ╔═╗╔═╗╔═╗╔═╗╔═╗
-    //  ╠═╝╠═╣║ ╦║╣ ╚═╗
-    //  ╩  ╩ ╩╚═╝╚═╝╚═╝
-    'get /': 'Main.index',
-    'get /me': 'Profile.index',
-    'get /login': 'AuthController.login',
-    'get /register': 'AuthController.register',
+    //
+    // Main page
+    //
+    'get /': 'Main',
 
-    'get /bonds': 'BondsController',
-    'get /bonds/all': 'BondsController.bonds',
-    'get /bonds/filters': 'BondsController.filters',
-    'get /bonds/additional': 'BondsController.additional',
-    'post /bonds/updateFilter': 'BondsController.updateFilter',
 
+
+    //
+    // Profile page
+    //
+    'get /me': 'Profile',
+
+    // Settings
+    'get /settings': 'Settings',
+
+    // Auth
+    'get /login'         : 'Auth.login',
+    'get /logout'        : 'Auth.logout',
+    'get /register'      : 'Auth.register',
+    //---
+    'post /auth/:action' : 'Auth.action', // 'login', 'register'
+
+
+
+    //
+    // Services
+    //
+    'get /services': 'Services',
+
+    // Bonds
+    'get /services/bonds'               : 'Bonds',
+    'get /services/bonds/all'           : 'Bonds.bonds',
+    'get /services/bonds/filters'       : 'Bonds.filters',
+    'get /services/bonds/additional'    : 'Bonds.additional',
+    //---
+    'post /services/bonds/updateFilter' : 'Bonds.updateFilter',
+
+
+
+    //
+    // About page
+    //
+    'get /about': 'About',
+
+    // статистика сайта
+    'get /about/statistics': 'About.statistics',
+
+    // обратная связь
+    'get /about/feedback': 'About.feedback',
 
 
 
@@ -25,17 +60,4 @@ module.exports.routes = {
     'get /403': {response: 'forbidden'},
     'get /404': {response: 'notFound'},
     'get /500': {response: 'serverError'},
-
-
-
-
-
-    //  ╔═╗╔═╗╦
-    //  ╠═╣╠═╝║
-    //  ╩ ╩╩  ╩
-    'get /logout': 'AuthController.logout',
-    'post /auth/:action': 'AuthController.action', // 'login', 'register'
-
-
-
 };
