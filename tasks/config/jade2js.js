@@ -1,18 +1,17 @@
+// https://github.com/HenrikJoreteg/templatizer
+var templatizer = require('templatizer');
+
+var src = process.cwd() + '/views/client/*.jade';
+var dst = process.cwd() + '/.tmp/public/js/jade_templates.js';
+
 module.exports = function(grunt) {
-    // https://github.com/taptapship/wiredep#configuration
-    grunt.config.set('jade2js', {
-        compile: {
-            options: {
-                namespace: 'Jade'
-            },
-            files: {
-                // TODO: разбить на куски и грузить по мере необходимости,
-                // а не подключать глобально в head
-                '.tmp/public/js/jade_templates.js': 'views/client/*.jade'
-            }
-        }
+
+    grunt.registerTask('jade2js', 'Compiles src jade to dst js', function() {
+        templatizer(src, dst, {
+            // namespace: 'Jade',
+            dontRemoveMixins: true,
+            inlineJadeRuntime: true,
+        });
     });
 
-    grunt.loadNpmTasks('grunt-jade-plugin');
 };
-//*/

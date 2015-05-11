@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    // compiled jade
+    window.Jade = templatizer;
+
     // pickmeup
     var locale = {
         days:        ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
@@ -30,5 +33,35 @@ $(document).ready(function() {
             this.find('#mask').fadeOut(500, function(){ $(this).remove();});
         }
     }
+
+    // magnific popups
+    window.popups = {};
+    // замена стандартному алерту
+    window.popups.alert = function(html) {
+        var popup = $('<div></div>');
+        popup.addClass('white-popup');
+        popup.append('<h4>Внимание!</h4>');
+        popup.append(html);
+
+        $.magnificPopup.open({
+            items: {
+                src: popup,
+                type: 'inline'
+            },
+        });
+    }
+    // замена стандартному confirm
+    // window.popups.alert = function(html, cb) {
+    //     var popup = $('<div></div>');
+    //     popup.addClass('white-popup');
+    //     popup.append($(html));
+
+    //     $.magnificPopup.open({
+    //         items: {
+    //             src: popup,
+    //             type: 'inline'
+    //         },
+    //     });
+    // }
 
 });
