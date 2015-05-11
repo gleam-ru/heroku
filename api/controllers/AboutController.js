@@ -10,11 +10,11 @@ module.exports = {
     },
 
     statistics: function(req, res) {
-        return res.render('about', {});
+        return res.render('statistics', {});
     },
 
     feedback: function(req, res) {
-        return res.render('about', {});
+        return res.render('contacts', {});
     },
 
 };
