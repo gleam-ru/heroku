@@ -48,6 +48,16 @@ body::-webkit-scrollbar {
 .pickmeup {background: #2c3e50;}
 .pickmeup .pmu-instance .pmu-selected {border-radius: 3px;}
 
+/* magnific popups */
+.white-popup {
+    position: relative;
+    background: #FFF;
+    padding: 20px;
+    width:auto;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
 
 /**
  *  ╔═╗╔╦╗╦ ╦╦  ╔═╗   ╔═╗╦  ╔═╗╔═╗╔═╗╔═╗╔═╗

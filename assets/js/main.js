@@ -51,17 +51,33 @@ $(document).ready(function() {
         });
     }
     // замена стандартному confirm
-    // window.popups.alert = function(html, cb) {
-    //     var popup = $('<div></div>');
-    //     popup.addClass('white-popup');
-    //     popup.append($(html));
+    window.popups.confirm = function(html, cb) {
+        var popup = $('<div></div>');
+        popup.addClass('white-popup');
+        popup.append('<h4>Требуется подтверждение!</h4>');
+        popup.append(html);
 
-    //     $.magnificPopup.open({
-    //         items: {
-    //             src: popup,
-    //             type: 'inline'
-    //         },
-    //     });
-    // }
+        var btns = $('<div class="row"></div>');
+            var ok = $(Jade.els.button('OK'));
+                ok.bind('click', function() {
+                    cb();
+                    $.magnificPopup.close();
+                });
+            var cancel = $(Jade.els.button('cancel'));
+                cancel.bind('click', function() {
+                    $.magnificPopup.close();
+                });
+            btns.append(ok);
+            btns.append(cancel);
+        popup.append(btns);
+
+        $.magnificPopup.open({
+            items: {
+                src: popup,
+                type: 'inline'
+            },
+            modal: true,
+        });
+    }
 
 });

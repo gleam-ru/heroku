@@ -10,6 +10,14 @@ module.exports = {
         return res.render('index', {
             text: 'main page',
         });
+    },
+
+    test: function(req, res) {
+        return res.send(''+
+            '<div id="test">'+
+                'чо как'+
+            '</div>'+
+            '')
     }
 };
 

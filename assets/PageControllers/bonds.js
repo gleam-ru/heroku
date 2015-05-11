@@ -1,6 +1,12 @@
 $(document).ready(function() {
     var path = window.location.pathname;
 
+
+    // popups.confirm('Спасибо за внимание', function() {
+    //     alert('done');
+    // });
+
+
     var data = {
         // откуда брать данные
         ajax: path+'/all',

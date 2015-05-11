@@ -60,4 +60,7 @@ module.exports.routes = {
     'get /403': {response: 'forbidden'},
     'get /404': {response: 'notFound'},
     'get /500': {response: 'serverError'},
+
+    'get /test': 'Main.test',
+
 };
