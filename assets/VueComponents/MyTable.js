@@ -351,7 +351,7 @@ window.MyTable = Vue.extend({
         // кнопочка сохранения в интерфейсе
         saveFilter: function() {
             var vm = this;
-            vm.save(vm.currentFilter, function() {
+            vm.save(vm.editingFilter, function() {
                 vm.editFilter(undefined);
             });
         },
@@ -504,6 +504,7 @@ window.MyTable = Vue.extend({
                     apply: function(a, b) {
                         if (!a) a = "";
                         if (!b) b = "";
+                        b = b.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
                         var re = new RegExp(b, "i");
                         return re.test(a);
                     },
