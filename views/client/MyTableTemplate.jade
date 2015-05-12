@@ -101,5 +101,5 @@ include ./els
   //- table
   //- 
   .table
-    h3 Данные {{currentFilter ? '(фильтр: "'+currentFilter.text+'")' : ''}}
+    h3 {{currentFilter ? currentFilter.text : 'Без фильтра'}}
     table(v-el='dt')

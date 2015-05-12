@@ -10,6 +10,7 @@ window.MyTable = Vue.extend({
             currentFilterIndex: 0,
             tableInfo: [],
             dt: {
+                pagingType: 'simple',
                 bStateSave: true,
                 sDom: 'pt',
                 language: {
