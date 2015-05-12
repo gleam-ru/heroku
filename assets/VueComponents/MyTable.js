@@ -162,25 +162,39 @@ window.MyTable = Vue.extend({
 
 
         // сохранить текущий редактируемый фильтр
-        save: function(cb) {
+        save: function(filter, cb) {
             if (typeof cb !== 'function') cb = function() {};
             var vm = this;
-            var existing = vm.savedFilters[vm.editingFilterIndex];
-            var saving = vm.editingFilter;
-
-            _.extend(existing, saving);
-            vm.currentFilterIndex = vm.editingFilterIndex;
 
             // сохраняю фильтр
             // mask
-            $.post(vm.filters_api, saving)
+            $.post(vm.filters_api, filter)
             .done(function() {
-                // обновляю модель после сохранения
                 cb();
+                // обновляю модель после сохранения
+                var idx = _.findIndex(vm.savedFilters, {id: filter.id});
+                var existing = vm.savedFilters[idx];
+                _.extend(existing, filter);
+                vm.currentFilterIndex = idx;
             })
             .fail(function(err) {
-                alert('smth went wrong...');
-                console.error(err);
+                if (err.status === 401) { // недостаточно прав
+                    if (typeof mp !== 'undefined') {
+                        mp.alert(messages.auth);
+                    }
+                    else {
+                        alert('Вы не авторизированы!');
+                    }
+                }
+                else {
+                    console.error(err);
+                    if (typeof mp !== 'undefined') {
+                        mp.alert('<p class="error">Ошибка!</p>'+messages.issue);
+                    }
+                    else {
+                        alert('Ошибка!');
+                    }
+                }
             });
         },
 
@@ -231,46 +245,89 @@ window.MyTable = Vue.extend({
 
         // добавляет новый фильтр
         addFilter: function() {
-            // делаем свежедобавленный фильтр активным
-            var idx = this.savedFilters.length;
+            var vm = this;
             // создаем фильтр
-            var filter = this.newFilter.create();
-            this.savedFilters.push(filter);
-            // применяем и редактируем
-            this.editFilter(idx);
+            var filter = vm.newFilter.create();
+
             // сохраняем на сервер
-            this.save();
+            vm.save(filter, function() {
+                // делаем свежедобавленный фильтр активным
+                var idx = vm.savedFilters.length;
+                vm.savedFilters.push(filter);
+                // применяем и редактируем
+                vm.editFilter(idx);
+            });
         },
 
         // удаляет фильтр по индексу
         removeFilter: function(idx) {
             var vm = this;
-            // удаляю фильтр
-            // mask
             var filter = vm.savedFilters[idx];
-            filter = {
-                id: filter.id,
-                remove: true,
+            // mask
+
+            // Вы уверены?
+            var msg = ''+
+                '<p>Фильтр <b>"'+filter.text+'"</b> будет удален.</p>'+
+                '<p>Продолжить?</p>'+
+                '';
+
+            // POST на сервер с удалением фильтра
+            function processDeletion() {
+                filter = {
+                    id: filter.id,
+                    remove: true,
+                }
+                $.post(vm.filters_api, filter)
+                .done(function() {
+                    // удаляю локально
+                    vm.savedFilters.splice(idx, 1);
+                    // если ничего не осталось - сбрасываю
+                    if (vm.savedFilters.length === 0) {
+                        vm.selectFilter(undefined);
+                        return;
+                    }
+                    // если удалили выше текущего - смещаю текущий
+                    // TODO: deprecated... я ввел айдишники, теперь нужно делать не так.
+                    if (idx < vm.currentFilterIndex) {
+                        vm.currentFilterIndex--;
+                    }
+                })
+                .fail(function(err) {
+                    if (err.status === 401) { // недостаточно прав
+                        if (typeof mp !== 'undefined') {
+                            mp.alert(messages.auth);
+                        }
+                        else {
+                            alert('Вы не авторизированы!');
+                        }
+                    }
+                    else {
+                        console.error(err);
+
+                        var msg = ''+
+                            '<p>'+
+                                'Не удалось удалить фильтр'+
+                                '<b>"'+filter.text+'"</b>.'+
+                            '</p>'+
+                            messages.issue+
+                            '';
+                        if (typeof mp !== 'undefined') {
+                            mp.alert(msg);
+                        }
+                        else {
+                            alert('Не удалось удалить фильтр');
+                        }
+                    }
+                });
             }
-            $.post(vm.filters_api, filter)
-            .done(function() {
-                // удаляю локально
-                vm.savedFilters.splice(idx, 1);
-                // если ничего не осталось - сбрасываю
-                if (vm.savedFilters.length === 0) {
-                    vm.selectFilter(undefined);
-                    return;
-                }
-                // если удалили выше текущего - смещаю текущий
-                // TODO: deprecated... я ввел айдишники, теперь нужно делать не так.
-                if (idx < vm.currentFilterIndex) {
-                    vm.currentFilterIndex--;
-                }
-            })
-            .fail(function(err) {
-                alert('smth went wrong...');
-                console.error(err);
-            });
+
+            // подтверждение
+            if (typeof mp !== 'undefined') {
+                mp.confirm(msg, processDeletion);
+            }
+            else if (confirm('Фильтр будет удален. Продолжить?')) {
+                processDeletion();
+            }
         },
 
         // добавить строку с условием
@@ -291,10 +348,10 @@ window.MyTable = Vue.extend({
             this.apply(this.editingFilter);
         },
 
-        // кнопочка сохранения в интерфейса
+        // кнопочка сохранения в интерфейсе
         saveFilter: function() {
             var vm = this;
-            vm.save(function() {
+            vm.save(vm.currentFilter, function() {
                 vm.editFilter(undefined);
             });
         },

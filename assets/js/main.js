@@ -1,8 +1,13 @@
+// стандартные сообщения
+window.messages = {
+    issue: '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>',
+    auth:  '<p>Для данного действия необходимо <a href="/register">зарегистрироваться</a> или <a href="/login">войти в систему</a>.',
+}
+
 // compiled jade
 window.Jade = templatizer;
 
 $(document).ready(function() {
-
     // pickmeup
     var locale = {
         days:        ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
