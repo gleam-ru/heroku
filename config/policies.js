@@ -11,7 +11,12 @@ module.exports.policies = {
 
     // работать с профилем может только аутентифицированный пользователь
     ProfileController: {
-        '*' : ['authenticated']
-    }
+        '*' : ['redirect', 'authenticated']
+    },
+
+    // Облигации, работа с фильрами
+    BondsController: {
+        'updateFilter': ['authenticated']
+    },
 
 };

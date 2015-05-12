@@ -1,5 +1,5 @@
 /**
- * policies/authenticated.js
+ * policies/redirect.js
  *
  * Пускает авторизированных,
  * отправляет неавторизированных на страницу
@@ -11,6 +11,6 @@ module.exports = function (req, res, cb) {
         return cb();
     }
     else {
-        return res.send(401);
+        return res.redirect('/login');
     }
 };
