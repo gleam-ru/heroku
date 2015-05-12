@@ -77,11 +77,19 @@ window.MyTable = Vue.extend({
     },
     methods: {
 
+        updateTransitionsBlock: function() {
+            var vm = this;
+            var editor = $(vm.$$.editor);
+            var block = editor.closest('.block-for-transition');
+            block.css('max-height', editor.outerHeight(true));
+        },
+
         // Обновляет редактируемый фильтр
         // _.clone не канает.
         updateEditingFilter: function() {
-            var filter = this.savedFilters[this.editingFilterIndex];
-            this.editingFilter = _.cloneDeep(filter);
+            var vm = this;
+            var filter = vm.savedFilters[vm.editingFilterIndex];
+            vm.editingFilter = _.cloneDeep(filter);
         },
 
         //  ╔═╗╦═╗╔═╗╦  ╦╦╔═╗╦ ╦
@@ -90,17 +98,19 @@ window.MyTable = Vue.extend({
 
         // устанавливает текущий редактируемый фильтр
         editFilter: function(idx) {
-            if (this.editingFilterIndex === idx) {
+            var vm = this;
+            if (vm.editingFilterIndex === idx) {
                 // клик по самому себе (нужно отключить)
-                this.editingFilterIndex = undefined;
+                vm.editingFilterIndex = undefined;
             }
             else {
-                this.editingFilterIndex = idx;
+                vm.editingFilterIndex = idx;
                 if (idx !== undefined) {
-                    this.currentFilterIndex = idx;
+                    vm.currentFilterIndex = idx;
+                    Vue.nextTick(vm.updateTransitionsBlock);
                 }
             }
-            this.updateEditingFilter();
+            vm.updateEditingFilter();
         },
 
         // устанавливает текущий активный фильтр
@@ -332,20 +342,24 @@ window.MyTable = Vue.extend({
 
         // добавить строку с условием
         addCondition: function() {
+            var vm = this;
             // дефолтная колонка при создании нового условия
-            var column = this.columns[0];
-            this.editingFilter.conditions.push({
+            var column = vm.columns[0];
+            vm.editingFilter.conditions.push({
                 column: column.value,
                 // дефолтное значение селектора типа для дефолтной колонки
-                type: this.filterTypes[column.filterType][0].value,
+                type: vm.filterTypes[column.filterType][0].value,
                 value: '',
             });
+            Vue.nextTick(vm.updateTransitionsBlock);
         },
 
         // удалить строку с условием
         removeCondition: function(idx) {
-            this.editingFilter.conditions.splice(idx, 1);
-            this.apply(this.editingFilter);
+            var vm = this;
+            vm.editingFilter.conditions.splice(idx, 1);
+            vm.apply(vm.editingFilter);
+            Vue.nextTick(vm.updateTransitionsBlock);
         },
 
         // кнопочка сохранения в интерфейсе

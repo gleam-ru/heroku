@@ -219,7 +219,7 @@ body::-webkit-scrollbar {
     box-sizing: border-box;
 }
 .my-table .block-for-transition.expand-enter, .block-for-transition.expand-leave {
-    max-height: 0;
+    max-height: 0px !important;
     overflow: hidden;
     /*opacity: 0;*/
 }
