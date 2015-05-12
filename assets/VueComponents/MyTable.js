@@ -519,7 +519,7 @@ window.MyTable = Vue.extend({
                     apply: function(a, b) {
                         if (!a) a = "";
                         if (!b) b = "";
-                        b = b.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+                        b = b.replace(/[\\]/g, "\\$&");
                         var re = new RegExp(b, "i");
                         return re.test(a);
                     },
