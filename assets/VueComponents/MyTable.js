@@ -434,7 +434,20 @@ window.MyTable = Vue.extend({
             vm.dt.table.fnPageChange(0);
             // сортировка по-умолчанию
             vm.dt.table.fnSort([[15, 'desc']]);
-            // vm.dt.table.mask(false);
+
+            // Transitions
+            var wrapper = vm.dt.table.closest('.height-transition');
+            if (wrapper.length > 0) {
+                var time = 300;
+                wrapper.css('transition', 'all '+time/1000+'s linear');
+                wrapper.css('max-height', $(vm.$el).outerHeight(true) + 100);
+                setTimeout(function() {
+                    wrapper.css('transition', 'none');
+                    wrapper.css('max-height', 'none');
+                }, time)
+            }
+
+            // unmask
             view.mask(false);
         };
 

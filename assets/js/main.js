@@ -40,7 +40,7 @@ $(document).ready(function() {
     $.fn.mask = function(state) {
         if(state === undefined || state) {
             // add mask
-            var mask = $("<div id='mask'><img src='/img/loading.gif' /></div>");
+            var mask = $("<div id='mask'><img src='/img/loading.png'/></div>");
             if (this.find('#mask').length > 0) return;
             this.append(mask);
         }

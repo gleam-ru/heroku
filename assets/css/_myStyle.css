@@ -32,7 +32,7 @@ body::-webkit-scrollbar {
     #mask img {
         left: calc(50% - 45px);
         top: 150px;
-        size: 100% 100%;
+        height: 100px;
         position: absolute;
         }
 #done {
@@ -99,9 +99,14 @@ body::-webkit-scrollbar {
  *  ╠╩╗║ ║║║║ ║║╚═╗
  *  ╚═╝╚═╝╝╚╝═╩╝╚═╝
  */
-#bonds h1 {
-    margin-bottom: 0px;
-}
-#bonds h3 {
-    margin-bottom: 0px;
-}
+#bonds {
+    }
+    #bonds h1,
+    #bonds h3 {
+        margin-bottom: 0px;
+        }
+
+.height-transition {
+    overflow: hidden;
+    max-height: calc(100vh - 232px);
+    }
