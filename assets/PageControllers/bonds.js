@@ -113,7 +113,7 @@ $(document).ready(function() {
         // доп инфо, которое нужно отобразить слева
 
         editingFilterIndex: -1,
-        currentFilterIndex: 1,
+        currentFilterIndex: -1,
 
         filters: path+'/filters',
         filters_api: path+'/updateFilter',

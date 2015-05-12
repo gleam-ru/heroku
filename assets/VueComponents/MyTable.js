@@ -10,9 +10,13 @@ window.MyTable = Vue.extend({
             currentFilterIndex: 0,
             tableInfo: [],
             dt: {
-                pagingType: 'simple',
+                pageLength: 10,
                 bStateSave: true,
+                sScrollX: '100%',
+                bScrollCollapse: true,
                 sDom: 'pt',
+                pagingType: 'simple',
+                // paging: false,
                 language: {
                     "processing": "Подождите...",
                     "search": "Поиск:",
@@ -83,6 +87,7 @@ window.MyTable = Vue.extend({
             var editor = $(vm.$$.editor);
             var block = editor.closest('.block-for-transition');
             block.css('max-height', editor.outerHeight(true));
+            console.log(editor.outerHeight(true));
         },
 
         // Обновляет редактируемый фильтр

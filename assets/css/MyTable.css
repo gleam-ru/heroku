@@ -21,10 +21,14 @@
         display: table-cell;
         background: #ecf0f1;
         }
+        .my-table .top .filters-preview h3 {
+            line-height: 1;
+            }
         .my-table .top .filters-preview ul {
-            margin: 10px 0px 0px 20px;
+            margin: 5px 0px 5px 10px;
             }
             .my-table .top .filters-preview li {
+                margin-bottom: 0px;
                 list-style: none;
                 line-height: 30px;
                 vertical-align: middle;
@@ -46,6 +50,9 @@
         .filters-preview .selected .fa {
             color: #2c3e50 !important;
             font-weight: bold;
+            }
+        .my-table .top .filters-preview .g-btn {
+            margin: 0px;
             }
 
 /* editor part */
@@ -97,7 +104,7 @@
         }
         .my-table .filter-editor .row-remover:hover {opacity: 0.7;}
     .my-table .filter-editor .control-buttons {
-        margin-top: 30px;
+        /*margin-top: 30px;*/
         text-align: right;
         }
         .my-table .control-buttons span:not(:last-child) {
@@ -110,7 +117,7 @@
     }
     /* datattables */
     .my-table .table .dataTables_wrapper.no-footer {
-        margin-top: -40px;
+        margin-top: -37px;
         }
         .my-table .table .dataTables_wrapper.no-footer>table {
             width: 100% !important;
@@ -125,14 +132,22 @@
         .my-table .table .buy .fa {
             color: #2c3e50;
             }
+    .my-table .table td {
+        padding: 5px 5px 5px 15px;
+        border-color: rgba(0, 0, 0, 0.04);
+        }
     .my-table .table thead .sorting,
+    .my-table .table thead .sorting_disabled,
     .my-table .table thead .sorting_asc,
     .my-table .table thead .sorting_desc {
-        background-position: -5px 13px;
+        padding-left: 18px;
+        background-position: 0px 13px;
+        font-weight: 700;
+        font-size: 13px;
         }
     .my-table .table .dataTables_paginate {
         padding: 0px !important;
-        margin-top: 5px !important;
+        margin-bottom: 9px;
         text-align: right !important;
         }
         .my-table .table .dataTables_paginate>a:hover {
@@ -151,7 +166,7 @@
             border: none !important;
             border-radius: 3px;
 
-            padding: 6px 12px;
+            padding: 4px 12px;
             transition: all 0.25s ease;
             }
 
@@ -164,7 +179,6 @@
 .my-table .block-for-transition.expand-enter, .block-for-transition.expand-leave {
     max-height: 0px !important;
     overflow: hidden;
-    /*opacity: 0;*/
 }
 
 @media screen and (max-width: 550px) {
