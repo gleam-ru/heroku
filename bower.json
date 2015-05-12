@@ -18,7 +18,8 @@
     "pickmeup": "~2.8.0",
     "vue": "~0.11.8",
     "magnific-popup": "~1.0.0",
-    "jquery-cookie": "~1.4.1"
+    "jquery-cookie": "~1.4.1",
+    "trip.js": "~3.0.0"
   },
   "name": "blozhik",
   "version": "0.0.0",

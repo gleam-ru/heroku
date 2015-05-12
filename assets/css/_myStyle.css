@@ -79,6 +79,7 @@ body::-webkit-scrollbar {
             margin-right: 10px;
             }
 
+/* datatables */
 .dataTable {
     margin-bottom: 0px !important;
     }
@@ -97,6 +98,11 @@ body::-webkit-scrollbar {
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
     border: none;
     }
+
+/* trip js */
+/*.l-header {z-index: 20;}*/
+/*.l-main   {z-index: 10;}*/
+
 
 /**
  *  ╔═╗╔╦╗╦ ╦╦  ╔═╗   ╔═╗╦  ╔═╗╔═╗╔═╗╔═╗╔═╗

@@ -34,7 +34,7 @@ include ./els
             style='color: red;'
             )
             i.fa.fa-times
-      span(
+      span.add(
         v-on='click: addFilter'
         class='g-btn type_midnight size_small'
         )
@@ -51,7 +51,7 @@ include ./els
       v-el='editor'
       )
       h4 Название
-      input.isolated(
+      input.name.isolated(
         type='text'
         v-model='editingFilter.text'
         value='{{editingFilter.text}}'
@@ -92,9 +92,9 @@ include ./els
           +button('Добавить условие')
       //- h4 Колонки
       .control-buttons
-        span(v-on='click: saveFilter')
+        span.save(v-on='click: saveFilter')
           +button('Сохранить')
-        span(v-on='click: closeEditor')
+        span.cancel(v-on='click: closeEditor')
           +button('Отмена')
   
   //- 

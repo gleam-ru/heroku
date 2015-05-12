@@ -123,4 +123,70 @@ $(document).ready(function() {
         data: data,
     });
 
+
+
+    qwe.selectFilter(undefined);
+    qwe.editFilter(0);
+    setTimeout(function() {
+
+        var trip = new Trip([{
+            //
+            // preview
+            //
+            sel: $(".my-table .filters-preview .fa-gear"),
+            content: "Редактировать фильтр",
+            position: "w",
+        }, {
+            sel: $(".my-table .filters-preview .filters-preview-text"),
+            content: "Активировать фильтр",
+            position: "w",
+        }, {
+            sel: $(".my-table .filters-preview .fa-times"),
+            content: "Удалить фильтр",
+            position: "w",
+        }, {
+            sel: $(".my-table .filters-preview .add"),
+            content: "Новый фильтр",
+            position: "w",
+        }, {
+            //
+            // editor
+            //
+            sel: $(".my-table .filter-editor .name"),
+            content: "Название фильтра",
+            position: "e",
+        }, {
+            sel: $(".my-table .filter-editor .row"),
+            content: "Условия фильтрации",
+            position: "n",
+        }, {
+            sel: $(".my-table .filter-editor .row"),
+            content: "Тип фильтрации зависит <br />от типа выбранной колонки",
+            position: "n",
+        }, {
+            sel: $(".my-table .filter-editor .row"),
+            content: "Все условия должны <br />выполняться одновременно",
+            position: "n",
+        }, {
+            sel: $(".my-table .filter-editor .row"),
+            content: "Условиия применяются автоматически",
+            position: "n",
+        }, {
+            sel: $(".my-table .filter-editor .save"),
+            content: "После редактирования необходимо <br />сохранить фильтр",
+            position: "n",
+        }, {
+            sel: $(".my-table .table .dataTables_scrollHead"),
+            content: "Нажмите для сортировки по столбцу",
+            position: "w",
+        }], {
+            delay: -1,
+            tripTheme: 'dark',
+            animation: 'fadeInDown',
+            showNavigation: true,
+        });
+
+        trip.start();
+    }, 1000);
+
 });
