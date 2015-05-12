@@ -1,7 +1,10 @@
 // стандартные сообщения
 window.messages = {
-    issue: '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>',
-    auth:  '<p>Для данного действия необходимо <a href="/register">зарегистрироваться</a> или <a href="/login">войти в систему</a>.',
+    issue:  '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>',
+    auth:   '<p>Для данного действия необходимо <br />'+
+                '<a href="/register">зарегистрироваться</a> или <br />'+
+                '<a href="/login">войти в систему</a>.'+
+            '</p>',
 }
 
 // compiled jade
@@ -41,9 +44,9 @@ $(document).ready(function() {
     }
 
     // magnific popups
-    window.popups = {};
+    window.mp = {};
     // замена стандартному алерту
-    window.popups.alert = function(html) {
+    window.mp.alert = function(html) {
         var popup = $('<div></div>');
         popup.addClass('white-popup');
         popup.append('<h4>Внимание!</h4>');
@@ -57,7 +60,7 @@ $(document).ready(function() {
         });
     }
     // замена стандартному confirm
-    window.popups.confirm = function(html, cb) {
+    window.mp.confirm = function(html, cb) {
         var popup = $('<div></div>');
         popup.addClass('white-popup');
         popup.append('<h4>Требуется подтверждение!</h4>');
@@ -69,7 +72,7 @@ $(document).ready(function() {
                     cb();
                     $.magnificPopup.close();
                 });
-            var cancel = $(Jade.els.button('cancel'));
+            var cancel = $(Jade.els.button('Отмена'));
                 cancel.bind('click', function() {
                     $.magnificPopup.close();
                 });
