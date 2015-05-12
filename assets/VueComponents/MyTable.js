@@ -79,6 +79,20 @@ window.MyTable = Vue.extend({
         // editingFilter: function() {
         //     this.filter(this.editingFilter);
         // },
+        editingFilterIndex: function() {
+            var vm = this;
+            var idx = vm.editingFilterIndex ? vm.editingFilterIndex : -1;
+            if ($.cookie) {
+                $.cookie('_editingFilterIndex'+vm.filters, idx, {expires: 365});
+            }
+        },
+        currentFilterIndex: function() {
+            var vm = this;
+            var idx = vm.currentFilterIndex ? vm.currentFilterIndex : -1;
+            if ($.cookie) {
+                $.cookie('_currentFilterIndex'+vm.filters, idx, {expires: 365});
+            }
+        },
     },
     methods: {
 
@@ -87,7 +101,6 @@ window.MyTable = Vue.extend({
             var editor = $(vm.$$.editor);
             var block = editor.closest('.block-for-transition');
             block.css('max-height', editor.outerHeight(true));
-            console.log(editor.outerHeight(true));
         },
 
         // Обновляет редактируемый фильтр
@@ -462,9 +475,9 @@ window.MyTable = Vue.extend({
         //  ║  ║ ║║ ╦║║
         //  ╩═╝╚═╝╚═╝╩╚═╝
         // текущий редактируемый фильтр
-        vm.editingFilterIndex = vm.editingFilterIndex !== undefined ? vm.editingFilterIndex : -1;
+        vm.editingFilterIndex = $.cookie ? $.cookie('_editingFilterIndex'+vm.filters) : -1;
         // текущий активный фильтр
-        vm.currentFilterIndex = vm.currentFilterIndex !== undefined ? vm.currentFilterIndex : 0;
+        vm.currentFilterIndex = $.cookie ? $.cookie('_currentFilterIndex'+vm.filters) : 0;
         // загружаем данные по фильтрам
         $.get(vm.filters)
         .done(function(loaded) {

@@ -110,14 +110,11 @@ $(document).ready(function() {
                 filterType  : "number",
             },
         ],
-        // доп инфо, которое нужно отобразить слева
-
-        editingFilterIndex: -1,
-        currentFilterIndex: -1,
 
         filters: path+'/filters',
         filters_api: path+'/updateFilter',
 
+        // доп инфо, которое нужно отобразить слева
         additional: path+'/additional',
     };
 
