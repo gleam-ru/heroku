@@ -35,6 +35,21 @@ body::-webkit-scrollbar {
         size: 100% 100%;
         position: absolute;
         }
+#done {
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: rgba(255, 255, 255, 0.5);
+    }
+    #done img {
+        left: calc(50% - 45px);
+        top: calc(50% - 45px);
+        height: 100px;
+        position: absolute;
+        }
 
 
 

@@ -50,6 +50,27 @@ $(document).ready(function() {
         }
     }
 
+    // уведомление об результате действия
+    // state - true/false (success/fail)
+    // cb - cb.
+    $.fn.done = function(state, cb) {
+        var el = this;
+        if (typeof cb !== 'function') cb = function() {};
+        var mask;
+        if(state) {
+            mask = $("<div id='done'><img src='/img/success.png' /></div>");
+        }
+        else {
+            mask = $("<div id='done'><img src='/img/fail.png' /></div>");
+        }
+        if (el.find('#done').length > 0) return;
+        el.append(mask);
+        setTimeout(function() {
+            el.find('#done').fadeOut(200, function(){ $(this).remove();});
+            cb();
+        }, 300);
+    }
+
     // magnific popups
     window.mp = {};
     // замена стандартному алерту

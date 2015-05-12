@@ -367,7 +367,9 @@ window.MyTable = Vue.extend({
         saveFilter: function() {
             var vm = this;
             vm.save(vm.editingFilter, function() {
-                vm.editFilter(undefined);
+                $(vm.$$.editor).done(true, function() {
+                    vm.editFilter(undefined);
+                });
             });
         },
 

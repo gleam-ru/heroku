@@ -55,6 +55,7 @@
     border: solid 1px #ccc;
     border-radius: 3px;
     padding: 10px;
+    position: relative;
     }
     .my-table .filter-editor h4 {
         padding: 0px;
