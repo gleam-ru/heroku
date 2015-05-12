@@ -56,7 +56,13 @@ body::-webkit-scrollbar {
     width:auto;
     max-width: 500px;
     margin: 20px auto;
-}
+    }
+    .white-popup .row {
+        margin-top: 20px;
+        }
+        .white-popup .row .g-btn {
+            margin-right: 10px;
+            }
 
 
 /**

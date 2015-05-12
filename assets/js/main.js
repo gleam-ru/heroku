@@ -1,10 +1,17 @@
 // стандартные сообщения
 window.messages = {
-    issue:  '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>',
-    auth:   '<p>Для данного действия необходимо <br />'+
-                '<a href="/register">зарегистрироваться</a> или <br />'+
-                '<a href="/login">войти в систему</a>.'+
-            '</p>',
+    issue: ''+
+        '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>'+
+        '',
+    auth: ''+
+        '<p>Для данного действия необходимо <br />'+
+            '<a href="/register">зарегистрироваться</a> или <br />'+
+            '<a href="/login">войти в систему</a>.'+
+        '</p>'+
+        '',
+    not_implemented: ''+
+        '<p>Извините, данная возможность пока не реализована</p>'+
+        '',
 }
 
 // compiled jade
@@ -49,7 +56,7 @@ $(document).ready(function() {
     window.mp.alert = function(html) {
         var popup = $('<div></div>');
         popup.addClass('white-popup');
-        popup.append('<h4>Внимание!</h4>');
+        // popup.append('<h3>Внимание!</h3>');
         popup.append(html);
 
         $.magnificPopup.open({
@@ -63,7 +70,7 @@ $(document).ready(function() {
     window.mp.confirm = function(html, cb) {
         var popup = $('<div></div>');
         popup.addClass('white-popup');
-        popup.append('<h4>Требуется подтверждение!</h4>');
+        popup.append('<h3>Требуется подтверждение!</h3>');
         popup.append(html);
 
         var btns = $('<div class="row"></div>');

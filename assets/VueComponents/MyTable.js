@@ -563,8 +563,14 @@ window.MyTable = Vue.extend({
         // TODO: навесить обработчик покупки на кнопку
         // примерный вид этого обработчика
         $(dt).on('click', '.buy', function() {
-            var data = $(this).parents('tr').find('td');
-            alert($(data[0]).html());
+            // var data = $(this).parents('tr').find('td');
+            // alert($(data[0]).html());
+            if (typeof mp !== 'undefined') {
+                mp.alert(messages.not_implemented);
+            }
+            else {
+                alert('Извините, пока не реализовано');
+            }
             return false;
         });
     },
