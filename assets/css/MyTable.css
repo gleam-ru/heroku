@@ -3,6 +3,10 @@
  *  ║║║└┬┘ ║ ├─┤├┴┐│  ├┤
  *  ╩ ╩ ┴  ╩ ┴ ┴└─┘┴─┘└─┘
  */
+.my-table h3 {
+    z-index: 1;
+    position: relative;
+}
 
 /* top part */
 .my-table .top {
@@ -169,25 +173,37 @@
             padding: 4px 12px;
             transition: all 0.25s ease;
             }
-
+        .my-table .table .dataTables_paginate .paginate_button {margin-left: 0px;}
+        .my-table .table .dataTables_paginate .paginate_button:not(:first-child) {
+            margin-left: 5px;
+            }
 .my-table .block-for-transition {
     transition: all 0.15s linear;
     overflow: hidden;
     max-height: 700px;
     box-sizing: border-box;
-}
-.my-table .block-for-transition.expand-enter, .block-for-transition.expand-leave {
+    }
+.my-table .block-for-transition.expand-enter,
+.my-table .block-for-transition.expand-leave {
     max-height: 0px !important;
     overflow: hidden;
-}
+    }
 
 @media screen and (max-width: 550px) {
     .my-table .top .additional {
         display: block;
         width: 100%;
-    }
+        }
     .my-table .top .filters-preview {
         display: block;
         width: 100%;
-    }
+        }
+    .my-table .table .dataTables_wrapper.no-footer {
+        margin-top: 0px;
+        }
+    .my-table .table .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        float: none;
+        margin: 0px 0px 7px 0px;
+        }
 }

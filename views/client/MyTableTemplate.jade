@@ -1,6 +1,6 @@
 include ./els
 
-.my-table
+.my-table.no-select
   .top
     //- 
     //- additional info
@@ -101,5 +101,5 @@ include ./els
   //- table
   //- 
   .table
-    h3 {{currentFilter ? currentFilter.text : 'Без фильтра'}}
-    table(v-el='dt')
+    h3.yes-select.ib {{currentFilter ? currentFilter.text : 'Без фильтра'}}
+    table(v-el='dt').yes-select

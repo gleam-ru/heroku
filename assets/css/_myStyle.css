@@ -16,13 +16,17 @@ input-grey: #fafafa;
 /* http://stackoverflow.com/questions/3296644/hiding-the-scrollbar-on-an-html-page */
 body::-webkit-scrollbar {
     display: none;
-}
+    }
 .l-submain {
     padding: 20px 10px;
-}
+    }
+.l-submain-h.g-html {
+
+    }
 #mask {
     height: 100%;
     position: absolute;
+    z-index: 99999;
     top: 0px;
     bottom: 0px;
     left: 0px;
@@ -100,7 +104,7 @@ body::-webkit-scrollbar {
     }
 
 /* tooltipster */
-.tooltipster-base {cursor: pointer;}
+.tooltipster-base {cursor: pointer; z-index: 9999;}
 .begin-learning {
     cursor: pointer;
     font-size: 30px;
@@ -120,6 +124,22 @@ body::-webkit-scrollbar {
     margin-top: -20px;
 }
 .ib {display: inline-block;}
+.no-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.yes-select {
+    -webkit-touch-callout: initial;
+    -webkit-user-select: initial;
+    -khtml-user-select: initial;
+    -moz-user-select: initial;
+    -ms-user-select: initial;
+    user-select: initial;
+}
 /* невидим для телефонов */
 @media screen and (max-width: 600px) {
   .not-mobile {
@@ -127,6 +147,7 @@ body::-webkit-scrollbar {
     display: none;
   }
 }
+
 
 
 
