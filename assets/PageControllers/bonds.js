@@ -127,7 +127,8 @@ $(document).ready(function() {
                 trigger: 'hover',
                 interactive: false,
                 multiple: false,
-                maxWidth: 200,
+                maxWidth: 250,
+                position: 'right',
             }
         },
         steps: [

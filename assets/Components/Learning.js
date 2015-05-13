@@ -13,7 +13,13 @@ me.init = function(config) {
     _.extend(me, config);
 
     // инит начальной кнопки
+    me.starter.tt.functionAfter = function() {
+        $.cookie('learned', true);
+    }
     me.starter = me.createTT(me.starter);
+    if (!$.cookie('learned') && me.starter.is(':visible')) {
+        me.starter.tooltipster('show');
+    }
     // показать тултипы
     me.starter.click(function() {
         me.createSteps();
