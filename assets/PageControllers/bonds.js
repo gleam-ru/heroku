@@ -1,12 +1,6 @@
 $(document).ready(function() {
     var path = window.location.pathname;
 
-
-    // popups.confirm('Спасибо за внимание', function() {
-    //     alert('done');
-    // });
-
-
     var data = {
         // откуда брать данные
         ajax: path+'/all',
@@ -125,138 +119,78 @@ $(document).ready(function() {
 
 
 
-    $.fn.tooltipster('setDefaults', {
-        autoclose: false,
-        trigger: 'custom',
-        multiple: true,
-        interactive: true,
-    });
-
-
-    window.start = $('.begin-learning').tooltipster({
-        content: $('<p>Нажмите, чтобы<br />показать / скрыть подсказки</p>'),
-        trigger: 'hover',
-        interactive: false,
-        multiple: false,
-        maxWidth: 200,
-    }).click(function() {
-        learning();
-    });
-
-    function learning() {
-        console.log('init');
-        // qwe.selectFilter(undefined);
-        // qwe.editFilter(0);
-        // Vue.nextTick(drawTT);
-        drawTT();
-
-
-        function drawTT() {
-            if (!window._tt) {
-                window._tt = {};
-                _tt.visible = false;
-                _tt.steps = [
-                    $('.my-table .filters-preview').first().tooltipster({
-                        content: 'Для закрытия подсказки нажмите на нее',
-                        position: 'top',
-                        arrow: false,
-                    }),
-
-
-                    //
-                    // Preview
-                    //
-                    $('.my-table .filters-preview .fa-gear').first().tooltipster({
-                        content: 'Нажмите для редактирования фильтра',
-                        position: 'left',
-                    }),
-                    $('.my-table .filters-preview .fa-gear').first().tooltipster({
-                        content: 'Нажмите еще раз для отмены',
-                        position: 'left',
-                    }),
-                    $('.my-table .filters-preview .filters-preview-text').first().tooltipster({
-                        content: 'Нажмите для выбора фильтра',
-                        position: 'bottom',
-                    }),
-                    $('.my-table .filters-preview .filters-preview-text').first().tooltipster({
-                        content: 'Нажмите еще раз для отмены',
-                        position: 'bottom',
-                    }),
-                    $('.my-table .filters-preview .fa-times').first().tooltipster({
-                        content: 'Удаление фильтра',
-                        position: 'top',
-                    }),
-
-
-                    //
-                    // Editor
-                    //
-                    // $('.my-table .filter-editor').first().tooltipster({
-                    //     content: $(''+
-                    //         '<p>'+
-                    //             'Редактирование выбранного фильтра<br />'+
-                    //             'Изменения применяются автоматически<br />'+
-                    //             // 'После изменения фильтра его нужно сохранить<br />'+
-                    //         '</p>'),
-                    //     position: 'top',
-                    // }),
-                    // $('.my-table .filter-editor .name').first().tooltipster({
-                    //     content: 'Название фильтра',
-                    //     position: 'right',
-                    // }),
-                    // $('.my-table .filter-editor .column-selector').first().tooltipster({
-                    //     content: 'Выбор колонки',
-                    //     position: 'bottom',
-                    // }),
-                    // $('.my-table .filter-editor .type-selector').first().tooltipster({
-                    //     content: 'Тип фильтрации',
-                    //     position: 'bottom',
-                    // }),
-                    // $('.my-table .filter-editor .value-selector').first().tooltipster({
-                    //     content: 'Ввод значения',
-                    //     position: 'bottom',
-                    // }),
-                    // $('.my-table .filter-editor .save').first().tooltipster({
-                    //     content: 'После изменения фильтра его нужно сохранить',
-                    //     position: 'left',
-                    // }),
-
-
-                    //
-                    // Table
-                    //
-                    $('.my-table .dataTables_scroll').first().tooltipster({
-                        content: 'Нажмите для сортировки',
-                        position: 'top',
-                    }),
-                ].reverse();
+    Learning.init({
+        starter: {
+            el: '.begin-learning',
+            tt: {
+                content: $('<p>Нажмите, чтобы<br />показать / скрыть подсказки</p>'),
+                trigger: 'hover',
+                interactive: false,
+                multiple: false,
+                maxWidth: 200,
             }
-            _.each(_tt.steps, function(tt) {
-                var current = tt[0];
-                if (!current) return;
-                if (_tt.visible) {
-                    current.hide();
+        },
+        steps: [
+            {
+                el: '.my-table .filters-preview',
+                tt: {
+                    content: 'Для закрытия подсказки нажмите на нее',
+                    position: 'top',
+                    arrow: false,
                 }
-                else {
-                    current.show();
+            },
+
+
+            //
+            // Preview
+            //
+            {
+                el: '.my-table .filters-preview .fa-gear',
+                tt: {
+                    content: 'Нажмите для редактирования фильтра',
+                    position: 'left',
                 }
-            });
-            _tt.visible = !_tt.visible;
-            // if (_tt.visible) {
-            //     _tt = undefined;
-            // }
-            // else {
-            //     _tt.visible = !_tt.visible;
-            // }
-        }
+            },
+            {
+                el: '.my-table .filters-preview .fa-gear',
+                tt: {
+                    content: 'Нажмите еще раз для отмены',
+                    position: 'left',
+                }
+            },
+            {
+                el: '.my-table .filters-preview .filters-preview-text',
+                tt: {
+                    content: 'Нажмите для выбора фильтра',
+                    position: 'bottom',
+                }
+            },
+            {
+                el: '.my-table .filters-preview .filters-preview-text',
+                tt: {
+                    content: 'Нажмите еще раз для отмены',
+                    position: 'bottom',
+                }
+            },
+            {
+                el: '.my-table .filters-preview .fa-times',
+                tt: {
+                    content: 'Удаление фильтра',
+                    position: 'top',
+                }
+            },
 
-    }
 
-    $('body').on('click', '.tooltipster-base', function() {
-        $(this).remove();
-        if ($('.tooltipster-base').length === 0) {
-            _tt.visible = false;
-        }
+            //
+            // Table
+            //
+            {
+                el: '.my-table .dataTables_scroll',
+                tt: {
+                    content: 'Нажмите для сортировки',
+                    position: 'top',
+                }
+            },
+        ]
     });
-
 });
