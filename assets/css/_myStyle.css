@@ -99,10 +99,13 @@ body::-webkit-scrollbar {
     border: none;
     }
 
-/* trip js */
-/*.l-header {z-index: 20;}*/
-/*.l-main   {z-index: 10;}*/
-
+/* tooltipster */
+.tooltipster-base {cursor: pointer;}
+.begin-learning {
+    cursor: pointer;
+    font-size: 30px;
+    padding: 0px 5px 0px 10px;
+}
 
 /**
  *  ╔═╗╔╦╗╦ ╦╦  ╔═╗   ╔═╗╦  ╔═╗╔═╗╔═╗╔═╗╔═╗
@@ -116,6 +119,15 @@ body::-webkit-scrollbar {
     /* для борьбы с маржином заголовков */
     margin-top: -20px;
 }
+.ib {display: inline-block;}
+/* невидим для телефонов */
+@media screen and (max-width: 600px) {
+  .not-mobile {
+    visibility: hidden;
+    display: none;
+  }
+}
+
 
 
 /**
