@@ -180,7 +180,7 @@ function calculate(item) {
     // настоящая цена
     bond.price = bond.rate * bond.bid / 100 + bond.nkd;
     // Процентная ставка по облигации
-    if (!bond.price) bond.percent = 0;
+    if (!bond.bid) bond.percent = 0;
     else bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
     // Процентная ставка по облигации с учетом налога 13%
     bond.percentWTaxes = bond.percent * 0.87;
