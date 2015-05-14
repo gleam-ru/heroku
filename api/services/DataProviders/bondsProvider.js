@@ -22,7 +22,7 @@ me.get = function(cb) {
         return bonds || [];
     }
     if (!bonds) {
-        log.debug('Кэш запрошен, но не создан. Создаю.');
+        console.warn('Кэш запрошен, но не создан. Создаю.');
         return me.updateCurrent(cb);
     }
     else {
@@ -39,7 +39,7 @@ me.update = function(cb) {
         saveBonds,
         me.updateCurrent,
     ], function(err) {
-        if (err) log.error(err);
+        if (err) console.error(err);
         return cb(err, me.get());
     });
 }
@@ -60,7 +60,7 @@ me.updateCurrent = function(cb) {
                 results.push(bond.getCurrent());
             });
             cache.set('bonds', results);
-            log.verbose('current bonds updated:', results.length);
+            console.info('current bonds updated:', results.length);
             return cb(err, results);
         });
     });
@@ -79,7 +79,7 @@ function saveBonds(bondsArr, cb) {
         // текущее время
         _.extend(bond, {updatedAt: now});
         return Bonds.findOne({name: bond.name, num: bond.num}, function(err, found) {
-            if (err) log.error(err);
+            if (err) console.error(err);
             // рассчитанные значения
             bond = prepare(bond);
             if (!bond) return callback();

@@ -6,7 +6,7 @@ function formatArgs(args) {
     return [util.format.apply(util.format, Array.prototype.slice.call(args))];
 }
 console.log = function() {
-    log.info.apply(log, formatArgs(arguments));
+    log.silly.apply(log, formatArgs(arguments));
 };
 console.info = function() {
     log.info.apply(log, formatArgs(arguments));
