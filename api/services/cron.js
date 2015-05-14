@@ -30,6 +30,12 @@ cron.init = function() {
         provider.bonds.update();
     });
 
+    // пакование парса облигаций в дейли свечи
+    // в 3:00 каждый пн,вт,ср,чт,пт
+    cron.add('bondsParser', '0 3 * * 1,2,3,4,5', function() {
+        dbTasks.bondsNewDay();
+    });
+
     log.verbose('cron inited');
 }
 
