@@ -48,6 +48,7 @@ module.exports.bootstrap = function(cb) {
             if (err) {
                 log.error('Provider init failed', err);
             }
+            // dbTasks.bondsNewDay();
             // provider.bonds.update();
 
             // первоначальное заполнение кэша

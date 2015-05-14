@@ -50,19 +50,25 @@ me.update = function(cb) {
 // TODO: Q-style
 me.updateCurrent = function(cb) {
     if (typeof cb !== 'function') cb = function() {};
-    Statistics.findOne({name: 'bondsUpdatedAt'}, function(err, stat) {
-        if (err || !stat || !stat.data) return cb(err);
-        var lastDate = stat.data;
-        Bonds.find({updatedAt: lastDate}).exec(function(err, bonds) {
-            if (err) return cb(err);
-            var results = [];
-            _.each(bonds, function(bond) {
-                results.push(bond.getCurrent());
-            });
-            cache.set('bonds', results);
-            console.info('current bonds updated:', results.length);
-            return cb(err, results);
+    me.fetchFromDB(function(err, bonds) {
+        if (err) return cb(err);
+        var results = [];
+        _.each(bonds, function(bond) {
+            results.push(bond.getCurrent());
         });
+        cache.set('bonds', results);
+        console.info('current bonds updated:', results.length);
+        return cb(err, results);
+    });
+}
+
+// забирает данные из базы
+// cb(err, res)
+me.fetchFromDB = function(cb) {
+    Statistics.findOne({name: 'bondsUpdatedAt'}, function(err, stat) {
+        if (err || !stat || !stat.data) return cb(err || 'no stat data');
+        var lastDate = stat.data;
+        Bonds.find({updatedAt: lastDate}).exec(cb);
     });
 }
 
@@ -153,15 +159,8 @@ function calculate(item) {
     bond.nkd     = parseFloat(bond.nkd);    // НКД
     bond.bid     = parseFloat(bond.bid);    // предложение
 
-    // облигации, для которых нет предложения, стоят 100% от номинала
-    if(!bond.bid || bond.bid <= 0) {
-        bond.bid = 100;
-    }
-
-    // облигации, для которых нет спроса, не стоят ничего
-    if(!bond.ask || bond.ask <= 0) {
-        bond.ask = 0;
-    }
+    if(!bond.bid || bond.bid <= 0) bond.bid = '';
+    if(!bond.ask || bond.ask <= 0) bond.ask = '';
 
     // дней до погашения
     bond.expiresIn = bond.endDate.diff(bond.updatedAt, 'days');
@@ -181,7 +180,8 @@ function calculate(item) {
     // настоящая цена
     bond.price = bond.rate * bond.bid / 100 + bond.nkd;
     // Процентная ставка по облигации
-    bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
+    if (!bond.price) bond.percent = 0;
+    else bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
     // Процентная ставка по облигации с учетом налога 13%
     bond.percentWTaxes = bond.percent * 0.87;
 
