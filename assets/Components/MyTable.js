@@ -118,7 +118,7 @@ window.MyTable = Vue.extend({
         // устанавливает текущий редактируемый фильтр
         editFilter: function(idx) {
             var vm = this;
-            if (vm.editingFilterIndex === idx) {
+            if (vm.editingFilterIndex == idx) {
                 // клик по самому себе (нужно отключить)
                 vm.editingFilterIndex = undefined;
             }
@@ -143,6 +143,77 @@ window.MyTable = Vue.extend({
             }
             // выбрали фильтр, значит уже не редактируем.
             this.editFilter(undefined)
+        },
+
+        // удаляет фильтр по индексу
+        removeFilter: function(idx) {
+            var vm = this;
+            var filter = vm.savedFilters[idx];
+            // mask
+
+            // Вы уверены?
+            var msg = ''+
+                '<p>Фильтр <b>"'+filter.text+'"</b> будет удален.</p>'+
+                '<p>Продолжить?</p>'+
+                '';
+
+            // POST на сервер с удалением фильтра
+            function processDeletion() {
+                filter = {
+                    id: filter.id,
+                    remove: true,
+                }
+                $.post(vm.filters_api, filter)
+                .done(function() {
+                    // удаляю локально
+                    vm.savedFilters.splice(idx, 1);
+                    // если ничего не осталось - сбрасываю
+                    if (vm.savedFilters.length === 0) {
+                        vm.selectFilter(undefined);
+                        return;
+                    }
+                    // если удалили выше текущего - смещаю текущий
+                    // TODO: deprecated... я ввел айдишники, теперь нужно делать не так.
+                    if (idx < vm.currentFilterIndex) {
+                        vm.currentFilterIndex--;
+                    }
+                })
+                .fail(function(err) {
+                    if (err.status === 401) { // недостаточно прав
+                        if (typeof mp !== 'undefined') {
+                            mp.alert(messages.auth);
+                        }
+                        else {
+                            alert('Вы не авторизированы!');
+                        }
+                    }
+                    else {
+                        console.error(err);
+
+                        var msg = ''+
+                            '<p>'+
+                                'Не удалось удалить фильтр'+
+                                '<b>"'+filter.text+'"</b>.'+
+                            '</p>'+
+                            messages.issue+
+                            '';
+                        if (typeof mp !== 'undefined') {
+                            mp.alert(msg);
+                        }
+                        else {
+                            alert('Не удалось удалить фильтр');
+                        }
+                    }
+                });
+            }
+
+            // подтверждение
+            if (typeof mp !== 'undefined') {
+                mp.confirm(msg, processDeletion);
+            }
+            else if (confirm('Фильтр будет удален. Продолжить?')) {
+                processDeletion();
+            }
         },
 
 
@@ -185,8 +256,14 @@ window.MyTable = Vue.extend({
         // изменилось значение в строке фильтрации
         // !!! дети должны эмитить 'changed'
         valueChanged: function(value, condition) {
+            var vm = this;
             condition.value = value;
-            this.apply(this.editingFilter);
+            if (!vm.valueChangedBouncer) {
+                vm.valueChangedBouncer = setTimeout(function() {
+                    vm.apply(vm.editingFilter);
+                    vm.valueChangedBouncer = undefined;
+                }, 200);
+            }
         },
 
 
@@ -259,8 +336,7 @@ window.MyTable = Vue.extend({
                         return true;
                     }
 
-                    var apply = type.apply;
-                    return apply(data, condition.value);
+                    return type.apply(data, condition.value);
                 });
             }
             vm.dt.table.fnDraw();
@@ -286,77 +362,6 @@ window.MyTable = Vue.extend({
                 // применяем и редактируем
                 vm.editFilter(idx);
             });
-        },
-
-        // удаляет фильтр по индексу
-        removeFilter: function(idx) {
-            var vm = this;
-            var filter = vm.savedFilters[idx];
-            // mask
-
-            // Вы уверены?
-            var msg = ''+
-                '<p>Фильтр <b>"'+filter.text+'"</b> будет удален.</p>'+
-                '<p>Продолжить?</p>'+
-                '';
-
-            // POST на сервер с удалением фильтра
-            function processDeletion() {
-                filter = {
-                    id: filter.id,
-                    remove: true,
-                }
-                $.post(vm.filters_api, filter)
-                .done(function() {
-                    // удаляю локально
-                    vm.savedFilters.splice(idx, 1);
-                    // если ничего не осталось - сбрасываю
-                    if (vm.savedFilters.length === 0) {
-                        vm.selectFilter(undefined);
-                        return;
-                    }
-                    // если удалили выше текущего - смещаю текущий
-                    // TODO: deprecated... я ввел айдишники, теперь нужно делать не так.
-                    if (idx < vm.currentFilterIndex) {
-                        vm.currentFilterIndex--;
-                    }
-                })
-                .fail(function(err) {
-                    if (err.status === 401) { // недостаточно прав
-                        if (typeof mp !== 'undefined') {
-                            mp.alert(messages.auth);
-                        }
-                        else {
-                            alert('Вы не авторизированы!');
-                        }
-                    }
-                    else {
-                        console.error(err);
-
-                        var msg = ''+
-                            '<p>'+
-                                'Не удалось удалить фильтр'+
-                                '<b>"'+filter.text+'"</b>.'+
-                            '</p>'+
-                            messages.issue+
-                            '';
-                        if (typeof mp !== 'undefined') {
-                            mp.alert(msg);
-                        }
-                        else {
-                            alert('Не удалось удалить фильтр');
-                        }
-                    }
-                });
-            }
-
-            // подтверждение
-            if (typeof mp !== 'undefined') {
-                mp.confirm(msg, processDeletion);
-            }
-            else if (confirm('Фильтр будет удален. Продолжить?')) {
-                processDeletion();
-            }
         },
 
         // добавить строку с условием
@@ -434,8 +439,8 @@ window.MyTable = Vue.extend({
             if (table) {
                 var settings = table.dataTable().fnSettings();
                 info.push({
-                        text: 'Всего',
-                        value: settings.fnRecordsTotal(),
+                    text: 'Всего',
+                    value: settings.fnRecordsTotal(),
                 });
                 info.push({
                     text: 'После фильрации',
@@ -450,8 +455,6 @@ window.MyTable = Vue.extend({
         vm.dt.fnInitComplete = function() {
             // первая страница по-умолчанию
             vm.dt.table.fnPageChange(0);
-            // сортировка по-умолчанию
-            vm.dt.table.fnSort([[15, 'desc']]);
 
             // Transitions
             var wrapper = vm.dt.table.closest('.height-transition');
@@ -505,7 +508,7 @@ window.MyTable = Vue.extend({
         vm.columns = _.map(vm.columns, function(column) {
             return {
                 text: column.title,
-                value: column.data,
+                value: column.id,
                 filterType: column.filterType || 'string',
             }
         });

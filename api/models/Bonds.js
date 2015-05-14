@@ -155,7 +155,22 @@ module.exports = {
             _.each(nums, function(num) {
                 bond[num] = bond[num] ? (1 * bond[num].toFixed(2)) : '';
             });
+
+            return [
+                bond.id,
+                bond.name,
+                bond.bid,
+                bond.ask,
+                bond.endDate,
+                bond.expiresIn,
+                bond.percent,
+                bond.percentWTaxes,
+            ];
+
+            /*
+            // Все доступные данные выглядят так:
             return {
+                "id"           : bond.id,
                 "name"         : bond.name,
                 "num"          : bond.num,
                 "rate"         : bond.rate,
@@ -173,6 +188,7 @@ module.exports = {
                 "percent"      : bond.percent,
                 "percentWTaxes": bond.percentWTaxes,
             }
+            //*/
         },
     },
 
