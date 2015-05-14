@@ -52,11 +52,10 @@ module.exports = {
                     "type": "contains",
                     "value": "офз"
                 }, {
-                    "column": "ask",
+                    "column": "bid",
                     "type": "more",
                     "value": "0"
                 }],
-                "visibleColumns": []
             }, {
                 "id": "2",
                 "text": "Долгосрочные ОФЗ",
@@ -65,15 +64,14 @@ module.exports = {
                     "type": "more",
                     "value": "365"
                 }, {
-                    "column": "ask",
-                    "type": "more",
-                    "value": "0"
-                }, {
                     "column": "name",
                     "type": "contains",
                     "value": "офз"
+                }, {
+                    "column": "bid",
+                    "type": "more",
+                    "value": "0"
                 }],
-                "visibleColumns": []
             }, {
                 "id": "4",
                 "text": "Краткосрочные",
@@ -82,11 +80,10 @@ module.exports = {
                     "type": "less",
                     "value": "100"
                 }, {
-                    "column": "ask",
+                    "column": "bid",
                     "type": "more",
                     "value": "0"
                 }],
-                "visibleColumns": []
             }, {
                 "id": "5",
                 "text": "Долгосрочные",
@@ -95,11 +92,10 @@ module.exports = {
                     "type": "more",
                     "value": "365"
                 }, {
-                    "column": "ask",
+                    "column": "bid",
                     "type": "more",
                     "value": "0"
                 }],
-                "visibleColumns": []
             }]
         };
 
