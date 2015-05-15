@@ -4,6 +4,7 @@ var validator          = require('validator');
 var passport           = require('passport');
 var LocalStrategy      = require('passport-local').Strategy;
 var RememberMeStrategy = require('passport-remember-me').Strategy;
+var VKontakteStrategy  = require('passport-vkontakte').Strategy;
 
 
 
@@ -17,7 +18,15 @@ passport.login = function(req, res, user, cb) {
             return cb(err);
         }
         res.locals.user = user;
-        return cb();
+        // даем ему токен
+        passport.rememberme.issue(user, function(err, token) {
+            if (err) {
+                console.error('unable to give token:', err);
+                return cb(err);
+            }
+            res.cookie(sails.config.passport.rememberme.key, token, { path: '/', httpOnly: true, maxAge: 604800000 });
+            return cb();
+        });
     });
 };
 
@@ -62,49 +71,49 @@ passport.options = sails.config.passport.allStrategies || {};
 //  ╦  ╔═╗╔═╗╔═╗╦
 //  ║  ║ ║║  ╠═╣║
 //  ╩═╝╚═╝╚═╝╩ ╩╩═╝
-var opts = _.extend(passport.options, sails.config.passport.local);
-var auth = function(req, identifier, password, cb) {
-    var isEmail = validator.isEmail(identifier);
-    var query = {};
-    if (isEmail) {
-        query.email = identifier;
-    }
-    else {
-        query.username = identifier;
-    }
-    User.findOne(query, function (err, user) {
-        if (err) return cb(err);
-        if (!user) {
-            if (isEmail)
-                msg = 'Неправильный почтовый адрес';
-            else
-                msg = 'Неправильное имя пользователя';
-            return cb(new Error(msg), null);
+passport.use(new LocalStrategy(sails.config.passport.local,
+    function(identifier, password, cb) {
+        var isEmail = validator.isEmail(identifier);
+        var query = {};
+        if (isEmail) {
+            query.email = identifier;
         }
-        Passport.findOne({
-            protocol : 'local',
-            user     : user.id,
-        }, function (err, passport) {
+        else {
+            query.username = identifier;
+        }
+        User.findOne(query, function (err, user) {
             if (err) return cb(err);
-            if (!passport) {
-                return cb(new Error('У пользователя не установлен пароль, авторизация невозможна'), false);
+            if (!user) {
+                if (isEmail)
+                    msg = 'Неправильный почтовый адрес';
+                else
+                    msg = 'Неправильное имя пользователя';
+                return cb(new Error(msg), null);
             }
-            else {
-                passport.validatePassword(password, function (err, res) {
-                    if (err) {
-                        return cb(err);
-                    }
-                    if (!res) {
-                        return cb(new Error('Неправильный пароль'), false);
-                    } else {
-                        return cb(null, user);
-                    }
-                });
-            }
+            Passport.findOne({
+                strategy : 'local',
+                user     : user.id,
+            }, function (err, passport) {
+                if (err) return cb(err);
+                if (!passport) {
+                    return cb(new Error('У пользователя не установлен пароль, авторизация невозможна'), false);
+                }
+                else {
+                    passport.validatePassword(password, function (err, res) {
+                        if (err) {
+                            return cb(err);
+                        }
+                        if (!res) {
+                            return cb(new Error('Неправильный пароль'), false);
+                        } else {
+                            return cb(null, user);
+                        }
+                    });
+                }
+            });
         });
-    });
-};
-passport.use(new LocalStrategy(opts, auth));
+    }
+));
 
 
 
@@ -112,13 +121,12 @@ passport.use(new LocalStrategy(opts, auth));
 //  ╠╦╝║╣ ║║║║╣ ║║║╠╩╗║╣ ╠╦╝  ║║║║╣
 //  ╩╚═╚═╝╩ ╩╚═╝╩ ╩╚═╝╚═╝╩╚═  ╩ ╩╚═╝
 passport.rememberme = {};
-passport.rememberme.opts = _.extend(passport.options, sails.config.passport.rememberme);
 // login по токену
 passport.rememberme.verify = function(token, cb) {
     //Ищем пользователя с этим token'ом
     var query = {
-        protocol: "rememberme",
-        token: token,
+        strategy : "rememberme",
+        token    : token,
     };
     Passport.findOne(query, function(err, passport) {
         if (err || !passport) return cb(err || 'passport not found');
@@ -143,24 +151,82 @@ passport.rememberme.verify = function(token, cb) {
 passport.rememberme.issue = function(user, cb) {
     // удаляем все токены данного пользователя
     Passport.destroy({
-        user: user.id,
-        protocol: 'rememberme'
+        user     : user.id,
+        strategy : 'rememberme'
     })
     .exec(function(err) {
-        if (err) return cb(err);
+        if (err) {
+            console.error('unable destroy rememberme passport for user_id:', user.id, err)
+            return cb(err);
+        }
         // и даем ему новый
         var token = require('crypto').randomBytes(32).toString('hex');
         Passport.create({
-            user: user.id,
-            protocol: 'rememberme',
-            token: token
-        }, function(err, passport) {
-            if (err) return cb(err);
+            user     : user.id,
+            strategy : 'rememberme',
+            token    : token
+        }, function(err) {
+            if (err) {
+                console.error('unable to give token:', err);
+                return cb(err);
+            }
             return cb(null, token);
         });
     });
 };
-passport.use(new RememberMeStrategy(opts, passport.rememberme.verify, passport.rememberme.issue));
+passport.use(new RememberMeStrategy(sails.config.passport.rememberme, passport.rememberme.verify, passport.rememberme.issue));
+
+
+
+//  ╦  ╦╦╔═
+//  ╚╗╔╝╠╩╗
+//   ╚╝ ╩ ╩
+passport.use(new VKontakteStrategy(sails.config.passport.vk,
+    function(accessToken, refreshToken, profile, done) {
+        async.waterfall([
+            // ищу паспорт
+            function(asyncCb) {
+                Passport.findOne({
+                    strategy: 'vk',
+                    identifier: profile.id,
+                }, asyncCb);
+            },
+            // ищу пользователя паспорта
+            //
+            // либо (passport, cb)
+            // либо (cb)
+            function(passport, asyncCb) {
+                // создаю паспорт, если не создан
+                // в человеческом понимании это равносильно if (!passport)
+                if (!asyncCb) {
+                    asyncCb = passport;
+                    User.create({}, function(err, user) {
+                        if (err) {
+                            console.error('unable to create user (vk auth)', err);
+                            return asyncCb(err);
+                        }
+                        Passport.create({
+                            strategy: 'vk',
+                            identifier: profile.id,
+                            user: user.id,
+                        }, function(err) {
+                            if (err) {
+                                console.error('unable to create passport (vk auth)', err);
+                                return asyncCb(err);
+                            }
+                            console.info('New vk user! ', profile.displayName+'('+profile.id+')');
+                            asyncCb(null, user);
+                        });
+                    })
+                }
+                else {
+                    User.findOne(passport.user, asyncCb);
+                }
+            }
+        // done(err, user)
+        ], done);
+    }
+));
 
 
 

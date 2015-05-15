@@ -19,7 +19,7 @@ var Passport = {
         user: { model: 'User', required: true },
 
         // Required field: Protocol
-        protocol: { type: 'alphanumeric', required: true },
+        strategy: { type: 'alphanumeric', required: true },
 
         // Local strategy
         password: { type: 'string', minLength: 3 },
@@ -30,11 +30,14 @@ var Passport = {
         // Remember Me strategy
         token:  { type: 'string' },
         activateToken: function(cb) {
-            if (this.protocol == 'rememberme') {
+            if (this.strategy == 'rememberme') {
                 return this.destroy(cb);
             }
-            return cb(new Error('wrong protocol'));
-        }
+            return cb(new Error('wrong strategy'));
+        },
+
+        // vk strategy
+        identifier: { type: 'string' },
     },
 
 

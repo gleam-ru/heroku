@@ -29,7 +29,7 @@ module.exports.bootstrap = function(cb) {
             log.verbose('admin created: '+user.toJSON());
             Passport.create({
                 id: 1,
-                protocol: 'local',
+                strategy: 'local',
                 password: 'Xa@Bk1rU',
                 user: user.id,
             }, function(err, passport) {

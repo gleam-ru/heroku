@@ -12,7 +12,12 @@ var AuthController = {
     //  ║ ╦║╣  ║
     //  ╚═╝╚═╝ ╩
 
-    login: function (req, res) {
+    logout: function (req, res) {
+        passport.logout(req, res);
+        return res.redirect('/login');
+    },
+
+    local_auth: function (req, res) {
         // авторизирован? иди в профиль.
         if (req.isAuthenticated()) return res.redirect('/me');
         // Render the `auth/login` view
@@ -23,12 +28,7 @@ var AuthController = {
         });
     },
 
-    logout: function (req, res) {
-        passport.logout(req, res);
-        return res.redirect('/login');
-    },
-
-    register: function (req, res) {
+    local_register: function (req, res) {
         // авторизирован? иди в профиль.
         if (req.isAuthenticated()) return res.redirect('/me');
         var data = req.flash('form');
@@ -36,6 +36,24 @@ var AuthController = {
             errors: req.flash('error'),
             form: data[0] || {},
         });
+    },
+
+    vk: function(req, res) {
+        passport.authenticate(['vkontakte'], function(err, user) {
+            if (err || !user) {
+                console.error('vk auth error', err, user);
+                return AuthController.tryAgain(req, res, err);
+            }
+            passport.login(req, res, user, function(err) {
+                if (err) return AuthController.tryAgain(req, res, err);
+                if (!user.username || !user.email) {
+                    // redirect to
+                    // Пожалуйста, заполните информацию о себе
+                    // TODO: fc_key
+                }
+                return res.redirect(sails.config.passport.vk.successRedirect);
+            });
+        })(req, res);
     },
 
 
@@ -57,12 +75,8 @@ var AuthController = {
                 }
                 // аутентификация успешна
                 passport.login(req, res, user, function(err) {
-                    // даем токен пользователю
-                    passport.rememberme.issue(user, function(err, token) {
-                        if (err) console.error('unable to give token:', err);
-                        res.cookie(sails.config.passport.rememberme.key, token, { path: '/', httpOnly: true, maxAge: 604800000 });
-                        return res.redirect('/me');
-                    });
+                    if (err) return AuthController.tryAgain(req, res, err);
+                    res.redirect('/me');
                 });
             })(req, res);
         }
@@ -83,9 +97,9 @@ var AuthController = {
             }, function(err, user) {
                 if (err) return AuthController.tryAgain(req, res, err);
                 Passport.create({
-                    user: user.id,
-                    protocol: 'local',
-                    password: password,
+                    user     : user.id,
+                    strategy : 'local',
+                    password : password,
                 }, function(err) {
                     if (err) {
                         // что-то пошло не так
@@ -96,13 +110,8 @@ var AuthController = {
                     }
                     // аутентифицируем пользователя
                     passport.login(req, res, user, function(err) {
-                        // даем ему токен
-                        passport.rememberme.issue(user, function(err, token) {
-                            if (err) console.error('unable to give token:', err);
-                            res.cookie(sails.config.passport.rememberme.key, token, { path: '/', httpOnly: true, maxAge: 604800000 });
-                            // и посылаем нахер
-                            return res.redirect('/me');
-                        });
+                        if (err) return AuthController.tryAgain(req, res, err);
+                        res.redirect('/me');
                     });
                 });
             });

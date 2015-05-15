@@ -16,9 +16,10 @@ module.exports.routes = {
     'get /settings': 'Settings',
 
     // Auth
-    'get /login'         : 'Auth.login',
     'get /logout'        : 'Auth.logout',
-    'get /register'      : 'Auth.register',
+    'get /login'         : 'Auth.local_auth',
+    'get /register'      : 'Auth.local_register',
+    'get /auth/vk'       : 'Auth.vk',
     //---
     'post /auth/:action' : 'Auth.action', // 'login', 'register'
 
