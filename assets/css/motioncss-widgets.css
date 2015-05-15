@@ -337,7 +337,7 @@
 	margin-top: 5px;
 	display: block;
 	}
-	
+
 /*
   ************************** Widget w-blogpost basic styles ************************/
 .w-blogpost {
@@ -547,7 +547,7 @@
 .w-clients.type_carousel .w-clients-nav {
 	display: block;
 	}
-	
+
 /*
  ************************** Widget w-comments basic styles ************************/
 .w-comments {
@@ -662,7 +662,7 @@
 .w-contacts.layout_list .w-contacts-item-value {
 	margin-left: 0;
 	}
-	
+
 /*
  ************************** Widget w-faq basic styles ************************/
 .w-faq {
@@ -2764,6 +2764,9 @@
 			.w-socials-item.twitter:hover {
 				background-color: #00acee;
 				}
+            .w-socials-item.google:hover {
+                background-color: #3399ff;
+                }
 			.w-socials-item.gplus:hover {
 				background-color: #c63b1e;
 				}
