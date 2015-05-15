@@ -275,3 +275,24 @@ passport.use(new GoogleStrategy(sails.config.passport.google,
 ));
 
 module.exports = passport;
+
+
+
+//  ╦ ╦╔═╗╔╗╔╔╦╗╔═╗═╗ ╦
+//  ╚╦╝╠═╣║║║ ║║║╣ ╔╩╦╝
+//   ╩ ╩ ╩╝╚╝═╩╝╚═╝╩ ╚═
+var YandexStrategy = require('passport-yandex').Strategy;
+passport.use(new YandexStrategy(sails.config.passport.yandex,
+    function(accessToken, refreshToken, profile, done) {
+        userByPassport({
+            strategy   : 'yandex',
+            identifier : profile.id,
+        }, {
+            username   : profile.displayName+' (y_'+profile.id+')',
+            email      : profile.emails[0].value
+        },
+        done);
+    }
+));
+
+module.exports = passport;

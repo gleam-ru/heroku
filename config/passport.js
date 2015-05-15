@@ -35,4 +35,13 @@ module.exports.passport = {
             'email',
         ],
     },
+
+    // https://oauth.yandex.ru/client/new
+    yandex: {
+        clientID: '04ab32011e954e189f0eae8045fd54d2',
+        clientSecret: 'c28aaed874dc486c88dde7d3dabbf440',
+        // дурак, не умеет множественные :(
+        // https://oauth.yandex.ru/client/04ab32011e954e189f0eae8045fd54d2
+        callbackURL: '/auth/yandex',
+    },
 };

@@ -20,6 +20,7 @@ module.exports.routes = {
     'get /logout'        : 'Auth.logout',
     'get /auth/vk'       : 'Auth.vk',
     'get /auth/google'   : 'Auth.google',
+    'get /auth/yandex'   : 'Auth.yandex',
     //---
     'post /auth/:action' : 'Auth.action', // 'login', 'register'
 

@@ -8,8 +8,9 @@ mixin providers()
   .w-socials.size_big
     .w-socials-h
       .w-socials-list
-        +provider('vk',     '/auth/vk',     'fa-vk',     'Vkontakte')
+        +provider('vk',     '/auth/vk',     'fa-vk',     'VKontakte')
         +provider('google', '/auth/google', 'fa-google', 'Google')
+        +provider('yandex',  '/auth/yandex', 'fa-yahoo', 'Yandex')
 
 mixin provider(classname, href, fa, text)
   .w-socials-item(class=classname)
