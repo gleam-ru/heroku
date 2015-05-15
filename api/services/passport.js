@@ -2,9 +2,6 @@ var path               = require('path');
 var url                = require('url');
 var validator          = require('validator');
 var passport           = require('passport');
-var LocalStrategy      = require('passport-local').Strategy;
-var RememberMeStrategy = require('passport-remember-me').Strategy;
-var VKontakteStrategy  = require('passport-vkontakte').Strategy;
 
 
 
@@ -63,14 +60,13 @@ passport.deserializeUser(function(id, cb) {
 //  ╚════██║   ██║   ██╔══██╗██╔══██║   ██║   ██╔══╝  ██║   ██║██║██╔══╝  ╚════██║
 //  ███████║   ██║   ██║  ██║██║  ██║   ██║   ███████╗╚██████╔╝██║███████╗███████║
 //  ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝ ╚═════╝ ╚═╝╚══════╝╚══════╝
-// глобальные опции для всех стратегий
-passport.options = sails.config.passport.allStrategies || {};
 
 
 
 //  ╦  ╔═╗╔═╗╔═╗╦
 //  ║  ║ ║║  ╠═╣║
 //  ╩═╝╚═╝╚═╝╩ ╩╩═╝
+var LocalStrategy      = require('passport-local').Strategy;
 passport.use(new LocalStrategy(sails.config.passport.local,
     function(identifier, password, cb) {
         var isEmail = validator.isEmail(identifier);
@@ -120,6 +116,7 @@ passport.use(new LocalStrategy(sails.config.passport.local,
 //  ╦═╗╔═╗╔╦╗╔═╗╔╦╗╔╗ ╔═╗╦═╗  ╔╦╗╔═╗
 //  ╠╦╝║╣ ║║║║╣ ║║║╠╩╗║╣ ╠╦╝  ║║║║╣
 //  ╩╚═╚═╝╩ ╩╚═╝╩ ╩╚═╝╚═╝╩╚═  ╩ ╩╚═╝
+var RememberMeStrategy = require('passport-remember-me').Strategy;
 passport.rememberme = {};
 // login по токену
 passport.rememberme.verify = function(token, cb) {
@@ -178,56 +175,103 @@ passport.use(new RememberMeStrategy(sails.config.passport.rememberme, passport.r
 
 
 
+//
+// Алгоритм работы с другими провайдерами схож:
+// 1) аутентифицируем
+// 2) смотрим - вдруг у нас уже есть
+// 2.1) если есть - отдаем его
+// 2.2) если нет, то создаем юзера, а на его основе - паспорт
+// 3) вы восхитительны!
+//
+// Для алгоритма, описанного выше, написан более-менее "общий" метод:
+// (получает или создает)
+// done(err, user)
+function userByPassport(_passport, _user, done) {
+    async.waterfall([
+        // ищу паспорт
+        function(asyncCb) {
+            Passport.findOne({
+                strategy   : _passport.strategy,
+                identifier : _passport.identifier,
+            }, asyncCb);
+        },
+        // ищу пользователя паспорта
+        //
+        // либо (passport, cb)
+        // либо (cb)
+        function(passport, asyncCb) {
+            // создаю паспорт, если не создан
+            // в человеческом понимании это равносильно if (!passport)
+            if (!asyncCb) {
+                asyncCb = passport;
+                User.create(_user, function(err, user) {
+                    if (err) {
+                        console.error('unable to create user ('+_passport.strategy+' auth)', err);
+                        return asyncCb(err);
+                    }
+                    Passport.create({
+                        strategy   : _passport.strategy,
+                        identifier : _passport.identifier,
+                        user: user.id,
+                    }, function(err) {
+                        if (err) {
+                            console.error('unable to create passport ('+_passport.strategy+' auth)', err);
+                            return asyncCb(err);
+                        }
+                        console.info('New '+_passport.strategy+' user! ID: '+user.id);
+                        asyncCb(null, user);
+                    });
+                })
+            }
+            else {
+                User.findOne(passport.user, asyncCb);
+            }
+        }
+    ], function(err, user) {
+        if (err) {
+            console.error('userByPassport trouble:', err);
+        }
+        done(err, user);
+    });
+}
+
+
+
+
+
 //  ╦  ╦╦╔═
 //  ╚╗╔╝╠╩╗
 //   ╚╝ ╩ ╩
+var VKontakteStrategy  = require('passport-vkontakte').Strategy;
 passport.use(new VKontakteStrategy(sails.config.passport.vk,
     function(accessToken, refreshToken, profile, done) {
-        async.waterfall([
-            // ищу паспорт
-            function(asyncCb) {
-                Passport.findOne({
-                    strategy: 'vk',
-                    identifier: profile.id,
-                }, asyncCb);
-            },
-            // ищу пользователя паспорта
-            //
-            // либо (passport, cb)
-            // либо (cb)
-            function(passport, asyncCb) {
-                // создаю паспорт, если не создан
-                // в человеческом понимании это равносильно if (!passport)
-                if (!asyncCb) {
-                    asyncCb = passport;
-                    User.create({}, function(err, user) {
-                        if (err) {
-                            console.error('unable to create user (vk auth)', err);
-                            return asyncCb(err);
-                        }
-                        Passport.create({
-                            strategy: 'vk',
-                            identifier: profile.id,
-                            user: user.id,
-                        }, function(err) {
-                            if (err) {
-                                console.error('unable to create passport (vk auth)', err);
-                                return asyncCb(err);
-                            }
-                            console.info('New vk user! ', profile.displayName+'('+profile.id+')');
-                            asyncCb(null, user);
-                        });
-                    })
-                }
-                else {
-                    User.findOne(passport.user, asyncCb);
-                }
-            }
-        // done(err, user)
-        ], done);
+        userByPassport({
+            strategy   : 'vk',
+            identifier : profile.id,
+        }, {
+            username   : profile.displayName+' (v_'+profile.id+')',
+        },
+        done);
     }
 ));
 
 
+
+//  ╔═╗╔═╗╔═╗╔═╗╦  ╔═╗
+//  ║ ╦║ ║║ ║║ ╦║  ║╣
+//  ╚═╝╚═╝╚═╝╚═╝╩═╝╚═╝
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+passport.use(new GoogleStrategy(sails.config.passport.google,
+    function(accessToken, refreshToken, profile, done) {
+        userByPassport({
+            strategy   : 'google',
+            identifier : profile.id,
+        }, {
+            username   : profile.displayName+' (g_'+profile.id+')',
+            email      : profile.emails[0].value
+        },
+        done);
+    }
+));
 
 module.exports = passport;

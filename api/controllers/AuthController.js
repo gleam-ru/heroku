@@ -49,6 +49,24 @@ var AuthController = {
         })(req, res);
     },
 
+    google: function(req, res) {
+        passport.authenticate(['google'], sails.config.passport.google, function(err, user) {
+            if (err || !user) {
+                console.error('google auth error', err, user);
+                return AuthController.tryAgain(req, res, err);
+            }
+            passport.login(req, res, user, function(err) {
+                if (err) return AuthController.tryAgain(req, res, err);
+                if (!user.username || !user.email) {
+                    // redirect to
+                    // Пожалуйста, заполните информацию о себе
+                    // TODO: fc_key
+                }
+                return res.redirect(sails.config.passport.vk.successRedirect);
+            });
+        })(req, res);
+    },
+
 
 
     //  ╔═╗╔═╗╔═╗╔╦╗

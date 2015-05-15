@@ -22,4 +22,17 @@ module.exports.passport = {
         successRedirect: '/me',
         failureRedirect: '/login',
     },
+
+    // https://console.developers.google.com/project/calcium-adapter-447/apiui/credential?authuser=0
+    google: {
+        clientID: '63880045882-73cm3lsd32d4clglkom8fsq65m6rnujp.apps.googleusercontent.com',
+        clientSecret: 'mqA16-hvRSWbpEf6XdIjfUfC',
+        callbackURL: '/auth/google',
+        // https://developers.google.com/identity/protocols/OAuth2UserAgent
+        // https://developers.google.com/+/api/oauth#login-scopes
+        scope: [
+            'profile',
+            'email',
+        ],
+    },
 };
