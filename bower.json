@@ -19,7 +19,8 @@
     "vue": "~0.11.8",
     "magnific-popup": "~1.0.0",
     "jquery-cookie": "~1.4.1",
-    "tooltipster": "~3.3.0"
+    "tooltipster": "~3.3.0",
+    "font-awesome": "~4.3.0"
   },
   "name": "blozhik",
   "version": "0.0.0",
