@@ -19,16 +19,9 @@ module.exports.navigation = [
         ],
     },
     {
-        name     : "Авторизация",
+        name     : "Войти",
         href     : "/login",
         canSee   : ["ghost"],
-        children : [
-            {
-                name: "Регистрация",
-                href: "/register",
-                canSee: ["ghost"]
-            }
-        ],
     },
 
     //

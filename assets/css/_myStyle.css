@@ -20,9 +20,13 @@ body::-webkit-scrollbar {
 .l-submain {
     padding: 20px 10px;
     }
-.l-submain-h.g-html {
+.w-socials-item a {
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow:    inset 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
+    box-shadow:         inset 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
+}
 
-    }
 #mask {
     height: 100%;
     position: absolute;
@@ -116,12 +120,14 @@ body::-webkit-scrollbar {
  *  ╚═╗ ║ ╚╦╝║  ║╣ ===║  ║  ╠═╣╚═╗╚═╗║╣ ╚═╗
  *  ╚═╝ ╩  ╩ ╩═╝╚═╝   ╚═╝╩═╝╩ ╩╚═╝╚═╝╚═╝╚═╝
  */
+.no-error .error {display: none;}
+.pointer {cursor: pointer;}
+.mr-10 {margin-right: 10px;}
+.ow-h {overflow: hidden};
 .isolated {margin: 0px 0px 10px 0px;}
 .comment {
     color: grey;
     font-style: italic;
-    /* для борьбы с маржином заголовков */
-    margin-top: -20px;
 }
 .ib {display: inline-block;}
 .no-select {

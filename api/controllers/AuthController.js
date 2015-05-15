@@ -8,6 +8,16 @@
 
 var AuthController = {
 
+    index: function (req, res) {
+        // авторизирован? иди в профиль.
+        if (req.isAuthenticated()) return res.redirect('/me');
+        var data = req.flash('form');
+        return res.render('login', {
+            errors: req.flash('error'),
+            form: data[0] || {},
+        });
+    },
+
     //  ╔═╗╔═╗╔╦╗
     //  ║ ╦║╣  ║
     //  ╚═╝╚═╝ ╩
@@ -17,26 +27,9 @@ var AuthController = {
         return res.redirect('/login');
     },
 
-    local_auth: function (req, res) {
-        // авторизирован? иди в профиль.
-        if (req.isAuthenticated()) return res.redirect('/me');
-        // Render the `auth/login` view
-        var data = req.flash('form');
-        return res.render('auth/login', {
-            errors: req.flash('error'),
-            form: data[0] || {},
-        });
-    },
-
-    local_register: function (req, res) {
-        // авторизирован? иди в профиль.
-        if (req.isAuthenticated()) return res.redirect('/me');
-        var data = req.flash('form');
-        return res.render('auth/register', {
-            errors: req.flash('error'),
-            form: data[0] || {},
-        });
-    },
+    //
+    // login strategies
+    //
 
     vk: function(req, res) {
         passport.authenticate(['vkontakte'], function(err, user) {
@@ -159,18 +152,8 @@ var AuthController = {
         // данные, чтобы форма восстановила свои данные
         req.flash('form', req.body);
 
-        // редиректы в нужные места, в зависимости от действия
         // вьюшки должны уметь показывать error & form
-        var action = req.param('action');
-        if (!action || action == 'login') {
-            res.redirect('/login');
-        }
-        else if (action == 'register') {
-            res.redirect('/register');
-        }
-        else {
-            res.redirect('/');
-        }
+        res.redirect(req.get('referer'));
     },
 
 };

@@ -1,0 +1,64 @@
+extends ./layouts/default
+
+
+//- ASTRA
+//- http://astra.us-themes.com/shortcodes/social-links/
+
+mixin providers()
+  .w-socials.size_big
+    .w-socials-h
+      .w-socials-list
+        +provider('vk', '/auth/vk', 'fa-vk', 'Vkontakte')
+
+mixin provider(classname, href, fa, text)
+  .w-socials-item(class=classname)
+    a.w-socials-item-link(href=href)
+      i.fa(class=fa)
+    .w-socials-item-popup
+      .w-socials-item-popup-h
+        span.w-socials-item-popup-text #{text}
+
+
+
+
+block postHead
+  script(src='PageControllers/auth.js')
+  style
+    | form * {margin-bottom: 5px; max-width: 300px; display: block;}
+    | #auth h3 {margin-top: 20px; text-transform: capitalize;}
+    | #auth h3 a {text-transform: lowercase;}
+
+block content
+  h1 Вход на сайт
+  +providers()
+
+
+  div#auth
+    div.registering(
+      v-if='signUp'
+      )
+      h3.no-select {{signUpText}} (
+        a.pointer(
+          v-on='click: change_vue'
+          ) {{signInText}}
+        | )
+      form(role="form" action="/auth/register" method="post")
+        for error in errors
+          +error(error)
+        input(type="text" name="username" placeholder="Имя пользователя" value=form.username)
+        input(type="text" name="email" placeholder="Email" value=form.email)
+        input(type="password" name="password" placeholder="Password" value=form.password)
+        button(type="submit").g-btn.type_midnight.size_small Регистрация
+    div.authentication(
+      v-if='signIn'
+      ) 
+      h3.no-select {{signInText}} (
+        a.pointer(
+          v-on='click: change_vue'
+          ) {{signUpText}}
+        | )
+      form(role="form" action="/auth/login" method="post")
+        +error(errors)
+        input(type="text" name="identifier" placeholder="Имя пользователя или Email" value=form.identifier)
+        input(type="password" name="password" placeholder="Пароль" value=form.password)
+        button(type="submit").g-btn.type_midnight.size_small.mr-10 Вход
