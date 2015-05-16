@@ -14,6 +14,8 @@ module.exports.routes = {
 
     // Settings
     'get /settings'              : 'Settings',
+    //---
+    'post /settings/update'      : 'Settings.update',
 
     // Auth
     'get /auth'                  : 'Auth',

@@ -25,8 +25,10 @@ body::-webkit-scrollbar {
     -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
     -moz-box-shadow:    inset 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
     box-shadow:         inset 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
-}
-
+    }
+.l-main .w-socials-item, .l-footer .w-socials-item {
+    background-color: #ECF0F1;
+    }
 #mask {
     height: 100%;
     position: absolute;
@@ -120,6 +122,7 @@ body::-webkit-scrollbar {
 
 /* tooltipster */
 .tooltipster-base {cursor: pointer; z-index: 9999;}
+.near-header {cursor: pointer; font-size: 30px; padding: 0px 0px 0px 10px;}
 .begin-learning {
     cursor: pointer;
     font-size: 30px;
@@ -132,11 +135,12 @@ body::-webkit-scrollbar {
  *  ╚═╝ ╩  ╩ ╩═╝╚═╝   ╚═╝╩═╝╩ ╩╚═╝╚═╝╚═╝╚═╝
  */
 input.has-error {
-    background-color: #FAD7D7;
+    background-color: #FAD7D7 !important;
 }
 .no-error .error {display: none;}
 .pointer {cursor: pointer;}
 .mr-10 {margin-right: 10px;}
+.mb-10 {margin-bottom: 10px;}
 .ow-h {overflow: hidden};
 .isolated {margin: 0px 0px 10px 0px;}
 .comment {
@@ -167,6 +171,16 @@ input.has-error {
     display: none;
   }
 }
+.tile {
+    padding: 10px;
+    border: solid 1px #CCC;
+    border-radius: 3px;
+    background: #ECF0F1;
+    }
+    .tile input {
+        background-color: #FAFAFA;
+        }
+    .tile p:first-child {margin: 0px};
 
 
 

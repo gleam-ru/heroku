@@ -2,6 +2,8 @@ extends ./layouts/default.jade
 
 block postHead
   script(src='PageControllers/settings.js')
+  style
+    | p {margin: 10px 0px 5px 0px !important;}
 
 //- 
 //- ASTRA
@@ -17,6 +19,7 @@ mixin provider(data)
       .w-socials-item-popup-h
         span.w-socials-item-popup-text #{data.name}
 
+//- data = {provider, name, href, icon}
 mixin providerToRemove(data)
   .w-socials-item(class=data.provider)
     a.w-socials-item-link(href=data.href+'/remove')
@@ -41,22 +44,72 @@ mixin providers(list, remove)
 
 
 block content
-  h1 Настройки
-  p Тут будет следующая информация:
-  ul
-    li Смена своих данных
-    li Привязка других регистраций 
-      i (локальная, вк, фб, ...)
-  h3 Изменить информацию о себе
-  h3 Привязка аккаунта
-  p.comment
-    | У вас есть аккаунт.
-    | Вы можете войти на сайт, используя свои логин (имя пользователя) и пароль. 
-    | Кроме того, вы можете войти, авторизируясь при помощи других сайтов (представлены ниже).
-    | Чтобы попадать в одну и ту же учетную запись, при авторизации через разные сайты,
-    | необходимо осуществить "привязку".
-    | 
-  h5 Привязать аккаунты
+  h3.mb-10 Изменить свои данные
+  div.tile#edit(
+    style='max-width: 350px;'
+    )
+    for error in errors
+      +error(error)
+    +message(info)
+    form(
+      role='form'
+      action='/settings/update'
+      method='post'
+      v-el='form'
+      v-on='submit: beforeSubmit'
+      )
+      p Имя пользователя
+      input(
+        type='text'
+        name='username'
+        placeholder='Имя пользователя'
+        value=username
+        v-el='uname'
+        v-on='keyup: updateValidation'
+        v-class='has-error: errors.username'
+        )
+      p Email
+      input(
+        type='text'
+        name='email'
+        placeholder='Email'
+        value=email
+        v-el='email'
+        v-on='keyup: updateValidation'
+        v-class='has-error: errors.email'
+        )
+      p Пароль
+      input.mb-10(
+        type='password'
+        name='old_password'
+        placeholder='Старый пароль'
+        v-el='old_pwd'
+        v-on='keyup: updateValidation'
+        v-class='has-error: errors.old_pwd'
+        )
+      input.mb-10(
+        type='password'
+        name='new_password'
+        placeholder='Новый пароль'
+        v-el='pwd_1'
+        v-on='keyup: updateValidation'
+        v-class='has-error: errors.new_pwd'
+        )
+      input.mb-10(
+        type='password' 
+        placeholder='Повторите новый пароль' 
+        v-el='pwd_2'
+        v-on='keyup: updateValidation'
+        v-class='has-error: errors.new_pwd'
+        )
+      button.g-btn.type_midnight.size_small(
+        type='submit'
+        v-class='disabled: hasErrors'
+        )
+        | Сохранить
+  h3.ib(style='margin-top: 20px;') Привязать аккаунты
+  +headerTooltipster('about-attaching')
   +providers(attachable, false)
-  h5 Отключить аккаунты
-  +providers(attached, true)
+  if (attached.length > 0)
+    p Привязанные аккаунты можно отключить:
+    +providers(attached, true)

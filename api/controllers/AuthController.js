@@ -191,7 +191,7 @@ var AuthController = {
 
     attached: function(req, res) {
         var referer = req.get('referer');
-        req.flash('results', 'oke');
+        req.flash('info', 'oke');
         return res.redirect(referer || '/settings');
     },
 
