@@ -44,4 +44,12 @@ module.exports.passport = {
         // https://oauth.yandex.ru/client/04ab32011e954e189f0eae8045fd54d2
         callbackURL: '/auth/yandex',
     },
+
+    // http://api.mail.ru/sites/my/733695
+    mailru: {
+        clientID: '733695',
+        clientSecret: 'ecb5e49555833c492b2abddcbddb2f0d',
+        // дурак, не умеет множественные :(
+        callbackURL: '/auth/mailru',
+    },
 };

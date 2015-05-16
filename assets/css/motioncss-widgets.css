@@ -2767,6 +2767,8 @@
             .w-socials-item.google:hover {
                 background-color: #3399ff;
                 }
+            .w-socials-item.mailru:hover {background-color: #003399;}
+            .w-socials-item.mailru:hover i {color: #ff9900;}
             .w-socials-item.yandex:hover {
                 background-color: #c63b1e;
                 }

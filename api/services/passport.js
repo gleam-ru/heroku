@@ -295,4 +295,28 @@ passport.use(new YandexStrategy(sails.config.passport.yandex,
     }
 ));
 
+
+
+//  ╔╦╗╔═╗╦╦  ╦═╗╦ ╦
+//  ║║║╠═╣║║  ╠╦╝║ ║
+//  ╩ ╩╩ ╩╩╩═╝╩╚═╚═╝
+var MailruStrategy = require('passport-mailru').Strategy;
+passport.use(new MailruStrategy(sails.config.passport.mailru,
+    function(accessToken, refreshToken, profile, done) {
+        userByPassport({
+            strategy   : 'mailru',
+            identifier : profile.id,
+        }, {
+            username   : profile.displayName+' (m_'+profile.id+')',
+            email      : profile.emails[0].value
+        },
+        done);
+    }
+));
+
+
+
+
+
+
 module.exports = passport;
