@@ -184,7 +184,11 @@ passport.use(new RememberMeStrategy(sails.config.passport.rememberme, passport.r
 // Для алгоритма, описанного выше, написан более-менее "общий" метод:
 // (получает или создает)
 // done(err, user)
-function userByPassport(_passport, _user, done) {
+function userByPassport(req, _passport, _user, done) {
+    if (req.isAuthenticated()) {
+        // пользователь аутентифицирован -> привязка.
+        return attachPassportToExistingUser(_passport, req.user.id, done);
+    }
     async.waterfall([
         // ищу паспорт
         function(asyncCb) {
@@ -210,7 +214,7 @@ function userByPassport(_passport, _user, done) {
                     Passport.create({
                         strategy   : _passport.strategy,
                         identifier : _passport.identifier,
-                        user: user.id,
+                        user       : user.id,
                     }, function(err) {
                         if (err) {
                             console.error('unable to create passport ('+_passport.strategy+' auth)', err);
@@ -233,6 +237,26 @@ function userByPassport(_passport, _user, done) {
     });
 }
 
+//
+// Для привязки нескольких провайдеров к одной учетной записи
+// done(err, user)
+function attachPassportToExistingUser(_passport, _user_id, done) {
+    Passport.findOrCreate({
+        user       : _user_id,
+        strategy   : _passport.strategy,
+    }, {
+        user       : _user_id,
+        strategy   : _passport.strategy,
+        identifier : _passport.identifier,
+    }, function(err) {
+        if (err) {
+            console.error('attachPassportToExistingUser trouble:', err);
+            return done(err);
+        }
+        console.info('User '+_user_id+' has attached '+_passport.strategy);
+        return User.findOne(_user_id, done);
+    });
+}
 
 
 
@@ -241,9 +265,9 @@ function userByPassport(_passport, _user, done) {
 //  ╚╗╔╝╠╩╗
 //   ╚╝ ╩ ╩
 var VKontakteStrategy  = require('passport-vkontakte').Strategy;
-passport.use(new VKontakteStrategy(sails.config.passport.vkontakte,
-    function(accessToken, refreshToken, profile, done) {
-        userByPassport({
+passport.use(new VKontakteStrategy(sails.config.passport.strategies.vkontakte,
+    function(req, accessToken, refreshToken, profile, done) {
+        userByPassport(req, {
             strategy   : 'vkontakte',
             identifier : profile.id,
         }, {
@@ -259,9 +283,9 @@ passport.use(new VKontakteStrategy(sails.config.passport.vkontakte,
 //  ║ ╦║ ║║ ║║ ╦║  ║╣
 //  ╚═╝╚═╝╚═╝╚═╝╩═╝╚═╝
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-passport.use(new GoogleStrategy(sails.config.passport.google,
-    function(accessToken, refreshToken, profile, done) {
-        userByPassport({
+passport.use(new GoogleStrategy(sails.config.passport.strategies.google,
+    function(req, accessToken, refreshToken, profile, done) {
+        userByPassport(req, {
             strategy   : 'google',
             identifier : profile.id,
         }, {
@@ -280,9 +304,9 @@ module.exports = passport;
 //  ╚╦╝╠═╣║║║ ║║║╣ ╔╩╦╝
 //   ╩ ╩ ╩╝╚╝═╩╝╚═╝╩ ╚═
 var YandexStrategy = require('passport-yandex').Strategy;
-passport.use(new YandexStrategy(sails.config.passport.yandex,
-    function(accessToken, refreshToken, profile, done) {
-        userByPassport({
+passport.use(new YandexStrategy(sails.config.passport.strategies.yandex,
+    function(req, accessToken, refreshToken, profile, done) {
+        userByPassport(req, {
             strategy   : 'yandex',
             identifier : profile.id,
         }, {
@@ -299,9 +323,9 @@ passport.use(new YandexStrategy(sails.config.passport.yandex,
 //  ║║║╠═╣║║  ╠╦╝║ ║
 //  ╩ ╩╩ ╩╩╩═╝╩╚═╚═╝
 var MailruStrategy = require('passport-mailru').Strategy;
-passport.use(new MailruStrategy(sails.config.passport.mailru,
-    function(accessToken, refreshToken, profile, done) {
-        userByPassport({
+passport.use(new MailruStrategy(sails.config.passport.strategies.mailru,
+    function(req, accessToken, refreshToken, profile, done) {
+        userByPassport(req, {
             strategy   : 'mailru',
             identifier : profile.id,
         }, {
@@ -318,9 +342,9 @@ passport.use(new MailruStrategy(sails.config.passport.mailru,
 //   ║ ║║║║ ║  ║ ║╣ ╠╦╝
 //   ╩ ╚╩╝╩ ╩  ╩ ╚═╝╩╚═
 var TwitterStrategy = require('passport-twitter').Strategy;
-passport.use(new TwitterStrategy(sails.config.passport.twitter,
-    function(accessToken, refreshToken, profile, done) {
-        userByPassport({
+passport.use(new TwitterStrategy(sails.config.passport.strategies.twitter,
+    function(req, accessToken, refreshToken, profile, done) {
+        userByPassport(req, {
             strategy   : 'twitter',
             identifier : profile.id,
         }, {
@@ -336,9 +360,9 @@ passport.use(new TwitterStrategy(sails.config.passport.twitter,
 //  ╠╣ ╠═╣║  ║╣ ╠╩╗║ ║║ ║╠╩╗
 //  ╚  ╩ ╩╚═╝╚═╝╚═╝╚═╝╚═╝╩ ╩
 var FacebookStrategy = require('passport-facebook').Strategy;
-passport.use(new FacebookStrategy(sails.config.passport.facebook,
-    function(accessToken, refreshToken, profile, done) {
-        userByPassport({
+passport.use(new FacebookStrategy(sails.config.passport.strategies.facebook,
+    function(req, accessToken, refreshToken, profile, done) {
+        userByPassport(req, {
             strategy   : 'facebook',
             identifier : profile.id,
         }, {

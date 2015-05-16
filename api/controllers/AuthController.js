@@ -33,7 +33,7 @@ var AuthController = {
 
     strategies: function(req, res) {
         var strategy = req.param('strategy');
-        if (!sails.config.passport[strategy]) {
+        if (!sails.config.passport.strategies[strategy]) {
             console.warn('обращение к несуществующей стратегии:', strategy);
             return res.redirect('/auth');
         }
@@ -42,6 +42,11 @@ var AuthController = {
                 console.error(strategy+' auth error', err, user);
                 return AuthController.tryAgain(req, res, err);
             }
+            if (req.isAuthenticated()) {
+                // осуществляется привязка нового провайдера к существующему пользователю
+                return AuthController.attached(req, res);
+            }
+
             passport.login(req, res, user, function(err) {
                 if (err) return AuthController.tryAgain(req, res, err);
                 if (!user.username || !user.email) {
@@ -161,6 +166,12 @@ var AuthController = {
 
         // вьюшки должны уметь показывать error & form
         res.redirect(req.get('referer'));
+    },
+
+
+    attached: function(req, res) {
+        req.flash('results', 'oke');
+        return res.redirect(req.get('referer'));
     },
 
 };

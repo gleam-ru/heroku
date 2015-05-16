@@ -1,5 +1,33 @@
 extends ./layouts/default.jade
 
+
+//- 
+//- ASTRA
+//- http://astra.us-themes.com/shortcodes/social-links/
+//- 
+
+//- data = {provider, name, href, icon}
+mixin provider(data)
+  .w-socials-item(class=data.provider)
+    a.w-socials-item-link(href=data.href)
+      i.fa(class=data.icon)
+    .w-socials-item-popup
+      .w-socials-item-popup-h
+        span.w-socials-item-popup-text #{data.name}
+
+mixin providers(list)
+  .w-socials.size_big
+    .w-socials-h
+      .w-socials-list
+        for provider in list
+          +provider(provider)
+
+//-
+//- eo ASTRA
+//-
+
+
+
 block content
   h1 Настройки
   p Тут будет следующая информация:
@@ -7,3 +35,16 @@ block content
     li Смена своих данных
     li Привязка других регистраций 
       i (локальная, вк, фб, ...)
+  h3 Изменить информацию о себе
+  h3 Привязка аккаунта
+  p.comment
+    | У вас есть аккаунт.
+    | Вы можете войти на сайт, используя свои логин (имя пользователя) и пароль. 
+    | Кроме того, вы можете войти, авторизируясь при помощи других сайтов (представлены ниже).
+    | Чтобы попадать в одну и ту же учетную запись, при авторизации через разные сайты,
+    | необходимо осуществить "привязку".
+    | 
+  h6 Можно привязать
+  +providers(attachable)
+  h6 Привязка осуществлена
+  +providers(attached)
