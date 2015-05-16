@@ -22,6 +22,8 @@ module.exports.routes = {
     'get /auth/google'   : 'Auth.google',
     'get /auth/yandex'   : 'Auth.yandex',
     'get /auth/mailru'   : 'Auth.mailru',
+    'get /auth/twitter'  : 'Auth.twitter',
+    'get /auth/facebook' : 'Auth.facebook',
     //---
     'post /auth/:action' : 'Auth.action', // 'login', 'register'
 

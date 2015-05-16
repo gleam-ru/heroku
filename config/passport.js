@@ -52,4 +52,20 @@ module.exports.passport = {
         // дурак, не умеет множественные :(
         callbackURL: '/auth/mailru',
     },
+
+    // https://apps.twitter.com/app/8316700/keys
+    twitter: {
+        consumerKey: '6V7MpAjnQMuSymHUdGaWtkgsJ',
+        consumerSecret: 'rZGwWkyqFpAnPefWmD2VYO71qof9gJu9PU15JhseJEHFSc6gz5',
+        // дурак, не умеет множественные :(
+        callbackURL: '/auth/twitter',
+    },
+
+    // https://developers.facebook.com/apps
+    facebook: {
+        clientID: '853548804699571',
+        clientSecret: '000899e62b01222984723c31c90eeb42',
+        callbackURL: '/auth/facebook',
+        enableProof: false
+    },
 };

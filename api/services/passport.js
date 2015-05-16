@@ -316,6 +316,42 @@ passport.use(new MailruStrategy(sails.config.passport.mailru,
 
 
 
+//  ╔╦╗╦ ╦╦╔╦╗╔╦╗╔═╗╦═╗
+//   ║ ║║║║ ║  ║ ║╣ ╠╦╝
+//   ╩ ╚╩╝╩ ╩  ╩ ╚═╝╩╚═
+var TwitterStrategy = require('passport-twitter').Strategy;
+passport.use(new TwitterStrategy(sails.config.passport.twitter,
+    function(accessToken, refreshToken, profile, done) {
+        userByPassport({
+            strategy   : 'twitter',
+            identifier : profile.id,
+        }, {
+            username   : profile.displayName+' (t_'+profile.id+')',
+        },
+        done);
+    }
+));
+
+
+
+//  ╔═╗╔═╗╔═╗╔═╗╔╗ ╔═╗╔═╗╦╔═
+//  ╠╣ ╠═╣║  ║╣ ╠╩╗║ ║║ ║╠╩╗
+//  ╚  ╩ ╩╚═╝╚═╝╚═╝╚═╝╚═╝╩ ╩
+var FacebookStrategy = require('passport-facebook').Strategy;
+passport.use(new FacebookStrategy(sails.config.passport.facebook,
+    function(accessToken, refreshToken, profile, done) {
+        userByPassport({
+            strategy   : 'facebook',
+            identifier : profile.id,
+        }, {
+            username   : profile.displayName+' (f_'+profile.id+')',
+        },
+        done);
+    }
+));
+
+
+
 
 
 

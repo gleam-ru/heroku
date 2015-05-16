@@ -103,6 +103,42 @@ var AuthController = {
         })(req, res);
     },
 
+    twitter: function(req, res) {
+        passport.authenticate(['twitter'], sails.config.passport.twitter, function(err, user) {
+            if (err || !user) {
+                console.error('twitter auth error', err, user);
+                return AuthController.tryAgain(req, res, err);
+            }
+            passport.login(req, res, user, function(err) {
+                if (err) return AuthController.tryAgain(req, res, err);
+                if (!user.username || !user.email) {
+                    // redirect to
+                    // Пожалуйста, заполните информацию о себе
+                    // TODO: fc_key
+                }
+                return res.redirect(sails.config.passport.vk.successRedirect);
+            });
+        })(req, res);
+    },
+
+    facebook: function(req, res) {
+        passport.authenticate(['facebook'], sails.config.passport.facebook, function(err, user) {
+            if (err || !user) {
+                console.error('facebook auth error', err, user);
+                return AuthController.tryAgain(req, res, err);
+            }
+            passport.login(req, res, user, function(err) {
+                if (err) return AuthController.tryAgain(req, res, err);
+                if (!user.username || !user.email) {
+                    // redirect to
+                    // Пожалуйста, заполните информацию о себе
+                    // TODO: fc_key
+                }
+                return res.redirect(sails.config.passport.vk.successRedirect);
+            });
+        })(req, res);
+    },
+
 
 
     //  ╔═╗╔═╗╔═╗╔╦╗
