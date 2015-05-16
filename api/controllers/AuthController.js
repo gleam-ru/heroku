@@ -165,13 +165,15 @@ var AuthController = {
         req.flash('form', req.body);
 
         // вьюшки должны уметь показывать error & form
-        res.redirect(req.get('referer'));
+        var referer = req.get('referer');
+        res.redirect(referer || '/');
     },
 
 
     attached: function(req, res) {
+        var referer = req.get('referer');
         req.flash('results', 'oke');
-        return res.redirect(req.get('referer'));
+        return res.redirect(referer || '/');
     },
 
 };
