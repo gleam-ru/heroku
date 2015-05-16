@@ -38,6 +38,7 @@ block postHead
     | form * {margin-bottom: 5px; max-width: 300px; display: block;}
     | #auth h3 {margin-top: 20px; text-transform: capitalize;}
     | #auth h3 a {text-transform: lowercase;}
+    | #auth .g-btn.disabled {opacity: 1;}
 
 block content
   h1 Вход на сайт
@@ -53,13 +54,56 @@ block content
           v-on='click: change_vue'
           ) {{signInText}}
         | )
-      form(role="form" action="/auth/register" method="post")
+      form(
+        role='form'
+        action='/auth/register'
+        method='post'
+        v-el='form'
+        v-on='submit: beforeRegister'
+        )
         for error in errors
           +error(error)
-        input(type="text" name="username" placeholder="Имя пользователя" value=form.username)
-        input(type="text" name="email" placeholder="Email" value=form.email)
-        input(type="password" name="password" placeholder="Password" value=form.password)
-        button(type="submit").g-btn.type_midnight.size_small Регистрация
+        input(
+          type='text'
+          name='username'
+          placeholder='Имя пользователя'
+          value=form.username
+          v-el='uname'
+          v-on='keyup: updateValidation'
+          v-class='has-error: errors.username'
+          )
+        input(
+          type='password'
+          name='password'
+          placeholder='Пароль' 
+          value=form.password
+          v-el='pwd_1'
+          v-on='keyup: updateValidation'
+          v-class='has-error: errors.pwd'
+          )
+        input(
+          type='password' 
+          placeholder='Еще пароль' 
+          value=form.password
+          v-el='pwd_2'
+          v-on='keyup: updateValidation'
+          v-class='has-error: errors.pwd'
+          )
+        input(
+          type='text' 
+          name='email' 
+          placeholder='Email' 
+          value=form.email
+          v-el='email'
+          v-on='keyup: updateValidation'
+          v-class='has-error: errors.email'
+          )
+        button.g-btn.type_midnight.size_small(
+          type='submit'
+          v-class='disabled: hasErrors'
+          )
+          | Регистрация
+
     div.authentication(
       v-if='signIn'
       ) 
@@ -68,8 +112,26 @@ block content
           v-on='click: change_vue'
           ) {{signUpText}}
         | )
-      form(role="form" action="/auth/login" method="post")
-        +error(errors)
-        input(type="text" name="identifier" placeholder="Имя пользователя или Email" value=form.identifier)
-        input(type="password" name="password" placeholder="Пароль" value=form.password)
-        button(type="submit").g-btn.type_midnight.size_small.mr-10 Вход
+      form(
+        role='form'
+        action='/auth/login'
+        method='post'
+        )
+        for error in errors
+          +error(error)
+        input(
+          type='text'
+          name='identifier' 
+          placeholder='Имя пользователя или Email' 
+          value=form.identifier
+          )
+        input(
+          type='password' 
+          name='password' 
+          placeholder='Пароль' 
+          value=form.password
+          )
+        button.g-btn.type_midnight.size_small(
+          type='submit'
+          )
+          | Вход

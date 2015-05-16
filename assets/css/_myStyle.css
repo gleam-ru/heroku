@@ -120,6 +120,9 @@ body::-webkit-scrollbar {
  *  ╚═╗ ║ ╚╦╝║  ║╣ ===║  ║  ╠═╣╚═╗╚═╗║╣ ╚═╗
  *  ╚═╝ ╩  ╩ ╩═╝╚═╝   ╚═╝╩═╝╩ ╩╚═╝╚═╝╚═╝╚═╝
  */
+input.has-error {
+    background-color: #FAD7D7;
+}
 .no-error .error {display: none;}
 .pointer {cursor: pointer;}
 .mr-10 {margin-right: 10px;}

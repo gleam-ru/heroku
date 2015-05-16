@@ -86,7 +86,7 @@ var AuthController = {
             var password = req.param('password');
 
             // minLength от Waterline всегда пропускает 0 символов... -_-
-            if (!email || !username || !password)
+            if (!username || !password)
                 return AuthController.tryAgain(req, res, new Error('Все поля обязательны для заполнения'));
 
             User.create({
@@ -106,6 +106,7 @@ var AuthController = {
                             return AuthController.tryAgain(req, res, err);
                         });
                     }
+                    console.info('New local user! ID: '+user.id);
                     // аутентифицируем пользователя
                     passport.login(req, res, user, function(err) {
                         if (err) return AuthController.tryAgain(req, res, err);
@@ -132,6 +133,7 @@ var AuthController = {
     // возвращает на предыдущую страницу, но теперь с ошибками.
     // сохраняет заполненные данные
     tryAgain: function(req, res, errors) {
+        log.warn('tryAgain', errors);
         // сообщения об ошибке
         if (!Array.isArray(errors)) {
             errors = [errors];
