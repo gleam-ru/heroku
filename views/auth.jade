@@ -1,19 +1,10 @@
 extends ./layouts/default
 
 
+//- 
 //- ASTRA
 //- http://astra.us-themes.com/shortcodes/social-links/
-
-mixin providers()
-  .w-socials.size_big
-    .w-socials-h
-      .w-socials-list
-        +provider('vk',       '/auth/vk',       'fa-vk',       'VKontakte')
-        +provider('google',   '/auth/google',   'fa-google',   'Google')
-        +provider('yandex',   '/auth/yandex',   'fa-yahoo',    'Yandex')
-        +provider('mailru',   '/auth/mailru',   'fa-at',       'Mail.ru')
-        +provider('twitter',  '/auth/twitter',  'fa-twitter',  'Twitter')
-        +provider('facebook', '/auth/facebook', 'fa-facebook', 'Facebook')
+//- 
 
 mixin provider(classname, href, fa, text)
   .w-socials-item(class=classname)
@@ -22,6 +13,21 @@ mixin provider(classname, href, fa, text)
     .w-socials-item-popup
       .w-socials-item-popup-h
         span.w-socials-item-popup-text #{text}
+
+mixin providers()
+  .w-socials.size_big
+    .w-socials-h
+      .w-socials-list
+        +provider('vk',       '/auth/vkontakte', 'fa-vk',       'VKontakte')
+        +provider('google',   '/auth/google',    'fa-google',   'Google')
+        +provider('yandex',   '/auth/yandex',    'fa-yahoo',    'Yandex')
+        +provider('mailru',   '/auth/mailru',    'fa-at',       'Mail.ru')
+        +provider('twitter',  '/auth/twitter',   'fa-twitter',  'Twitter')
+        +provider('facebook', '/auth/facebook',  'fa-facebook', 'Facebook')
+
+//-
+//- eo ASTRA
+//-
 
 
 

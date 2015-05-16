@@ -16,16 +16,11 @@ module.exports.routes = {
     'get /settings': 'Settings',
 
     // Auth
-    'get /login'         : 'Auth',
-    'get /logout'        : 'Auth.logout',
-    'get /auth/vk'       : 'Auth.vk',
-    'get /auth/google'   : 'Auth.google',
-    'get /auth/yandex'   : 'Auth.yandex',
-    'get /auth/mailru'   : 'Auth.mailru',
-    'get /auth/twitter'  : 'Auth.twitter',
-    'get /auth/facebook' : 'Auth.facebook',
+    'get /auth'           : 'Auth',
+    'get /logout'         : 'Auth.logout',
+    'get /auth/:strategy' : 'Auth.strategies',
     //---
-    'post /auth/:action' : 'Auth.action', // 'login', 'register'
+    'post /auth/:action'  : 'Auth.action', // 'login', 'register'
 
 
 

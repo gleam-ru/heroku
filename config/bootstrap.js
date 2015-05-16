@@ -18,26 +18,18 @@ if (drop_db) {
 module.exports.bootstrap = function(cb) {
     // Заполняем модель тестовыми данными
     // /*
-    if (sails.config.models.refill) {
-        User.create({
-            id: 1,
-            username: 'admin',
-            email: "admin@host.org",
-            access: "admin",
-        }, function(err, user) {
-            if (err) return;
-            log.verbose('admin created: '+user.toJSON());
-            Passport.create({
-                id: 1,
-                strategy: 'local',
-                password: 'Xa@Bk1rU',
-                user: user.id,
-            }, function(err, passport) {
-                if (err) return;
-                log.verbose('admin password set: '+passport.toJSON());
-            });
-        })
-    }
+    User.create({
+        id: 1,
+        username: 'admin',
+        email: "admin@host.org",
+        access: "admin",
+    }, function(){});
+    Passport.create({
+        id: 1,
+        user: 1,
+        strategy: 'local',
+        password: 'Xa@Bk1rU',
+    }, function(){});
     //*/
 
 

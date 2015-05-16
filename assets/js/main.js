@@ -5,8 +5,8 @@ window.messages = {
         '',
     auth: ''+
         '<p>Для данного действия необходимо <br />'+
-            '<a href="/login?register">зарегистрироваться</a> или <br />'+
-            '<a href="/login">войти в систему</a>.'+
+            '<a href="/auth?register">зарегистрироваться</a> или <br />'+
+            '<a href="/auth">войти в систему</a>.'+
         '</p>'+
         '',
     not_implemented: ''+

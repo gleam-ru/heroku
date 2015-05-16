@@ -2,11 +2,12 @@ module.exports.passport = {
 
     // TODO: fc_key
     fillCredentials: '/me/settings',
+    successRedirect: '/me',
 
     local: {
         usernameField: 'identifier',
         successRedirect: '/me',
-        failureRedirect: '/login',
+        failureRedirect: '/auth',
         failureFlash: true,
     },
 
@@ -15,12 +16,10 @@ module.exports.passport = {
     },
 
     // https://vk.com/dev/auth_sites
-    vk: {
+    vkontakte: {
         clientID: '4918582', // docs call it 'APP ID'
         clientSecret: 'JlEHf1Vir4vCPfrqIf6n',
-        callbackURL: '/auth/vk',
-        successRedirect: '/me',
-        failureRedirect: '/login',
+        callbackURL: '/auth/vkontakte',
     },
 
     // https://console.developers.google.com/project/calcium-adapter-447/apiui/credential?authuser=0

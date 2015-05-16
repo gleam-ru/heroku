@@ -11,6 +11,6 @@ module.exports = function (req, res, cb) {
         return cb();
     }
     else {
-        return res.redirect('/login');
+        return res.redirect('/auth');
     }
 };

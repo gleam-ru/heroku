@@ -1,7 +1,5 @@
-var path               = require('path');
-var url                = require('url');
-var validator          = require('validator');
-var passport           = require('passport');
+var validator = require('validator');
+var passport  = require('passport');
 
 
 
@@ -243,10 +241,10 @@ function userByPassport(_passport, _user, done) {
 //  ╚╗╔╝╠╩╗
 //   ╚╝ ╩ ╩
 var VKontakteStrategy  = require('passport-vkontakte').Strategy;
-passport.use(new VKontakteStrategy(sails.config.passport.vk,
+passport.use(new VKontakteStrategy(sails.config.passport.vkontakte,
     function(accessToken, refreshToken, profile, done) {
         userByPassport({
-            strategy   : 'vk',
+            strategy   : 'vkontakte',
             identifier : profile.id,
         }, {
             username   : profile.displayName+' (v_'+profile.id+')',
@@ -349,7 +347,6 @@ passport.use(new FacebookStrategy(sails.config.passport.facebook,
         done);
     }
 ));
-
 
 
 

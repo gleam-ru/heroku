@@ -12,7 +12,7 @@ var AuthController = {
         // авторизирован? иди в профиль.
         if (req.isAuthenticated()) return res.redirect('/me');
         var data = req.flash('form');
-        return res.render('login', {
+        return res.render('auth', {
             errors: req.flash('error'),
             form: data[0] || {},
         });
@@ -24,17 +24,22 @@ var AuthController = {
 
     logout: function (req, res) {
         passport.logout(req, res);
-        return res.redirect('/login');
+        return res.redirect('/auth');
     },
 
     //
     // login strategies
     //
 
-    vk: function(req, res) {
-        passport.authenticate(['vkontakte'], function(err, user) {
+    strategies: function(req, res) {
+        var strategy = req.param('strategy');
+        if (!sails.config.passport[strategy]) {
+            console.warn('обращение к несуществующей стратегии:', strategy);
+            return res.redirect('/auth');
+        }
+        passport.authenticate([strategy], function(err, user) {
             if (err || !user) {
-                console.error('vk auth error', err, user);
+                console.error(strategy+' auth error', err, user);
                 return AuthController.tryAgain(req, res, err);
             }
             passport.login(req, res, user, function(err) {
@@ -44,97 +49,7 @@ var AuthController = {
                     // Пожалуйста, заполните информацию о себе
                     // TODO: fc_key
                 }
-                return res.redirect(sails.config.passport.vk.successRedirect);
-            });
-        })(req, res);
-    },
-
-    google: function(req, res) {
-        passport.authenticate(['google'], sails.config.passport.google, function(err, user) {
-            if (err || !user) {
-                console.error('google auth error', err, user);
-                return AuthController.tryAgain(req, res, err);
-            }
-            passport.login(req, res, user, function(err) {
-                if (err) return AuthController.tryAgain(req, res, err);
-                if (!user.username || !user.email) {
-                    // redirect to
-                    // Пожалуйста, заполните информацию о себе
-                    // TODO: fc_key
-                }
-                return res.redirect(sails.config.passport.vk.successRedirect);
-            });
-        })(req, res);
-    },
-
-    yandex: function(req, res) {
-        passport.authenticate(['yandex'], sails.config.passport.yandex, function(err, user) {
-            if (err || !user) {
-                console.error('yandex auth error', err, user);
-                return AuthController.tryAgain(req, res, err);
-            }
-            passport.login(req, res, user, function(err) {
-                if (err) return AuthController.tryAgain(req, res, err);
-                if (!user.username || !user.email) {
-                    // redirect to
-                    // Пожалуйста, заполните информацию о себе
-                    // TODO: fc_key
-                }
-                return res.redirect(sails.config.passport.vk.successRedirect);
-            });
-        })(req, res);
-    },
-
-    mailru: function(req, res) {
-        passport.authenticate(['mailru'], sails.config.passport.mailru, function(err, user) {
-            if (err || !user) {
-                console.error('mailru auth error', err, user);
-                return AuthController.tryAgain(req, res, err);
-            }
-            passport.login(req, res, user, function(err) {
-                if (err) return AuthController.tryAgain(req, res, err);
-                if (!user.username || !user.email) {
-                    // redirect to
-                    // Пожалуйста, заполните информацию о себе
-                    // TODO: fc_key
-                }
-                return res.redirect(sails.config.passport.vk.successRedirect);
-            });
-        })(req, res);
-    },
-
-    twitter: function(req, res) {
-        passport.authenticate(['twitter'], sails.config.passport.twitter, function(err, user) {
-            if (err || !user) {
-                console.error('twitter auth error', err, user);
-                return AuthController.tryAgain(req, res, err);
-            }
-            passport.login(req, res, user, function(err) {
-                if (err) return AuthController.tryAgain(req, res, err);
-                if (!user.username || !user.email) {
-                    // redirect to
-                    // Пожалуйста, заполните информацию о себе
-                    // TODO: fc_key
-                }
-                return res.redirect(sails.config.passport.vk.successRedirect);
-            });
-        })(req, res);
-    },
-
-    facebook: function(req, res) {
-        passport.authenticate(['facebook'], sails.config.passport.facebook, function(err, user) {
-            if (err || !user) {
-                console.error('facebook auth error', err, user);
-                return AuthController.tryAgain(req, res, err);
-            }
-            passport.login(req, res, user, function(err) {
-                if (err) return AuthController.tryAgain(req, res, err);
-                if (!user.username || !user.email) {
-                    // redirect to
-                    // Пожалуйста, заполните информацию о себе
-                    // TODO: fc_key
-                }
-                return res.redirect(sails.config.passport.vk.successRedirect);
+                return res.redirect(sails.config.passport.successRedirect);
             });
         })(req, res);
     },
@@ -150,7 +65,7 @@ var AuthController = {
 
         // LOGIN
         if (!action || action == 'login') {
-            passport.authenticate(['local'], function (err, user, challenges, statuses) {
+            passport.authenticate(['local'], function (err, user, challenges) {
                 if (err || !user) {
                     // ошибка или оправдание - показать пользователю
                     var errorText = err || challenges;

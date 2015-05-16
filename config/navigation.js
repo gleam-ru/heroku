@@ -20,7 +20,7 @@ module.exports.navigation = [
     },
     {
         name     : "Войти",
-        href     : "/login",
+        href     : "/auth",
         canSee   : ["ghost"],
     },
 
