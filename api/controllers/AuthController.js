@@ -133,9 +133,9 @@ var AuthController = {
     // возвращает на предыдущую страницу, но теперь с ошибками.
     // сохраняет заполненные данные
     tryAgain: function(req, res, errors) {
-        log.warn('tryAgain', errors);
         // сообщения об ошибке
         if (!Array.isArray(errors)) {
+            log.warn('tryAgain', errors.message);
             errors = [errors];
         }
 
