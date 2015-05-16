@@ -13,12 +13,13 @@ module.exports.routes = {
     'get /me': 'Profile',
 
     // Settings
-    'get /settings': 'Settings',
+    'get /settings'              : 'Settings',
 
     // Auth
-    'get /auth'           : 'Auth',
-    'get /logout'         : 'Auth.logout',
-    'get /auth/:strategy' : 'Auth.strategies',
+    'get /auth'                  : 'Auth',
+    'get /logout'                : 'Auth.logout',
+    'get /auth/:strategy'        : 'Auth.addStrategy',
+    'get /auth/:strategy/remove' : 'Auth.removeStrategy',
     //---
     'post /auth/:action'  : 'Auth.action', // 'login', 'register'
 

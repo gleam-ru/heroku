@@ -14,6 +14,10 @@ module.exports.policies = {
         '*' : ['redirect', 'authenticated']
     },
 
+    SettingsController: {
+        '*' : ['redirect', 'authenticated']
+    },
+
     // Облигации, работа с фильрами
     BondsController: {
         'updateFilter': ['authenticated']

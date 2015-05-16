@@ -60,6 +60,17 @@ body::-webkit-scrollbar {
         }
 
 
+.w-socials-item:hover .fa-stack-2x {opacity: 1;}
+.w-socials-item .fa-stack-2x {
+    font-size: 50px !important;
+    opacity: 0;
+    color: #C01010;
+    margin-top: -2px;
+    text-shadow: #000 0px 0px 10px;
+    transition: all 0.2s ease;
+    }
+
+
 
 /***
  *  ╔╦╗╔═╗╔╦╗╦ ╦╦  ╔═╗╔═╗

@@ -31,7 +31,7 @@ var AuthController = {
     // login strategies
     //
 
-    strategies: function(req, res) {
+    addStrategy: function(req, res) {
         var strategy = req.param('strategy');
         if (!sails.config.passport.strategies[strategy]) {
             console.warn('обращение к несуществующей стратегии:', strategy);
@@ -43,7 +43,8 @@ var AuthController = {
                 return AuthController.tryAgain(req, res, err);
             }
             if (req.isAuthenticated()) {
-                // осуществляется привязка нового провайдера к существующему пользователю
+                // осуществлялась привязка нового провайдера
+                // к существующему пользователю
                 return AuthController.attached(req, res);
             }
 
@@ -57,6 +58,24 @@ var AuthController = {
                 return res.redirect(sails.config.passport.successRedirect);
             });
         })(req, res);
+    },
+
+    removeStrategy: function(req, res) {
+        var strategy = req.param('strategy');
+        var referer = req.get('referer');
+        Passport.findOne({
+            user: req.user.id,
+            strategy: strategy,
+        }, function(err, p) {
+            if (err) return res.send(500);
+            if (p) {
+                return p.destroy(function(err) {
+                    if (err) return res.send(500);
+                    return res.redirect(referer || '/settings');
+                });
+            }
+            return res.redirect(referer || '/settings');
+        });
     },
 
 
@@ -173,7 +192,7 @@ var AuthController = {
     attached: function(req, res) {
         var referer = req.get('referer');
         req.flash('results', 'oke');
-        return res.redirect(referer || '/');
+        return res.redirect(referer || '/settings');
     },
 
 };
