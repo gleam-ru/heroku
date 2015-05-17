@@ -36,6 +36,11 @@ $(document).ready(function() {
     window.dateFormat = "DD.MM.YYYY";
     $.fn.dataTable.moment(dateFormat);
 
+    // tooltipster
+    $.fn.tooltipster('setDefaults', {
+        theme: 'tooltipster-light'
+    });
+
     // disable interface parts
     $.fn.mask = function(state) {
         if(state === undefined || state) {

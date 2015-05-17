@@ -127,7 +127,19 @@ body::-webkit-scrollbar {
     cursor: pointer;
     font-size: 30px;
     padding: 0px 5px 0px 10px;
-}
+    }
+.tooltipster-light {
+    border-radius: 3px;
+    border: 2px solid #aaa;
+    background: #ecf0f1;
+    color: #000;
+    }
+    .tooltipster-light .tooltipster-content {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        line-height: 16px;
+        padding: 8px 10px;
+        }
 
 /**
  *  ╔═╗╔╦╗╦ ╦╦  ╔═╗   ╔═╗╦  ╔═╗╔═╗╔═╗╔═╗╔═╗
