@@ -6,24 +6,20 @@ extends ./layouts/default
 //- http://astra.us-themes.com/shortcodes/social-links/
 //- 
 
-mixin provider(classname, href, fa, text)
-  .w-socials-item(class=classname)
-    a.w-socials-item-link(href=href)
-      i.fa(class=fa)
+mixin provider(data)
+  .w-socials-item(class=data.provider)
+    a.w-socials-item-link(href=data.href)
+      i.fa(class=data.icon)
     .w-socials-item-popup
       .w-socials-item-popup-h
-        span.w-socials-item-popup-text #{text}
+        span.w-socials-item-popup-text #{data.name}
 
-mixin providers()
+mixin providers(list)
   .w-socials.size_big
     .w-socials-h
       .w-socials-list
-        +provider('vk',       '/auth/vkontakte', 'fa-vk',       'VKontakte')
-        +provider('google',   '/auth/google',    'fa-google',   'Google')
-        +provider('yandex',   '/auth/yandex',    'fa-yahoo',    'Yandex')
-        +provider('mailru',   '/auth/mailru',    'fa-at',       'Mail.ru')
-        +provider('twitter',  '/auth/twitter',   'fa-twitter',  'Twitter')
-        +provider('facebook', '/auth/facebook',  'fa-facebook', 'Facebook')
+        for provider in list
+          +provider(provider)
 
 //-
 //- eo ASTRA
@@ -42,7 +38,7 @@ block postHead
 
 block content
   h1 Вход на сайт
-  +providers()
+  +providers(providers)
 
 
   div#auth

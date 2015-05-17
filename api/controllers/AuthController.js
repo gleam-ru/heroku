@@ -10,11 +10,23 @@ var AuthController = {
 
     index: function (req, res) {
         // авторизирован? иди в профиль.
-        if (req.isAuthenticated()) return res.redirect('/me');
+        if (req.isAuthenticated()) return res.redirect('/settings');
+        var strategies = sails.config.passport.strategies;
+        var providers = _.keys(strategies);
+        providers = _.map(providers, function(provider) {
+            var strategy = strategies[provider];
+            return {
+                provider: provider,
+                name: strategy.name,
+                href: strategy.callbackURL,
+                icon: strategy.icon,
+            }
+        });
         var data = req.flash('form');
         return res.render('auth', {
             errors: req.flash('error'),
             form: data[0] || {},
+            providers: providers,
         });
     },
 

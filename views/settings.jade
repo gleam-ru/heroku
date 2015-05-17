@@ -48,7 +48,7 @@ block content
     +error(error)
   +message(info)
   h3.mb-10 Изменить свои данные
-  div.tile#edit(
+  div.tile.mb-10#edit(
     style='max-width: 350px;'
     )
     form(
@@ -99,11 +99,11 @@ block content
         v-class='disabled: hasErrors'
         )
         | Сохранить
-  h3.ib(style='margin-top: 20px;') Привязать аккаунты
+  h3.ib.mb-10 Привязать аккаунты
   +headerTooltipster('about-attaching')
   +providers(attachable, false)
   if (attachable.length === 0)
-    p.info Привязаны все возможные системы!
+    +message('Все доступные аккаунты привязаны!')
   if (attached.length > 0)
     p Привязанные аккаунты можно отключить:
     +providers(attached, true)
