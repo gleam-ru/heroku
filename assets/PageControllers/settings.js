@@ -12,6 +12,7 @@ $(document).ready(function() {
                 'учетную запись при авторизации через разные системы.'+
             '</p>'),
         position: 'right',
+        maxWidth: 350,
     });
 
     $('.w-socials-item').each(function() {

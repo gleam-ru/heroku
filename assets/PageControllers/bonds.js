@@ -78,10 +78,10 @@ $(document).ready(function() {
         },
         steps: [
             {
-                el: '.my-table .filters-preview',
+                el: '.my-table .additional',
                 tt: {
                     content: 'Для закрытия подсказки нажмите на нее',
-                    position: 'top',
+                    position: 'top-right',
                     arrow: false,
                 }
             },
