@@ -4,7 +4,16 @@ var User = {
         email     : { type: 'email',  unique: true },
         access    : { type: 'string', defaultsTo: 'user' },
         passports : { collection: 'Passport', via: 'user' },
+
+        createdAt : {type: 'date'},
     },
+
+    beforeCreate: function (user, next) {
+        user.createdAt = new Date();
+        next(null, user);
+    },
+
+
 
     validationMessages: {
         email: {
@@ -17,7 +26,8 @@ var User = {
             unique: 'Имя пользователя кем-то занято.',
             minLength: 'Имя пользователя не короче 3 символов.',
         }
-    }
+    },
+
 };
 
 module.exports = User;
