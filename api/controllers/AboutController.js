@@ -9,12 +9,12 @@ module.exports = {
         return res.render('about', {});
     },
 
-    statistics: function(req, res) {
-        return res.render('statistics', {});
+    donation: function(req, res) {
+        return res.render('donation', {});
     },
 
     feedback: function(req, res) {
-        return res.render('contacts', {});
+        return res.render('feedback', {});
     },
 
 };

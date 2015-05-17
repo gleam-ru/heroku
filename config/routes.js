@@ -45,13 +45,9 @@ module.exports.routes = {
     //
     // About page
     //
-    'get /about': 'About',
-
-    // статистика сайта
-    'get /about/statistics': 'About.statistics',
-
-    // обратная связь
-    'get /about/feedback': 'About.feedback',
+    'get /about'            : 'About',
+    'get /about/feedback'   : 'About.feedback',
+    'get /about/donation'   : 'About.donation',
 
 
 

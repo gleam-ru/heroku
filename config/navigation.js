@@ -46,12 +46,12 @@ module.exports.navigation = [
         href     : "/about",
         children : [
             {
-                name     : "Статистика",
-                href     : "/about/statistics",
+                name     : "Обсуждение",
+                href     : "/about/feedback",
             },
             {
-                name     : "Связаться с автором",
-                href     : "/about/feedback",
+                name     : "Поддержать проект",
+                href     : "/about/donation",
             },
         ]
     },

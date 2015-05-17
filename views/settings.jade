@@ -102,6 +102,8 @@ block content
   h3.ib(style='margin-top: 20px;') Привязать аккаунты
   +headerTooltipster('about-attaching')
   +providers(attachable, false)
+  if (attachable.length === 0)
+    p.info Привязаны все возможные системы!
   if (attached.length > 0)
     p Привязанные аккаунты можно отключить:
     +providers(attached, true)

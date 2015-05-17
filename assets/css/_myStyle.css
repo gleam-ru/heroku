@@ -137,10 +137,22 @@ body::-webkit-scrollbar {
 input.has-error {
     background-color: #FAD7D7 !important;
 }
+/* _margin */
+.no-m  {margin: 0px !important;}
+.mt-10 {margin-top: 10px !important;;}
+.mr-10 {margin-right: 10px !important;;}
+.mb-10 {margin-bottom: 10px !important;;}
+.ml-10 {margin-left: 10px !important;;}
+/* _padding */
+.no-p  {padding: 0px !important !important;;}
+.pt-10 {padding-top: 10px !important;;}
+.pr-10 {padding-right: 10px !important;;}
+.pb-10 {padding-bottom: 10px !important;;}
+.pl-10 {padding-left: 10px !important;;}
+
 .no-error .error {display: none;}
 .pointer {cursor: pointer;}
-.mr-10 {margin-right: 10px;}
-.mb-10 {margin-bottom: 10px;}
+.no- {margin-bottom: 10px;}
 .ow-h {overflow: hidden;}
 .isolated {margin: 0px 0px 10px 0px;}
 .comment {

@@ -1,0 +1,9 @@
+extends ./layouts/default.jade
+
+block postHead
+  script(src='PageControllers/feedback.js')
+
+
+block content
+  h1 Обсуждение
+  div(style='min-height: 500px;')#disqus_thread
