@@ -59,11 +59,17 @@ $(document).ready(function() {
 
     window.qwe = new MyTable({
         el: '#bonds-table',
-        data: data,
+        data: _.extend(data, {
+            isReady: function() {
+                setTimeout(beginLearning, 1000);
+            },
+        }),
     });
 
+});
 
 
+function beginLearning() {
     Learning.init({
         starter: {
             el: '.begin-learning',
@@ -139,4 +145,4 @@ $(document).ready(function() {
             },
         ]
     });
-});
+}

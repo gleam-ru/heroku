@@ -60,6 +60,10 @@ window.MyTable = Vue.extend({
                     }
                 }
             },
+            listeners: {
+                isReady: function() {
+                },
+            },
         };
     },
     computed: {
@@ -96,6 +100,7 @@ window.MyTable = Vue.extend({
     },
     methods: {
 
+        // для плавного транзишна по высоте
         updateTransitionsBlock: function() {
             var vm = this;
             var editor = $(vm.$$.editor);
@@ -402,11 +407,23 @@ window.MyTable = Vue.extend({
             vm.editFilter(undefined);
         },
     },
+
+
+
+
+
     // дефолтные настройки писать сюды
     beforeCompile: function() {
         var view = $(this.$el);
         view.mask();
         var vm = this;
+
+        // полностью инициализированный модуль
+        vm.partIsReady = _.after(3, function() {
+            // unmask
+            view.mask(false);
+            vm.isReady();
+        });
 
         //  ╔╦╗╔═╗╔╦╗╔═╗╔╦╗╔═╗╔╗ ╦  ╔═╗╔═╗
         //   ║║╠═╣ ║ ╠═╣ ║ ╠═╣╠╩╗║  ║╣ ╚═╗
@@ -453,6 +470,7 @@ window.MyTable = Vue.extend({
         // таблица готова
         // применяем дефолтные настройки
         vm.dt.fnInitComplete = function() {
+            vm.partIsReady();
             // первая страница по-умолчанию
             vm.dt.table.fnPageChange(0);
 
@@ -467,9 +485,6 @@ window.MyTable = Vue.extend({
                     wrapper.css('max-height', 'none');
                 }, time)
             }
-
-            // unmask
-            view.mask(false);
         };
 
 
@@ -494,14 +509,16 @@ window.MyTable = Vue.extend({
             console.error(err);
         })
         .always(function() {
-            // снимаем маску
-            // view.mask(false);
+            vm.partIsReady();
         });
 
         // загружаем дополнительную информацию для отображения
         $.get(vm.additional)
         .done(function(loaded) {
             vm.additional = loaded.data;
+        })
+        .always(function() {
+            vm.partIsReady();
         });
 
         // наши, "местные" колонки
