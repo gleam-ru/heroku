@@ -49,7 +49,6 @@ module.exports = {
     update: function(req, res) {
         var username     = req.param('username');
         var email        = req.param('email');
-        var old_password = req.param('old_password');
         var new_password = req.param('new_password');
         async.waterfall([
             function(next) {
@@ -61,19 +60,16 @@ module.exports = {
                 user.save(next);
             },
             function(user, next) {
-                if (!old_password) return next(null, '_not_needed_');
+                if (!new_password) next();
                 Passport.findOne({
                     user: req.user.id,
                     strategy: 'local',
                 }, next);
             },
             function(passport, next) {
-                if (!old_password) return next();
-                passport.validatePassword(old_password, function(err, ok) {
-                    if (!ok) return next(new Error('Неправильный пароль'));
-                    passport.password = new_password;
-                    passport.save(next);
-                });
+                if (!next) return passport(); // особенности waterfall
+                passport.password = new_password;
+                passport.save(next);
             },
         ], function(errors) {
             if (errors) {

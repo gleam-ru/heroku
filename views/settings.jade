@@ -81,14 +81,6 @@ block content
       p Пароль
       input.mb-10(
         type='password'
-        name='old_password'
-        placeholder='Старый пароль'
-        v-el='old_pwd'
-        v-on='keyup: updateValidation'
-        v-class='has-error: errors.old_pwd'
-        )
-      input.mb-10(
-        type='password'
         name='new_password'
         placeholder='Новый пароль'
         v-el='pwd_1'

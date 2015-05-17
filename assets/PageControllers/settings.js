@@ -20,7 +20,6 @@ $(document).ready(function() {
         data: {
             errors: {
                 new_pwd: false,
-                old_pwd: false,
                 username: false,
                 email: false,
             }
@@ -28,20 +27,18 @@ $(document).ready(function() {
         computed: {
             hasErrors: function() {
                 var vm = this;
-                return vm.errors.old_pwd || vm.errors.new_pwd || vm.errors.username || vm.errors.email;
+                return vm.errors.new_pwd || vm.errors.username || vm.errors.email;
             },
         },
         methods: {
             updateValidation: function() {
                 var vm = this;
                 var uname   = vm.$$.uname.value;
-                var old_pwd = vm.$$.old_pwd.value;
                 var pwd_1   = vm.$$.pwd_1.value;
                 var pwd_2   = vm.$$.pwd_2.value;
                 var email   = vm.$$.email.value;
                 vm.errors.username = (uname.length < 3);
-                vm.errors.old_pwd  = (old_pwd.length > 0) && (old_pwd.length < 3);
-                vm.errors.new_pwd  = ((old_pwd.length > 0) && (pwd_1.length < 3)) || (pwd_1 !== pwd_2);
+                vm.errors.new_pwd  = (pwd_1.length > 0 && pwd_1.length < 3) || (pwd_1 !== pwd_2);
                 vm.errors.email    = (email.length > 0) && !validator.isEmail(email);
             },
             beforeSubmit: function(e) {
