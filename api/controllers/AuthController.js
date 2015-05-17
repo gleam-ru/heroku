@@ -158,27 +158,27 @@ var AuthController = {
     // сохраняет заполненные данные
     tryAgain: function(req, res, errors) {
         // сообщения об ошибке
-        if (!Array.isArray(errors)) {
-            log.warn('tryAgain', errors.message);
-            errors = [errors];
-        }
-
-        var flashes = [];
-        _(errors).each(function(err) {
-            if (!err.Errors) {
-                // ошибка, но не от валидации...
-                flashes.push(err.message || err);
+        if (errors) {
+            if (!Array.isArray(errors)) {
+                log.warn('tryAgain', errors || errors.message);
+                errors = [errors];
             }
-            else {
-                _(err.Errors).each(function(trouble) {
-                    _(trouble).each(function(instance) {
-                        flashes.push(instance.message);
+            var flashes = [];
+            _(errors).each(function(err) {
+                if (!err.Errors) {
+                    // ошибка, но не от валидации...
+                    flashes.push(err.message || err);
+                }
+                else {
+                    _(err.Errors).each(function(trouble) {
+                        _(trouble).each(function(instance) {
+                            flashes.push(instance.message);
+                        });
                     });
-                });
-            }
-        });
-        req.flash('error', flashes);
-        //*/
+                }
+            });
+            req.flash('error', flashes);
+        }
 
         // данные, чтобы форма восстановила свои данные
         req.flash('form', req.body);
@@ -191,7 +191,6 @@ var AuthController = {
 
     attached: function(req, res) {
         var referer = req.get('referer');
-        req.flash('info', 'oke');
         return res.redirect(referer || '/settings');
     },
 
