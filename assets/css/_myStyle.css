@@ -141,7 +141,7 @@ input.has-error {
 .pointer {cursor: pointer;}
 .mr-10 {margin-right: 10px;}
 .mb-10 {margin-bottom: 10px;}
-.ow-h {overflow: hidden};
+.ow-h {overflow: hidden;}
 .isolated {margin: 0px 0px 10px 0px;}
 .comment {
     color: grey;
