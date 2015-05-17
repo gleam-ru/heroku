@@ -184,7 +184,7 @@ window.MyTable = Vue.extend({
                     }
                 })
                 .fail(function(err) {
-                    if (err.status === 401) { // недостаточно прав
+                    if (err.status === 403) { // недостаточно прав
                         if (typeof mp !== 'undefined') {
                             mp.alert(messages.auth);
                         }
@@ -289,7 +289,7 @@ window.MyTable = Vue.extend({
                 vm.currentFilterIndex = idx;
             })
             .fail(function(err) {
-                if (err.status === 401) { // недостаточно прав
+                if (err.status === 403) { // недостаточно прав
                     if (typeof mp !== 'undefined') {
                         mp.alert(messages.auth);
                     }
