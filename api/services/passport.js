@@ -187,7 +187,11 @@ passport.use(new RememberMeStrategy(sails.config.passport.rememberme, passport.r
 function userByPassport(req, _passport, _user, done) {
     if (req.isAuthenticated()) {
         // пользователь аутентифицирован -> привязка.
-        return attachPassportToExistingUser(_passport, req.user.id, done);
+        return attachPassportToExistingUser(_passport, req.user.id, function(err, user) {
+            if (err) return done(err);
+            req.flash('info', 'Аккаунт '+_passport.strategy+' успешно привязан.');
+            return done(err, user);
+        });
     }
     async.waterfall([
         // ищу паспорт
@@ -220,10 +224,11 @@ function userByPassport(req, _passport, _user, done) {
                             console.error('unable to create passport ('+_passport.strategy+' auth)', err);
                             return asyncCb(err);
                         }
+                        req._just_registered = true;
                         console.info('New '+_passport.strategy+' user! ID: '+user.id);
                         asyncCb(null, user);
                     });
-                })
+                });
             }
             else {
                 User.findOne(passport.user, asyncCb);
@@ -246,7 +251,7 @@ function attachPassportToExistingUser(_passport, _user_id, done) {
         identifier : _passport.identifier,
     }, function(err, found) {
         if (err) return done(err);
-        if (found) return done(new Error('Предоставленный идентификатор '+_passport.strategy+' уже используется'));
+        if (found) return done(new Error('Предоставленный идентификатор ('+_passport.strategy+') уже используется'));
         Passport.findOrCreate({
             user       : _user_id,
             strategy   : _passport.strategy,

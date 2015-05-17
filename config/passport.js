@@ -1,8 +1,7 @@
 module.exports.passport = {
 
-    // TODO: fc_key
-    fillCredentials: '/me/settings',
     successRedirect: '/me',
+    fillCredentials: '/settings',
 
     local: {
         usernameField: 'identifier',

@@ -60,7 +60,7 @@ module.exports = {
                 user.save(next);
             },
             function(user, next) {
-                if (!new_password) next();
+                if (!new_password) return next();
                 Passport.findOne({
                     user: req.user.id,
                     strategy: 'local',
@@ -69,7 +69,7 @@ module.exports = {
             function(passport, next) {
                 if (!next) return passport(); // особенности waterfall
                 passport.password = new_password;
-                passport.save(next);
+                return passport.save(next);
             },
         ], function(errors) {
             if (errors) {

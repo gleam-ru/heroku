@@ -38,10 +38,13 @@ mixin providers(list, remove)
 
 
 block content
-  for error in errors
-    +error(error)
-  +message(info)
-  h3.mb-10 Изменить свои данные
+  if (errors.length > 0 || info.length > 0)
+    .message
+      +close()
+      for error in errors
+        +error(error)
+      +info(info)
+  h3.mb-10.no-p Изменить свои данные
   div.tile.mb-10#edit(
     style='max-width: 350px;'
     )
@@ -52,40 +55,43 @@ block content
       v-el='form'
       v-on='submit: beforeSubmit'
       )
-      p Имя пользователя
-      input(
-        type='text'
-        name='username'
-        placeholder='Имя пользователя'
-        value=username
-        v-el='uname'
-        v-on='keyup: updateValidation'
-        v-class='has-error: errors.username'
-        )
       p Email
+        +headerTooltipster('Некоторые сервисы используют почту для оповещений. Их можно отключить.')
       input(
         type='text'
         name='email'
         placeholder='Email'
         value=email
         v-el='email'
-        v-on='keyup: updateValidation'
+        v-on='change: updateValidation'
         v-class='has-error: errors.email'
         )
+      p Имя пользователя
+        +headerTooltipster('Используется для входа на сайт без сторонних сервисов, а также как имя при комментировании. Не менее 3 символов.')
+      input(
+        type='text'
+        name='username'
+        placeholder='Имя пользователя'
+        value=username
+        v-el='uname'
+        v-on='change: updateValidation'
+        v-class='has-error: errors.username'
+        )
       p Пароль
+        +headerTooltipster('Используется для входа на сайт без сторонних сервисов. Не менее 3 символов.')
       input.mb-10(
         type='password'
         name='new_password'
         placeholder='Новый пароль'
         v-el='pwd_1'
-        v-on='keyup: updateValidation'
+        v-on='change: updateValidation'
         v-class='has-error: errors.new_pwd'
         )
       input.mb-10(
         type='password' 
         placeholder='Повторите новый пароль' 
         v-el='pwd_2'
-        v-on='keyup: updateValidation'
+        v-on='change: updateValidation'
         v-class='has-error: errors.new_pwd'
         )
       button.g-btn.type_midnight.size_small(
@@ -94,10 +100,10 @@ block content
         )
         | Сохранить
   h3.ib.mb-10 Привязать аккаунты
-  +headerTooltipster('about-attaching')
+    +headerTooltipster({classname: 'about-attaching'})
   +providers(attachable, false)
   if (attachable.length === 0)
-    +message('Все доступные аккаунты привязаны!')
+    +info('Все доступные аккаунты привязаны!')
   if (attached.length > 0)
     p Привязанные аккаунты можно отключить:
     +providers(attached, true)

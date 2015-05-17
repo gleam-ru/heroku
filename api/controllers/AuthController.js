@@ -57,15 +57,15 @@ var AuthController = {
             if (req.isAuthenticated()) {
                 // осуществлялась привязка нового провайдера
                 // к существующему пользователю
-                return AuthController.attached(req, res);
+                return res.redirect(sails.config.passport.fillCredentials);
             }
 
             passport.login(req, res, user, function(err) {
                 if (err) return AuthController.tryAgain(req, res, err);
-                if (!user.username || !user.email) {
-                    // redirect to
-                    // Пожалуйста, заполните информацию о себе
-                    // TODO: fc_key
+                if (!user.username || !user.email || req._just_registered) {
+                    // только что зарегистрирован или отсутствуют требуемые поля
+                    req.flash('info', 'Пожалуйста, заполните информацию о себе.')
+                    return res.redirect(sails.config.passport.fillCredentials);
                 }
                 return res.redirect(sails.config.passport.successRedirect);
             });
@@ -86,7 +86,7 @@ var AuthController = {
                     return res.redirect(referer || '/settings');
                 });
             }
-            return res.redirect(referer || '/settings');
+            return AuthController.registered(req, res);
         });
     },
 
@@ -110,7 +110,11 @@ var AuthController = {
                 // аутентификация успешна
                 passport.login(req, res, user, function(err) {
                     if (err) return AuthController.tryAgain(req, res, err);
-                    res.redirect('/me');
+                    if (!user.username || !user.email) {
+                        // отсутствуют требуемые поля
+                        req.flash('info', 'Пожалуйста, заполните информацию о себе.')
+                        return res.redirect(sails.config.passport.fillCredentials);
+                    }
                 });
             })(req, res);
         }
@@ -146,7 +150,7 @@ var AuthController = {
                     // аутентифицируем пользователя
                     passport.login(req, res, user, function(err) {
                         if (err) return AuthController.tryAgain(req, res, err);
-                        res.redirect('/me');
+                        return res.redirect(sails.config.passport.fillCredentials);
                     });
                 });
             });
@@ -198,12 +202,6 @@ var AuthController = {
         // вьюшки должны уметь показывать error & form
         var referer = req.get('referer');
         res.redirect(referer || '/');
-    },
-
-
-    attached: function(req, res) {
-        var referer = req.get('referer');
-        return res.redirect(referer || '/settings');
     },
 
 };

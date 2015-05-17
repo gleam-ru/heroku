@@ -40,6 +40,18 @@ $(document).ready(function() {
     $.fn.tooltipster('setDefaults', {
         theme: 'tooltipster-light'
     });
+    $('.tt').each(function() {
+        $(this).tooltipster({
+            position: 'right',
+            maxWidth: 350,
+        });
+    });
+
+
+    $(document).on("click", ".close", function(event) {
+        $(this).parent().hide();
+    });
+
 
     // disable interface parts
     $.fn.mask = function(state) {

@@ -4,12 +4,21 @@ mixin json(data)
 mixin error(data)
   p.error(style="color: #E74343; margin: 0px !important; font-size: 18px;") #{data}
 
-mixin message(data)
-  p.message(style="color: #138132; margin: 0px !important; font-size: 18px;") #{data}
+mixin info(data)
+  p.info(style="color: #138132; margin: 0px !important; font-size: 18px;") #{data}
 
 mixin button(text)
   span(class="g-btn type_midnight size_small")
     span #{text}
 
-mixin headerTooltipster(classname)
-  i.fa.fa-question-circle.not-mobile.near-header(class=classname)
+mixin headerTooltipster(data)
+  - if (typeof data !== 'object') data = {title: data};
+  if (data.classname)
+    i.fa.fa-question-circle.not-mobile.near-header(class=data.classname, title=data.title)
+  else
+    i.fa.fa-question-circle.not-mobile.near-header.tt(title=data.title)
+
+mixin close()
+  .fa.fa-close.close(
+    style='font-size: 20px;'
+    )
