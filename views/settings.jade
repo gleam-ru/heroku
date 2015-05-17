@@ -12,23 +12,17 @@ block postHead
 
 //- data = {provider, name, href, icon}
 mixin provider(data)
-  .w-socials-item(class=data.provider)
+  .w-socials-item(class=data.provider title=data.name)
     a.w-socials-item-link(href=data.href)
       i.fa(class=data.icon)
-    .w-socials-item-popup
-      .w-socials-item-popup-h
-        span.w-socials-item-popup-text #{data.name}
 
 //- data = {provider, name, href, icon}
 mixin providerToRemove(data)
-  .w-socials-item(class=data.provider)
+  .w-socials-item(class=data.provider title='Удалить привязку: '+data.name)
     a.w-socials-item-link(href=data.href+'/remove')
       span.fa-stack.fa-lg
         i.fa.fa-stack-1x(class=data.icon)
         i.fa.fa-close.fa-stack-2x.depth
-    .w-socials-item-popup
-      .w-socials-item-popup-h
-        span.w-socials-item-popup-text #{data.name}
 
 mixin providers(list, remove)
   .providers

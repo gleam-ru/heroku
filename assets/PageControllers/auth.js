@@ -1,4 +1,12 @@
 $(document).ready(function() {
+
+    $('.w-socials-item').each(function() {
+        $(this).tooltipster({
+            position: 'top',
+        });
+    });
+
+
     window.qwe = new Vue({
         el: '#auth',
         data: {

@@ -14,6 +14,11 @@ $(document).ready(function() {
         position: 'right',
     });
 
+    $('.w-socials-item').each(function() {
+        $(this).tooltipster({
+            position: 'top',
+        });
+    });
 
     window.qwe = new Vue({
         el: '#edit',

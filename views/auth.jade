@@ -7,12 +7,9 @@ extends ./layouts/default
 //- 
 
 mixin provider(data)
-  .w-socials-item(class=data.provider)
+  .w-socials-item(class=data.provider title=data.name)
     a.w-socials-item-link(href=data.href)
       i.fa(class=data.icon)
-    .w-socials-item-popup
-      .w-socials-item-popup-h
-        span.w-socials-item-popup-text #{data.name}
 
 mixin providers(list)
   .w-socials.size_big
