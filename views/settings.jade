@@ -44,13 +44,13 @@ mixin providers(list, remove)
 
 
 block content
+  for error in errors
+    +error(error)
+  +message(info)
   h3.mb-10 Изменить свои данные
   div.tile#edit(
     style='max-width: 350px;'
     )
-    for error in errors
-      +error(error)
-    +message(info)
     form(
       role='form'
       action='/settings/update'

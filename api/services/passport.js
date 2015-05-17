@@ -241,20 +241,27 @@ function userByPassport(req, _passport, _user, done) {
 // Для привязки нескольких провайдеров к одной учетной записи
 // done(err, user)
 function attachPassportToExistingUser(_passport, _user_id, done) {
-    Passport.findOrCreate({
-        user       : _user_id,
-        strategy   : _passport.strategy,
-    }, {
-        user       : _user_id,
+    Passport.findOne({
         strategy   : _passport.strategy,
         identifier : _passport.identifier,
-    }, function(err) {
-        if (err) {
-            console.error('attachPassportToExistingUser trouble:', err);
-            return done(err);
-        }
-        console.info('User '+_user_id+' has attached '+_passport.strategy);
-        return User.findOne(_user_id, done);
+    }, function(err, found) {
+        if (err) return done(err);
+        if (found) return done(new Error('Предоставленный идентификатор '+_passport.strategy+' уже используется'));
+        Passport.findOrCreate({
+            user       : _user_id,
+            strategy   : _passport.strategy,
+        }, {
+            user       : _user_id,
+            strategy   : _passport.strategy,
+            identifier : _passport.identifier,
+        }, function(err) {
+            if (err) {
+                console.error('attachPassportToExistingUser trouble:', err);
+                return done(err);
+            }
+            console.info('User '+_user_id+' has attached '+_passport.strategy);
+            return User.findOne(_user_id, done);
+        });
     });
 }
 
