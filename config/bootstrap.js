@@ -26,42 +26,34 @@ module.exports.bootstrap = function(cb) {
 
     // TODO: сделать покрасиввее
     if (!sails.config.heroku) {
-        provider.init(function(err) {
-            if (err) {
-                log.error('Provider init failed', err);
-            }
+        async.series([
+            provider.init,
+            cache.init,
+            // cron.init,
+        ],
+        function(err) {
+            if (err) return cb(err);
+            console.log("i'm listening, my master...");
             // dbTasks.bondsNewDay();
             // provider.bonds.update();
-
-            // первоначальное заполнение кэша
-            cache.init();
-            // установка тасков
-            cron.init();
+            cb();
         });
+        return;
     }
     else {
         async.series([
-            function(asyncCb) {
-                provider.init(asyncCb);
-            },
-            function(asyncCb) {
-                cron.init();
-                asyncCb();
-            },
-            function(asyncCb) {
-                cache.init();
-                asyncCb();
-            },
-        ], function(err) {
-            if (err) {
-                log.error('Provider init failed', err);
-            }
+            provider.init,
+            cron.init,
+            cache.init,
             // TODO: убрать!
-            provider.bonds.update();
+            provider.bonds.update,
+        ],
+        function(err) {
+            if (err) log.error('Bootstrap failed', err);
+            console.log("i'm listening, my master...")
+            cb();
         });
+        return;
     }
 
-    console.log("i'm listening, my master...")
-
-    cb();
 };

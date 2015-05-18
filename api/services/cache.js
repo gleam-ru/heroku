@@ -5,9 +5,10 @@ var options = {
 };
 var cache = LRU(options);
 
-cache.init = function() {
+cache.init = function(cb) {
     provider.bonds.get();
     log.verbose('cache inited');
+    if (cb) cb();
 }
 
 module.exports = cache;
