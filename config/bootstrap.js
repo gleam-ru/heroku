@@ -53,6 +53,9 @@ module.exports.bootstrap = function(cb) {
         async.series([
             function(asyncCb) {
                 provider.init(asyncCb);
+                console.log('whee_1');
+                console.log(cron.tasks.bondsParser.next(50));
+                console.log('whee_2');
             },
             function(asyncCb) {
                 cron.init();
@@ -67,9 +70,7 @@ module.exports.bootstrap = function(cb) {
                 log.error('Provider init failed', err);
             }
             // TODO: убрать!
-            provider.bonds.update(function() {
-                console.log(cron.tasks.bondsParser.next(50));
-            });
+            provider.bonds.update();
         });
     }
 
