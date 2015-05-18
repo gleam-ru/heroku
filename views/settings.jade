@@ -63,7 +63,7 @@ block content
         placeholder='Email'
         value=email
         v-model='email'
-        v-class='has-error: error_email'
+        v-class='has-error: error_email, fillMePls: email.length == 0'
         )
       p Имя пользователя
         +headerTooltipster('Используется для входа на сайт без сторонних сервисов, а также как имя при комментировании. Не менее 3 символов.')

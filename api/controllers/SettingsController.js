@@ -55,8 +55,8 @@ module.exports = {
                 User.findOne(req.user.id, next);
             },
             function(user, next) {
-                user.username = username;
-                user.email = email;
+                user.username = username ? username : null;
+                user.email = email ? email : null;
                 user.save(next);
             },
             function(user, next) {

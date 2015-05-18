@@ -148,7 +148,11 @@ body::-webkit-scrollbar {
  *  ╚═╝ ╩  ╩ ╩═╝╚═╝   ╚═╝╩═╝╩ ╩╚═╝╚═╝╚═╝╚═╝
  */
 input.has-error {
-    background-color: #FAD7D7 !important;
+    background-color: #F9ECEC;
+    box-shadow: 0px 0px 3px 1px #E74343 !important;
+}
+input.fillMePls {
+    box-shadow: 0px 0px 3px 1px #138132 !important;
 }
 /* _margin */
 .no-m  {margin: 0px !important;}
