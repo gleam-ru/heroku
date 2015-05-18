@@ -1,8 +1,5 @@
 var moment = require('moment');
 var parser = require('./bondsParser.js');
-var me = {
-    current: []
-};
 
 // установка дефолтных значений
 me.init = function(cb) {
@@ -45,7 +42,7 @@ me.update = function(cb) {
 }
 
 
-// обновляет me.current значениями из базы
+// обновляет cache.set('bonds') значениями из базы
 // cb(err, updated)
 // TODO: Q-style
 me.updateCurrent = function(cb) {
