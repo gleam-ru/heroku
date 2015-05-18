@@ -13,11 +13,34 @@ $(document).ready(function() {
             signUp: window.location.href.indexOf('register') > -1,
             signUpText: 'регистрация',
             signInText: 'авторизация',
+
+            uname: '',
+            pwd_1: '',
+            pwd_2: '',
+            email: '',
+
             errors: {
                 pwd: false,
                 username: false,
                 email: false,
             }
+        },
+        watch: {
+            uname  : function() {
+                this.updateValidation();
+            },
+            pwd_1  : function() {
+                this.updateValidation();
+            },
+            pwd_2  : function() {
+                this.updateValidation();
+            },
+            email  : function() {
+                this.updateValidation();
+            },
+            signUp : function() {
+                this.updateValidation();
+            },
         },
         computed: {
             signIn: function() {
@@ -29,12 +52,6 @@ $(document).ready(function() {
             },
         },
         methods: {
-            init: function() {
-                var vm = this;
-                if (vm.signUp) {
-                    vm.updateValidation();
-                }
-            },
             change_vue: function() {
                 var vm = this;
                 $(vm.$el).addClass('no-error');
@@ -46,19 +63,14 @@ $(document).ready(function() {
                 else {
                     window.history.pushState('auth', 'Авторизация', location);
                 }
-                Vue.nextTick(vm.init);
+                vm.updateValidation();
                 return false;
             },
             updateValidation: function() {
                 var vm = this;
-                var uname = vm.$$.uname.value;
-                var pwd_1 = vm.$$.pwd_1.value;
-                var pwd_2 = vm.$$.pwd_2.value;
-                var email = vm.$$.email.value;
-                vm.errors.username = (uname.length < 3);
-                vm.errors.pwd      = (pwd_1.length < 3) || (pwd_1 !== pwd_2);
-                vm.errors.email    = (email.length > 0) && !validator.isEmail(email);
-                console.log(vm.errors)
+                vm.errors.username = (vm.uname.length < 3);
+                vm.errors.pwd      = (vm.pwd_1.length < 3) || (vm.pwd_1 !== vm.pwd_2);
+                vm.errors.email    = !validator.isEmail(vm.email);
             },
             beforeRegister: function(e) {
                 var vm = this;
@@ -73,7 +85,7 @@ $(document).ready(function() {
             },
         },
         compiled: function() {
-            this.init();
+            this.updateValidation();
         },
     });
 });

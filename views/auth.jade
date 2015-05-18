@@ -27,11 +27,10 @@ mixin providers(list)
 
 block postHead
   script(src='PageControllers/auth.js')
-  style
-    | form * {margin-bottom: 5px; max-width: 300px; display: block;}
-    | #auth h3 {margin-top: 20px; text-transform: capitalize;}
-    | #auth h3 a {text-transform: capitalize; border-bottom: dashed 1px #CCC;}
-    | #auth .g-btn.disabled {opacity: 1;}
+  style.
+    form * {margin-bottom: 5px; max-width: 300px; display: block;}
+    #auth h3 {margin-top: 20px; text-transform: capitalize;}
+    #auth h3 a {text-transform: capitalize; border-bottom: dashed 1px #CCC;}
 
 block content
   h1 Вход на сайт
@@ -60,8 +59,7 @@ block content
           name='username'
           placeholder='Имя пользователя'
           value=form.username
-          v-el='uname'
-          v-on='keyup: updateValidation'
+          v-model='uname'
           v-class='has-error: errors.username'
           )
         input(
@@ -69,25 +67,22 @@ block content
           name='password'
           placeholder='Пароль' 
           value=form.password
-          v-el='pwd_1'
-          v-on='keyup: updateValidation'
+          v-model='pwd_1'
           v-class='has-error: errors.pwd'
           )
         input(
           type='password' 
           placeholder='Еще пароль' 
           value=form.password
-          v-el='pwd_2'
-          v-on='keyup: updateValidation'
+          v-model='pwd_2'
           v-class='has-error: errors.pwd'
           )
         input(
           type='text' 
-          name='email' 
+          name='email'
           placeholder='Email' 
           value=form.email
-          v-el='email'
-          v-on='keyup: updateValidation'
+          v-model='email'
           v-class='has-error: errors.email'
           )
         button.g-btn.type_midnight.size_small(

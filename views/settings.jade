@@ -2,8 +2,8 @@ extends ./layouts/default.jade
 
 block postHead
   script(src='PageControllers/settings.js')
-  style
-    | .content p {margin: 10px 0px 5px 0px;}
+  style.
+    .content p {margin: 10px 0px 5px 0px;}
 
 //- 
 //- ASTRA
@@ -62,8 +62,7 @@ block content
         name='email'
         placeholder='Email'
         value=email
-        v-el='email'
-        v-on='change: updateValidation'
+        v-model='email'
         v-class='has-error: errors.email'
         )
       p Имя пользователя
@@ -73,8 +72,7 @@ block content
         name='username'
         placeholder='Имя пользователя'
         value=username
-        v-el='uname'
-        v-on='change: updateValidation'
+        v-model='uname'
         v-class='has-error: errors.username'
         )
       p Пароль
@@ -83,15 +81,13 @@ block content
         type='password'
         name='new_password'
         placeholder='Новый пароль'
-        v-el='pwd_1'
-        v-on='change: updateValidation'
+        v-model='pwd_1'
         v-class='has-error: errors.new_pwd'
         )
       input.mb-10(
         type='password' 
         placeholder='Повторите новый пароль' 
-        v-el='pwd_2'
-        v-on='change: updateValidation'
+        v-model='pwd_2'
         v-class='has-error: errors.new_pwd'
         )
       button.g-btn.type_midnight.size_small(
