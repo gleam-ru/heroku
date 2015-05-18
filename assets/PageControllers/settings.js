@@ -21,46 +21,30 @@ $(document).ready(function() {
         });
     });
 
-    window.qwe = new Vue({
+    window.vm = new Vue({
         el: '#edit',
         data: {
             email: '',
             uname: '',
             pwd_1: '',
             pwd_2: '',
-
-            errors: {
-                new_pwd: false,
-                username: false,
-                email: false,
-            },
-        },
-        watch: {
-            uname  : function() {
-                this.updateValidation();
-            },
-            pwd_1  : function() {
-                this.updateValidation();
-            },
-            pwd_2  : function() {
-                this.updateValidation();
-            },
-            email  : function() {
-                this.updateValidation();
-            },
         },
         computed: {
+            error_username: function() {
+                return (this.uname.length < 3);
+            },
+            error_email: function() {
+                return (this.email.length > 0) && !validator.isEmail(this.email);
+            },
+            error_new_pwd: function() {
+                return (this.pwd_1.length > 0 && this.pwd_1.length < 3) || (this.pwd_1 !== this.pwd_2);
+            },
             hasErrors: function() {
-                var vm = this;
-                return vm.errors.new_pwd || vm.errors.username || vm.errors.email;
+                return this.error_new_pwd || this.error_username || this.error_email;
             },
         },
         methods: {
             updateValidation: function() {
-                var vm = this;
-                vm.errors.username = (vm.uname.length < 3);
-                vm.errors.new_pwd  = (vm.pwd_1.length > 0 && vm.pwd_1.length < 3) || (vm.pwd_1 !== vm.pwd_2);
-                vm.errors.email    = (vm.email.length > 0) && !validator.isEmail(vm.email);
             },
             beforeSubmit: function(e) {
                 var vm = this;

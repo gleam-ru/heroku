@@ -63,7 +63,7 @@ block content
         placeholder='Email'
         value=email
         v-model='email'
-        v-class='has-error: errors.email'
+        v-class='has-error: error_email'
         )
       p Имя пользователя
         +headerTooltipster('Используется для входа на сайт без сторонних сервисов, а также как имя при комментировании. Не менее 3 символов.')
@@ -73,7 +73,7 @@ block content
         placeholder='Имя пользователя'
         value=username
         v-model='uname'
-        v-class='has-error: errors.username'
+        v-class='has-error: error_username'
         )
       p Пароль
         +headerTooltipster('Используется для входа на сайт без сторонних сервисов. Не менее 3 символов.')
@@ -82,13 +82,13 @@ block content
         name='new_password'
         placeholder='Новый пароль'
         v-model='pwd_1'
-        v-class='has-error: errors.new_pwd'
+        v-class='has-error: error_new_pwd'
         )
       input.mb-10(
         type='password' 
         placeholder='Повторите новый пароль' 
         v-model='pwd_2'
-        v-class='has-error: errors.new_pwd'
+        v-class='has-error: error_new_pwd'
         )
       button.g-btn.type_midnight.size_small(
         type='submit'

@@ -60,7 +60,7 @@ block content
           placeholder='Имя пользователя'
           value=form.username
           v-model='uname'
-          v-class='has-error: errors.username'
+          v-class='has-error: error_username'
           )
         input(
           type='password'
@@ -68,14 +68,14 @@ block content
           placeholder='Пароль' 
           value=form.password
           v-model='pwd_1'
-          v-class='has-error: errors.pwd'
+          v-class='has-error: error_pwd'
           )
         input(
           type='password' 
           placeholder='Еще пароль' 
           value=form.password
           v-model='pwd_2'
-          v-class='has-error: errors.pwd'
+          v-class='has-error: error_pwd'
           )
         input(
           type='text' 
@@ -83,7 +83,7 @@ block content
           placeholder='Email' 
           value=form.email
           v-model='email'
-          v-class='has-error: errors.email'
+          v-class='has-error: error_email'
           )
         button.g-btn.type_midnight.size_small(
           type='submit'

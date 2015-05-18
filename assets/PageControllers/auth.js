@@ -27,37 +27,22 @@ $(document).ready(function() {
             pwd_1: '',
             pwd_2: '',
             email: '',
-
-            errors: {
-                pwd: false,
-                username: false,
-                email: false,
-            }
-        },
-        watch: {
-            uname  : function() {
-                this.updateValidation();
-            },
-            pwd_1  : function() {
-                this.updateValidation();
-            },
-            pwd_2  : function() {
-                this.updateValidation();
-            },
-            email  : function() {
-                this.updateValidation();
-            },
-            signUp : function() {
-                this.updateValidation();
-            },
         },
         computed: {
             signIn: function() {
                 return !this.signUp;
             },
+            error_pwd: function() {
+                return (this.pwd_1.length < 3) || (this.pwd_1 !== this.pwd_2);
+            },
+            error_username: function() {
+                return (this.uname.length < 3);
+            },
+            error_email: function() {
+                return !validator.isEmail(this.email);
+            },
             hasErrors: function() {
-                var vm = this;
-                return vm.errors.pwd || vm.errors.username || vm.errors.email;
+                return this.error_pwd || this.error_username || this.error_email;
             },
         },
         methods: {
@@ -72,14 +57,7 @@ $(document).ready(function() {
                 else {
                     window.history.pushState('auth', 'Авторизация', location);
                 }
-                vm.updateValidation();
                 return false;
-            },
-            updateValidation: function() {
-                var vm = this;
-                vm.errors.username = (vm.uname.length < 3);
-                vm.errors.pwd      = (vm.pwd_1.length < 3) || (vm.pwd_1 !== vm.pwd_2);
-                vm.errors.email    = !validator.isEmail(vm.email);
             },
             beforeRegister: function(e) {
                 var vm = this;
@@ -92,9 +70,6 @@ $(document).ready(function() {
                     return false;
                 }
             },
-        },
-        compiled: function() {
-            this.updateValidation();
         },
     });
 });
