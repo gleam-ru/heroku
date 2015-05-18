@@ -46,20 +46,20 @@ module.exports.bootstrap = function(cb) {
             cron.init,
             cache.init,
             // TODO: убрать!
-            function(next) {
-                var timeToNextParsing = cron.tasks.bondsParser.next();
-                var now = require('moment')();
-                if ((timeToNextParsing - now) > (1000 * 60 * 35)) { // 35 min
-                    provider.bonds.update(next);
-                }
-                else {
-                    next();
-                }
-            },
+            // function(next) {
+            //     var timeToNextParsing = cron.tasks.bondsParser.next();
+            //     var now = require('moment')();
+            //     if ((timeToNextParsing - now) > (1000 * 60 * 35)) { // 35 min
+            //     }
+            //     else {
+            //         next();
+            //     }
+            // },
         ],
         function(err) {
             if (err) log.error('Bootstrap failed', err);
             console.log("i'm listening, my master...")
+            provider.bonds.update();
             cb();
         });
         return;
