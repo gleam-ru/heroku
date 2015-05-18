@@ -49,10 +49,10 @@ module.exports.connections = {
     HerokuMysqlServer: {
         adapter: 'sails-mysql',
         // url: 'mysql://be50e30cc6b57b:6675390c@us-cdbr-iron-east-02.cleardb.net:3306/heroku_33fbe7236ec661e?reconnect=true',
-        host: 'us-cdbr-iron-east-02.cleardb.net',
-        user: 'be50e30cc6b57b',
-        password: '6675390c',
-        database: 'heroku_33fbe7236ec661e',
+        host: 'eu-cdbr-west-01.cleardb.com',
+        user: 'b8870163950a00',
+        password: 'd7faa67e',
+        database: 'heroku_61392df38b4f492',
         // reconnect: true, // а так можно? оО
     },
 
