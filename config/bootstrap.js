@@ -43,12 +43,12 @@ module.exports.bootstrap = function(cb) {
         async.series([
             function(asyncCb) {
                 provider.init(asyncCb);
-                console.log('whee_1');
-                console.log(cron.tasks.bondsParser.next(50));
-                console.log('whee_2');
             },
             function(asyncCb) {
                 cron.init();
+                console.log('whee_1');
+                console.log(cron.tasks.bondsParser.next(50));
+                console.log('whee_2');
                 asyncCb();
             },
             function(asyncCb) {
