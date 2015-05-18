@@ -46,7 +46,7 @@ module.exports.bootstrap = function(cb) {
             cron.init,
             cache.init,
             // TODO: убрать!
-            provider.bonds.update,
+            // provider.bonds.update,
         ],
         function(err) {
             if (err) log.error('Bootstrap failed', err);
