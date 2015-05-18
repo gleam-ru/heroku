@@ -20,7 +20,6 @@ module.exports = {
 
     models: {
         connection: 'RgpLocalhostMysqlServer',
-        refill: false,
     },
 
     port: 1337,

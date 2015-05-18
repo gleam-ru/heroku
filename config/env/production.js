@@ -16,19 +16,13 @@ module.exports = {
     heroku: true,
 
     models: {
-        // не работает - читай в connections.js :(
-        // connection: 'HerokuMysqlServer',
-        //
-        connection: 'sailsDisk',
-        refill: true,
-        // drop: true, // смотри bootstrap
-        migrate: 'alter',
+        connection: 'HerokuMysqlServer',
     },
 
     port: 5000,
 
     log: {
-        level: "silent",
+        level: "silly",
         custom: require('winston').loggers.get('prod_logger'),
     }
 

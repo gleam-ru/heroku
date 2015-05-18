@@ -6,15 +6,6 @@
  * This gives you an opportunity to set up your data model, run jobs, or perform some special logic.
  */
 
-// TODO:
-// убрать это убожество... -_-
-var drop_db = false;
-if (drop_db) {
-    console.log('nedb droppped');
-    require('fs-extra').removeSync('sailsDisk/*');
-}
-
-
 module.exports.bootstrap = function(cb) {
     // Заполняем модель тестовыми данными
     // /*
@@ -34,8 +25,7 @@ module.exports.bootstrap = function(cb) {
 
 
     // TODO: сделать покрасиввее
-    var localhost = !sails.config.heroku;
-    if (localhost) {
+    if (!sails.config.heroku) {
         provider.init(function(err) {
             if (err) {
                 log.error('Provider init failed', err);

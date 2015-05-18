@@ -60,7 +60,7 @@ winston.loggers.add('logger', {
 winston.loggers.add('prod_logger', {
     transports: [
         _console,
-        _fileGlobal,
+        // _fileGlobal,
     ]
 });
 
