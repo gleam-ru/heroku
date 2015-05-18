@@ -21,15 +21,6 @@
 
 module.exports.connections = {
 
-    // sqlite analogue
-    sailsDisk: {
-        adapter: 'sails-nedb',
-        filePath: './',
-        fileName: 'sailsDisk',
-    },
-
-
-
     //  ╔╦╗╦ ╦╔═╗╔═╗ ╦
     //  ║║║╚╦╝╚═╗║═╬╗║
     //  ╩ ╩ ╩ ╚═╝╚═╝╚╩═╝

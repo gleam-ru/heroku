@@ -7,7 +7,6 @@
 
 var moment = require('moment');
 var jsonpack = require('jsonpack');
-var mask = require('json-mask');
 
 module.exports = {
 

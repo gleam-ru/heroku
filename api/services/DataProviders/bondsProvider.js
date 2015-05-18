@@ -1,5 +1,6 @@
 var moment = require('moment');
 var parser = require('./bondsParser.js');
+var me = {};
 
 // установка дефолтных значений
 me.init = function(cb) {
