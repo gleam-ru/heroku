@@ -67,7 +67,9 @@ module.exports.bootstrap = function(cb) {
                 log.error('Provider init failed', err);
             }
             // TODO: убрать!
-            provider.bonds.update();
+            provider.bonds.update(function() {
+                console.log(cron.tasks.bondsParser.next(50));
+            });
         });
     }
 
