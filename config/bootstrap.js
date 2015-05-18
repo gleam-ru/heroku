@@ -37,9 +37,6 @@ module.exports.bootstrap = function(cb) {
             cache.init();
             // установка тасков
             cron.init();
-            console.log('whee_1');
-            console.log(cron.tasks.bondsParser.next(50));
-            console.log('whee_2');
         });
     }
     else {
@@ -59,9 +56,6 @@ module.exports.bootstrap = function(cb) {
             if (err) {
                 log.error('Provider init failed', err);
             }
-            console.log('whee_1');
-            console.log(cron.tasks.bondsParser.next(50));
-            console.log('whee_2');
             // TODO: убрать!
             provider.bonds.update();
         });

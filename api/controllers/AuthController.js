@@ -115,6 +115,7 @@ var AuthController = {
                         req.flash('info', 'Пожалуйста, заполните информацию о себе.')
                         return res.redirect(sails.config.passport.fillCredentials);
                     }
+                    return res.redirect(sails.config.passport.successRedirect);
                 });
             })(req, res);
         }
