@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $('.w-socials-item-link').click(function() {
-        $(this).closest('.providers').mask();
+        $('.content').mask();
     });
 
     $('.about-attaching').tooltipster({
@@ -67,6 +67,7 @@ $(document).ready(function() {
                 var form = vm.$$.form;
                 e.preventDefault();
                 if (!vm.hasErrors) {
+                    $('.content').mask();
                     $(form).submit();
                 }
                 else {

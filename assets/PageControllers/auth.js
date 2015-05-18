@@ -1,5 +1,14 @@
 $(document).ready(function() {
 
+
+    $('.w-socials-item-link').click(function() {
+        $('.content').mask();
+    });
+
+    $(document).on('submit', 'form', function() {
+        $('.content').mask();
+    });
+
     $('.w-socials-item').each(function() {
         $(this).tooltipster({
             position: 'top',
