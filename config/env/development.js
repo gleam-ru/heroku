@@ -25,7 +25,7 @@ module.exports = {
     port: 1337,
 
     log: {
-        level: 'info',
+        level: 'silly',
         custom: require('winston').loggers.get('logger'),
     }
 
