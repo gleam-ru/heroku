@@ -43,7 +43,8 @@ html
         .l-subfooter.at_bottom
           .l-subfooter-h.i-cf
             .w-copyright
-              |© 2013 All rights reserved. <a href="/">Astra</a>
+              - var year = (new Date()).getUTCFullYear();
+              |© 2014 - #{year} <a href="/">Бложик с подзаголовком</a> (v-0.9)
     //- eo footer
 
     //- goto top
