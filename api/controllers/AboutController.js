@@ -13,6 +13,10 @@ module.exports = {
         return res.render('donation', {});
     },
 
+    thx: function(req, res) {
+        return res.send('спасибо');
+    },
+
     feedback: function(req, res) {
         return res.render('feedback', {});
     },

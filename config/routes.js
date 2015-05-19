@@ -45,9 +45,10 @@ module.exports.routes = {
     //
     // About page
     //
-    'get /about'            : 'About',
-    'get /about/feedback'   : 'About.feedback',
-    'get /about/donation'   : 'About.donation',
+    'get /about'              : 'About',
+    'get /about/feedback'     : 'About.feedback',
+    'get /about/donation'     : 'About.donation',
+    'get /about/donation/thx' : 'About.thx',
 
 
 

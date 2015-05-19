@@ -171,6 +171,8 @@ input.fillMePls {
 .pointer {cursor: pointer;}
 .ib {display: inline-block;}
 
+ul.no-dots>li {list-style: none;}
+
 .no-error .error {display: none;}
 .isolated {margin: 0px 0px 10px 0px;}
 .comment {
