@@ -14,7 +14,7 @@
 module.exports = function(grunt) {
 
     grunt.config.set('sync', {
-        dev: {
+        assets: {
             files: [
                 { // assets
                     expand: true,
@@ -22,12 +22,6 @@ module.exports = function(grunt) {
                     src: ['**/*.!(coffee|less)'],
                     dest: '.tmp/public'
                 },
-                { // bower
-                    expand: true,
-                    cwd: './bower_components',
-                    src: ['**/*'],
-                    dest: '.tmp/public/bower'
-                }
             ]
         }
     });

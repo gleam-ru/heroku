@@ -1,7 +1,14 @@
 extends ../layouts/default.jade
 
 block postHead
+
+  link(rel="stylesheet", href="/css/MyTable.css")
+
   script(src='PageControllers/bonds.js')
+  script(type="text/javascript", src="/Components/MyTable.js")
+  script(type="text/javascript", src="/Components/Learning.js")
+
+
 
 block content
   .height-transition.no-select

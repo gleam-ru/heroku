@@ -12,65 +12,56 @@ link(rel="shortcut icon", type="image/x-icon", href="favicon.ico")
 //-  ╔═╗╔╦╗╦ ╦╦  ╔═╗╔═╗
 //-  ╚═╗ ║ ╚╦╝║  ║╣ ╚═╗
 //-  ╚═╝ ╩  ╩ ╩═╝╚═╝╚═╝
-
+//- <!-- build:css css/combined.min.css -->
 // bower:css
-link(rel='stylesheet', href='bower/datatables/media/css/jquery.dataTables.css')
-link(rel='stylesheet', href='bower/datatables-scroller/css/dataTables.scroller.css')
-link(rel='stylesheet', href='bower/pickmeup/css/pickmeup.css')
-link(rel='stylesheet', href='bower/magnific-popup/dist/magnific-popup.css')
-link(rel='stylesheet', href='bower/tooltipster/css/tooltipster.css')
-link(rel='stylesheet', href='bower/font-awesome/css/font-awesome.css')
+link(rel='stylesheet', href='bower_components/datatables/media/css/jquery.dataTables.css')
+link(rel='stylesheet', href='bower_components/datatables-scroller/css/dataTables.scroller.css')
+link(rel='stylesheet', href='bower_components/pickmeup/css/pickmeup.css')
+link(rel='stylesheet', href='bower_components/magnific-popup/dist/magnific-popup.css')
+link(rel='stylesheet', href='bower_components/tooltipster/css/tooltipster.css')
+link(rel='stylesheet', href='bower_components/font-awesome/css/font-awesome.css')
 // endbower
 
-link(rel="stylesheet", href="/css/motioncss.css")
-link(rel="stylesheet", href="/css/motioncss-widgets.css")
+//- Astra
+link(rel="stylesheet", href="css/Astra/motioncss.css")
+link(rel="stylesheet", href="css/Astra/motioncss-widgets.css")
+link(rel="stylesheet", href="css/Astra/style.css")
+link(rel="stylesheet", href="css/Astra/responsive.css")
+link(rel="stylesheet", href="css/Astra/color.css")
 
-link(rel="stylesheet", href="/css/style.css")
-link(rel="stylesheet", href="/css/responsive.css")
-link(rel="stylesheet", href="/css/color.css")
+//- глобальные скрипты
+link(rel="stylesheet", href="css/main.css")
+//- <!-- endbuild -->
 
-
-//- мои стили
-link(rel="stylesheet", href="/css/MyTable.css")
-link(rel="stylesheet", href="/css/_myStyle.css")
 
 
 
 //-  ╔═╗╔═╗╦═╗╦╔═╗╔╦╗╔═╗
 //-  ╚═╗║  ╠╦╝║╠═╝ ║ ╚═╗
 //-  ╚═╝╚═╝╩╚═╩╩   ╩ ╚═╝
-
+//- cdn
+script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js')
+//- компиллированные jade шаблоны
+script(type="text/javascript", src="jade_templates.js")
+//- <!-- build:js js/combined.min.js -->
 // bower:js
-script(src='bower/jquery/dist/jquery.js')
-script(src='bower/datatables/media/js/jquery.dataTables.js')
-script(src='bower/datatables-scroller/js/dataTables.scroller.js')
-script(src='bower/moment/moment.js')
-script(src='bower/lodash/lodash.js')
-script(src='bower/pickmeup/js/jquery.pickmeup.js')
-script(src='bower/vue/dist/vue.js')
-script(src='bower/magnific-popup/dist/jquery.magnific-popup.js')
-script(src='bower/jquery-cookie/jquery.cookie.js')
-script(src='bower/tooltipster/js/jquery.tooltipster.min.js')
-script(src='bower/validator-js/validator.js')
+script(src='bower_components/datatables/media/js/jquery.dataTables.js')
+script(src='bower_components/datatables-scroller/js/dataTables.scroller.js')
+script(src='bower_components/moment/moment.js')
+script(src='bower_components/lodash/lodash.js')
+script(src='bower_components/pickmeup/js/jquery.pickmeup.js')
+script(src='bower_components/vue/dist/vue.js')
+script(src='bower_components/magnific-popup/dist/jquery.magnific-popup.js')
+script(src='bower_components/jquery-cookie/jquery.cookie.js')
+script(src='bower_components/tooltipster/js/jquery.tooltipster.min.js')
+script(src='bower_components/validator-js/validator.js')
 // endbower
-
-//- script(src='https://cdn.rawgit.com/yyx990803/vue/0.11.8/dist/vue.js')
-script(type="text/javascript", src="/js/plugins.js")
+//- Astra
+script(type="text/javascript", src="js/Astra/plugins.js")
 
 //- добавляет поддержку moment в datatables
-script(type="text/javascript", src="/js/datatables.moment.patch.js")
-
-
-
-//- компиллированные jade шаблоны
-script(type="text/javascript", src="/js/jade_templates.js")
+script(type="text/javascript", src="js/datatables.moment.patch.js")
 
 //- глобальные методы, локализации, etc...
-script(type="text/javascript", src="/js/main.js")
-
-//- Vue Components
-//- TODO: распихать в страницы, где используется, а не в глобальном хеде
-script(type="text/javascript", src="/Components/MyTable.js")
-
-//- My components
-script(type="text/javascript", src="/Components/Learning.js")
+script(type="text/javascript", src="js/main.js")
+//- <!-- endbuild -->

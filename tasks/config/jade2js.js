@@ -2,7 +2,7 @@
 var templatizer = require('templatizer');
 
 var src = process.cwd() + '/views/client/*.jade';
-var dst = process.cwd() + '/.tmp/public/js/jade_templates.js';
+var dst = process.cwd() + '/.tmp/public/jade_templates.js';
 
 module.exports = function(grunt) {
 

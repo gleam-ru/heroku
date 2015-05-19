@@ -81,6 +81,7 @@ bower_components
 ################################################
 .tmp
 dump.rdb
+/views/layouts/parts/_head.jade
 
 
 
