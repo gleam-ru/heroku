@@ -24,6 +24,8 @@ module.exports = {
     log: {
         level: "silly",
         custom: require('winston').loggers.get('prod_logger'),
-    }
+    },
+
+    hookTimeout: 300000, // 5 min
 
 };
