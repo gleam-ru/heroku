@@ -167,16 +167,16 @@ input.fillMePls {
 .pb-10 {padding-bottom: 10px !important;}
 .pl-10 {padding-left: 10px !important;}
 
-.no-error .error {display: none;}
-.pointer {cursor: pointer;}
-.no- {margin-bottom: 10px;}
 .ow-h {overflow: hidden;}
+.pointer {cursor: pointer;}
+.ib {display: inline-block;}
+
+.no-error .error {display: none;}
 .isolated {margin: 0px 0px 10px 0px;}
 .comment {
     color: grey;
     font-style: italic;
 }
-.ib {display: inline-block;}
 .no-select {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
