@@ -43,23 +43,25 @@ module.exports.bootstrap = function(cb) {
     else {
         async.series([
             provider.init,
-            cron.init,
             cache.init,
+            cron.init,
             // TODO: убрать!
-            // function(next) {
-            //     var timeToNextParsing = cron.tasks.bondsParser.next();
-            //     var now = require('moment')();
-            //     if ((timeToNextParsing - now) > (1000 * 60 * 35)) { // 35 min
-            //     }
-            //     else {
-            //         next();
-            //     }
-            // },
+            function(next) {
+                var timeToNextParsing = cron.tasks.bondsParser.next();
+                var now = require('moment')();
+                if ((timeToNextParsing - now) > (1000 * 60 * 35)) { // 35 min
+                    console.log('force parsing...');
+                }
+                else {
+                    console.log('parsing as usual');
+                    next();
+                }
+            },
         ],
         function(err) {
             if (err) log.error('Bootstrap failed', err);
             console.log("i'm listening, my master...")
-            provider.bonds.update();
+            // provider.bonds.update();
             cb();
         });
         return;
