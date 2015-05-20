@@ -44,6 +44,10 @@ body::-webkit-scrollbar {
     padding: 10px 40px;
 }
 
+.g-alert .g-alert-body {
+    display: table-cell;
+}
+
 #mask {
     height: 100%;
     position: absolute;

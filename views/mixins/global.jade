@@ -2,10 +2,14 @@ mixin json(data)
   p #{JSON.stringify(data, null, 4)}
 
 mixin error(data)
-  p.error(style="color: #E74343; margin: 0px !important; font-size: 18px;") #{data}
+  .g-alert.type_error.with_close.ib
+    .g-alert-close ✕
+    .g-alert-body #{data}
 
 mixin info(data)
-  p.info(style="color: #138132; margin: 0px !important; font-size: 18px;") #{data}
+  .g-alert.type_success.with_close.ib
+    .g-alert-close ✕
+    .g-alert-body #{data}
 
 mixin button(text)
   span(class="g-btn type_midnight size_small")

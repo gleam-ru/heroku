@@ -41,6 +41,8 @@ block content
         a.pointer(
           v-on='click: change_vue'
           ) {{signInText}}
+      for error in errors
+        +error(error)
       form(
         role='form'
         action='/auth/register'
@@ -48,8 +50,6 @@ block content
         v-el='form'
         v-on='submit: beforeRegister'
         )
-        for error in errors
-          +error(error)
         input(
           type='text'
           name='username'

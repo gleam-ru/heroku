@@ -48,8 +48,8 @@ $(document).ready(function() {
     });
 
 
-    $(document).on("click", ".close", function(event) {
-        $(this).parent().hide();
+    $(document).on("click", ".g-alert-close", function(event) {
+        $(this).closest('.g-alert').hide();
     });
 
 
