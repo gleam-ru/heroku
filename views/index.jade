@@ -2,7 +2,8 @@ extends ./layouts/default.jade
 
 block postHead
   style.
-    .content .w-timeline-item-title {font-size: 30px;}
+    .content .w-timeline-item-title,
+    .content .w-timeline-section-title-text {font-size: 30px;}
     .content .w-timeline-item:not(:last-child) {margin-right: 30px;}
     p.slogan {margin-left: -10px; margin-top: 9px;}
 
@@ -33,101 +34,94 @@ block content
     он может изменяться. В любом случае, предложения очень приветствуются. Мои контакты можно найти в
     разделе "<a href='/about'>о проекте</a>".
 
-  h1 Планы на будущее
-  .g-cols.offset_default
-    .full-width
-      .w-timeline
-        .w-timeline-h
-          .w-timeline-list.ib.ow-h
-            .w-timeline-list-h
-              .w-timeline-item.active
-                span.w-timeline-item-bullet
-                span.w-timeline-item-title
-                  i.fa.fa-sun-o
-              .w-timeline-item
-                span.w-timeline-item-bullet
-                span.w-timeline-item-title
-                  i.fa.fa-umbrella
-              .w-timeline-item
-                span.w-timeline-item-bullet
-                span.w-timeline-item-title
-                  i.fa.fa-tree
-              .w-timeline-item
-                span.w-timeline-item-bullet
-                span.w-timeline-item-title
-                  i.fa.fa-comments
-
-          .w-timeline-sections(style='position: relative; height: 194px; overflow: hidden;')
-            #section_container(style='position: relative; width: 2073px; height: 0px; left: 0px;')
-              .w-timeline-section.active(style='display: block; width: 691px; float: left;')
-                .w-timeline-section-h
-                  .w-timeline-section-content(style='display: block; height: auto;')
-                    .g-cols.offset_default
-                      .full-width
-                        .wpb_text_column
-                          .wpb_wrapper
-                            div
-                              h3 Лето 2015
-                              ul
-                                li импорт эмитентов ММВБ с их историей за все время существования
-                                li страница с их интерактивными графиками
-                                li импорт истории основных валют (+графики)
-                                li импорт истории основных металлов (+графики)
-              .w-timeline-section(style='display: block; width: 691px; float: left;')
-                .w-timeline-section-h
-                  .w-timeline-section-content(style='display: block; height: auto;')
-                    .g-cols.offset_default
-                      .full-width
-                        .wpb_text_column
-                          .wpb_wrapper
-                            div
-                              h3 Осень 2015
-                              ul
-                                li ведение портфеля:
-                                  ul
-                                    li покупка (произвольная дата и объем) и продажа активов
-                                    li построение "исторической" (с момента покупки + вся история из базы) доходности портфеля
-                                    li редактирование состава портфеля (акции/облигации/металлы/...)
-                                li подписка (email) на события:
-                                  ul
-                                    li выплата купона у облигации
-                                    li выплата дивидендов у акции
-                                    li достижение требуемой доходности у облигации
-                                    li достижение требуемой цены у акции
-              .w-timeline-section(style='display: block; width: 691px; float: left;')
-                .w-timeline-section-h
-                  .w-timeline-section-content(style='display: block; height: auto;')
-                    .g-cols.offset_default
-                      .full-width
-                        .wpb_text_column
-                          .wpb_wrapper
-                            div
-                              h3 Зима 2016
-                              ul
-                                li портфели:
-                                  ul
-                                    li возможность публикации портфелей (чтобы его видели другие пользователи)
-                                    li возможность встраивания графика портфеля на другие сайты
-                                li аналитика:
-                                  ul
-                                    li много новых графиков (например: дивиденды по годам, или мультипликаторы по отчетам)
-                                    li возможность создания своих графиков на основе доступных в системе (например: цена акции / курс доллара + температура на Марсе)
-                                    li рейтинг пользовательских графиков с возможностью голосования
-                                li Создание "блого-платформы" с разными авторами, которые могут вести разные разделы
-                                li Подключение рынков других стран
-              .w-timeline-section(style='display: block; width: 691px; float: left;')
-                .w-timeline-section-h
-                  .w-timeline-section-content(style='display: block; height: auto;')
-                    .g-cols.offset_default
-                      .full-width
-                        .wpb_text_column
-                          .wpb_wrapper
-                            div
-                                p.
-                                  Представленный список является приблизительным.
-                                  Сроки сильно завышены - в действительности
-                                  дело пойдет значительно быстрее. <br />
-                                  Проект, который делает один человек, вряд ли станет популярным, так что,
-                                  попрошу Вас внести свой вклад. <br />
-                                  Сделать это можно <a href='about/donation'>материально</a> или написав
-                                  предложения по развитию <a href='/about/feedback'>здесь</a>.
+  h1 Планы на будущее 
+    +tooltipster('нажмите на кружок для смены сезона')
+  .w-timeline
+    .w-timeline-h
+      .w-timeline-list.ib.ow-h
+        .w-timeline-list-h
+          .w-timeline-item.active
+            span.w-timeline-item-bullet
+            span.w-timeline-item-title
+              i.fa.fa-sun-o
+          .w-timeline-item
+            span.w-timeline-item-bullet
+            span.w-timeline-item-title
+              i.fa.fa-umbrella
+          .w-timeline-item
+            span.w-timeline-item-bullet
+            span.w-timeline-item-title
+              i.fa.fa-tree
+          .w-timeline-item
+            span.w-timeline-item-bullet
+            span.w-timeline-item-title
+              i.fa.fa-comments
+      .w-timeline-sections
+        .w-timeline-section.active
+          .w-timeline-section-h
+            .w-timeline-section-title
+              span.w-timeline-section-title-bullet
+              span.w-timeline-section-title-text
+                i.fa.fa-sun-o
+            .w-timeline-section-content
+              h3 Лето 2015
+              ul
+                li импорт эмитентов ММВБ с их историей за все время существования
+                li страница с их интерактивными графиками
+                li импорт истории основных валют (+графики)
+                li импорт истории основных металлов (+графики)
+        .w-timeline-section
+          .w-timeline-section-h
+            .w-timeline-section-title
+              span.w-timeline-section-title-bullet
+              span.w-timeline-section-title-text
+                i.fa.fa-umbrella
+            .w-timeline-section-content
+              h3 Осень 2015
+              ul
+                li ведение портфеля:
+                  ul
+                    li покупка (произвольная дата и объем) и продажа активов
+                    li построение "исторической" (с момента покупки + вся история из базы) доходности портфеля
+                    li редактирование состава портфеля (акции/облигации/металлы/...)
+                li подписка (email) на события:
+                  ul
+                    li выплата купона у облигации
+                    li выплата дивидендов у акции
+                    li достижение требуемой доходности у облигации
+                    li достижение требуемой цены у акции
+        .w-timeline-section
+          .w-timeline-section-h
+            .w-timeline-section-title
+              span.w-timeline-section-title-bullet
+              span.w-timeline-section-title-text
+                i.fa.fa-tree
+            .w-timeline-section-content
+              h3 Зима 2016
+              ul
+                li портфели:
+                  ul
+                    li возможность публикации портфелей (чтобы его видели другие пользователи)
+                    li возможность встраивания графика портфеля на другие сайты
+                li аналитика:
+                  ul
+                    li много новых графиков (например: дивиденды по годам, или мультипликаторы по отчетам)
+                    li возможность создания своих графиков на основе доступных в системе (например: цена акции / курс доллара + температура на Марсе)
+                    li рейтинг пользовательских графиков с возможностью голосования
+                li Создание "блого-платформы" с разными авторами, которые могут вести разные разделы
+                li Подключение рынков других стран
+        .w-timeline-section
+          .w-timeline-section-h
+            .w-timeline-section-title
+              span.w-timeline-section-title-bullet
+              span.w-timeline-section-title-text
+                i.fa.fa-comments
+            .w-timeline-section-content
+              p.
+                Представленный список является приблизительным.
+                Сроки сильно завышены - в действительности
+                дело пойдет значительно быстрее. <br />
+                Проект, который делает один человек, вряд ли станет популярным, так что,
+                попрошу Вас внести свой вклад. <br />
+                Сделать это можно <a href='about/donation'>материально</a> или написав
+                предложения по развитию <a href='/about/feedback'>здесь</a>.
