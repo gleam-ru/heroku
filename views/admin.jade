@@ -1,0 +1,19 @@
+extends ./layouts/default.jade
+
+
+
+block pageHead
+  h1.ib Админка
+block pageHead_small
+  p тут происходит магия
+
+
+block content
+  h4 Облигации
+  if (info && info.length > 0)
+    +info(info)
+  ul
+    li
+      a(href='/adm/bonds_reparse') Репарс
+    li
+      a(href='/adm/bonds_cache') Обнови кэш из бд

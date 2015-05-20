@@ -52,6 +52,15 @@ module.exports.routes = {
 
 
 
+    //
+    // Admin
+    //
+    'get /adm'                : 'Admin',
+    'get /adm/bonds_reparse'  : 'Admin.bonds_reparse',
+    'get /adm/bonds_cache'    : 'Admin.bonds_cache',
+
+
+
 
 
     //  ╔╦╗╔═╗╔═╗╔╦╗

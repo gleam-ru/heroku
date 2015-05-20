@@ -57,6 +57,15 @@ module.exports.navigation = [
     },
 
     //
+    // ОдминЪка
+    //
+    {
+        name     : "Админка",
+        href     : "/adm",
+        canSee   : ["admin"],
+    },
+
+    //
     // dev
     //
     {

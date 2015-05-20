@@ -23,4 +23,9 @@ module.exports.policies = {
         'updateFilter': ['authenticated']
     },
 
+    // Админка
+    AdminController: {
+        '*': ['authenticated', 'isAdmin']
+    },
+
 };
