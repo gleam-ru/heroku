@@ -6,7 +6,14 @@ module.exports = function(grunt) {
             exclude: ['jquery.js'],
             src: [
                 'views/layouts/parts/head.jade',
-            ]
+            ],
+            fileTypes: {
+                jade: {
+                  replace: {
+                    js: 'script(src="{{filePath}}" defer)'
+                  }
+                }
+            }
         }
     });
 
