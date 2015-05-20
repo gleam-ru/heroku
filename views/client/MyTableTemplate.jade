@@ -6,7 +6,8 @@ include ./els
     //- additional info
     //- 
     .additional
-      ul
+      h3 Информация
+      ul(style='margin-top: 10px;')
         li(v-repeat='info: additional')
           |{{info.text}}: {{info.value}}
         li(v-repeat='info: tableInfo')

@@ -4,12 +4,21 @@ block postHead
   style.
     h1, h2, h3, h4, h5, h6 {font-family: Arial;}
 
-block content
+
+
+block pageHead
   h1 Поддержите проект
+block pageHead_small
   p.
-    В среднем на этот сайт уходит <a href='/about'>$800 в год</a>. Окажите посильную помощь
-    и он продолжит свое развитие!
-  +separator()
+    В среднем на этот сайт уходит <a href='/about'>$800 в год</a>.
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'О проекте', href:'/about'},
+      {name:'Поддержать проект', href:'/about/donation'},
+    ])
+
+block content
   h3
     span(style= "font-family: Arial Narrow; color: red; font-weight: bold;") Я
     | ндекс деньги 

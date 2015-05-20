@@ -1,8 +1,20 @@
 extends ./layouts/default.jade
 
+
+
+block pageHead
+  h1.ib О проекте
+block pageHead_small
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'О проекте', href:'/about'},
+    ])
+
+
 block content
   p.mb-10
-    | Здравствуйте, я - автор данного сайта.
+    | Я - автор данного сайта.
     br
     | Делаю его в качестве хобби, в свободное от работы время.
     br

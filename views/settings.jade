@@ -36,6 +36,15 @@ mixin providers(list, remove)
               +provider(provider)
 
 
+block pageHead
+  h1 Настройки
+block pageHead_small
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Профиль', href:'/me'},
+      {name:'Настройки'}
+    ])
 
 block content
   if (errors.length > 0 || info.length > 0)
@@ -44,7 +53,7 @@ block content
       for error in errors
         +error(error)
       +info(info)
-  h3.mb-10.no-p Изменить свои данные
+  //- h3.mb-10.no-p Изменить свои данные
   div.tile.mb-10#edit(
     style='max-width: 350px;'
     )

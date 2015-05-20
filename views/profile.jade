@@ -1,7 +1,16 @@
 extends ./layouts/default.jade
 
-block content
+
+block pageHead
   h1 Профиль
+block pageHead_small
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Профиль', href:'/me'},
+    ])
+
+block content
   div Информация о тебе:
     +json(req.user)
     +json(req.session)

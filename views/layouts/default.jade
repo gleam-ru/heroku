@@ -30,6 +30,18 @@ html
           //- main
           .l-main
             .l-main-h
+              //- pagehead
+              .l-submain.for_pagehead
+                .l-submain-h.g-html.i-cf
+                  .w-pagehead
+                    h1
+                      block pageHead
+                    p
+                      block pageHead_small
+                    //- breadcrums
+                    .g-breadcrumbs
+                      block breadcrumbs
+              //- page
               .l-submain
                 .l-submain-h.g-html
                   .content

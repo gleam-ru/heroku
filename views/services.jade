@@ -1,8 +1,16 @@
 extends ./layouts/default.jade
 
-block content
+block pageHead
   h1 Сервисы
+block pageHead_small
   p Тут будет описание всех сервисов сайта
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Сервисы', href:'/services'},
+    ])
+
+block content
   p Когда их будет больше одного... сейчас готова только работа с 
     a(href="/services/bonds") облигациями
       

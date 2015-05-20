@@ -4,6 +4,18 @@ block postHead
   script(src='PageControllers/feedback.js')
 
 
-block content
+
+block pageHead
   h1 Обсуждение
+block pageHead_small
+  p.
+    Анонимные комментарии разрешены. Модерации нет.
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'О проекте', href:'/about'},
+      {name:'Обсуждение', href:'/about/feedback'},
+    ])
+
+block content
   div(style='min-height: 500px;')#disqus_thread

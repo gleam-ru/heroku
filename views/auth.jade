@@ -1,11 +1,5 @@
 extends ./layouts/default
 
-
-//- 
-//- ASTRA
-//- http://astra.us-themes.com/shortcodes/social-links/
-//- 
-
 mixin provider(data)
   .w-socials-item(class=data.provider title=data.name)
     a.w-socials-item-link(href=data.href)
@@ -18,13 +12,6 @@ mixin providers(list)
         for provider in list
           +provider(provider)
 
-//-
-//- eo ASTRA
-//-
-
-
-
-
 block postHead
   script(src='PageControllers/auth.js')
   style.
@@ -32,11 +19,20 @@ block postHead
     #auth h3 {margin-top: 20px; text-transform: capitalize;}
     #auth h3 a {text-transform: capitalize; border-bottom: dashed 1px #CCC;}
 
-block content
+
+
+block pageHead
   h1 Вход на сайт
+
+block pageHead_small
+  //- p Возможна регистрация через 
+
+
+block breadcrumbs
+  +breadcrumbs()
+
+block content
   +providers(providers)
-
-
   div#auth
     div.registering(
       v-if='signUp'
