@@ -185,6 +185,9 @@ input.fillMePls {
 .pointer {cursor: pointer;}
 .ib {display: inline-block;}
 
+.i {font-style: italic;}
+.b {font-weight: bold;}
+
 ul.no-dots>li {list-style: none;}
 
 .no-error .error {display: none;}

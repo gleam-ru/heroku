@@ -4,13 +4,16 @@ block postHead
   style.
     .content .w-timeline-item-title {font-size: 30px;}
     .content .w-timeline-item:not(:last-child) {margin-right: 30px;}
+    p.slogan {margin-left: -10px; margin-top: 9px;}
+
+  script(type="text/javascript", src="js/Astra/w-timeline.js")
 
 
 
 block pageHead
   h1 Бложик
 block pageHead_small
-  p с подзаголовком
+  p.slogan.i (с подзаголовком)
 block breadcrumbs
   +breadcrumbs([
     ])

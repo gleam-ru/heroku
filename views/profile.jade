@@ -4,6 +4,7 @@ extends ./layouts/default.jade
 block pageHead
   h1 Профиль
 block pageHead_small
+  p.i (пока не реализовано)
 block breadcrumbs
   +breadcrumbs([
       {name:'Главная', href:'/'},
@@ -11,7 +12,30 @@ block breadcrumbs
     ])
 
 block content
-  div Информация о тебе:
-    +json(req.user)
-    +json(req.session)
-    p #{text}
+  p Изменить свои данные вы можете на странице 
+    a(href='/settings') "Настройки"
+  
+  h4 Будущее
+  p Планирую разместить на этой странице следующую информацию:
+  ul
+    li Работа с активами:
+      ul
+        li покупка
+        li продажа
+        li редактирование
+    li Аналитика:
+      ul
+        li графики изменения "веса" портфеля
+        li графики доходности
+        li рекомендации по покупке/продаже
+    li Настройка email оповещений
+  
+  h4 Настоящее
+  p Если кому-то интересно, как сервер видит пользователя:
+  ul
+    li user:
+      br
+      +json(req.user)
+    li session:
+      br
+      +json(req.session)
