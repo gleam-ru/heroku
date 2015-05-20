@@ -1,15 +1,5 @@
 extends ./layouts/default.jade
 
-block postHead
-  script(src='PageControllers/settings.js')
-  style.
-    .content p {margin: 10px 0px 5px 0px;}
-
-//- 
-//- ASTRA
-//- http://astra.us-themes.com/shortcodes/social-links/
-//- 
-
 //- data = {provider, name, href, icon}
 mixin provider(data)
   .w-socials-item(class=data.provider title=data.name)
@@ -34,6 +24,24 @@ mixin providers(list, remove)
               +providerToRemove(provider)
             else
               +provider(provider)
+
+
+
+block postHead
+  script(src='PageControllers/settings.js')
+  style.
+    .content p {margin: 10px 0px 5px 0px;}
+    .tile {
+      padding: 10px;
+      border: solid 1px #CCC;
+      border-radius: 3px;
+      background: #ECF0F1;
+      }
+      .tile input {
+        background-color: #FAFAFA;
+        }
+      .tile p:first-child {margin: 0px;}
+
 
 
 block pageHead
@@ -64,7 +72,7 @@ block content
       v-on='submit: beforeSubmit'
       )
       p Email
-        +headerTooltipster('Некоторые сервисы используют почту для оповещений. Их можно отключить.')
+        +tooltipster('Некоторые сервисы используют почту для оповещений. Их можно отключить.')
       input(
         type='text'
         name='email'
@@ -74,7 +82,7 @@ block content
         v-class='has-error: error_email, fillMePls: email.length == 0'
         )
       p Имя пользователя
-        +headerTooltipster('Используется для входа на сайт без сторонних сервисов, а также как имя при комментировании. Не менее 3 символов.')
+        +tooltipster('Используется для входа на сайт без сторонних сервисов, а также как имя при комментировании. Не менее 3 символов.')
       input(
         type='text'
         name='username'
@@ -84,7 +92,7 @@ block content
         v-class='has-error: error_username'
         )
       p Пароль
-        +headerTooltipster('Используется для входа на сайт без сторонних сервисов. Не менее 3 символов.')
+        +tooltipster('Используется для входа на сайт без сторонних сервисов. Не менее 3 символов.')
       input.mb-10(
         type='password'
         name='new_password'
@@ -104,7 +112,7 @@ block content
         )
         | Сохранить
   h3.ib.mb-10 Привязать аккаунты
-    +headerTooltipster({classname: 'about-attaching'})
+    +tooltipster({classname: 'about-attaching'})
   +providers(attachable, false)
   if (attachable.length === 0)
     +info('Все доступные аккаунты привязаны!')

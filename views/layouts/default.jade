@@ -1,5 +1,16 @@
 include ../mixins/global.jade
 
+mixin breadcrumbs(list)
+  if list
+    each item, i in list
+      if i === list.length - 1
+        span.g-breadcrumbs-item #{item.name}
+      else
+        a.g-breadcrumbs-item(href=item.href) #{item.name}
+        span.g-breadcrumbs-separator &raquo;
+
+
+
 doctype
 html
   head

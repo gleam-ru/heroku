@@ -1,19 +1,3 @@
-// стандартные сообщения
-window.messages = {
-    issue: ''+
-        '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>'+
-        '',
-    auth: ''+
-        '<p>Для данного действия необходимо <br />'+
-            '<a href="/auth?register">зарегистрироваться</a> или <br />'+
-            '<a href="/auth">войти в систему</a>.'+
-        '</p>'+
-        '',
-    not_implemented: ''+
-        '<p>Извините, данная возможность пока не реализована</p>'+
-        '',
-}
-
 // compiled jade
 window.Jade = templatizer;
 
@@ -32,9 +16,13 @@ $(document).ready(function() {
     $.pickmeup.hide_on_select = true;
     $.pickmeup.locale = locale;
 
+
+
     // datatables
     window.dateFormat = "DD.MM.YYYY";
     $.fn.dataTable.moment(dateFormat);
+
+
 
     // tooltipster
     $.fn.tooltipster('setDefaults', {
@@ -48,9 +36,12 @@ $(document).ready(function() {
     });
 
 
-    $(document).on("click", ".g-alert-close", function(event) {
+
+    // g-alert (req.flash сообщения)
+    $(document).on("click", ".g-alert-close", function() {
         $(this).closest('.g-alert').hide();
     });
+
 
 
     // disable interface parts
@@ -66,6 +57,8 @@ $(document).ready(function() {
             this.find('#mask').fadeOut(500, function(){ $(this).remove();});
         }
     }
+
+
 
     // уведомление об результате действия
     // state - true/false (success/fail)
@@ -87,6 +80,8 @@ $(document).ready(function() {
             cb();
         }, 300);
     }
+
+
 
     // magnific popups
     window.mp = {};

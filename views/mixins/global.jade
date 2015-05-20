@@ -2,7 +2,7 @@ mixin json(data)
   p #{JSON.stringify(data, null, 4)}
 
 mixin error(data)
-  .g-alert.type_error.with_close.ib
+  .g-alert.type_error.with_close.ib.error
     .g-alert-close ✕
     .g-alert-body #{data}
 
@@ -15,28 +15,14 @@ mixin button(text)
   span(class="g-btn type_midnight size_small")
     span #{text}
 
-mixin headerTooltipster(data)
+mixin tooltipster(data)
   - if (typeof data !== 'object') data = {title: data};
   if (data.classname)
     i.fa.fa-question-circle.not-mobile.near-header(class=data.classname, title=data.title)
   else
     i.fa.fa-question-circle.not-mobile.near-header.tt(title=data.title)
 
-mixin close()
-  .fa.fa-close.close(
-    style='font-size: 20px;'
-    )
-
 mixin separator()
   div.g-hr.no-select
     span.g-hr-h
       i.fa.fa-chevron-down
-
-mixin breadcrumbs(list)
-  if list
-    each item, i in list
-      if i === list.length - 1
-        span.g-breadcrumbs-item #{item.name}
-      else
-        a.g-breadcrumbs-item(href=item.href) #{item.name}
-        span.g-breadcrumbs-separator &raquo;
