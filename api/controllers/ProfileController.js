@@ -8,7 +8,7 @@
 module.exports = {
     index: function(req, res) {
         return res.render('profile', {
-            text: 'test',
+            title: 'Профиль',
         });
     }
 };

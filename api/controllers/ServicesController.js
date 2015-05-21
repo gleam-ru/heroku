@@ -8,6 +8,8 @@
 
 module.exports = {
 	index: function(req, res) {
-        return res.render('services', {});
+        return res.render('services', {
+            title: 'Сервисы',
+        });
     }
 };

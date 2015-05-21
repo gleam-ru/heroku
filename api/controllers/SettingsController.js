@@ -35,6 +35,7 @@ module.exports = {
             attachedProviders = _(attachedProviders).flatten().compact().value();
 
             return res.render('settings', {
+                title      : 'Настройки',
                 info       : req.flash('info'),
                 errors     : req.flash('error'),
                 attachable : providers,

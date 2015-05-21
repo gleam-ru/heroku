@@ -6,11 +6,15 @@
 
 module.exports = {
 	index: function(req, res) {
-        return res.render('about', {});
+        return res.render('about', {
+            title: 'О проекте',
+        });
     },
 
     donation: function(req, res) {
-        return res.render('donation', {});
+        return res.render('donation', {
+            title: 'Поддержите проект',
+        });
     },
 
     thx: function(req, res) {
@@ -18,7 +22,9 @@ module.exports = {
     },
 
     feedback: function(req, res) {
-        return res.render('feedback', {});
+        return res.render('feedback', {
+            title: 'Обсуждение',
+        });
     },
 
 };

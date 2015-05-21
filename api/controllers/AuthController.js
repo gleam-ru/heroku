@@ -24,6 +24,7 @@ var AuthController = {
         });
         var data = req.flash('form');
         return res.render('auth', {
+            title: 'Вход на сайт',
             errors: req.flash('error'),
             form: data[0] || {},
             providers: providers,

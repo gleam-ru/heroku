@@ -13,7 +13,7 @@ module.exports = {
     // страница с облигациями
     index: function(req, res) {
         return res.render('services/bonds', {
-            text: 'test',
+            title: 'Облигации',
         });
     },
 
