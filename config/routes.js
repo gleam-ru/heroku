@@ -40,6 +40,11 @@ module.exports.routes = {
     //---
     'post /services/bonds/updateFilter' : 'Bonds.updateFilter',
 
+    // Shares
+    'get /services/shares'                 : 'Shares',
+    'get /services/shares/candles/:code'   : 'Shares.get',
+    //---
+
 
 
     //

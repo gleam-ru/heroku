@@ -1,0 +1,42 @@
+extends ../layouts/default.jade
+
+block postHead
+  script(src='PageControllers/shares.js' defer)
+
+  style.
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+      }
+    path.candle {
+      stroke: #000000;
+      }
+      path.candle.body {
+        stroke-width: 0;
+        }
+      path.candle.up {
+        fill: #00AA00;
+        stroke: #00AA00;
+        }
+      path.candle.down {
+        fill: #FF0000;
+        stroke: #FF0000;
+        }
+
+
+block pageHead
+  h1 Test
+    i.fa.fa-question-circle.begin-learning.not-mobile
+block pageHead_small
+  | There is some magic here...
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Сервисы', href:'/services'},
+      {name:'Test'}
+    ])
+
+block content
+  #shares

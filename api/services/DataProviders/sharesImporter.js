@@ -23,7 +23,7 @@ me.provideData = function(cb) {
         }
         res = _.map(res, function(candle) {
             return {
-                date: moment(candle['<DATE>'], 'YYYYMMDD'),
+                date: moment(candle['<DATE>'], 'YYYYMMDD').format('YYYY-MM-DD'),
                 o: parseFloat(candle['<OPEN>']),
                 h: parseFloat(candle['<HIGH>']),
                 l: parseFloat(candle['<LOW>']),
