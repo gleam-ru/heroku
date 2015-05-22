@@ -49,7 +49,7 @@ module.exports.bootstrap = function(cb) {
             function(next) {
                 var timeToNextParsing = cron.tasks.bondsParser.next();
                 var now = require('moment')();
-                if ((timeToNextParsing - now) > (1000 * 60 * 66)) { // 66 min
+                if ((timeToNextParsing - now) > (1000 * 60 * 122)) { // 122 min
                     console.log('force parsing...');
                 }
                 else {
