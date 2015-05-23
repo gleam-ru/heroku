@@ -45,23 +45,10 @@ module.exports.bootstrap = function(cb) {
             provider.init,
             cache.init,
             cron.init,
-            // TODO: убрать!
-            function(next) {
-                var timeToNextParsing = cron.tasks.bondsParser.next();
-                var now = require('moment')();
-                if ((timeToNextParsing - now) > (1000 * 60 * 122)) { // 122 min
-                    console.log('force parsing...');
-                }
-                else {
-                    console.log('parsing as usual');
-                    next();
-                }
-            },
         ],
         function(err) {
             if (err) log.error('Bootstrap failed', err);
             console.log("i'm listening, my master...")
-            // provider.bonds.update();
             cb();
         });
         return;
