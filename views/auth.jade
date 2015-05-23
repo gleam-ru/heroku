@@ -99,6 +99,7 @@ block content
         role='form'
         action='/auth/login'
         method='post'
+        v-on='submit: beforeLogIn'
         )
         for error in errors
           +error(error)
