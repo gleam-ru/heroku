@@ -1,8 +1,6 @@
 meta(charset='utf-8')
 title #{title ? title+' (бложик с подзаголовком)' : 'blozhik'}
 
-base(href="/")
-
 meta(name='viewport', content="width=device-width, initial-scale=1, maximum-scale=1")
 
 link(rel="shortcut icon", type="image/x-icon", href="favicon.ico")
@@ -14,23 +12,23 @@ link(rel="shortcut icon", type="image/x-icon", href="favicon.ico")
 //-  ╚═╝ ╩  ╩ ╩═╝╚═╝╚═╝
 //- <!-- build:css css/combined.min.css -->
 // bower:css
-link(rel='stylesheet', href='bower_components/datatables/media/css/jquery.dataTables.css')
-link(rel='stylesheet', href='bower_components/datatables-scroller/css/dataTables.scroller.css')
-link(rel='stylesheet', href='bower_components/pickmeup/css/pickmeup.css')
-link(rel='stylesheet', href='bower_components/magnific-popup/dist/magnific-popup.css')
-link(rel='stylesheet', href='bower_components/tooltipster/css/tooltipster.css')
-link(rel='stylesheet', href='bower_components/font-awesome/css/font-awesome.css')
+link(rel='stylesheet', href='/bower_components/datatables/media/css/jquery.dataTables.css')
+link(rel='stylesheet', href='/bower_components/datatables-scroller/css/dataTables.scroller.css')
+link(rel='stylesheet', href='/bower_components/pickmeup/css/pickmeup.css')
+link(rel='stylesheet', href='/bower_components/magnific-popup/dist/magnific-popup.css')
+link(rel='stylesheet', href='/bower_components/tooltipster/css/tooltipster.css')
+link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.css')
 // endbower
 
 //- Astra
-link(rel="stylesheet", href="css/Astra/motioncss.css")
-link(rel="stylesheet", href="css/Astra/motioncss-widgets.css")
-link(rel="stylesheet", href="css/Astra/style.css")
-link(rel="stylesheet", href="css/Astra/responsive.css")
-link(rel="stylesheet", href="css/Astra/color.css")
+link(rel="stylesheet", href="/css/Astra/motioncss.css")
+link(rel="stylesheet", href="/css/Astra/motioncss-widgets.css")
+link(rel="stylesheet", href="/css/Astra/style.css")
+link(rel="stylesheet", href="/css/Astra/responsive.css")
+link(rel="stylesheet", href="/css/Astra/color.css")
 
 //- глобальные скрипты
-link(rel="stylesheet", href="css/main.css")
+link(rel="stylesheet", href="/css/main.css")
 //- <!-- endbuild -->
 
 
@@ -42,28 +40,28 @@ link(rel="stylesheet", href="css/main.css")
 //- cdn
 script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' defer)
 //- компиллированные jade шаблоны
-script(type="text/javascript", src="jade_templates.js" defer)
+script(type="text/javascript", src="/jade_templates.js" defer)
 //- <!-- build:js js/combined.min.js -->
 // bower:js
-script(src="bower_components/datatables/media/js/jquery.dataTables.js" defer)
-script(src="bower_components/datatables-scroller/js/dataTables.scroller.js" defer)
-script(src="bower_components/moment/moment.js" defer)
-script(src="bower_components/lodash/lodash.js" defer)
-script(src="bower_components/pickmeup/js/jquery.pickmeup.js" defer)
-script(src="bower_components/vue/dist/vue.js" defer)
-script(src="bower_components/magnific-popup/dist/jquery.magnific-popup.js" defer)
-script(src="bower_components/jquery-cookie/jquery.cookie.js" defer)
-script(src="bower_components/tooltipster/js/jquery.tooltipster.min.js" defer)
-script(src="bower_components/validator-js/validator.js" defer)
-script(src="bower_components/d3/d3.js" defer)
-script(src="bower_components/techan/dist/techan.js" defer)
+script(src="/bower_components/datatables/media/js/jquery.dataTables.js" defer)
+script(src="/bower_components/datatables-scroller/js/dataTables.scroller.js" defer)
+script(src="/bower_components/moment/moment.js" defer)
+script(src="/bower_components/lodash/lodash.js" defer)
+script(src="/bower_components/pickmeup/js/jquery.pickmeup.js" defer)
+script(src="/bower_components/vue/dist/vue.js" defer)
+script(src="/bower_components/magnific-popup/dist/jquery.magnific-popup.js" defer)
+script(src="/bower_components/jquery-cookie/jquery.cookie.js" defer)
+script(src="/bower_components/tooltipster/js/jquery.tooltipster.min.js" defer)
+script(src="/bower_components/validator-js/validator.js" defer)
+script(src="/bower_components/d3/d3.js" defer)
+script(src="/bower_components/techan/dist/techan.js" defer)
 // endbower
 //- Astra
-script(type="text/javascript", src="js/Astra/plugins.js" defer)
+script(type="text/javascript", src="/js/Astra/plugins.js" defer)
 
 //- добавляет поддержку moment в datatables
-script(type="text/javascript", src="js/datatables.moment.patch.js" defer)
+script(type="text/javascript", src="/js/datatables.moment.patch.js" defer)
 
 //- глобальные методы, локализации, etc...
-script(type="text/javascript", src="js/main.js" defer)
+script(type="text/javascript", src="/js/main.js" defer)
 //- <!-- endbuild -->
