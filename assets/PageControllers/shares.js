@@ -24,29 +24,17 @@ $(document).ready(function() {
 
 function createChart(data) {
     var candles = data.candles;
-    var margin = {
-        top: 20,
-        right: 20,
-        bottom: 100,
-        left: 50
-    };
-    var margin2 = {
-        top: 420,
-        right: 20,
-        bottom: 20,
-        left: 50
-    };
-    var width = 960 - margin.left - margin.right;
-    var height = 500 - margin.top - margin.bottom;
-    var height2 = 500 - margin2.top - margin2.bottom;
+    // chart
+    var margin = [20, 20, 20, 50];
+    var width = $('#shares').width() - margin[1] - margin[3];
+    var height = 500 - margin[0] - margin[2];
+    // brusher
+    var b_width = $('#shares').width() - margin[3];
+    var b_height = 50;
+        margin[2] += b_height;
 
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
 
     var x = techan
-        .scale
-        .financetime()
-        .range([0, width]);
-    var x2 = techan
         .scale
         .financetime()
         .range([0, width]);
@@ -55,75 +43,43 @@ function createChart(data) {
         .scale
         .linear()
         .range([height, 0]);
-    var yVolume = d3
+
+    var y_volume = d3
         .scale
         .linear()
         .range([y(0), y(0.3)]);
-    var y2 = d3
+
+
+
+    // Оси брашера
+    var b_x = techan
+        .scale
+        .financetime()
+        .range([0, b_width]);
+
+    var b_y = d3
         .scale
         .linear()
-        .range([height2, 0]);
+        .range([b_height, 0]);
 
-    var brush = d3
-        .svg
-        .brush()
-        .on("brush", draw);
-
-
-    var candlestick = techan
-        .plot
-        .candlestick()
-        .xScale(x)
-        .yScale(y);
-
-    var volume = techan
-        .plot
-        .volume()
-        .xScale(x)
-        .yScale(yVolume);
-
-    var close = techan
-        .plot
-        .close()
-        .xScale(x2)
-        .yScale(y2);
-
-    var xAxis = d3
-        .svg
-        .axis()
-        .scale(x)
-        .orient("bottom");
-
-    var xAxis2 = d3
-        .svg
-        .axis()
-        .scale(x2)
-        .orient("bottom");
-
-    var yAxis = d3
-        .svg
-        .axis()
-        .scale(y)
-        .orient("left");
-
-    var yAxis2 = d3
-        .svg
-        .axis()
-        .scale(y2)
-        .ticks(0)
-        .orient("left");
-
+    // поле для творчества
     var svg = d3.select("#shares").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("width", width + margin[3] + margin[1])
+        .attr("height", height + margin[0] + margin[2] + b_height)
+        // .append("g")
+        // .attr("transform", "translate(" + margin[3] + "," + margin[0] + ")");
 
+
+
+    // график
     var focus = svg.append("g")
         .attr("class", "focus")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin[3] + "," + margin[0] + ")");
 
-    focus.append("clipPath")
+    // видимая область
+    // чтобы не рендерить лишнее - .attr("clip-path", "url(#clip)")
+    focus
+        .append("clipPath")
         .attr("id", "clip")
         .append("rect")
         .attr("x", 0)
@@ -131,96 +87,230 @@ function createChart(data) {
         .attr("width", width)
         .attr("height", y(0) - y(1));
 
-    focus.append("g")
-        .attr("class", "volume")
-        .attr("clip-path", "url(#clip)");
 
-    focus.append("g")
-        .attr("class", "candlestick")
-        .attr("clip-path", "url(#clip)");
 
-    focus.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")");
+    // всяко разно
+    var ctx = svg.append("g")
+        .attr("class", "ctx")
+        .attr("transform", "translate(" + margin[3] + "," + (height + margin[2]) + ")");
 
-    focus.append("g")
-        .attr("class", "y axis")
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Price ($)");
+    // ctx.append("g")
+    //     .attr("class", "close");
 
-    var context = svg.append("g")
-        .attr("class", "context")
-        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+    // ctx.append("g")
+    //     .attr("class", "x axis")
+    //     .attr("transform", "translate(0," + height2 + ")");
 
-    context.append("g")
-        .attr("class", "close");
+    // ctx.append("g")
+    //     .attr("class", "y axis")
+    //     .call(yAxis);
 
-    context.append("g")
-        .attr("class", "pane");
 
-    context.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height2 + ")");
 
-    context.append("g")
-        .attr("class", "y axis")
-        .call(yAxis2);
+    //  ╔═╗╔═╗╔╗╔╔╦╗╦  ╔═╗╔═╗
+    //  ║  ╠═╣║║║ ║║║  ║╣ ╚═╗
+    //  ╚═╝╩ ╩╝╚╝═╩╝╩═╝╚═╝╚═╝
+    //  @candles
 
-    var zoomable;
-    var zoomable2;
-    var accessor = candlestick.accessor();
+    var candlesticks_plot = techan
+        .plot
+        .candlestick()
+        .xScale(x)
+        .yScale(y);
 
-    candles = candles.slice(0, 1000).map(function(d) {
-    // candles = candles.map(function(d) {
+    var accessor = candlesticks_plot.accessor();
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+    candles = candles.map(function(c) {
+    // candles = candles.slice(0, 1000).map(function(d) {
         return {
-            date: parseDate(d.date),
-            open: +d.o,
-            high: +d.h,
-            low: +d.l,
-            close: +d.c,
-            volume: +d.vol
+            date   : parseDate(c.date),
+            open   : +c.o,
+            high   : +c.h,
+            low    : +c.l,
+            close  : +c.c,
+            volume : +c.vol
         };
     }).sort(function(a, b) {
         return d3.ascending(accessor.d(a), accessor.d(b));
     });
 
     x.domain(candles.map(accessor.d));
-    x2.domain(x.domain());
     y.domain(techan.scale.plot.ohlc(candles, accessor).domain());
-    y2.domain(y.domain());
-    yVolume.domain(techan.scale.plot.volume(candles).domain());
 
-    focus.select("g.candlestick").datum(candles);
-    focus.select("g.volume").datum(candles);
+    focus
+        .append("g")
+        .attr("class", "candlestick")
+        .attr("clip-path", "url(#clip)")
+        .datum(candles)
 
-    context.select("g.close").datum(candles).call(close);
-    context.select("g.x.axis").call(xAxis2);
 
-    // Associate the brush with the scale and render the brush only AFTER a domain has been applied
-    zoomable = x.zoomable();
-    zoomable2 = x2.zoomable();
-    brush.x(zoomable2);
-    context.select("g.pane").call(brush).selectAll("rect").attr("height", height2);
 
-    draw();
+    //  ╦  ╦╔═╗╦  ╦ ╦╔╦╗╔═╗╔═╗
+    //  ╚╗╔╝║ ║║  ║ ║║║║║╣ ╚═╗
+    //   ╚╝ ╚═╝╩═╝╚═╝╩ ╩╚═╝╚═╝
+    //   @volumes
+
+    var volumes_plot = techan
+        .plot
+        .volume()
+        .xScale(x)
+        .yScale(y_volume)
+
+    y_volume.domain(techan.scale.plot.volume(candles).domain())
+
+    focus
+        .append("g")
+        .attr("class", "volume")
+        .attr("clip-path", "url(#clip)")
+        .datum(candles)
+
+
+
+    //  ╔═╗═╗ ╦╦╔═╗
+    //  ╠═╣╔╩╦╝║╚═╗
+    //  ╩ ╩╩ ╚═╩╚═╝
+    //  @axis
+
+    var y_axis = d3
+        .svg
+        .axis()
+        .scale(y)
+        .orient("left")
+
+    focus
+        .append("g")
+        .attr("class", "y axis")
+        // .append("text")
+        // .attr("transform", "rotate(-90)")
+        // .attr("y", 6)
+        // .attr("dy", ".71em")
+        // .style("text-anchor", "end")
+        // .text("Price ($)");
+
+    var x_axis = d3
+        .svg
+        .axis()
+        .scale(x)
+        .orient("bottom")
+
+    focus
+        .append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")");
+
+
+
+
+
+    //  ╔╗ ╦═╗╦ ╦╔═╗╦ ╦╔═╗╦═╗
+    //  ╠╩╗╠╦╝║ ║╚═╗╠═╣║╣ ╠╦╝
+    //  ╚═╝╩╚═╚═╝╚═╝╩ ╩╚═╝╩╚═
+    //  @brusher
+
+    b_x.domain(x.domain())
+    b_y.domain(y.domain())
+
+
+    var close = techan
+        .plot
+        .close()
+        .xScale(b_x)
+        .yScale(b_y);
+    ctx
+        .append("g")
+        .attr("class", "close")
+    ctx
+        .select("g.close")
+        .datum(candles)
+        .call(close)
+
+
+    var b_x_axis = d3
+        .svg
+        .axis()
+        .scale(x)
+        .orient("bottom")
+    ctx
+        .append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + b_height + ")");
+    ctx
+        .select("g.x.axis")
+        .call(b_x_axis)
+
+
+    var brush = d3
+        .svg
+        .brush()
+        .on("brush", draw);
+
+    var plot_data    = x.zoomable();
+    var brusher_data = b_x.zoomable();
+
+    var xxx = d3
+        .time
+        .scale()
+        .domain([new Date(2013, 7, 1), new Date(2013, 7, 15) - 1])
+        .range([0, width]);
+
+    brush
+        .x(xxx)
+        .extent([new Date(2013, 7, 2), new Date(2013, 7, 3)])
+        .on("brushend", brushended);
+
+    // brush.x(brusher_data)
+    ctx
+        .append("g")
+        .attr("class", "brusher")
+    ctx
+        .select("g.brusher")
+        // .call(brush)
+        .call(d3.svg.axis()
+            .scale(xxx)
+            .orient("bottom")
+            .ticks(d3.time.hours, 12)
+            .tickSize(-height)
+            .tickFormat(""))
+        .selectAll("rect")
+        .attr("height", b_height)
+
+    function brushended() {
+        if (!d3.event.sourceEvent) return; // only transition after input
+        var extent0 = brush.extent(),
+            extent1 = extent0.map(d3.time.day.round);
+
+        // if empty when rounded, use floor & ceil instead
+        if (extent1[0] >= extent1[1]) {
+            extent1[0] = d3.time.day.floor(extent0[0]);
+            extent1[1] = d3.time.day.ceil(extent0[1]);
+        }
+
+        d3.select(this).transition()
+            .call(brush.extent(extent1))
+            .call(brush.event);
+    }
 
     function draw() {
-        var candlestickSelection = focus.select("g.candlestick"),
-            data = candlestickSelection.datum();
-        zoomable.domain(brush.empty() ? zoomable2.domain() : brush.extent());
-        y.domain(techan.scale.plot.ohlc(data.slice.apply(data, zoomable.domain()), candlestick.accessor()).domain());
-        candlestickSelection.call(candlestick);
-        focus.select("g.volume").call(volume);
-        // using refresh method is more efficient as it does not perform any data joins
-        // Use this if underlying data is not changing
-        // svg.select("g.candlestick").call(candlestick.refresh);
-        focus.select("g.x.axis").call(xAxis);
-        focus.select("g.y.axis").call(yAxis);
+
+        // привязка данных брашера к данным графика
+        // plot_data.domain(brush.empty() ? brusher_data.domain() : brush.extent())
+
+        focus
+            .select("g.volume")
+            // .call(volumes_plot)
+        focus
+            .select("g.candlestick")
+            .call(candlesticks_plot)
+        focus
+            .select("g.y.axis")
+            .call(y_axis)
+        focus
+            .select("g.x.axis")
+            .call(x_axis)
     }
+
+    draw();
 }
 
 
