@@ -142,6 +142,7 @@ function prepare(data) {
 }
 
 
+
 // дописываем рассчитанные значения в облигацию
 function calculate(item) {
     var bond = _.clone(item);
