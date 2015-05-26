@@ -8,6 +8,7 @@ $(document).ready(function() {
         }
         else {
             createChart(data);
+            tester();
         }
     })
     .fail(function(msg) {
@@ -122,7 +123,7 @@ function createChart(data) {
     var parseDate = d3.time.format("%Y-%m-%d").parse;
 
     candles = candles.map(function(c) {
-    // candles = candles.slice(0, 1000).map(function(d) {
+    // candles = candles.slice(0, 180).map(function(c) {
         return {
             date   : parseDate(c.date),
             open   : +c.o,
@@ -201,7 +202,7 @@ function createChart(data) {
 
 
 
-
+/*
 
     //  ╔╗ ╦═╗╦ ╦╔═╗╦ ╦╔═╗╦═╗
     //  ╠╩╗╠╦╝║ ║╚═╗╠═╣║╣ ╠╦╝
@@ -243,58 +244,137 @@ function createChart(data) {
     var brush = d3
         .svg
         .brush()
-        .on("brush", draw);
+        // .on("brush", draw);
 
     var plot_data    = x.zoomable();
     var brusher_data = b_x.zoomable();
 
-    var xxx = d3
-        .time
-        .scale()
-        .domain([new Date(2013, 7, 1), new Date(2013, 7, 15) - 1])
-        .range([0, width]);
-
-    brush
-        .x(xxx)
-        .extent([new Date(2013, 7, 2), new Date(2013, 7, 3)])
-        .on("brushend", brushended);
-
-    // brush.x(brusher_data)
+    brush.x(brusher_data)
     ctx
         .append("g")
         .attr("class", "brusher")
     ctx
         .select("g.brusher")
-        // .call(brush)
-        .call(d3.svg.axis()
-            .scale(xxx)
-            .orient("bottom")
-            .ticks(d3.time.hours, 12)
-            .tickSize(-height)
-            .tickFormat(""))
+        .call(brush)
         .selectAll("rect")
         .attr("height", b_height)
+//*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var dates = x.domain();
+    var _x = techan
+        .scale
+        .financetime()
+        .domain(x.domain())
+    // var _x = d3
+    //     .time
+    //     .scale()
+    //     .domain([dates[0], dates[dates.length - 1]])
+    //     .domain([new Date(2006, 1, 1), new Date()])
+        .range([0, b_width]);
+
+    var brush = d3.svg.brush();
+    var brusher_data = _x.zoomable();
+    brush.x(brusher_data)
+
+    brush.on("brushend", brushended);
+
+
+    // bg
+    ctx.append("rect")
+        .attr("class", "grid-background")
+        .attr("width", b_width)
+        .attr("height", b_height);
+
+    // "cols"
+    ctx.append("g")
+        .attr("class", "x grid")
+        .attr("transform", "translate(0," + b_height + ")")
+        .call(d3.svg.axis()
+            .scale(_x)
+            .orient("bottom")
+            .ticks(d3.time.month, 6)
+            .tickSize(-b_height)
+            .tickFormat(""))
+      .selectAll(".tick")
+        .classed("minor", function(d) {
+            return d.getMonth() === 6;
+        });
+
+    // заполняем данными
+    ctx
+        .append("g")
+        .attr("class", "brush")
+        .call(brush)
+        .call(brush.event)
+        .selectAll("rect")
+        .attr("height", b_height);
 
     function brushended() {
-        if (!d3.event.sourceEvent) return; // only transition after input
-        var extent0 = brush.extent(),
-            extent1 = extent0.map(d3.time.day.round);
+        // transition only after input
+        if (!d3.event.sourceEvent) return;
 
-        // if empty when rounded, use floor & ceil instead
-        if (extent1[0] >= extent1[1]) {
-            extent1[0] = d3.time.day.floor(extent0[0]);
-            extent1[1] = d3.time.day.ceil(extent0[1]);
+        var extent = brush.extent().map(function(d) {
+            d.setDate(1);
+            if (d.getMonth() >= 6) {
+                // вторая половина года
+                d.setMonth(6);
+            }
+            else {
+                d.setMonth(0);
+            }
+            return d3.time.year(d);
+        });
+
+        // вероятно, это просто клик
+        if (extent[0] >= extent[1]) {
+            extent[1].addMonths(6);
+        }
+        if (extent[1].getUTCFullYear() === (new Date()).getUTCFullYear()) {
+            extent[1].addMonths(6);
         }
 
-        d3.select(this).transition()
-            .call(brush.extent(extent1))
+        d3
+            .select(this) // brush?
+            .transition()
+            .call(brush.extent(extent))
             .call(brush.event);
+
+        draw();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    var plot_data    = x.zoomable();
+
 
     function draw() {
 
         // привязка данных брашера к данным графика
-        // plot_data.domain(brush.empty() ? brusher_data.domain() : brush.extent())
+        // var plot_data = x.zoomable();
+        // plot_data.domain([0, 200]);
+        plot_data.domain(brush.empty() ? _x.domain() : brush.extent())
 
         focus
             .select("g.volume")
@@ -313,4 +393,7 @@ function createChart(data) {
     draw();
 }
 
+
+function tester() {
+}
 

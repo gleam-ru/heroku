@@ -22,6 +22,7 @@ me.provideData = function(cb) {
             return cb(err);
         }
         res = _.map(res, function(candle) {
+            if (parseInt(candle['<VOL>']) === 0) return;
             return {
                 date: moment(candle['<DATE>'], 'YYYYMMDD').format('YYYY-MM-DD'),
                 o: parseFloat(candle['<OPEN>']),
@@ -31,6 +32,7 @@ me.provideData = function(cb) {
                 vol: parseInt(candle['<VOL>']),
             }
         });
+        res = _.compact(res);
         console.info('gazp:', res.length);
         return cb(err, {
             code: 'GAZP',

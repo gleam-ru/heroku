@@ -47,8 +47,42 @@ block postHead
       fill-opacity: .125;
       shape-rendering: crispEdges;
       }
-    .tick {
-      fill: #EEEEEE;
+  
+  style.
+    .axis text {
+      font: 11px sans-serif;
+      color: #000;
+      }
+
+    .axis path {
+      display: none;
+      }
+
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+      }
+
+    .grid-background {
+      fill: #ddd;
+      }
+
+    .grid line,
+    .grid path {
+      fill: none;
+      stroke: #fff;
+      shape-rendering: crispEdges;
+      }
+
+    .grid .minor.tick line {
+      stroke-opacity: .5;
+      }
+
+    .brush .extent {
+      stroke: #000;
+      fill-opacity: .125;
+      shape-rendering: crispEdges;
       }
 
 
