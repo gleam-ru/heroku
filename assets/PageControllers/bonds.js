@@ -19,7 +19,7 @@ $(document).ready(function() {
             },
             {
                 id          : "bid",
-                title       : "Предложение",
+                title       : "Предл.",
                 filterType  : "number",
             },
             {
@@ -29,23 +29,33 @@ $(document).ready(function() {
             },
             {
                 id          : "endDate",
-                title       : "Дата погашения",
+                title       : "Погашение<br>(дата)",
                 filterType  : "date",
             },
             {
                 id          : "expiresIn",
-                title       : "Дней до погашения",
+                title       : "Погашение<br>(дни)",
+                filterType  : "number",
+            },
+            {
+                id          : "cpVal",
+                title       : "Купон<br>(%)",
+                filterType  : "number",
+            },
+            {
+                id          : "cpDur",
+                title       : "Купон<br>(дни)",
                 filterType  : "number",
             },
             {
                 id          : "percent",
-                title       : "Доходность",
+                title       : "Доходность<br>(%)",
                 filterType  : "number",
                 className   : "default_sorting",
             },
             {
                 id          : "percentWTaxes",
-                title       : "Доходность -13%",
+                title       : "Доходность<br>(минус 13%)",
                 filterType  : "number",
             },
         ],
