@@ -162,6 +162,8 @@ module.exports = {
                 bond.ask,
                 bond.endDate,
                 bond.expiresIn,
+                1 * (bond.cpYie * 100).toFixed(2),
+                bond.cpDur,
                 bond.percent,
                 bond.percentWTaxes,
             ];

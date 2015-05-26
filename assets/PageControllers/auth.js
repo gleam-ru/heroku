@@ -5,10 +5,6 @@ $(document).ready(function() {
         $('.content').mask();
     });
 
-    $(document).on('submit', 'form', function() {
-        $('.content').mask();
-    });
-
     $('.w-socials-item').each(function() {
         $(this).tooltipster({
             position: 'top',
@@ -64,11 +60,15 @@ $(document).ready(function() {
                 var form = vm.$$.form;
                 e.preventDefault();
                 if (!vm.hasErrors) {
+                    $('.content').mask();
                     $(form).submit();
                 }
                 else {
                     return false;
                 }
+            },
+            beforeLogIn: function() {
+                $('.content').mask();
             },
         },
     });
