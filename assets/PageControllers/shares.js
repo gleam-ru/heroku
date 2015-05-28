@@ -41,14 +41,13 @@ function createChart(data) {
     });
 
     // chart
-    var margin = [20, 0, 20, 30];
+    var margin = [40, 0, 30, 30];
     var width = $('#shares').width() - margin[1] - margin[3];
     var height = 500 - margin[0] - margin[2];
 
     // brusher
-    var b_width = $('#shares').width();
-    var b_height = 80;
-        margin[2] += b_height;
+    var b_width = $('#shares').width() - margin[3];
+    var b_height = 100;
 
 
 
@@ -59,16 +58,16 @@ function createChart(data) {
 
     // поле для творчества
     var svg = d3.select("#shares").append("svg")
+        .attr("class", "no-select")
         .attr("width", width + margin[3] + margin[1])
         .attr("height", height + margin[0] + margin[2] + b_height)
         // .append("g")
         // .attr("transform", "translate(" + margin[3] + "," + margin[0] + ")");
 
-
     // график
     var focus = svg.append("g")
         .attr("class", "focus")
-        .attr("transform", "translate(" + margin[3] + "," + margin[0] + ")")
+        .attr("transform", "translate("+margin[3]+","+(b_height + margin[0])+")")
         .attr('opacity', 1)
         // видимая область
         // чтобы не рендерить лишнее - .attr("clip-path", "url(#clip)")
@@ -79,7 +78,14 @@ function createChart(data) {
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height)
+
+        var gAxisX = focus.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")");
+
+        var gAxisY = focus.append("g")
+            .attr("class", "y axis")
 
         // объемы
         var gVolume = focus.append("g").attr("clip-path", "url(#clip)")
@@ -90,21 +96,24 @@ function createChart(data) {
         var gCandles = focus.append("g")
             .attr("class", "candlestick")
             .attr("clip-path", "url(#clip)")
+            // .attr('shape-rendering', "crispEdges")
             .datum(candles)
 
-        var gAxisX = focus.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")");
-
-        var gAxisY = focus.append("g")
-            .attr("class", "y axis")
+        // обводка графика
+        focus.append('rect')
+            .attr('class', 'rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', width - 1)
+            .attr('height', height)
 
 
     // всяко разно
     // (нижнаяя панель с брашером)
     var ctx = svg.append("g")
         .attr("class", "ctx")
-        .attr("transform", "translate(0," + (height + margin[2]) + ")");
+        .attr("transform", "translate("+(margin[3])+","+(0)+")");
+        // .attr("transform", "translate("+(margin[3])+","+(height + margin[2])+")");
 
         // брашер (график)
         var gBrusherPlot = ctx.append("g")
@@ -115,9 +124,13 @@ function createChart(data) {
         var gBrusherX = ctx.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + b_height + ")");
+        var gBrusherY = ctx.append("g")
+            .attr("class", "y axis")
 
         var gBrusherSelection = ctx.append("g")
             .attr("class", "brusher")
+
+
 //*/
 
 
@@ -141,6 +154,8 @@ function createChart(data) {
 
     // график
     var candlesticks_plot = techan.plot
+        // .sma()
+        // .ohlc()
         .candlestick()
         .xScale(x)
         .yScale(y)
@@ -210,6 +225,15 @@ function createChart(data) {
                 .scale(b_x)
                 .orient("bottom")
         )
+    // заполняю ось данными
+    gBrusherY
+        .call(
+            d3.svg
+                .axis()
+                .scale(b_y)
+                .ticks(3)
+                .orient("left")
+        )
 
     // сам брашер.
     var brush = d3.svg
@@ -224,6 +248,7 @@ function createChart(data) {
             .domain(b_x.zoomable().domain())
             .range(b_x.range())
     )
+    brush.extent([candles.length - 280, candles.length])
 
     gBrusherSelection
         .call(brush)
@@ -238,16 +263,21 @@ function createChart(data) {
 //  ╩ ╩╩ ╚═╩╚═╝
 //  @axis
 
+
+
     var x_axis_data = d3
         .svg
         .axis()
         .scale(x)
+        .tickFormat(d3.time.format("%d.%m.%y"))
+        .tickSize(-height, 0, 0)
         .orient("bottom")
 
     var y_axis_data = d3
         .svg
         .axis()
         .scale(y)
+        .tickSize(-width, 0, 0)
         .orient("left")
 //*/
 
@@ -265,10 +295,10 @@ function createChart(data) {
         // only transition after input
         if (!d3.event.sourceEvent) return;
 
-        var extent = brush.extent(); //.map(Math.round);
+        var extent = brush.extent().map(Math.round);
         // был просто клик
         if (brush.empty()) { // Math.abs(extent[0] - extent[1]) < 180) {
-            extent[1] = extent[0] + 180;
+            extent[1] = extent[0] + 160;
         }
 
         // анимация при выборе другого диапазона
@@ -283,6 +313,8 @@ function createChart(data) {
                     .duration(200)
                     .attr('opacity', 1)
             })
+
+        console.log( extent[1] - extent[0])
 
         // анимация "удлинения" выбранного диапазона
         // (например при клике)
