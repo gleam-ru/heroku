@@ -41,12 +41,12 @@ function createChart(data) {
     });
 
     // chart
-    var margin = [40, 0, 30, 30];
+    var margin = [40, 30, 30, 30];
     var width = $('#shares').width() - margin[1] - margin[3];
     var height = 500 - margin[0] - margin[2];
 
     // brusher
-    var b_width = $('#shares').width() - margin[3];
+    var b_width = $('#shares').width() - margin[3] - margin[1];
     var b_height = 100;
 
 
@@ -82,10 +82,14 @@ function createChart(data) {
 
         var gAxisX = focus.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")");
+            .attr("transform", "translate(0," + height + ")")
 
-        var gAxisY = focus.append("g")
+        var gAxisY_price = focus.append("g")
             .attr("class", "y axis")
+
+        var gAxisY_percent = focus.append("g")
+            .attr("class", "percent axis")
+            .attr("transform", "translate("+(width)+",0)")
 
         // объемы
         var gVolume = focus.append("g").attr("clip-path", "url(#clip)")
@@ -104,7 +108,7 @@ function createChart(data) {
             .attr('class', 'rect')
             .attr('x', 0)
             .attr('y', 0)
-            .attr('width', width - 1)
+            .attr('width', width)
             .attr('height', height)
 
 
@@ -113,7 +117,6 @@ function createChart(data) {
     var ctx = svg.append("g")
         .attr("class", "ctx")
         .attr("transform", "translate("+(margin[3])+","+(0)+")");
-        // .attr("transform", "translate("+(margin[3])+","+(height + margin[2])+")");
 
         // брашер (график)
         var gBrusherPlot = ctx.append("g")
@@ -159,7 +162,6 @@ function createChart(data) {
         .candlestick()
         .xScale(x)
         .yScale(y)
-
 //*/
 
 
@@ -194,15 +196,13 @@ function createChart(data) {
 //  @brusher
 
     // время
-    var b_x = techan
-        .scale
+    var b_x = techan.scale
         .financetime()
         .domain(x.domain())
         .range([0, b_width]);
 
     // цена
-    var b_y = d3
-        .scale
+    var b_y = d3.scale
         .linear()
         .domain(y.domain())
         .range([b_height, 0]);
@@ -223,6 +223,7 @@ function createChart(data) {
             d3.svg
                 .axis()
                 .scale(b_x)
+                .tickSize(0)
                 .orient("bottom")
         )
     // заполняю ось данными
@@ -232,6 +233,7 @@ function createChart(data) {
                 .axis()
                 .scale(b_y)
                 .ticks(3)
+                .tickSize(0)
                 .orient("left")
         )
 
@@ -263,22 +265,30 @@ function createChart(data) {
 //  ╩ ╩╩ ╚═╩╚═╝
 //  @axis
 
-
-
-    var x_axis_data = d3
-        .svg
-        .axis()
+    var x_axis_data = d3.svg.axis()
         .scale(x)
         .tickFormat(d3.time.format("%d.%m.%y"))
-        .tickSize(-height, 0, 0)
+        .tickSize(-height)
         .orient("bottom")
 
-    var y_axis_data = d3
-        .svg
-        .axis()
+
+    var y_axis_data = d3.svg.axis()
         .scale(y)
-        .tickSize(-width, 0, 0)
+        .tickSize(-width)
         .orient("left")
+
+    var y_percent = d3.scale
+        .linear()
+        .range([height, 0]);
+
+        var y_percent_axis_data = d3.svg.axis()
+            .scale(y_percent)
+            .tickFormat(d3.format('+%'))
+            .tickSize(0)
+            .orient("right")
+
+
+
 //*/
 
 
@@ -341,24 +351,38 @@ function createChart(data) {
             .domain(visibleCandlesRange) // установить видимые свечи
 
 
-        // изменить Y ось, согласно видимым свечам
+        // наши свечи
         var data = gCandles.datum();
-        // типо строим виртуальный график, получаем его домен
-        // и подставляем его в реальный график
-        y.domain(
-            techan.scale.plot.ohlc(
-                data
-                    .slice // делаем копию, как я понял (чтобы не побить исходник)
-                    .apply(data, visibleCandlesRange),
-                accessor // яхз что это
-            )
-            .domain()
-        )
+        // типо строим виртуальный график и получаем его домен
+        var visible_domain = techan.scale.plot.ohlc(
+            data
+                .slice // делаем копию, как я понял (чтобы не побить исходник)
+                .apply(data, visibleCandlesRange),
+            accessor // яхз что это
+        ).domain();
+
+        // lvc - LastVisibleCandle
+        var lvc_idx = (visibleCandlesRange[1] > data.length) ? data.length : parseInt(visibleCandlesRange[1]);
+        var lvc = data[lvc_idx - 1];
+        // крайняя видимая цена
+        var c = lvc.close;
+
+        // чтобы график не упирался "в потолок"
+        // if (visible_domain[1] / c < 1.1) visible_domain[1] = c * 1.1;
+        // и "пол"
+        // if (visible_domain[0] / c > 0.9) visible_domain[0] = c * 0.9;
+
+        // указываем диапазон реального графика
+        y
+            .domain(visible_domain)
+        y_percent
+            .domain([visible_domain[0] / c - 1, visible_domain[1] / c - 1])
 
 
         // drawing
         gAxisX.call(x_axis_data)
-        gAxisY.call(y_axis_data)
+        gAxisY_price.call(y_axis_data)
+        gAxisY_percent.call(y_percent_axis_data)
         gVolume.call(volumes_plot)
         gCandles
             // .transition() // techan пока что (27.05.2014) так не умеет
