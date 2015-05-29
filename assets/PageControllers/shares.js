@@ -92,8 +92,9 @@ function createChart(data) {
             .attr("transform", "translate("+(width)+",0)")
 
         // объемы
-        var gVolume = focus.append("g").attr("clip-path", "url(#clip)")
+        var gVolume = focus.append("g")
             .attr("class", "volume")
+            .attr("clip-path", "url(#clip)")
             .datum(candles)
 
         // свечки
@@ -152,7 +153,8 @@ function createChart(data) {
     // цена
     var y = d3.scale
         .linear()
-        .domain(techan.scale.plot.ohlc(candles, accessor).domain())
+        // .domain()
+        .domain([0, 1])
         .range([height, 0]);
 
     // график
@@ -175,7 +177,7 @@ function createChart(data) {
     var y_volume = d3
         .scale
         .linear()
-        .range([y(0), y(0.2)])
+        .range([y(0), y(0.3)])
         .domain(
             techan.scale.plot
                 .volume(candles)
@@ -204,7 +206,7 @@ function createChart(data) {
     // цена
     var b_y = d3.scale
         .linear()
-        .domain(y.domain())
+        .domain(techan.scale.plot.ohlc(candles, accessor).domain())
         .range([b_height, 0]);
 
 
@@ -350,22 +352,17 @@ function createChart(data) {
             .zoomable() // получить связанный набор свечек
             .domain(visibleCandlesRange) // установить видимые свечи
 
-
         // наши свечи
         var data = gCandles.datum();
+        var visibleCandles = data.slice(visibleCandlesRange[0], visibleCandlesRange[1]);
         // типо строим виртуальный график и получаем его домен
         var visible_domain = techan.scale.plot.ohlc(
-            data
-                .slice // делаем копию, как я понял (чтобы не побить исходник)
-                .apply(data, visibleCandlesRange),
+            data.slice.apply(data, visibleCandlesRange),
             accessor // яхз что это
         ).domain();
 
         // lvc - LastVisibleCandle
-        var lvc_idx = (visibleCandlesRange[1] > data.length) ? data.length : parseInt(visibleCandlesRange[1]);
-        var lvc = data[lvc_idx - 1];
-        // крайняя видимая цена
-        var c = lvc.close;
+        var c = visibleCandles[visibleCandles.length - 1].close;
 
         // чтобы график не упирался "в потолок"
         // if (visible_domain[1] / c < 1.1) visible_domain[1] = c * 1.1;
@@ -377,13 +374,18 @@ function createChart(data) {
             .domain(visible_domain)
         y_percent
             .domain([visible_domain[0] / c - 1, visible_domain[1] / c - 1])
-
+        y_volume
+            .domain([d3.min(visibleCandles.map(accessor.v)), d3.max(visibleCandles.map(accessor.v))])
 
         // drawing
-        gAxisX.call(x_axis_data)
-        gAxisY_price.call(y_axis_data)
-        gAxisY_percent.call(y_percent_axis_data)
-        gVolume.call(volumes_plot)
+        gAxisX
+            .call(x_axis_data)
+        gAxisY_price
+            .call(y_axis_data)
+        gAxisY_percent
+            .call(y_percent_axis_data)
+        gVolume
+            .call(volumes_plot)
         gCandles
             // .transition() // techan пока что (27.05.2014) так не умеет
             .call(candlesticks_plot)
