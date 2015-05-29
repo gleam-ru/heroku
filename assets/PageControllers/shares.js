@@ -385,10 +385,10 @@ function createChart(data) {
         gAxisY_percent
             .call(y_percent_axis_data)
         gVolume
-            .call(volumes_plot)
+            .call(volumes_plot.refresh)
         gCandles
             // .transition() // techan пока что (27.05.2014) так не умеет
-            .call(candlesticks_plot)
+            .call(candlesticks_plot.refresh)
     }
     draw();
 //*/
