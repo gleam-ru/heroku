@@ -316,6 +316,7 @@ function createChart(data) {
         if (brush.empty()) { // Math.abs(extent[0] - extent[1]) < 180) {
             extent[1] = extent[0] + 160;
         }
+        extent[1] -= 0.5;
 
         // анимация при выборе другого диапазона
         focus
