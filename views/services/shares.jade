@@ -65,10 +65,16 @@ block postHead
       }
 
   style.
-    .domain {stroke: none !important;}
+    .focus .domain {stroke: none !important;}
     svg {overflow: visible !important;}
-    .focus text,
-    .ctx text {
+    .positive text {
+      fill: #6BA484;
+      }
+    .negative text {
+      fill: #D7523F;
+      }
+
+    svg text {
       font: 11px sans-serif;
       }
     .rect {

@@ -425,6 +425,17 @@ function createChart(data) {
         gCandles
             // .transition() // techan пока что (27.05.2014) так не умеет
             .call(candlesticks_plot.refresh)
+
+
+        svg
+            .selectAll(".percent .tick")
+            .classed("positive", function(d) {
+                return d > 0;
+            })
+            .classed("negative", function(d) {
+                return d < 0;
+            })
+
     }
 
     draw();
