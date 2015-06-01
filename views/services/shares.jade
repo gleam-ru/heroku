@@ -52,9 +52,23 @@ block postHead
       fill: rgba(0,0,0, 0.1);
       }
 
+  //- crosshair
+  style.
+    .crosshair path.wire {
+      stroke: #bbb;
+      shape-rendering: crispEdges;
+      }
+    .crosshair .axisannotation path {
+      fill: #DDDDDD;
+      stroke: #bbb;
+      shape-rendering: crispEdges;
+      }
 
   style.
-    .axis text {
+    .domain {stroke: none !important;}
+    svg {overflow: visible !important;}
+    .focus text,
+    .ctx text {
       font: 11px sans-serif;
       }
     .rect {

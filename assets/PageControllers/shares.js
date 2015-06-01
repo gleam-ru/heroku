@@ -49,6 +49,9 @@ function createChart(data) {
     var b_width = $('#shares').width() - margin[3] - margin[1];
     var b_height = 100;
 
+    // crosshair
+    var c_height = 15;
+
 
 
 //  ╔═╗╦  ╦╔═╗
@@ -112,6 +115,9 @@ function createChart(data) {
             .attr('width', width)
             .attr('height', height)
 
+        var gCrosshair = focus.append('g')
+            .attr("class", "crosshair")
+
 
     // всяко разно
     // (нижнаяя панель с брашером)
@@ -155,7 +161,7 @@ function createChart(data) {
         .linear()
         // .domain()
         .domain([0, 1])
-        .range([height, 0]);
+        .range([height - c_height, 0]);
 
     // график
     var candlesticks_plot = techan.plot
@@ -180,7 +186,7 @@ function createChart(data) {
     var y_volume = d3
         .scale
         .linear()
-        .range([y(0), y(0.3)])
+        .range([y(0) + c_height, y(0.3)])
         .domain(
             techan.scale.plot
                 .volume(candles)
@@ -292,9 +298,39 @@ function createChart(data) {
             .tickFormat(d3.format('+%'))
             .tickSize(0)
             .orient("right")
+//*/
 
 
 
+//  ╔═╗╦═╗╔═╗╔═╗╔═╗╦ ╦╔═╗╦╦═╗
+//  ║  ╠╦╝║ ║╚═╗╚═╗╠═╣╠═╣║╠╦╝
+//  ╚═╝╩╚═╚═╝╚═╝╚═╝╩ ╩╩ ╩╩╩╚═
+//  @crosshair
+
+
+
+    var ohlcAnnotation = techan.plot
+        .axisannotation()
+        .axis(d3.svg.axis().scale(y).orient('right'))
+        .format(d3.format(',.2fs'))
+        .width(50)
+        // .translate([50, 0])
+
+    var timeAnnotation = techan.plot
+        .axisannotation()
+        .axis(d3.svg.axis().scale(x).orient('top'))
+        .format(d3.time.format('%d.%m.%y'))
+        .width(65)
+        .translate([0, height]);
+
+    var crosshair = techan.plot
+        .crosshair()
+        .xScale(x)
+        .yScale(y)
+        .xAnnotation(timeAnnotation)
+        .yAnnotation(ohlcAnnotation);
+
+    gCrosshair.call(crosshair);
 //*/
 
 
