@@ -164,6 +164,9 @@ function createChart(data) {
         .candlestick()
         .xScale(x)
         .yScale(y)
+    gCandles
+        // .transition() // techan пока что (27.05.2014) так не умеет
+        .call(candlesticks_plot)
 //*/
 
 
@@ -189,6 +192,8 @@ function createChart(data) {
         .volume()
         .xScale(x)
         .yScale(y_volume)
+    gVolume
+        .call(volumes_plot)
 //*/
 
 
@@ -273,7 +278,6 @@ function createChart(data) {
         .tickSize(-height)
         .orient("bottom")
 
-
     var y_axis_data = d3.svg.axis()
         .scale(y)
         .tickSize(-width)
@@ -326,8 +330,6 @@ function createChart(data) {
                     .attr('opacity', 1)
             })
 
-        console.log( extent[1] - extent[0])
-
         // анимация "удлинения" выбранного диапазона
         // (например при клике)
         d3
@@ -337,8 +339,6 @@ function createChart(data) {
             .call(brush.extent(extent))
             .call(brush.event)
             // .each('end', draw) // без анимации выглядит как тормоза...
-
-        // draw()
     }
 
 
@@ -377,7 +377,6 @@ function createChart(data) {
         y_volume
             .domain([d3.min(visibleCandles.map(accessor.v)), d3.max(visibleCandles.map(accessor.v))])
 
-        // drawing
         gAxisX
             .call(x_axis_data)
         gAxisY_price
@@ -390,6 +389,7 @@ function createChart(data) {
             // .transition() // techan пока что (27.05.2014) так не умеет
             .call(candlesticks_plot.refresh)
     }
+
     draw();
 //*/
 }
