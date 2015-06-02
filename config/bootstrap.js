@@ -13,6 +13,13 @@ module.exports.bootstrap = function(cb) {
         fs.mkdirSync(sails.config.app.dataDir);
     }
 
+    // чтобы не проверять при каждом создании
+    Statistics.findOrCreate({
+        name: 'bondsUpdatedAt',
+    }, {
+        name: 'bondsUpdatedAt',
+    }, function(){});
+
 
     // Заполняем модель тестовыми данными
     // /*
@@ -42,7 +49,7 @@ module.exports.bootstrap = function(cb) {
             if (err) return cb(err);
             console.log("i'm listening, my master...");
             // dbTasks.bondsNewDay();
-            // provider.bonds.update();
+            provider.bonds.update();
             cb();
         });
         return;

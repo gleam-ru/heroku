@@ -5,6 +5,7 @@
 *
 */
 var path = require('path').join;
+var fs = require('fs-extra');
 var jf = require('jsonfile');
 var mkdirp = require('mkdirp');
 
@@ -15,39 +16,49 @@ module.exports = {
     autoUpdatedAt: true,
 
     attributes: {
-        type  : {type: 'string', required: true}, // share/bond/fx/...
-        path  : {type: 'string', unique: true}, // path to JSON file
+        // share/bond/fx/...
+        type  : {type: 'string', required: true},
+        // path to JSON file
+        path  : {type: 'string', required: true, unique: true},
 
         // получает данные, подставляя дополнительные из json
-        getFullData: function() {
-            console.log('read issuer file', this.id);
+        getStore: function() {
+            // console.log('read issuer file', this.id);
+            var store = {};
             if (this.path) {
                 var fullPath = path(root, this.type, this.path);
-                this.additional = jf.readFileSync(fullPath);
+                store = jf.readFileSync(fullPath);
             }
-            return this;
+            return store;
         },
 
-        update: function(next) {
-            console.log('update issuer file', this.id);
+        setStore: function(store) {
+            // console.log('update issuer file', this.id);
             if (this.path) {
                 var fullPath = path(root, this.type, this.path);
-                jf.writeFileSync(fullPath, this.additional);
+                jf.writeFileSync(fullPath, store);
             }
-
-            return this.save(next);
         }
     },
 
 
 
     beforeCreate: function (issuer, next) {
-        if (issuer.path) {
-            var fullPath = path(root, issuer.type);
-            mkdirp.sync(fullPath);
-            jf.writeFileSync(path(fullPath, issuer.path), {});
-        }
-        next();
+        ensureStoreFile(issuer, next);
+    },
+    beforeUpdate: function (issuer, next) {
+        ensureStoreFile(issuer, next);
     },
 
 };
+
+function ensureStoreFile(issuer, next) {
+    if (fs.existsSync(path(root, issuer.type, issuer.path))){
+        return next();
+    }
+
+    var fullPath = path(root, issuer.type);
+    mkdirp.sync(fullPath);
+    jf.writeFileSync(path(fullPath, issuer.path), {});
+    return next();
+}

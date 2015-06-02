@@ -52,8 +52,9 @@ me.updateCurrent = function(cb) {
         if (err) return cb(err);
         var results = [];
         _.each(bonds, function(bond) {
-            results.push(bond.getCurrent());
+            results.push(calculate(bond));
         });
+        results = _.map(results, format);
         cache.set('bonds', results);
         console.info('current bonds updated:', results.length);
         return cb(err, results);
@@ -66,7 +67,13 @@ me.fetchFromDB = function(cb) {
     Statistics.findOne({name: 'bondsUpdatedAt'}, function(err, stat) {
         if (err || !stat || !stat.data) return cb(err || 'no stat data');
         var lastDate = stat.data;
-        Bonds.find({updatedAt: lastDate}).exec(cb);
+        Issuer
+            .find()
+            .where({
+                type: 'bond',
+                updatedAt: {'>=': lastDate},
+            })
+            .exec(cb);
     });
 }
 
@@ -78,74 +85,75 @@ me.fetchFromDB = function(cb) {
 // сохраняет парс в базу
 // cb(err)
 function saveBonds(bondsArr, cb) {
-    var now = moment();
+    var now = new Date();
+    bondsArr = _(bondsArr)
+        .map(beforeCreate)
+        .compact()
+        .value();
     function iterator(bond, callback) {
-        // текущее время
-        _.extend(bond, {updatedAt: now});
-        return Bonds.findOne({name: bond.name, num: bond.num}, function(err, found) {
-            if (err) console.error(err);
-            // рассчитанные значения
-            bond = prepare(bond);
-            if (!bond) return callback();
-            if (found) {
-                // уже существует значит просто добавляем новое значение
-                return found.newData(bond, callback);
+        var issuer = {
+            type: 'bond',
+            path: bond.num,
+        };
+        Issuer.findOrCreate(issuer, issuer, function(err, issuer) {
+            if (err) {
+                console.error(err);
+                return callback(err);
             }
-            else {
-                // создаем
-                return Bonds.create(bond, callback);
+
+            var existingStore = issuer.getStore();
+            var store = _.clone(existingStore);
+            store.general = existingStore.general || {
+                name      : bond.name,
+                num       : bond.num,
+                rate      : bond.rate,
+                cpVal     : bond.cpVal,
+                cpDur     : bond.cpDur,
+                endDate   : bond.endDate,
+            };
+
+            store.lastCandle = {
+                // dynamic from parse
+                bid            : bond.bid,
+                ask            : bond.ask,
+                nkd            : bond.nkd,
+                cpDate         : bond.cpDate,
+                dur            : bond.dur,
+                state          : bond.state,
+                // dynamic from calculations (больше места на диске, но быстрее)
+                expiresIn      : bond.expiresIn,
+                // cpYie          : bond.cpYie,
+                // price          : bond.price,
+                // percent        : bond.percent,
+                // percentWTaxes  : bond.percentWTaxes,
+            };
+
+            if (!Array.isArray(store.indayCandles)) store.indayCandles = [];
+            if (existingStore.lastCandle) {
+                store.indayCandles.push(existingStore.lastCandle);
             }
+
+            issuer.setStore(store);
+
+            return issuer.save(callback);
         });
     }
     return async.eachSeries(bondsArr, iterator, function(err) {
         if (err) return cb(err);
-        Statistics.findOrCreate({
-            name: 'bondsUpdatedAt',
-        }, {
+        Statistics.findOne({
             name: 'bondsUpdatedAt',
         }, function(err, statistics) {
             if (err) return cb(err);
-            statistics.data = now.toDate();
+            statistics.data = now;
             return statistics.save(cb);
         });
     });
 }
 
-// подготавливает данные
-function prepare(data) {
-    var bond = calculate(data);
-    if (!bond) return;
-    return {
-        name               : bond.name,
-        num                : bond.num,
-        rate               : bond.rate,
-        cpVal              : bond.cpVal,
-        cpDur              : bond.cpDur,
-        endDate            : bond.endDate,
-        updatedAt          : bond.updatedAt,
-        lastCandle: {
-            // dynamic from parse
-            bid            : bond.bid,
-            ask            : bond.ask,
-            nkd            : bond.nkd,
-            cpDate         : bond.cpDate,
-            dur            : bond.dur,
-            state          : bond.state,
-            // dynamic from calculations (больше места на диске, но быстрее)
-            expiresIn      : bond.expiresIn,
-            cpYie          : bond.cpYie,
-            price          : bond.price,
-            percent        : bond.percent,
-            percentWTaxes  : bond.percentWTaxes,
-        }
-    }
-}
-
 
 
 // дописываем рассчитанные значения в облигацию
-function calculate(item) {
-    var bond = _.clone(item);
+function beforeCreate(bond) {
     // вечных облигаций не бывыает
     if (!bond.endDate) return;
 
@@ -162,10 +170,27 @@ function calculate(item) {
     if(!bond.ask || bond.ask <= 0) bond.ask = '';
 
     // дней до погашения
-    bond.expiresIn = bond.endDate.diff(bond.updatedAt, 'days');
+    bond.expiresIn = bond.endDate.diff(moment(), 'days');
 
     // должны бы уже выплатить... не следим.
     if (!bond.expiresIn || bond.expiresIn < 0) return;
+
+    // приводим даты к виду, ожидаемому базой
+    bond.endDate   = bond.endDate.toDate();//.getTime();
+    bond.cpDate    = bond.cpDate.toDate();//.getTime();
+
+    return bond;
+}
+
+
+// рассчет динамических ключей облигации
+// на основании сохраненных
+function calculate(_bond) {
+    var store = _bond.getStore();
+    var bond = {};
+    _.extend(bond, {id: _bond.id});
+    _.extend(bond, store.general);
+    _.extend(bond, store.lastCandle);
 
     // купонный доход
     if (bond.cpDur <= 0) {
@@ -184,14 +209,68 @@ function calculate(item) {
     // Процентная ставка по облигации с учетом налога 13%
     bond.percentWTaxes = bond.percent * 0.87;
 
-    // приводим даты к виду, ожидаемому базой
-    bond.endDate   = bond.endDate.toDate();//.getTime();
-    bond.cpDate    = bond.cpDate.toDate();//.getTime();
-    bond.updatedAt = bond.updatedAt.toDate();//.getTime();
-
     return bond;
 }
 
+
+//
+function format(bond) {
+    bond.endDate = moment(bond.endDate).format('DD.MM.YYYY');
+    bond.cpDate  = moment(bond.cpDate).format('DD.MM.YYYY');
+    var nums = [
+        'rate',
+        'cpVal',
+        'cpDur',
+        'bid',
+        'ask',
+        'nkd',
+        'dur',
+        'expiresIn',
+        'cpYie',
+        'price',
+        'percent',
+        'percentWTaxes',
+    ];
+    _.each(nums, function(num) {
+        bond[num] = bond[num] ? (1 * bond[num].toFixed(2)) : '';
+    });
+
+    return [
+        bond.id,
+        bond.name,
+        bond.bid,
+        bond.ask,
+        bond.endDate,
+        bond.expiresIn,
+        // 1 * (bond.cpYie * 100).toFixed(2),
+        // bond.cpDur,
+        bond.percent,
+        bond.percentWTaxes,
+    ];
+
+    /*
+    // Все доступные данные выглядят так:
+    return {
+        "id"           : bond.id,
+        "name"         : bond.name,
+        "num"          : bond.num,
+        "rate"         : bond.rate,
+        "cpVal"        : bond.cpVal,
+        "cpDur"        : bond.cpDur,
+        "endDate"      : bond.endDate,
+        "bid"          : bond.bid,
+        "ask"          : bond.ask,
+        "nkd"          : bond.nkd,
+        "cpDate"       : bond.cpDate,
+        "state"        : bond.state,
+        "expiresIn"    : bond.expiresIn,
+        "cpYie"        : bond.cpYie,
+        "price"        : bond.price,
+        "percent"      : bond.percent,
+        "percentWTaxes": bond.percentWTaxes,
+    }
+    //*/
+}
 
 
 module.exports = me;

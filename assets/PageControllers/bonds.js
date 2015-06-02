@@ -1,5 +1,8 @@
 $(document).ready(function() {
     var path = window.location.pathname;
+    if (path.substr(-1) == '/') {
+        path = path.substr(0, path.length - 1);
+    }
 
     var data = {
         // откуда брать данные
@@ -29,33 +32,33 @@ $(document).ready(function() {
             },
             {
                 id          : "endDate",
-                title       : "Погашение<br>(дата)",
+                title       : "Погашение (дата)",
                 filterType  : "date",
             },
             {
                 id          : "expiresIn",
-                title       : "Погашение<br>(дни)",
+                title       : "Погашение (дни)",
                 filterType  : "number",
             },
-            {
-                id          : "cpVal",
-                title       : "Купон<br>(%)",
-                filterType  : "number",
-            },
-            {
-                id          : "cpDur",
-                title       : "Купон<br>(дни)",
-                filterType  : "number",
-            },
+            // {
+            //     id          : "cpVal",
+            //     title       : "Купон (%)",
+            //     filterType  : "number",
+            // },
+            // {
+            //     id          : "cpDur",
+            //     title       : "Купон (дни)",
+            //     filterType  : "number",
+            // },
             {
                 id          : "percent",
-                title       : "Доходность<br>(%)",
+                title       : "Доходность (%)",
                 filterType  : "number",
                 className   : "default_sorting",
             },
             {
                 id          : "percentWTaxes",
-                title       : "Доходность<br>(минус 13%)",
+                title       : "Доходность (-13%)",
                 filterType  : "number",
             },
         ],
