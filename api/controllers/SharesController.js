@@ -14,8 +14,8 @@ module.exports = {
 
     get: function(req, res) {
         var code = req.param('code');
-        var shares = provider.shares.get();
-        if (!shares) {
+        var candles = provider.shares.get();
+        if (!candles) {
             return res.send({
                 code: code,
                 name: '',
@@ -23,7 +23,9 @@ module.exports = {
                 msg: 'not created yet...',
             });
         }
-        return res.send(shares);
+        return res.send({
+            candles: candles,
+        });
     },
 
 };

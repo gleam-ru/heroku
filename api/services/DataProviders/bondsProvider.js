@@ -1,6 +1,8 @@
 var moment = require('moment');
 var parser = require('./bondsParser.js');
 var me = {};
+var type = sails.config.app.providers.bonds.type;
+var cacheKey = sails.config.app.providers.bonds.cache;
 
 // установка дефолтных значений
 me.init = function(cb) {
@@ -14,7 +16,7 @@ me.init = function(cb) {
 
 // получает список облигаций с текущими значениями
 me.get = function(cb) {
-    var bonds = cache.get('bonds');
+    var bonds = cache.get(cacheKey);
     if (typeof cb !== 'function') {
         // нет колбека. Ну нет, так нет. Возвращаю то, что есть.
         return bonds || [];
@@ -43,7 +45,7 @@ me.update = function(cb) {
 }
 
 
-// обновляет cache.set('bonds') значениями из базы
+// обновляет cache.set(cacheKey) значениями из базы
 // cb(err, updated)
 // TODO: Q-style
 me.updateCurrent = function(cb) {
@@ -55,7 +57,7 @@ me.updateCurrent = function(cb) {
             results.push(calculate(bond));
         });
         results = _.map(results, format);
-        cache.set('bonds', results);
+        cache.set(cacheKey, results);
         console.info('current bonds updated:', results.length);
         return cb(err, results);
     });
@@ -70,7 +72,7 @@ me.fetchFromDB = function(cb) {
         Issuer
             .find()
             .where({
-                type: 'bond',
+                type: type,
                 updatedAt: {'>=': lastDate},
             })
             .exec(cb);
@@ -92,7 +94,7 @@ function saveBonds(bondsArr, cb) {
         .value();
     function iterator(bond, callback) {
         var issuer = {
-            type: 'bond',
+            type: type,
             path: bond.num,
         };
         Issuer.findOrCreate(issuer, issuer, function(err, issuer) {
