@@ -49,7 +49,7 @@ module.exports.bootstrap = function(cb) {
             if (err) return cb(err);
             console.log("i'm listening, my master...");
             // dbTasks.bondsNewDay();
-            provider.bonds.update();
+            // provider.bonds.update();
             cb();
         });
         return;
