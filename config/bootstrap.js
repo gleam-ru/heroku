@@ -7,6 +7,20 @@
  */
 
 module.exports.bootstrap = function(cb) {
+    // создаем нужные директории
+    var fs = require('fs-extra');
+    if (!fs.existsSync(sails.config.app.dataDir)) {
+        fs.mkdirSync(sails.config.app.dataDir);
+    }
+
+    // чтобы не проверять при каждом создании
+    Statistics.findOrCreate({
+        name: 'bondsUpdatedAt',
+    }, {
+        name: 'bondsUpdatedAt',
+    }, function(){});
+
+
     // Заполняем модель тестовыми данными
     // /*
     User.create({
