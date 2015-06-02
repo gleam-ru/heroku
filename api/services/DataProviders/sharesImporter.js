@@ -10,12 +10,6 @@ var parse  = require('csv-parse');
 
 var dir = sails.config.app.providers.shares.src;
 
-// cb(err, res)
-// TODO: deprecated
-me.provideData = function(cb) {
-    getDataFromFile(path(dir, 'GAZP.txt'), cb);
-}
-
 
 // заполняет базу, если она не заполнена
 me.process = function(cb) {
@@ -50,18 +44,19 @@ me.process = function(cb) {
                 // получаем данные для эмитента из файла
                 function(created, issuer, next) {
                     if (!next) return created(); // особенности waterfall
-                    getDataFromFile(path(dir, file), function(err, candles) {
-                        return next(err, candles, created, issuer);
+                    getDataFromFile(path(dir, file), function(err, res) {
+                        return next(err, res, created, issuer);
                     });
                 },
                 // схороняю
-                function(candles, created, issuer, next) {
-                    if (!next) return candles(); // особенности waterfall
+                function(res, created, issuer, next) {
+                    if (!next) return res(); // особенности waterfall
                     created.setStore({
                         general: {
+                            name: res.name,
                             ticker: issuer.path,
                         },
-                        dailyCandles: candles,
+                        dailyCandles: res.candles,
                         indayCandles: [],
                         lastCandle: {},
                     });
@@ -88,9 +83,11 @@ function getDataFromFile(src, cb) {
         },
         function(err, res) {
             if (err) return cb(err);
+            var name;
             res = _(res)
                 .map(function(candle) {
                     if (parseInt(candle['<VOL>']) === 0) return;
+                    name = candle['<TICKER>'];
                     return {
                         date: moment(candle['<DATE>'], 'YYYYMMDD').format('YYYY-MM-DD'),
                         o: parseFloat(candle['<OPEN>']),
@@ -102,7 +99,10 @@ function getDataFromFile(src, cb) {
                 })
                 .compact()
                 .value();
-            return cb(null, res);
+            return cb(null, {
+                name: name,
+                candles: res
+            });
         });
     });
 }

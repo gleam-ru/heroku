@@ -13,9 +13,9 @@ module.exports = {
     },
 
     get: function(req, res) {
-        var code = req.param('code');
-        var candles = provider.shares.get();
-        if (!candles) {
+        var code = req.param('ticker');
+        var data = provider.shares.get(code.toLowerCase());
+        if (!data) {
             return res.send({
                 code: code,
                 name: '',
@@ -23,9 +23,8 @@ module.exports = {
                 msg: 'not created yet...',
             });
         }
-        return res.send({
-            candles: candles,
-        });
+        return res.send(_.extend(data, {
+        }));
     },
 
 };
