@@ -42,7 +42,7 @@ module.exports.routes = {
 
     // Shares
     'get /services/shares'                 : 'Shares',
-    'get /services/shares/candles/:code'   : 'Shares.get',
+    'get /services/shares/candles/:ticker' : 'Shares.get',
     //---
 
 
