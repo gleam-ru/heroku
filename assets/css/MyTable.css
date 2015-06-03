@@ -126,15 +126,12 @@
         .my-table .table .dataTables_wrapper.no-footer>table {
             width: 100% !important;
             }
-    .my-table .table .buy:hover {opacity: 0.8;}
     .my-table .table .buy {
-        font-size: 24px;
         display: block;
         cursor: pointer;
-        opacity: 0.5;
         }
-        .my-table .table .buy .fa {
-            color: #2c3e50;
+        .my-table .table .buy .roundIcon {
+            font-size: 14px;
             }
     .my-table .table td {
         padding: 5px 5px 5px 15px;
