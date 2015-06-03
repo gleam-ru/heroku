@@ -462,7 +462,10 @@ window.MyTable = Vue.extend({
             targets: -1,
             data: null,
             sortable: false,
-            defaultContent: '<span class="buy"><i class="fa fa-plus-circle"></i></span>',
+            defaultContent: ''+
+                '<span class="buy">'+
+                    Jade.els.roundIcon('fa-plus')+
+                '</span>',
         });
 
         // рендереры колонок для dt

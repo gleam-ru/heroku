@@ -132,7 +132,14 @@ ul.no-dots>li {list-style: none;}
     transition: all 0.2s ease;
     }
 
-
+/* оформленный font-awesome на сайте */
+.roundIcon:hover {opacity: 0.8;}
+.roundIcon {
+    color: #2c3e50;
+    display: inline-block;
+    opacity: 0.5;
+    transition: all 0.25s ease;
+    }
 
 
 
