@@ -42,59 +42,40 @@ module.exports = {
         var defaultData = {
             filters: [{
                 "id": "1",
-                "text": "Краткосрочные ОФЗ",
+                "text": "Гос + Муни",
                 "conditions": [{
-                    "column": "expiresIn",
-                    "type": "less",
-                    "value": "100"
-                }, {
-                    "column": "name",
-                    "type": "contains",
-                    "value": "офз"
-                }, {
-                    "column": "bid",
+                    "column": "percent",
                     "type": "more",
                     "value": "0"
-                }],
-            }, {
-                "id": "2",
-                "text": "Долгосрочные ОФЗ",
-                "conditions": [{
-                    "column": "expiresIn",
-                    "type": "more",
-                    "value": "365"
                 }, {
                     "column": "name",
-                    "type": "contains",
-                    "value": "офз"
-                }, {
-                    "column": "bid",
-                    "type": "more",
-                    "value": "0"
+                    "type": "regexp",
+                    "value": "ОФЗ|Башкорт|БелгОб|ВлгОб|ВолгогОб|Волгогр|Волжск|ВологодОб|Воронеж|ВоронежОб|ВржОб|Казань|КалужОбл|Карелия|КемерОбл|КОМИ|Костром|КостромОб|Краснодар|КраснодКр|КраснЯрКр|ЛенОбл|ЛипецкОбл|МарЭл|МгдОбл|Мгор|Мордовия|НижгорОбл|Новосиб|Новсиб|ОмскАдм|ОмскОб|Оренб|ОренОбл|РязОбл|СамарОбл|СвердлОб|СмолОб|СПбГО|СтаврКрай|ТверОбл|ТомскАдм|ТомскОб|ТулОбл|Удмуртия|Хакас|ХМАО|Чувашия|Якут|ЯрОбл"
                 }],
+                "visibleColumns": []
             }, {
                 "id": "4",
                 "text": "Краткосрочные",
                 "conditions": [{
+                    "column": "percent",
+                    "type": "more",
+                    "value": "0"
+                }, {
                     "column": "expiresIn",
                     "type": "less",
                     "value": "100"
-                }, {
-                    "column": "bid",
-                    "type": "more",
-                    "value": "0"
                 }],
             }, {
                 "id": "5",
                 "text": "Долгосрочные",
                 "conditions": [{
+                    "column": "percent",
+                    "type": "more",
+                    "value": "0"
+                }, {
                     "column": "expiresIn",
                     "type": "more",
                     "value": "365"
-                }, {
-                    "column": "bid",
-                    "type": "more",
-                    "value": "0"
                 }],
             }]
         };
