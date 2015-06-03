@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    var view = $('#shares');
+    view.mask();
+
     $.get('/services/shares/candles/GAZP')
     .done(function(data) {
         var msg = data.msg;
@@ -7,7 +10,9 @@ $(document).ready(function() {
             else alert(msg);
         }
         else {
-            createChart(data);
+            createChart(data, function() {
+                view.mask(false);
+            });
         }
     })
     .fail(function(msg) {
@@ -18,11 +23,12 @@ $(document).ready(function() {
         else {
             alert('что-то пошло не так...')
         }
+        view.mask(false);
     });
 });
 
 
-function createChart(data) {
+function createChart(data, cb) {
     var candles = data.candles;
     // candles = candles.slice(0, 360);
     var accessor = techan.plot.candlestick().accessor();
@@ -381,7 +387,7 @@ function createChart(data) {
 
     // @draw
     // отрисовывает видимые данные
-    function draw() {
+    function draw(cb) {
         // привязка данных брашера к данным графика
         // https://github.com/andredumas/techan.js/blob/54e14442e30d7bd779e8fd4d9cddd25dc69a3cb6/src/scale/zoomable.js
         var visibleCandlesRange = brush.empty() ? brush.x().domain() : brush.extent();
@@ -435,9 +441,9 @@ function createChart(data) {
             .classed("negative", function(d) {
                 return d < 0;
             })
-
+        if (cb) cb();
     }
 
-    draw();
+    draw(cb);
 //*/
 }
