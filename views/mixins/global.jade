@@ -1,6 +1,16 @@
 mixin json(data)
   p #{JSON.stringify(data, null, 4)}
 
+//- вставка данных в тело страницы в виде скрипта,
+//- args == ["name", {data}]
+mixin PasteInlineData(args)
+  - name = args[0]
+  - data = args[1]
+  if(name && data)
+    script.
+      window["#{name}"] = !{JSON.stringify(data).replace(/<\//g, "<\\/")};
+
+
 mixin error(data)
   .g-alert.type_error.with_close.ib.error
     .g-alert-close ✕

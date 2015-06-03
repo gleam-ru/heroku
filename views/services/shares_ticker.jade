@@ -1,0 +1,123 @@
+extends ../layouts/default.jade
+
+block postHead
+  script(src="/bower_components/d3/d3.js" defer)
+  script(src="/bower_components/techan/dist/techan.js" defer)
+  script window.ticker = '#{ticker.general.ticker}'
+
+  script(src='/PageControllers/sharesTicker.js' defer)
+
+
+  
+  //- plot
+  style.
+    .candlesPlot {
+      overflow: visible !important;
+      }
+      .candlesPlot text {
+        font: 11px sans-serif;
+        }
+      .candlesPlot .rect {
+        fill: none;
+        stroke: #bbb;
+        stroke-width: 1;
+        shape-rendering: crispEdges;
+        }
+      .candlesPlot .axis path,
+      .candlesPlot .axis line {
+        fill: none;
+        stroke: #bbb;
+        shape-rendering: crispEdges;
+        }
+      .candlesPlot .focus {
+        }
+        .candlesPlot .focus .positive text {
+          fill: #6BA484;
+          }
+        .candlesPlot .focus .negative text {
+          fill: #D7523F;
+          }
+        .candlesPlot .focus .domain {
+          stroke: none !important;
+          }
+        .candlesPlot .focus .y.axis .tick line,
+        .candlesPlot .focus .x.axis .tick line {
+          stroke: #dedede;
+          stroke-dasharray: 1;
+          }
+
+    /* candles */
+    path.candle {
+      }
+      path.candle.body {
+        shape-rendering: crispEdges;
+        stroke-width: 0;
+        }
+      path.candle.up {
+        fill: #6BA484;
+        stroke: #000;
+        }
+      path.candle.down {
+        fill: #D7523F;
+        stroke: #000;
+        }
+    
+    /* volumes */
+    path.volume {
+      fill: #EEEEEE;
+      }
+    
+    /* brusher */
+    path.line {
+      fill: none;
+      stroke: rgba(0,0,0, 0.5);
+      stroke-width: 1;
+      }
+    .extent {
+      shape-rendering: crispEdges;
+      stroke: #bbb;
+      fill: rgba(0,0,0, 0.1);
+      }
+
+    /* crosshair */
+    .crosshair path.wire {
+      stroke: #bbb;
+      shape-rendering: crispEdges;
+      }
+    .crosshair .axisannotation path {
+      fill: #DDDDDD;
+      stroke: #bbb;
+      shape-rendering: crispEdges;
+      }
+
+  style.
+    #shares {min-height: 300px;}
+
+
+
+
+
+block pageHead
+  h1 #{ticker.general.name || ticker.general.ticker}
+    if (ticker.general.site)
+      i.fa.fa-question-circle.begin-learning.not-mobile
+    if (ticker.general.forums)
+      i.fa.fa-question-circle.begin-learning.not-mobile
+    if (ticker.general.moex)
+      i.fa.fa-question-circle.begin-learning.not-mobile
+    if (ticker.general.news)
+      i.fa.fa-question-circle.begin-learning.not-mobile
+    if (1)
+      i.fa.fa-question-circle.begin-learning.not-mobile
+block pageHead_small
+  | There is some magic here...
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Сервисы', href:'/services'},
+      {name:'Акции', href:'/services/shares'},
+      {name:(ticker.general.name || ticker.general.ticker)}
+    ])
+
+block content
+  #shares

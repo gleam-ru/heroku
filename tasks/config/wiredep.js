@@ -3,7 +3,11 @@ module.exports = function(grunt) {
     grunt.config.set('wiredep', {
         task: {
             ignorePath: "../../..",
-            exclude: ['jquery.js'],
+            exclude: [
+                'jquery.js',
+                'd3.js',
+                'techan.js',
+            ],
             src: [
                 'views/layouts/parts/head.jade',
             ],

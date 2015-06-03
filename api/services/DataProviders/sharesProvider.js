@@ -23,7 +23,6 @@ me.init = function(cb) {
 // (не течет, просто жрет)
 // cb(err, res)
 me.createCache = function(cb) {
-
     Issuer.find({
         type: type,
     }, function(err, shares) {
@@ -42,6 +41,18 @@ me.createCache = function(cb) {
         cache.set(cacheKey, cached);
         cb(null, cached);
     });
+}
+
+me.all = function(cb) {
+    var data = cache.get(cacheKey);
+    if (typeof cb !== 'function') {
+        return data;
+    }
+    if (data) {
+        return cb(null, data);
+    }
+    console.warn('Обновляю кэш не по расписанию!!!');
+    return me.createCache(cb);
 }
 
 me.get = function(ticker, cb) {

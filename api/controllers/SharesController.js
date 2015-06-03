@@ -7,24 +7,53 @@
 
 module.exports = {
     index: function(req, res) {
+        // строки для таблицы на странице
+        var rows = [];
+        var shares = provider.shares.all(); // {ticker: {}, ...}
+        if (!shares) {
+            console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
+        }
+        _.each(shares, function(s) {
+            var lastCandle = s.lastCandle.c ? s.lastCandle : s.candles[s.candles.length - 1];
+            rows.push({
+                id: s.id,
+                ticker: s.general.ticker,
+                name: s.general.name,
+                price: lastCandle.c,
+            });
+        });
         return res.render('services/shares', {
-            title: 'test',
+            title: 'Акции',
+            shares: {
+                rows: rows,
+            },
         });
     },
 
-    get: function(req, res) {
+    ticker: function(req, res) {
         var code = req.param('ticker');
         var data = provider.shares.get(code.toLowerCase());
         if (!data) {
-            return res.send({
-                code: code,
-                name: '',
-                candles: [],
-                msg: 'not created yet...',
+            return res.render('404', {
+                msg: 'Тикер <b>'+code+'</b> не найден'
             });
         }
-        return res.send(_.extend(data, {
-        }));
+        return res.render('services/shares_ticker', {
+            ticker: {
+                id: data.id,
+                general: data.general || {},
+            }
+        });
+    },
+
+
+    getTickerData: function(req, res) {
+        var code = req.param('ticker');
+        var data = provider.shares.get(code.toLowerCase());
+        if (!data) {
+            return res.send(404);
+        }
+        return res.send(data);
     },
 
 };
