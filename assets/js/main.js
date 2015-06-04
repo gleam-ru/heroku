@@ -31,11 +31,21 @@ $(document).ready(function() {
     $.fn.tooltipster('setDefaults', {
         theme: 'tooltipster-light'
     });
+
     $('.tt').each(function() {
-        $(this).tooltipster({
-            position: 'right',
-            maxWidth: 350,
-        });
+        var el = $(this);
+        var opts = {};
+        opts.position = 'bottom';
+        opts.maxWidth = 350;
+
+        if (el.hasClass('tt_interactive')) {
+            opts.interactive = true;
+            opts.interactiveTolerance = 100;
+        }
+        if (el.hasClass('tt_html'))
+            opts.contentAsHTML = true;
+
+        el.tooltipster(opts);
     });
 
 

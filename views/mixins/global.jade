@@ -1,3 +1,5 @@
+include ../client/els.jade
+
 mixin json(data)
   p #{JSON.stringify(data, null, 4)}
 
@@ -20,10 +22,6 @@ mixin info(data)
   .g-alert.type_success.with_close.ib
     .g-alert-close ✕
     .g-alert-body #{data}
-
-mixin button(text)
-  span(class="g-btn type_midnight size_small")
-    span #{text}
 
 mixin tooltipster(data)
   - if (typeof data !== 'object') data = {title: data};

@@ -91,6 +91,11 @@ block postHead
       }
 
   style.
+    .roundIcon {
+      font-size: initial;
+      margin-left: 5px;
+      text-align: center;
+      }
     #shares {min-height: 300px;}
 
 
@@ -99,18 +104,46 @@ block postHead
 
 block pageHead
   h1 #{ticker.general.name || ticker.general.ticker}
-    if (ticker.general.site)
-      i.fa.fa-question-circle.begin-learning.not-mobile
-    if (ticker.general.forums)
-      i.fa.fa-question-circle.begin-learning.not-mobile
-    if (ticker.general.moex)
-      i.fa.fa-question-circle.begin-learning.not-mobile
-    if (ticker.general.news)
-      i.fa.fa-question-circle.begin-learning.not-mobile
+    if (1 || ticker.general.site)
+      a.tt(
+        href='/'
+        target='_blank'
+        title='Официальный сайт'
+        )
+        +roundIcon('fa-round')
+    if (1 || ticker.general.forums)
+      a.tt.tt_interactive.tt_html(
+        href='/'
+        title='\
+          <p>Популярные форумы:</p>\
+          <ul>\
+            <li><a target="_blank" href="http://google.com">Google</a></li>\
+            <li><a target="_blank" href="http://yandex.ru">Yandex</a></li>\
+          </ul>\
+        '
+        )
+        +roundIcon('fa-comments')
+    if (1 || ticker.general.links)
+      a.tt.tt_interactive.tt_html(
+        href='/'
+        title='\
+          <p>Полезные ссылки:</p>\
+          <ul>\
+            <li><a target="_blank" href="http://moex.com/ru/issue.aspx?code='+ticker.general.ticker+'">Moex</a></li>\
+            <li><a target="_blank" href="https://www.google.ru/webhp?ion=1&espv=2&ie=UTF-8#q='+ticker.general.ticker+'&newwindow=1&tbm=nws&tbs=sbd:1">News (g)</a></li>\
+            <li><a target="_blank" href="https://yandex.ru/search/?text='+ticker.general.ticker+'">News (y)</a></li>\
+          </ul>\
+        '
+        )
+        +roundIcon('fa-paperclip')
     if (1)
-      i.fa.fa-question-circle.begin-learning.not-mobile
+      a.tt(
+        href='/'
+        title='Добавить в портфель'
+        )
+        +roundIcon('fa-plus')
 block pageHead_small
-  | There is some magic here...
+  | Тут будет полное имя эмитента
 block breadcrumbs
   +breadcrumbs([
       {name:'Главная', href:'/'},
