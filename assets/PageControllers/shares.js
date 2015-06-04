@@ -11,7 +11,7 @@ $(document).ready(function() {
                 title: 'Имя',
                 // render: function(data, type, full, meta) {
                 render: function(data, type, full) {
-                    return '<a class="ib" href="'+window.location.pathname+'/'+full.ticker+'">'+data+'</a>';
+                    return '<a class="ib" href="'+href+'/'+full.ticker+'">'+data+'</a>';
                 },
             }, {
                 title: 'Ссылки',
@@ -23,21 +23,21 @@ $(document).ready(function() {
                     var tr = '';
                     tr += ''+
                         '<a class="inTableIcon"'+
-                            'href="'+window.location.pathname+'/'+full.ticker+'" '+
+                            'href="'+href+'/'+full.ticker+'" '+
                             'target=_blank'+
                             '>'+
                             Jade.els.roundIcon('fa-area-chart')+
                         '</a>';
                     tr += ''+
                         '<a class="inTableIcon"'+
-                            'href="'+window.location.pathname+'/'+full.ticker+'" '+
+                            'href="'+href+'/'+full.ticker+'" '+
                             'target=_blank'+
                             '>'+
                             Jade.els.roundIcon('fa-external-link')+
                         '</a>';
                     tr += ''+
                         '<a class="inTableIcon"'+
-                            'href="'+window.location.pathname+'/'+full.ticker+'" '+
+                            'href="'+href+'/'+full.ticker+'" '+
                             'target=_blank'+
                             '>'+
                             Jade.els.roundIcon('fa-comments')+

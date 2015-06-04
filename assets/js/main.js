@@ -1,6 +1,9 @@
 // compiled jade
 window.Jade = templatizer;
 
+// удаляю trailing slashes
+window.href = window.location.pathname.replace(/\/$/, "");
+
 $(document).ready(function() {
     // pickmeup
     var locale = {

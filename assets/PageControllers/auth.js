@@ -46,12 +46,11 @@ $(document).ready(function() {
                 var vm = this;
                 $(vm.$el).addClass('no-error');
                 vm.signUp = !vm.signUp;
-                var location = window.location.pathname;
                 if (vm.signUp) {
-                    window.history.pushState('registration', 'Регистрация', location+'?register');
+                    window.history.pushState('registration', 'Регистрация', href+'?register');
                 }
                 else {
-                    window.history.pushState('auth', 'Авторизация', location);
+                    window.history.pushState('auth', 'Авторизация', href);
                 }
                 return false;
             },

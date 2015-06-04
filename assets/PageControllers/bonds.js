@@ -1,12 +1,7 @@
 $(document).ready(function() {
-    var path = window.location.pathname;
-    if (path.substr(-1) == '/') {
-        path = path.substr(0, path.length - 1);
-    }
-
     var data = {
         // откуда брать данные
-        ajax: path+'/all',
+        ajax: href+'/all',
         // описание этих данных
         columns: [
             {
@@ -63,11 +58,11 @@ $(document).ready(function() {
             },
         ],
 
-        filters: path+'/filters',
-        filters_api: path+'/updateFilter',
+        filters: href+'/filters',
+        filters_api: href+'/updateFilter',
 
         // доп инфо, которое нужно отобразить слева
-        additional: path+'/additional',
+        additional: href+'/additional',
     };
 
     window.qwe = new MyTable({
