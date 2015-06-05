@@ -100,6 +100,16 @@ $(document).ready(function() {
             title: "Наименование",
             filterType: "string",
         }, {
+            width: "10px",
+            className: "buttonColumn",
+            targets: -1,
+            data: null,
+            sortable: false,
+            defaultContent: Jade.els.roundIcon('fa-plus'),
+            handler: function() {
+                mp.alert(messages.not_implemented);
+            },
+        }, {
             id: "bid",
             data: "bid",
             title: "Предл.",
@@ -142,16 +152,6 @@ $(document).ready(function() {
             data: "percentWTaxes",
             title: "Доходность (-13%)",
             filterType: "number",
-        }, {
-            width: "10px",
-            className: "buttonColumn",
-            targets: -1,
-            data: null,
-            sortable: false,
-            defaultContent: ''+
-                '<span class="buy">'+
-                    Jade.els.roundIcon('fa-plus')+
-                '</span>',
         },
     ];
 

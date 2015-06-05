@@ -582,16 +582,12 @@ window.MyTable = Vue.extend({
         // после загрузки - применяем выбранный фильтр
         vm.apply();
 
-        // TODO: навесить обработчик покупки на кнопку
-        // примерный вид этого обработчика
-        $(dt).on('click', '.buy', function() {
-            // var data = $(this).parents('tr').find('td');
-            // alert($(data[0]).html());
-            if (typeof mp !== 'undefined') {
-                mp.alert(messages.not_implemented);
-            }
-            else {
-                alert('Извините, пока не реализовано');
+        // инициализирую "кнопочные" колонки
+        $(dt).on('click', '.buttonColumn', function() {
+            var clickedColumnIndex = vm.dt.table.DataTable().cell($(this)).index().column;
+            var column = vm.dt.columns[clickedColumnIndex];
+            if (column && column.handler) {
+                column.handler();
             }
             return false;
         });
