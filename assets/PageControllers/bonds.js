@@ -8,6 +8,8 @@ $(document).ready(function() {
     var view = $('.content');
     view.mask();
 
+    var calculator = initCalculator();
+
     var loaded = _.after(3, function() {
         window.qwe = new MyTable({
             el: '#bonds-table',
@@ -104,6 +106,13 @@ $(document).ready(function() {
             data: null,
             defaultContent: Jade.els.roundIcon('fa-calculator'),
             handler: function(data) { // row data
+                calculator.setData(data);
+                $.magnificPopup.open({
+                    items: {
+                        src: calculator.getView(),
+                        type: 'inline',
+                    },
+                });
             },
         }, {
             className: "buttonColumn",
@@ -236,5 +245,64 @@ function beginLearning() {
                 }
             },
         ]
+    });
+}
+
+function initCalculator() {
+    return new Vue({
+        el: '#calculator',
+        data: function() {
+            return {
+                bid: 0,
+                percent: 0,
+                percentWTaxes: 0,
+                bond: {
+                    name: ''
+                },
+            }
+        },
+        watch: {
+            bid: function() {
+                var vm = this;
+                var bond = vm.bond;
+
+                vm.bid = parseFloat(vm.bid);
+                if (!vm.bid) {
+                    vm.bid = '';
+                    vm.percent = '';
+                    vm.percentWTaxes = '';
+                    return;
+                }
+                this.bond.bid = vm.bid;
+
+                // настоящая цена
+                bond.price = bond.rate * bond.bid / 100 + bond.nkd;
+                // Процентная ставка по облигации
+                bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
+
+                vm.bid           = 1 * vm.bid.toFixed(2);
+                vm.percent       = 1 * bond.percent;
+                vm.percentWTaxes = 1 * bond.percent * 0.87;
+            },
+            // TODO: дописать обратнуюс связь
+            // percent: function() {
+            // },
+            // percentWTaxes: function() {
+            // },
+        },
+        methods: {
+            getView: function() {
+                return $(this.$$.calculator)
+            },
+            setData: function(data) {
+                var vm = this;
+                vm.bond = data;
+                vm.bid = data.bid;
+            },
+        },
+        compiled: function() {
+            var vm = this;
+            vm.bid = vm.$$.bid;
+        }
     });
 }
