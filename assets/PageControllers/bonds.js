@@ -100,11 +100,14 @@ $(document).ready(function() {
             title: "Наименование",
             filterType: "string",
         }, {
-            width: "10px",
             className: "buttonColumn",
-            targets: -1,
             data: null,
-            sortable: false,
+            defaultContent: Jade.els.roundIcon('fa-calculator'),
+            handler: function(data) { // row data
+            },
+        }, {
+            className: "buttonColumn",
+            data: null,
             defaultContent: Jade.els.roundIcon('fa-plus'),
             handler: function() {
                 mp.alert(messages.not_implemented);

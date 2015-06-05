@@ -584,10 +584,12 @@ window.MyTable = Vue.extend({
 
         // инициализирую "кнопочные" колонки
         $(dt).on('click', '.buttonColumn', function() {
-            var clickedColumnIndex = vm.dt.table.DataTable().cell($(this)).index().column;
+            var table = vm.dt.table.DataTable();
+            var clickedColumnIndex = table.cell($(this)).index().column;
             var column = vm.dt.columns[clickedColumnIndex];
             if (column && column.handler) {
-                column.handler();
+                var data = table.row($(this).parents('tr')).data();
+                column.handler(data);
             }
             return false;
         });
