@@ -266,6 +266,22 @@ window.MyTable = Vue.extend({
         },
 
 
+        // сохраняет текущий фильтр как новый
+        saveFilterAsCopy: function() {
+            var vm = this;
+            $(vm.$$.editor).mask();
+            var filter = vm.editingFilter;
+            var id = _.max(vm.filters, function(f) {
+                return parseInt(f.id);
+            }).id;
+            filter.id = parseInt(id) + 1;
+            vm.save(filter, function() {
+                vm.savedFilters.push(filter);
+                vm.editFilter(id);
+                $(vm.$$.editor).mask(false);
+            });
+        },
+
         // сохранить текущий редактируемый фильтр
         save: function(filter, cb) {
             if (typeof cb !== 'function') cb = function() {};
