@@ -236,16 +236,6 @@ function format(bond) {
     });
 
     return [
-        // bond.id,
-        // bond.name,
-        // bond.bid,
-        // bond.ask,
-        // bond.endDate,
-        // bond.expiresIn,
-        // // 1 * (bond.cpYie * 100).toFixed(2),
-        // // bond.cpDur,
-        // bond.percent,
-        // bond.percentWTaxes,
         bond.id,
         bond.name,
         bond.num,
@@ -264,29 +254,6 @@ function format(bond) {
         bond.percent,
         bond.percentWTaxes,
     ];
-
-    /*
-    // Все доступные данные выглядят так:
-    return {
-        "id"           : bond.id,
-        "name"         : bond.name,
-        "num"          : bond.num,
-        "rate"         : bond.rate,
-        "cpVal"        : bond.cpVal,
-        "cpDur"        : bond.cpDur,
-        "endDate"      : bond.endDate,
-        "bid"          : bond.bid,
-        "ask"          : bond.ask,
-        "nkd"          : bond.nkd,
-        "cpDate"       : bond.cpDate,
-        "state"        : bond.state,
-        "expiresIn"    : bond.expiresIn,
-        "cpYie"        : bond.cpYie,
-        "price"        : bond.price,
-        "percent"      : bond.percent,
-        "percentWTaxes": bond.percentWTaxes,
-    }
-    //*/
 }
 
 

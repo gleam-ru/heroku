@@ -53,7 +53,29 @@ $(document).ready(function() {
     // получаю данные для таблицы
     $.get(href+'/all')
     .done(function(loaded) {
-        rows = loaded.data;
+        // я это делаю не на сервере, потому что
+        // передавать ключи от 1к+ объектов - слишком много трафика
+        rows = _.map(loaded.data, function(row) {
+            return {
+                id            : row[0],
+                name          : row[1],
+                num           : row[2],
+                rate          : row[3],
+                cpVal         : row[4],
+                cpDur         : row[5],
+                endDate       : row[6],
+                bid           : row[7],
+                ask           : row[8],
+                nkd           : row[9],
+                cpDate        : row[10],
+                state         : row[11],
+                expiresIn     : row[12],
+                cpYie         : row[13],
+                price         : row[14],
+                percent       : row[15],
+                percentWTaxes : row[16],
+            }
+        });
     })
     .fail(function(err) {
         alert('smth went wrong...');
@@ -68,44 +90,56 @@ $(document).ready(function() {
     columns = [
         {
             id: "id",
+            data: "id",
             title: "ID",
             filterType: "number",
             visible: false,
         }, {
             id: "name",
+            data: "name",
             title: "Наименование",
             filterType: "string",
         }, {
             id: "bid",
+            data: "bid",
             title: "Предл.",
             filterType: "number",
         }, {
             id: "ask",
+            data: "ask",
             title: "Спрос",
             filterType: "number",
         }, {
             id: "endDate",
+            data: "endDate",
             title: "Погашение (дата)",
             filterType: "date",
         }, {
             id: "expiresIn",
+            data: "expiresIn",
             title: "Погашение (дни)",
             filterType: "number",
-        // }, {
-        //     id: "cpVal",
-        //     title: "Купон (%)",
-        //     filterType: "number",
-        // }, {
-        //     id: "cpDur",
-        //     title: "Купон (дни)",
-        //     filterType: "number",
+        }, {
+            id: "cpVal",
+            data: "cpVal",
+            title: "Купон (%)",
+            filterType: "number",
+            visible: false,
+        }, {
+            id: "cpDur",
+            data: "cpDur",
+            title: "Купон (дни)",
+            filterType: "number",
+            visible: false,
         }, {
             id: "percent",
+            data: "percent",
             title: "Доходность (%)",
             filterType: "number",
             className: "default_sorting",
         }, {
             id: "percentWTaxes",
+            data: "percentWTaxes",
             title: "Доходность (-13%)",
             filterType: "number",
         }, {
