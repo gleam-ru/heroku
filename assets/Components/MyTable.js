@@ -33,28 +33,7 @@ window.MyTable = Vue.extend({
                 sDom: 'pt',
                 pagingType: 'simple',
                 // paging: false,
-                language: {
-                    "processing": "Подождите...",
-                    "search": "Поиск:",
-                    "lengthMenu": "Показать _MENU_ записей",
-                    "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
-                    "infoEmpty": "Записи с 0 до 0 из 0 записей",
-                    "infoFiltered": "(отфильтровано из _MAX_ записей)",
-                    "infoPostFix": "",
-                    "loadingRecords": "Загрузка записей...",
-                    "zeroRecords": "Записи отсутствуют.",
-                    "emptyTable:": "В таблице отсутствуют данные",
-                    "paginate": {
-                        "first": "Первая",
-                        "previous": "Предыдущая",
-                        "next": "Следующая",
-                        "last": "Последняя"
-                    },
-                    "aria": {
-                        "sortAscending": ": активировать для сортировки столбца по возрастанию",
-                        "sortDescending": ": активировать для сортировки столбца по убыванию"
-                    }
-                },
+                language: datatables_localization,
             },
             columns: [],
             savedFilters: [],
@@ -170,7 +149,6 @@ window.MyTable = Vue.extend({
         removeFilter: function(idx) {
             var vm = this;
             var filter = vm.savedFilters[idx];
-            // mask
 
             // Вы уверены?
             var msg = ''+
@@ -430,23 +408,14 @@ window.MyTable = Vue.extend({
 
     // дефолтные настройки писать сюды
     beforeCompile: function() {
-        var view = $(this.$el);
-        view.mask();
         var vm = this;
-
-        // полностью инициализированный модуль
-        vm.partIsReady = _.after(3, function() {
-            // unmask
-            view.mask(false);
-            vm.isReady();
-        });
 
         //  ╔╦╗╔═╗╔╦╗╔═╗╔╦╗╔═╗╔╗ ╦  ╔═╗╔═╗
         //   ║║╠═╣ ║ ╠═╣ ║ ╠═╣╠╩╗║  ║╣ ╚═╗
         //  ═╩╝╩ ╩ ╩ ╩ ╩ ╩ ╩ ╩╚═╝╩═╝╚═╝╚═╝
 
         // откуда брать данные
-        vm.dt.ajax = vm.ajax;
+        vm.dt.data = vm.rows;
 
         // speeding up
         // https://datatables.net/faqs/
@@ -455,18 +424,6 @@ window.MyTable = Vue.extend({
 
         // колонки для dt
         vm.dt.columns = vm.columns.slice();
-
-        // колонка с кнопкой
-        vm.dt.columns.push({
-            width: "10px",
-            targets: -1,
-            data: null,
-            sortable: false,
-            defaultContent: ''+
-                '<span class="buy">'+
-                    Jade.els.roundIcon('fa-plus')+
-                '</span>',
-        });
 
         // рендереры колонок для dt
         vm.dt.fnDrawCallback = function() {
@@ -486,26 +443,6 @@ window.MyTable = Vue.extend({
             vm.tableInfo = info;
         };
 
-        // таблица готова
-        // применяем дефолтные настройки
-        vm.dt.fnInitComplete = function() {
-            vm.partIsReady();
-            // первая страница по-умолчанию
-            vm.dt.table.fnPageChange(0);
-
-            // Transitions
-            var wrapper = vm.dt.table.closest('.height-transition');
-            if (wrapper.length > 0) {
-                var time = 300;
-                wrapper.css('transition', 'all '+time/1000+'s linear');
-                wrapper.css('max-height', $(vm.$el).outerHeight(true) + 100);
-                setTimeout(function() {
-                    wrapper.css('transition', 'none');
-                    wrapper.css('max-height', 'none');
-                }, time)
-            }
-        };
-
 
 
         //  ╦  ╔═╗╔═╗╦╔═╗
@@ -516,29 +453,8 @@ window.MyTable = Vue.extend({
         // текущий активный фильтр
         vm.currentFilterIndex = $.cookie ? $.cookie('_currentFilterIndex'+vm.filters) : 0;
         // загружаем данные по фильтрам
-        $.get(vm.filters)
-        .done(function(loaded) {
-            vm.savedFilters = loaded.data;
-            vm.updateEditingFilter();
-            // после загрузки - применяем выбранный фильтр
-            vm.apply();
-        })
-        .fail(function(err) {
-            alert('smth went wrong...');
-            console.error(err);
-        })
-        .always(function() {
-            vm.partIsReady();
-        });
-
-        // загружаем дополнительную информацию для отображения
-        $.get(vm.additional)
-        .done(function(loaded) {
-            vm.additional = loaded.data;
-        })
-        .always(function() {
-            vm.partIsReady();
-        });
+        vm.savedFilters = vm.filters;
+        vm.updateEditingFilter();
 
         // наши, "местные" колонки
         vm.columns = _.map(vm.columns, function(column) {
@@ -648,6 +564,24 @@ window.MyTable = Vue.extend({
         var vm = this;
         var dt = this.$$.dt;
         vm.dt.table = $(dt).dataTable(vm.dt);
+        // первая страница по-умолчанию
+        vm.dt.table.fnPageChange(0);
+
+        // Transitions
+        var wrapper = vm.dt.table.closest('.height-transition');
+        if (wrapper.length > 0) {
+            var time = 300;
+            wrapper.css('transition', 'all '+time/1000+'s linear');
+            wrapper.css('max-height', $(vm.$el).outerHeight(true) + 100);
+            setTimeout(function() {
+                wrapper.css('transition', 'none');
+                wrapper.css('max-height', 'none');
+            }, time)
+        }
+
+        // после загрузки - применяем выбранный фильтр
+        vm.apply();
+
         // TODO: навесить обработчик покупки на кнопку
         // примерный вид этого обработчика
         $(dt).on('click', '.buy', function() {
@@ -661,6 +595,7 @@ window.MyTable = Vue.extend({
             }
             return false;
         });
+        vm.isReady()
     },
     components: {
         // pickmeup component

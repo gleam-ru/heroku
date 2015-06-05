@@ -196,7 +196,9 @@ ul.no-dots>li {list-style: none;}
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
     border: none;
     }
-
+.dataTables_scrollBody>table {
+    width: 100% !important;
+    }
 
 
 /* tooltipster */

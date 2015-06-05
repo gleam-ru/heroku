@@ -1,83 +1,125 @@
 $(document).ready(function() {
-    var path = window.location.pathname;
-    if (path.substr(-1) == '/') {
-        path = path.substr(0, path.length - 1);
-    }
 
-    var data = {
-        // откуда брать данные
-        ajax: path+'/all',
-        // описание этих данных
-        columns: [
-            {
-                id          : "id",
-                title       : "ID",
-                filterType  : "number",
-                visible     : false,
-            },
-            {
-                id          : "name",
-                title       : "Наименование",
-                filterType  : "string",
-            },
-            {
-                id          : "bid",
-                title       : "Предл.",
-                filterType  : "number",
-            },
-            {
-                id          : "ask",
-                title       : "Спрос",
-                filterType  : "number",
-            },
-            {
-                id          : "endDate",
-                title       : "Погашение (дата)",
-                filterType  : "date",
-            },
-            {
-                id          : "expiresIn",
-                title       : "Погашение (дни)",
-                filterType  : "number",
-            },
-            // {
-            //     id          : "cpVal",
-            //     title       : "Купон (%)",
-            //     filterType  : "number",
-            // },
-            // {
-            //     id          : "cpDur",
-            //     title       : "Купон (дни)",
-            //     filterType  : "number",
-            // },
-            {
-                id          : "percent",
-                title       : "Доходность (%)",
-                filterType  : "number",
-                className   : "default_sorting",
-            },
-            {
-                id          : "percentWTaxes",
-                title       : "Доходность (-13%)",
-                filterType  : "number",
-            },
-        ],
+    var additional;
+    var filters;
+    var columns;
+    var rows;
 
-        filters: path+'/filters',
-        filters_api: path+'/updateFilter',
+    var view = $('.content');
+    view.mask();
 
-        // доп инфо, которое нужно отобразить слева
-        additional: path+'/additional',
-    };
-
-    window.qwe = new MyTable({
-        el: '#bonds-table',
-        data: _.extend(data, {
-            isReady: function() {
-                setTimeout(beginLearning, 1000);
-            },
-        }),
+    var loaded = _.after(3, function() {
+        window.qwe = new MyTable({
+            el: '#bonds-table',
+            data: {
+                additional  : additional,
+                filters     : filters,
+                filters_api : href+'/updateFilter',
+                rows        : rows,
+                columns     : columns,
+                isReady     : function() {
+                    view.mask(false);
+                    setTimeout(beginLearning, 1000);
+                },
+            }
+        });
     });
+
+
+    // получаю дополнительную информацию (верхний левый угол)
+    $.get(href+'/additional')
+    .done(function(loaded) {
+        additional = loaded.data;
+    })
+    .always(function() {
+        loaded();
+    });
+
+
+    // получаю сохраненные фильтры
+    $.get(href+'/filters')
+    .done(function(loaded) {
+        filters = loaded.data;
+    })
+    .fail(function(err) {
+        alert('smth went wrong...');
+        console.error(err);
+    })
+    .always(function() {
+        loaded();
+    });
+
+
+    // получаю данные для таблицы
+    $.get(href+'/all')
+    .done(function(loaded) {
+        rows = loaded.data;
+    })
+    .fail(function(err) {
+        alert('smth went wrong...');
+        console.error(err);
+    })
+    .always(function() {
+        loaded();
+    });
+
+
+    // описание колонок для datatables
+    columns = [
+        {
+            id: "id",
+            title: "ID",
+            filterType: "number",
+            visible: false,
+        }, {
+            id: "name",
+            title: "Наименование",
+            filterType: "string",
+        }, {
+            id: "bid",
+            title: "Предл.",
+            filterType: "number",
+        }, {
+            id: "ask",
+            title: "Спрос",
+            filterType: "number",
+        }, {
+            id: "endDate",
+            title: "Погашение (дата)",
+            filterType: "date",
+        }, {
+            id: "expiresIn",
+            title: "Погашение (дни)",
+            filterType: "number",
+        // }, {
+        //     id: "cpVal",
+        //     title: "Купон (%)",
+        //     filterType: "number",
+        // }, {
+        //     id: "cpDur",
+        //     title: "Купон (дни)",
+        //     filterType: "number",
+        }, {
+            id: "percent",
+            title: "Доходность (%)",
+            filterType: "number",
+            className: "default_sorting",
+        }, {
+            id: "percentWTaxes",
+            title: "Доходность (-13%)",
+            filterType: "number",
+        }, {
+            width: "10px",
+            className: "buttonColumn",
+            targets: -1,
+            data: null,
+            sortable: false,
+            defaultContent: ''+
+                '<span class="buy">'+
+                    Jade.els.roundIcon('fa-plus')+
+                '</span>',
+        },
+    ];
 
 });
 
