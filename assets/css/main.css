@@ -199,7 +199,24 @@ ul.no-dots>li {list-style: none;}
 .dataTables_scrollBody>table {
     width: 100% !important;
     }
-
+.dataTables_filter {
+    margin: 2px 0px 5px 0px;
+    }
+    .dataTables_filter label {
+        }
+        .dataTables_filter label input:focus {
+            box-shadow: 0 0 0 1px #9ba5a8;
+            }
+        .dataTables_filter label input {
+            border: solid 1px #9ba5a8;
+            border-radius: 3px;
+            font-size: 15px;
+            padding: 5px;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 0 1px transparent;
+            background-color: #fafafa;
+            color: #333;
+            }
 
 /* tooltipster */
 .tooltipster-base {cursor: pointer; z-index: 9999;}

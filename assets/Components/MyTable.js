@@ -30,7 +30,7 @@ window.MyTable = Vue.extend({
                 bStateSave: true,
                 sScrollX: '100%',
                 bScrollCollapse: true,
-                sDom: 'pt',
+                sDom: 'pft',
                 pagingType: 'simple',
                 // paging: false,
                 language: datatables_localization,
