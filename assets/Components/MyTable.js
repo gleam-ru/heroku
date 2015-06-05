@@ -326,7 +326,7 @@ window.MyTable = Vue.extend({
                     var column = vm.getColumn(condition);
 
                     // aData == [value, value, ...] - row
-                    var columnIdx = _.findIndex(vm.columns, column);
+                    var columnIdx = _.findIndex(vm.dt.columns, {data: column.value});
                     var data = aData[columnIdx];
 
                     var types = vm.filterTypes[column.filterType];
@@ -334,7 +334,6 @@ window.MyTable = Vue.extend({
                     if (!type) {
                         return true;
                     }
-
                     return type.apply(data, condition.value);
                 });
             }
@@ -424,7 +423,6 @@ window.MyTable = Vue.extend({
 
         // колонки для dt
         vm.dt.columns = vm.columns.slice();
-
         // рендереры колонок для dt
         vm.dt.fnDrawCallback = function() {
             var info = [];
@@ -457,13 +455,19 @@ window.MyTable = Vue.extend({
         vm.updateEditingFilter();
 
         // наши, "местные" колонки
-        vm.columns = _.map(vm.columns, function(column) {
-            return {
-                text: column.title,
-                value: column.id,
-                filterType: column.filterType || 'string',
-            }
-        });
+        vm.columns = _(vm.columns)
+            .map(function(column) {
+                if (column.className === 'buttonColumn') {
+                    return false;
+                }
+                return {
+                    text: column.title,
+                    value: column.id,
+                    filterType: column.filterType || 'string',
+                }
+            })
+            .compact()
+            .value()
 
         // добавляю данные для фильтров
         // (типы фильтрации + обработчкики)
