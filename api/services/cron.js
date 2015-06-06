@@ -33,7 +33,15 @@ cron.init = function(cb) {
     // пакование парса облигаций в дейли свечи
     // в 3:00 каждый пн,вт,ср,чт,пт
     cron.add('bondsNewDay', '0 3 * * 1,2,3,4,5', function() {
-        dbTasks.bondsNewDay();
+        async.series([
+            dbTasks.bondsNewDay,
+            s3.clientToServer,
+        ], function() {
+            if (err) {
+                console.error('cron new day error', err);
+            }
+        });
+
     });
 
     log.verbose('cron inited');
