@@ -41,6 +41,7 @@ module.exports.bootstrap = function(cb) {
     // TODO: сделать покрасиввее
     if (!sails.config.heroku) {
         async.series([
+            // s3.clientToServer,
             provider.init,
             cache.init,
             // cron.init,
@@ -56,6 +57,7 @@ module.exports.bootstrap = function(cb) {
     }
     else {
         async.series([
+            s3.serverToClient,
             provider.init,
             cache.init,
             cron.init,
