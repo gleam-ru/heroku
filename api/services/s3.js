@@ -21,6 +21,7 @@ me.getParams = function() {
 
 // синхронизирует клиент с сервером (качает все файлы)
 me.clientToServer = function(cb) {
+    if (!cb) cb = function(){};
     var params = me.getParams();
     var uploader = me.client.uploadDir(params);
     uploader.on('error', function(err) {
@@ -35,6 +36,7 @@ me.clientToServer = function(cb) {
 
 // синхронизирует клиент с сервером (качает все файлы)
 me.serverToClient = function(cb) {
+    if (!cb) cb = function(){};
     var params = me.getParams();
     var downloader = me.client.downloadDir(params);
     downloader.on('error', function(err) {
