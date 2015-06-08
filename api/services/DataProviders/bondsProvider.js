@@ -90,6 +90,7 @@ function saveBonds(bondsArr, cb) {
         .map(beforeCreate)
         .compact()
         .value();
+    bondsArr.shuffle();
     function iterator(bond, callback) {
         var issuer = {
             type: 'bond',
