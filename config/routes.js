@@ -34,6 +34,7 @@ module.exports.routes = {
 
     // Bonds
     'get /services/bonds'               : 'Bonds',
+    'get /services/bonds/help'          : 'Bonds.help',
     'get /services/bonds/all'           : 'Bonds.bonds',
     'get /services/bonds/filters'       : 'Bonds.filters',
     'get /services/bonds/additional'    : 'Bonds.additional',

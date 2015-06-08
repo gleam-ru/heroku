@@ -8,6 +8,12 @@ block postHead
   link(rel="stylesheet", href="/css/MyTable.css")
 
   style.
+    h1 .roundIcon {
+      font-size: 14px;
+      margin-left: 10px;
+      cursor: pointer;
+      }
+    
     #bonds {
       }
       #bonds h1,
@@ -72,7 +78,11 @@ block postHead
 
 block pageHead
   h1 Облигации
-    i.fa.fa-question-circle.begin-learning.not-mobile
+    span(
+      class='tt'
+      title='Показать справку'
+      )
+      +roundIcon('fa-question showHelp')
 block pageHead_small
 block breadcrumbs
   +breadcrumbs([

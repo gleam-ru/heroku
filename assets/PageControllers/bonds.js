@@ -21,7 +21,21 @@ $(document).ready(function() {
                 columns     : columns,
                 isReady     : function() {
                     view.mask(false);
-                    setTimeout(beginLearning, 1000);
+                    // TODO: переделать нормально
+                    var helper = $('.showHelp').first();
+                    helper.click(function() {
+                        // mp.alert('hello');
+                        if (!window.mp_help) {
+                            var el = $('<a class="invisible" href="'+href+'/help'+'"></a>');
+                            window.mp_help = el.magnificPopup({
+                                type: 'ajax',
+                                closeOnContentClick: false,
+                                closeOnBgClick: true,
+                                closeBtnInside: true,
+                            });
+                        }
+                        window.mp_help.click();
+                    });
                 },
             }
         });
@@ -167,85 +181,6 @@ $(document).ready(function() {
     ];
 
 });
-
-
-function beginLearning() {
-    Learning.init({
-        starter: {
-            el: '.begin-learning',
-            tt: {
-                content: $('<p>Нажмите, чтобы<br />показать / скрыть подсказки</p>'),
-                trigger: 'hover',
-                interactive: false,
-                multiple: false,
-                maxWidth: 250,
-                position: 'right',
-            }
-        },
-        steps: [
-            {
-                el: '.my-table .additional',
-                tt: {
-                    content: 'Для закрытия подсказки нажмите на нее',
-                    position: 'top-right',
-                    arrow: false,
-                }
-            },
-
-
-            //
-            // Preview
-            //
-            {
-                el: '.my-table .filters-preview .fa-gear',
-                tt: {
-                    content: 'Нажмите для редактирования фильтра',
-                    position: 'left',
-                }
-            },
-            {
-                el: '.my-table .filters-preview .fa-gear',
-                tt: {
-                    content: 'Нажмите еще раз для отмены',
-                    position: 'left',
-                }
-            },
-            {
-                el: '.my-table .filters-preview .filters-preview-text',
-                tt: {
-                    content: 'Нажмите для выбора фильтра',
-                    position: 'bottom',
-                }
-            },
-            {
-                el: '.my-table .filters-preview .filters-preview-text',
-                tt: {
-                    content: 'Нажмите еще раз для отмены',
-                    position: 'bottom',
-                }
-            },
-            {
-                el: '.my-table .filters-preview .fa-times',
-                tt: {
-                    content: 'Удаление фильтра',
-                    position: 'top',
-                }
-            },
-
-
-            //
-            // Table
-            //
-            {
-                el: '.my-table .dataTables_scroll',
-                tt: {
-                    content: 'Нажмите для сортировки',
-                    position: 'top',
-                }
-            },
-        ]
-    });
-}
 
 function initCalculator() {
     return new Vue({

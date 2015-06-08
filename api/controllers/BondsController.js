@@ -17,6 +17,12 @@ module.exports = {
         });
     },
 
+    help: function(req, res) {
+        return res.render('services/bonds_help', {
+            title: 'Облигации',
+        });
+    },
+
     // список облигаций
     bonds: function(req, res) {
         provider.bonds.get(function(err, bonds) {
