@@ -59,6 +59,7 @@ function ensureStoreFile(issuer, next) {
 
     var fullPath = path(root, issuer.type);
     mkdirp.sync(fullPath);
-    jf.writeFileSync(path(fullPath, issuer.path), {});
-    return next();
+    var filePath = path(fullPath, issuer.path);
+    jf.writeFileSync(filePath, {});
+    s3.uploadFile(filePath, next);
 }

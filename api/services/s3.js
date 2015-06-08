@@ -3,26 +3,46 @@ var me = {};
 
 me.client = s3.createClient({
     s3Options: {
-        accessKeyId: "AKIAJC6YHEIGLL5BQR6A",
-        secretAccessKey: "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",
+        accessKeyId: sails.config.amazon.s3.key,
+        secretAccessKey: sails.config.amazon.s3.secret,
     },
 });
 
-me.getParams = function() {
-    return {
-        localDir: ".data",
+
+
+// загружает файл на амазон
+// cb(err)
+me.uploadFile = function(src, cb) {
+    var params = {
+        localFile: src,
         s3Params: {
-            Bucket: "blozhikheroku2",
-            Prefix: ".data",
-        },
-    }
+            Bucket: sails.config.amazon.s3.bucket,
+            Key: src,
+        }
+    };
+
+    var uploader = me.client.uploadFile(params);
+    uploader.on('error', function(err) {
+        console.error("unable to upload file:", src, err.stack);
+        return cb(err);
+    });
+    uploader.on('end', function() {
+        console.log("file uploaded to s3:", src);
+        cb();
+    });
 }
 
 
 // синхронизирует клиент с сервером (качает все файлы)
 me.clientToServer = function(cb) {
     if (!cb) cb = function(){};
-    var params = me.getParams();
+    var params = {
+        localDir: sails.config.amazon.s3.defaultDir,
+        s3Params: {
+            Bucket: sails.config.amazon.s3.bucket,
+            Prefix: sails.config.amazon.s3.defaultDir,
+        },
+    };
     var uploader = me.client.uploadDir(params);
     uploader.on('error', function(err) {
         console.error("unable to sync to amazon s3:", err.stack);
@@ -37,7 +57,13 @@ me.clientToServer = function(cb) {
 // синхронизирует клиент с сервером (качает все файлы)
 me.serverToClient = function(cb) {
     if (!cb) cb = function(){};
-    var params = me.getParams();
+    var params = {
+        localDir: sails.config.amazon.s3.defaultDir,
+        s3Params: {
+            Bucket: sails.config.amazon.s3.bucket,
+            Prefix: sails.config.amazon.s3.defaultDir,
+        },
+    };
     var downloader = me.client.downloadDir(params);
     downloader.on('error', function(err) {
         console.error("unable to sync from amazon d3:", err.stack);
