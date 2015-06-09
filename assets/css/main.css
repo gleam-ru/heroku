@@ -196,7 +196,9 @@ ul.no-dots>li {list-style: none;}
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
     border: none;
     }
-
+.dataTables_scrollBody>table {
+    width: 100% !important;
+    }
 .dataTables_filter {
     margin: 2px 0px 5px 0px;
     }
@@ -215,7 +217,6 @@ ul.no-dots>li {list-style: none;}
             background-color: #fafafa;
             color: #333;
             }
-
 
 /* tooltipster */
 .tooltipster-base {cursor: pointer; z-index: 9999;}

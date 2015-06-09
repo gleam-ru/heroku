@@ -93,6 +93,8 @@ include ./els
           +button('Добавить условие')
       //- h4 Колонки
       .control-buttons
+        span.save(v-on='click: saveFilterAsCopy')
+          +button('Сохранить как новый')
         span.save(v-on='click: saveFilter')
           +button('Сохранить')
         span.cancel(v-on='click: closeEditor')

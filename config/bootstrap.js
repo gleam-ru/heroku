@@ -7,6 +7,22 @@
  */
 
 module.exports.bootstrap = function(cb) {
+    // просто глобально нужные вещи...
+    // http://bost.ocks.org/mike/shuffle/
+    Array.prototype.shuffle = function() {
+        var array = this;
+        var m = array.length;
+        var t;
+        var i;
+        while (m) {
+            i = Math.floor(Math.random() * m--);
+            t = array[m];
+            array[m] = array[i];
+            array[i] = t;
+        }
+        return array;
+    }
+
     // создаем нужные директории
     var fs = require('fs-extra');
     if (!fs.existsSync(sails.config.app.dataDir)) {
@@ -41,6 +57,7 @@ module.exports.bootstrap = function(cb) {
     // TODO: сделать покрасиввее
     if (!sails.config.heroku) {
         async.series([
+            // s3.clientToServer,
             provider.init,
             cache.init,
             // cron.init,
@@ -56,6 +73,7 @@ module.exports.bootstrap = function(cb) {
     }
     else {
         async.series([
+            s3.serverToClient,
             provider.init,
             cache.init,
             cron.init,

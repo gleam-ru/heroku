@@ -26,14 +26,22 @@ cron.add = function(name, pattern, foo) {
 cron.init = function(cb) {
     // UTC TIME!!!
     // http://www.corntab.com/pages/crontab-gui
-    cron.add('bondsParser', '45 7,9,11,13,15,17 * * 1,2,3,4,5', function() {
+    cron.add('bondsParser', '45 5,7,9,11,13,15 * * 1,2,3,4,5', function() {
         provider.bonds.update();
     });
 
     // пакование парса облигаций в дейли свечи
     // в 3:00 каждый пн,вт,ср,чт,пт
     cron.add('bondsNewDay', '0 3 * * 1,2,3,4,5', function() {
-        dbTasks.bondsNewDay();
+        async.series([
+            dbTasks.bondsNewDay,
+            s3.clientToServer,
+        ], function() {
+            if (err) {
+                console.error('cron new day error', err);
+            }
+        });
+
     });
 
     log.verbose('cron inited');

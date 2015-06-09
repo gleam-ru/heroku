@@ -137,6 +137,10 @@
         padding: 5px 5px 5px 15px;
         border-color: rgba(0, 0, 0, 0.04);
         }
+    .my-table .table td,
+    .my-table .table th {
+        white-space: nowrap;
+        }
     .my-table .table thead .sorting,
     .my-table .table thead .sorting_disabled,
     .my-table .table thead .sorting_asc,
@@ -150,6 +154,7 @@
         padding: 0px !important;
         margin-bottom: 9px;
         text-align: right !important;
+        margin-left: 20px;
         }
         .my-table .table .dataTables_paginate>a:hover {
             box-shadow: 0 0 0 26px rgba(0,0,0,0.1) inset;

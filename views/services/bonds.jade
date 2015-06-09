@@ -8,23 +8,81 @@ block postHead
   link(rel="stylesheet", href="/css/MyTable.css")
 
   style.
+    h1 .roundIcon {
+      font-size: 14px;
+      margin-left: 10px;
+      cursor: pointer;
+      }
+    
     #bonds {
       }
       #bonds h1,
       #bonds h3 {
         margin-bottom: 0px;
         }
+      #bonds .buttonColumn {
+        width: 30px !important;
+        text-align: center;
+        padding: 3px 5px 3px 0px;
+        background-image: none !important;
+        }
+        #bonds .buttonColumn .roundIcon {
+          cursor: pointer;
+          font-size: 14px;
+          }
 
     .height-transition {
       overflow: hidden;
       max-height: calc(100vh - 192px);
       }
 
+    #calculator h4 {
+      line-height: 30px;
+      }
+      #calculator h4 span {margin-left: 10px; line-height: 30px; vertical-align: middle;}
+      #calculator h4 .calcPrice {
+        width: 80px;
+        display: inline-block;
+        line-height: 20px;
+        height: 30px;
+        padding: 0px 7px;
+        text-align: center;
+        margin-left: 10px;
+        vertical-align: middle;
+        font-size: 21px;
+        }
+      #calculator table { width: 100%}
+      #calculator table tr:not(:last-child) {
+        line-height: 30px;
+        vertical-align: middle;
+        }
+        #calculator table tr:not(:last-child) {
+          border-bottom: 1px solid rgba(0,0,0,0.1);
+          }
+        #calculator table tr td {
+          padding: 3px 10px 3px 0px;
+          }
+        #calculator table tr td:first-child {
+          color: #555;
+          }
+        #calculator table tr td:last-child {
+          color: #000;
+          font-weight: 100;
+          }
+        #calculator table .comment {
+          color: #bbb;
+          padding-left: 10px;
+          }
+
 
 
 block pageHead
   h1 Облигации
-    i.fa.fa-question-circle.begin-learning.not-mobile
+    span(
+      class='tt'
+      title='Показать справку'
+      )
+      +roundIcon('fa-question showHelp')
 block pageHead_small
 block breadcrumbs
   +breadcrumbs([
@@ -37,3 +95,72 @@ block content
   .height-transition.no-select
     div#bonds
       #bonds-table
+
+block afterAll
+  #calculator(
+    class='white-popup'
+    v-el='calculator'
+    )
+    h3(
+      v-text='bond.name'
+      )
+    h4 Цена покупки:
+      input.calcPrice(
+        type='text'
+        v-el='bid'
+        v-model='bid'
+        )
+      span %
+    table
+      tr
+        td Номинал: 
+        td
+          span(v-text='bond.rate')
+          span  руб.
+      tr
+        td Купон: 
+        td 
+          span(v-text='bond.cpVal')
+          span.comment
+            span  (
+            span(v-text='bond.cpYie * 100')
+            span %)
+      tr
+        td Периодичность купона: 
+        td 
+          span(v-text='bond.cpDur')
+      tr
+        td Ближайший купон: 
+        td 
+          span(v-text='bond.cpDate')
+      tr
+        td НКД: 
+        td 
+          span(v-text='bond.nkd')
+      tr
+        td Погашение: 
+        td 
+          span(v-text='bond.endDate ')
+          span.comment
+            span  (
+            span(v-text='bond.expiresIn')
+            span  дней)
+      tr
+        td Цена покупки: 
+        td 
+          span(v-text='bond.bid ')
+          span %
+          span.comment
+            span  (
+            span(v-text='bond.price.toFixed(0)')
+            span  руб.)
+      tr
+        td Доходность: 
+        td 
+          span(v-text='percent.toFixed(2)')
+          span %
+      tr
+        td Доходность (-13%): 
+        td 
+          span(v-text='percentWTaxes.toFixed(2)')
+          span %

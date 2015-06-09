@@ -34,6 +34,7 @@ module.exports.routes = {
 
     // Bonds
     'get /services/bonds'               : 'Bonds',
+    'get /services/bonds/help'          : 'Bonds.help',
     'get /services/bonds/all'           : 'Bonds.bonds',
     'get /services/bonds/filters'       : 'Bonds.filters',
     'get /services/bonds/additional'    : 'Bonds.additional',
@@ -61,9 +62,11 @@ module.exports.routes = {
     //
     // Admin
     //
-    'get /adm'                : 'Admin',
-    'get /adm/bonds_reparse'  : 'Admin.bonds_reparse',
-    'get /adm/bonds_cache'    : 'Admin.bonds_cache',
+    'get /adm'                  : 'Admin',
+    'get /adm/bonds_reparse'    : 'Admin.bonds_reparse',
+    'get /adm/bonds_cache'      : 'Admin.bonds_cache',
+    'get /adm/amazon_to_client' : 'Admin.amazon_to_client',
+    'get /adm/client_to_amazon' : 'Admin.client_to_amazon',
 
 
 
