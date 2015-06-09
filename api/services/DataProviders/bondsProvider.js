@@ -15,7 +15,7 @@ me.init = function(cb) {
 }
 
 // получает список облигаций с текущими значениями
-me.get = function(cb) {
+me.all = function(cb) {
     var bonds = cache.get(cacheKey);
     if (typeof cb !== 'function') {
         // нет колбека. Ну нет, так нет. Возвращаю то, что есть.
@@ -29,6 +29,8 @@ me.get = function(cb) {
         return cb(null, bonds);
     }
 }
+// alias
+me.get = me.all;
 
 // парс + сохранение + апдейт
 // cb(err, updated)
@@ -40,7 +42,7 @@ me.update = function(cb) {
         me.updateCurrent,
     ], function(err) {
         if (err) console.error(err);
-        return cb(err, me.get());
+        return cb(err, me.all());
     });
 }
 
