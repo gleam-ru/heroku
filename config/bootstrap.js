@@ -6,22 +6,43 @@
  * This gives you an opportunity to set up your data model, run jobs, or perform some special logic.
  */
 
-module.exports.bootstrap = function(cb) {
-    // просто глобально нужные вещи...
-    // http://bost.ocks.org/mike/shuffle/
-    Array.prototype.shuffle = function() {
-        var array = this;
-        var m = array.length;
-        var t;
-        var i;
-        while (m) {
-            i = Math.floor(Math.random() * m--);
-            t = array[m];
-            array[m] = array[i];
-            array[i] = t;
-        }
-        return array;
+// просто глобально нужные вещи...
+// http://bost.ocks.org/mike/shuffle/
+Array.prototype.shuffle = function() {
+    var array = this;
+    var m = array.length;
+    var t;
+    var i;
+    while (m) {
+        i = Math.floor(Math.random() * m--);
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
     }
+    return array;
+}
+
+
+module.exports.bootstrap = function(cb) {
+
+    if (process.env.I_AM_HEROKU) {
+        sails.config.amazon.s3.key    = process.env.AMAZON_S3_KEY;
+        sails.config.amazon.s3.secret = process.env.AMAZON_S3_SECRET;
+    }
+    else {
+        if (sails.config.local) {
+            if (!sails.config.local.s3) {
+                console.warn('Отсуствует ключ для amazon_s3');
+            }
+            else {
+                _.extend(sails.config.amazon.s3, sails.config.local.s3);
+            }
+        }
+        else {
+            console.warn('Необходимо добавить config/local.js!');
+        }
+    }
+
 
     // создаем нужные директории
     var fs = require('fs-extra');
