@@ -1,5 +1,5 @@
-// var moment = require('moment');
-// var parser = require('./bondsParser.js');
+var moment = require('moment');
+var parser = require('./sharesParser.js');
 var importer = require('./sharesImporter.js');
 var me = {};
 var type = sails.config.app.providers.shares.type;
@@ -15,7 +15,7 @@ me.init = function(cb) {
         // получение из базы
         // me.updateCurrent,
         // получение из парса
-        // me.update,
+        me.update,
     ], cb);
 }
 
@@ -43,6 +43,8 @@ me.createCache = function(cb) {
     });
 }
 
+// получает все акции
+// {ticker: {}, ticker: {}}
 me.all = function(cb) {
     var data = cache.get(cacheKey);
     if (typeof cb !== 'function') {
@@ -55,6 +57,7 @@ me.all = function(cb) {
     return me.createCache(cb);
 }
 
+// получает конкретного тикера из акций
 me.get = function(ticker, cb) {
     var cached = cache.get(cacheKey);
     var data = cached ? cached[ticker] : undefined;
@@ -97,4 +100,129 @@ me.get = function(ticker, cb) {
     });
 }
 
+// парс + сохранение + апдейт кэша
+// cb(err, list)
+me.update = function(cb) {
+    async.series([
+        me.fixMissedCandles,
+    ], function(err) {
+        if (err) console.error('Ошибка при обновлении акций', err);
+        return cb(err, me.all());
+    });
+}
+
+// дополняет базу недостающими свечками
+// cb(err)
+me.fixMissedCandles = function(cb) {
+    var now = moment();
+    if (typeof cb !== 'function') cb = function() {};
+    async.waterfall([
+        // вычисляю первую пропущенную дату и список "битых" тикеров
+        function(next) {
+            Issuer.find({
+                type: type,
+            }, function(err, tickers) {
+                if (err) return next(err);
+                var firstMissedDate = moment();
+                var tickerMfdIds = [];
+                _.each(tickers, function(ticker) {
+                    var lastDate = getLastDate(ticker);
+
+                    if ((now - lastDate) > 86400) { // >1 day
+                        tickerMfdIds.push(ticker.general.mfd_id);
+                        var lastMissedDate = lastDate.add(1, 'days');
+                        if (lastMissedDate < firstMissedDate) {
+                            firstMissedDate = lastMissedDate;
+                        }
+                    }
+                });
+                firstMissedDate = firstMissedDate.format('DD.MM.YYYY');
+                if (tickerMfdIds.length === 0) {
+                    return next('Все свечки актуальны');
+                }
+                debugger
+                console.log('date:', firstMissedDate, 'tkrs:', tickerMfdIds);
+                next(null, firstMissedDate, tickerMfdIds, tickers);
+            })
+        },
+        // получаю пропущенные данные из парсера
+        function(date, tickers_to_parse, tickers, next) {
+            parser.getByDateRange(date, tickers_to_parse, function(err, parsed) {
+                if (err) return next(err);
+                debugger
+                console.log('parsed', parsed);
+                next(null, parsed, tickers);
+            });
+        },
+        // пишу спаршенные данные в "базу"
+        function(parsed, tickers, next) {
+            var modified = [];
+            _.each(tickers, function(tickers) {
+                var ticker_store  = ticker.getStore();
+                var ticker_parsed = tickers[ticker_store.general.name];
+                if (ticker_parsed) {
+                    // парсер получил данные по этому тикеру
+                    // мержу свечи
+                    var candles_existing = ticker_store.dailyCandles;
+                    var candles_parsed   = ticker_parsed.candles;
+
+                    // удаляю из парса уже существующие свечи
+                    var lastExisting = candles_existing[candles_existing.length - 1];
+                    var i = _.findIndex(candles_parsed, function(cp) {
+                        return cp.date === lastExisting.date;
+                    });
+                    candles_parsed.splice(0, i + 1);
+
+                    // сохраняю измененные данные об эмитенте
+                    ticker_store.dailyCandles = candles_existing.concat(candles_parsed);
+                    store.indayCandles = [];
+                    store.lastCandle = {};
+                    ticker.setStore(ticker_store);
+                    modified.push(ticker);
+                }
+            });
+            debugger
+            console.log('modified', modified);
+            next(null, modified);
+        },
+        // обновляю дату изменения в базе об измененных тикерах
+        function(tickers, next) {
+            async.each(tickers, function(t, done) {
+                t.save(done);
+            }, next);
+        },
+    ], function(err) {
+        if (err !== 'Все свечки актуальны') return cb(err);
+        console.info('Пропущенные свечки восстановлены');
+        cb();
+    });
+}
+
+
 module.exports = me;
+
+
+// получает список дат, для которых отсутствуют свечи
+function getLastDate(ticker) {
+    var store = ticker.getStore();
+    var candles = store.dailyCandles;
+    var lastSaved = candles[candles.length - 1];
+    return moment(lastSaved.date, 'YYYY-MM-DD');
+}
+
+
+// получает список дат, для которых отсутствуют свечи
+function getMissedDates(ticker) {
+    var missedDates = [];
+    var store = ticker.getStore();
+    var candles = store.dailyCandles;
+    var lastSaved = candles[candles.length - 1];
+    var date = moment(lastSaved.date, 'YYYY-MM-DD');
+    var now = moment();
+    if (date > now) return [];
+    while ((now - date) > 86400) { // 1 day
+        missedDates.push(date.format('YYYY-MM-DD'));
+        date = date.add(1, 'days')
+    }
+    return missedDates;
+}

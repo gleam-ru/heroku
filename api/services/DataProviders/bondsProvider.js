@@ -1,5 +1,4 @@
 var moment = require('moment');
-var parser = require('./bondsParser.js');
 var me = {};
 var type = sails.config.app.providers.bonds.type;
 var cacheKey = sails.config.app.providers.bonds.cache;
@@ -37,7 +36,7 @@ me.get = me.all;
 me.update = function(cb) {
     if (typeof cb !== "function") cb = function() {};
     async.waterfall([
-        parser.parse,
+        require('./bondsParser').parse,
         saveBonds,
         me.updateCurrent,
     ], function(err) {

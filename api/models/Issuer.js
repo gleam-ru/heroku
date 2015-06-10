@@ -61,5 +61,10 @@ function ensureStoreFile(issuer, next) {
     mkdirp.sync(fullPath);
     var filePath = path(fullPath, issuer.path);
     jf.writeFileSync(filePath, {});
-    s3.uploadFile(filePath, next);
+    if (sails.config.dev !== true) {
+        s3.uploadFile(filePath, next);
+    }
+    else {
+        next();
+    }
 }
