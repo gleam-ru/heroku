@@ -6,14 +6,13 @@ var me = {};
 // cb(err, tickers)
 // tickers = {ticker: {candles:[]}, ...}
 me.getFromDate = function(date_start, tickers, cb) {
-    date = moment(date, 'YYYY-MM-DD').format('DD.MM.YYYY');
     var url = ''+
         'http://mfd.ru/export/handler.ashx?'+qs({
-            'Tickers'            : '1463,1464',
+            'Tickers'            : tickers.toString(),
             'Period'             : '7',
             'timeframeValue'     : '1',
             'timeframeDatePart'  : 'day',
-            'StartDate'          : '09.06.2015', // DD.MM.YYYY
+            'StartDate'          : date_start.format('DD.MM.YYYY'),
             'EndDate'            : moment().format('DD.MM.YYYY'),
             'SaveFormat'         : '0',
             'SaveMode'           : '0',
@@ -45,9 +44,10 @@ me.getFromDate = function(date_start, tickers, cb) {
             if (err) return cb(err);
             var tickers = {};
             _.each(rows, function(row) {
-                var ticker = tickers[row['<TICKER>']];
-                if (!ticker) ticker = {candles: []};
-                ticker.candles.push({
+                var name = row['<TICKER>'];
+                var ticker = tickers[name];
+                if (!ticker) tickers[name] = {candles: []};
+                tickers[name].candles.push({
                     date: moment(row['<DATE>'], 'YYYYMMDD').format('YYYY-MM-DD'),
                     o: parseFloat(row['<OPEN>']),
                     h: parseFloat(row['<HIGH>']),
@@ -56,7 +56,6 @@ me.getFromDate = function(date_start, tickers, cb) {
                     vol: parseInt(row['<VOL>']),
                 });
             });
-            debugger;
             return cb(null, tickers);
         });
     });

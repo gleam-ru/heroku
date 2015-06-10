@@ -44,21 +44,19 @@ me.process = function(cb) {
                 },
                 // если нет - создаем
                 function(count, issuer, next) {
-                    if (count > 0) return next();
+                    if (count > 0) return next('Тикер уже в БД');
                     Issuer.create(issuer, function(err, created) {
                         return next(err, created, issuer);
                     });
                 },
                 // получаем данные для эмитента из файла
                 function(created, issuer, next) {
-                    if (!next) return created(); // особенности waterfall
                     getDataFromFile(path(dir, file), function(err, res) {
                         return next(err, res, created, issuer);
                     });
                 },
                 // схороняю
                 function(res, created, issuer, next) {
-                    if (!next) return res(); // особенности waterfall
                     created.setStore({
                         general: {
                             name: res.name,
@@ -71,7 +69,10 @@ me.process = function(cb) {
                     });
                     created.save(next);
                 }
-            ], itCb);
+            ], function(err) {
+                if (err !== 'Тикер уже в БД') return itCb(err);
+                itCb(null);
+            })
         }
 
         async.eachSeries(files, iterator, cb);
@@ -80,9 +81,9 @@ me.process = function(cb) {
 
 // читает файл, форматирует его как надо, отдает отформатированные данные
 // cb(err, res)
-// res == []
+// res == {name, candles:[]}
 function getDataFromFile(src, cb) {
-    fs.readFile(src, function(err, data) {
+    fs.readFile(src, 'utf-8', function(err, data) {
         if (err) return cb(err);
         parse(data, {
             delimiter: '	',

@@ -126,40 +126,46 @@ me.fixMissedCandles = function(cb) {
                 var firstMissedDate = moment();
                 var tickerMfdIds = [];
                 _.each(tickers, function(ticker) {
-                    var lastDate = getLastDate(ticker);
+                    var store = ticker.getStore();
+                    var candles = store.dailyCandles;
+                    var lastSaved = candles[candles.length - 1];
+                    var lastDate = moment(lastSaved.date, 'YYYY-MM-DD');
 
-                    if ((now - lastDate) > 86400) { // >1 day
-                        tickerMfdIds.push(ticker.general.mfd_id);
+                    if ((now - lastDate) > 86400000) { // >1 day
+                        var mfd_id = store.general.mfd_id;
+                        if (!mfd_id) {
+                            console.warn('У акции', store.general.name, 'отсутствуют некоторые свечи и не привязан mfd_id');
+                        }
+                        else {
+                            tickerMfdIds.push(mfd_id);
+                        }
                         var lastMissedDate = lastDate.add(1, 'days');
                         if (lastMissedDate < firstMissedDate) {
                             firstMissedDate = lastMissedDate;
                         }
                     }
                 });
-                firstMissedDate = firstMissedDate.format('DD.MM.YYYY');
                 if (tickerMfdIds.length === 0) {
                     return next('Все свечки актуальны');
                 }
-                debugger
-                console.log('date:', firstMissedDate, 'tkrs:', tickerMfdIds);
+                console.info('Missed candles!', 'date:', firstMissedDate.format('DD.MM.YYYY'), 'tkrs:', tickerMfdIds);
                 next(null, firstMissedDate, tickerMfdIds, tickers);
             })
         },
         // получаю пропущенные данные из парсера
         function(date, tickers_to_parse, tickers, next) {
-            parser.getByDateRange(date, tickers_to_parse, function(err, parsed) {
+            parser.getFromDate(date, tickers_to_parse, function(err, parsed) {
                 if (err) return next(err);
-                debugger
-                console.log('parsed', parsed);
+                console.log('parsed', _.keys(parsed).length, 'shares candles');
                 next(null, parsed, tickers);
             });
         },
         // пишу спаршенные данные в "базу"
         function(parsed, tickers, next) {
             var modified = [];
-            _.each(tickers, function(tickers) {
+            _.each(tickers, function(ticker) {
                 var ticker_store  = ticker.getStore();
-                var ticker_parsed = tickers[ticker_store.general.name];
+                var ticker_parsed = parsed[ticker_store.general.name];
                 if (ticker_parsed) {
                     // парсер получил данные по этому тикеру
                     // мержу свечи
@@ -175,14 +181,13 @@ me.fixMissedCandles = function(cb) {
 
                     // сохраняю измененные данные об эмитенте
                     ticker_store.dailyCandles = candles_existing.concat(candles_parsed);
-                    store.indayCandles = [];
-                    store.lastCandle = {};
+                    ticker_store.indayCandles = [];
+                    ticker_store.lastCandle = {};
                     ticker.setStore(ticker_store);
                     modified.push(ticker);
                 }
             });
-            debugger
-            console.log('modified', modified);
+            console.log('modified', modified.length, 'shares');
             next(null, modified);
         },
         // обновляю дату изменения в базе об измененных тикерах
@@ -192,23 +197,21 @@ me.fixMissedCandles = function(cb) {
             }, next);
         },
     ], function(err) {
-        if (err !== 'Все свечки актуальны') return cb(err);
-        console.info('Пропущенные свечки восстановлены');
-        cb();
+        if (err === 'Все свечки актуальны') {
+            return cb();
+        }
+        else if (!err) {
+            console.info('Пропущенные свечки восстановлены');
+            cb();
+        }
+        else {
+            cb(err);
+        }
     });
 }
 
 
 module.exports = me;
-
-
-// получает список дат, для которых отсутствуют свечи
-function getLastDate(ticker) {
-    var store = ticker.getStore();
-    var candles = store.dailyCandles;
-    var lastSaved = candles[candles.length - 1];
-    return moment(lastSaved.date, 'YYYY-MM-DD');
-}
 
 
 // получает список дат, для которых отсутствуют свечи
