@@ -269,7 +269,13 @@ function createChart(data, cb) {
             .domain(b_x.zoomable().domain())
             .range(b_x.range())
     )
-    brush.extent([candles.length - 280, candles.length])
+    var initial_length = 280;
+    if (candles.length < initial_length) {
+        brush.extent([0, candles.length])
+    }
+    else {
+        brush.extent([candles.length - initial_length, candles.length])
+    }
 
     gBrusherSelection
         .call(brush)
@@ -354,9 +360,15 @@ function createChart(data, cb) {
         if (!d3.event.sourceEvent) return;
 
         var extent = brush.extent().map(Math.round);
+        if (extent[0] <= 0) {
+            extent[0] = -0.5;
+        }
         // был просто клик
         if (brush.empty()) { // Math.abs(extent[0] - extent[1]) < 180) {
             extent[1] = extent[0] + 160;
+        }
+        if (extent[1] > candles.length) {
+            extent[1] = candles.length;
         }
         extent[1] -= 0.5;
 
@@ -391,6 +403,7 @@ function createChart(data, cb) {
         // привязка данных брашера к данным графика
         // https://github.com/andredumas/techan.js/blob/54e14442e30d7bd779e8fd4d9cddd25dc69a3cb6/src/scale/zoomable.js
         var visibleCandlesRange = brush.empty() ? brush.x().domain() : brush.extent();
+        if (visibleCandlesRange[0] < 0) visibleCandlesRange[0] = 0;
         x // ось
             .zoomable() // получить связанный набор свечек
             .domain(visibleCandlesRange) // установить видимые свечи
