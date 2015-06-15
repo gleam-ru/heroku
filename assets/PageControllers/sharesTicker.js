@@ -33,18 +33,23 @@ function createChart(data, cb) {
     // candles = candles.slice(0, 360);
     var accessor = techan.plot.candlestick().accessor();
     var parseDate = d3.time.format("%Y-%m-%d").parse;
-    candles = candles.map(function(c) {
-        return {
-            date   : parseDate(c.date),
-            open   : +c.o,
-            high   : +c.h,
-            low    : +c.l,
-            close  : +c.c,
-            volume : +c.vol
-        };
-    }).sort(function(a, b) {
-        return d3.ascending(accessor.d(a), accessor.d(b));
-    });
+    candles = _(candles)
+        .map(function(c) {
+            if (!c.vol) return undefined;
+            return {
+                date   : parseDate(c.date),
+                open   : +c.o,
+                high   : +c.h,
+                low    : +c.l,
+                close  : +c.c,
+                volume : +c.vol
+            };
+        })
+        .compact()
+        .value()
+        .sort(function(a, b) {
+            return d3.ascending(accessor.d(a), accessor.d(b));
+        });
 
     // chart
     var margin = [40, 30, 30, 30];
