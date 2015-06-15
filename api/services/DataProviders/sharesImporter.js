@@ -7,17 +7,8 @@ var fs     = require('fs-extra');
 var moment = require('moment');
 var parse  = require('csv-parse');
 
-
 var dir = sails.config.app.providers.shares.src;
-
-
-// http://mfd.ru/marketdata/?id=5&mode=3&group=16
-var mfd_bindings = {
-    'ГАЗПРОМ ао': '330',
-    'Башнефт ап': '41229',
-}
-
-
+var bindings = sails.config.app.providers.shares.mfd;
 
 // заполняет базу, если она не заполнена
 me.process = function(cb) {
@@ -61,7 +52,7 @@ me.process = function(cb) {
                         general: {
                             name: res.name,
                             ticker: issuer.path,
-                            mfd_id: mfd_bindings[res.name],
+                            mfd_id: bindings[res.name],
                         },
                         dailyCandles: res.candles,
                         indayCandles: [],
