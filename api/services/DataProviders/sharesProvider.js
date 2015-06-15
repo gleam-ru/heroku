@@ -1,21 +1,28 @@
 var moment = require('moment');
 var parser = require('./sharesParser.js');
-var importer = require('./sharesImporter.js');
 var me = {};
-var type = sails.config.app.providers.shares.type;
-var cacheKey = sails.config.app.providers.shares.cache;
+
+var type        = sails.config.app.providers.shares.type;
+var cacheKey    = sails.config.app.providers.shares.cache;
+var limitations = sails.config.app.providers.shares.parserLimitations; // если попросить слишком много данных сразу, то мфд выкинет по таймауту
+var bindings    = sails.config.app.providers.shares.mfd;
+
+
+
 
 // установка дефолтных значений
 me.init = function(cb) {
     async.series([
-        // кидаю в базу данные из файлов (если в бд их нет)
-        importer.process,
+        // заполяет базу акциями из конфиг файла
+        me.initialFill,
+        // заполняю эмитентов, у которых отсутствует большое количество свечек (вероятно, они новые)
+        me.fixMissedCandles_individual,
+        // проверяю данные из базы на "целостность" (наличие всех свечек)
+        me.fixMissedCandles,
         // кэширую все
         me.createCache,
-        // получение из базы
-        // me.updateCurrent,
-        // получение из парса
-        me.update,
+        // обновляю крайнюю свечу всех эмитентов
+        // me.getLastCandle,
     ], cb);
 }
 
@@ -100,20 +107,51 @@ me.get = function(ticker, cb) {
     });
 }
 
-// парс + сохранение + апдейт кэша
-// cb(err, list)
-me.update = function(cb) {
-    async.series([
-        me.fixMissedCandles,
-    ], function(err) {
-        if (err) console.error('Ошибка при обновлении акций', err);
-        return cb(err, me.all());
+
+me.initialFill = function(cb) {
+    // немного преобразую данные для удобства работы
+    var mfd = _.map(bindings, function(v, k) {
+        return {
+            id: v,
+            name: k,
+        }
     });
+    console.log(mfd)
+    async.eachSeries(mfd, function(ticker, done) {
+        // если тикер существует, то он выглядит так:
+        var existing = {
+            type: type,
+            path: ticker.id,
+        };
+        Issuer.findOne(existing, function(err, found) {
+            if (err) return done(err);
+            if (found) return done();
+            Issuer.create(existing, function(err, created) {
+                if (err) return done(err);
+                console.info('Эмитент создан!', ticker.id, ticker.name);
+                created.setStore({
+                    general: {
+                        mfd_id : ticker.id,
+                        name   : ticker.name,
+                        ticker : created.path,
+                    },
+                    dailyCandles: [],
+                    indayCandles: [],
+                    lastCandle: {},
+                });
+                created.save(done);
+            });
+        });
+    }, cb)
 }
+
+
+
 
 // дополняет базу недостающими свечками
 // cb(err)
 me.fixMissedCandles = function(cb) {
+    console.log('fix missed candles');
     var now = moment();
     if (typeof cb !== 'function') cb = function() {};
     async.waterfall([
@@ -129,9 +167,18 @@ me.fixMissedCandles = function(cb) {
                     var store = ticker.getStore();
                     var candles = store.dailyCandles;
                     var lastSaved = candles[candles.length - 1];
-                    var lastDate = moment(lastSaved.date, 'YYYY-MM-DD');
+                    var lastDate = lastSaved ? moment(lastSaved.date, 'YYYY-MM-DD') : moment(new Date(1900, 1, 1));
 
-                    if ((now - lastDate) > 86400000) { // >1 day
+                    var range = now - lastDate;
+                    if (range > limitations.time) {
+                        // придется докачать слишком много отсутствующих данных
+                        // в этом случае мфд выкинет по таймауту
+                        // поэтому нужно немного изменить "стиль" получения данных
+                        // (просить по одному эмитенту)
+                        // по-умолчанию это происходит при старте сервера (me.init -> me.fixMissedCandles_individual)
+                        console.warn('У акции', store.general.name, 'отсутствует много свечей!!! (они не будут докачаны)');
+                    }
+                    else if (range > 86400000) { // >1 day
                         var mfd_id = store.general.mfd_id;
                         if (!mfd_id) {
                             console.warn('У акции', store.general.name, 'отсутствуют некоторые свечи и не привязан mfd_id');
@@ -149,7 +196,7 @@ me.fixMissedCandles = function(cb) {
                     return next('Все свечки актуальны');
                 }
                 console.info('Missed candles!', 'date:', firstMissedDate.format('DD.MM.YYYY'), 'tkrs:', tickerMfdIds);
-                next(null, firstMissedDate, tickerMfdIds, tickers);
+                return next(null, firstMissedDate, tickerMfdIds, tickers);
             })
         },
         // получаю пропущенные данные из парсера
@@ -157,7 +204,7 @@ me.fixMissedCandles = function(cb) {
             parser.getFromDate(date, tickers_to_parse, function(err, parsed) {
                 if (err) return next(err);
                 console.log('parsed', _.keys(parsed).length, 'shares candles');
-                next(null, parsed, tickers);
+                return next(null, parsed, tickers);
             });
         },
         // пишу спаршенные данные в "базу"
@@ -172,15 +219,8 @@ me.fixMissedCandles = function(cb) {
                     var candles_existing = ticker_store.dailyCandles;
                     var candles_parsed   = ticker_parsed.candles;
 
-                    // удаляю из парса уже существующие свечи
-                    var lastExisting = candles_existing[candles_existing.length - 1];
-                    var i = _.findIndex(candles_parsed, function(cp) {
-                        return cp.date === lastExisting.date;
-                    });
-                    candles_parsed.splice(0, i + 1);
-
                     // сохраняю измененные данные об эмитенте
-                    ticker_store.dailyCandles = candles_existing.concat(candles_parsed);
+                    ticker_store.dailyCandles = mergeCandles(candles_existing, candles_parsed);
                     ticker_store.indayCandles = [];
                     ticker_store.lastCandle = {};
                     ticker.setStore(ticker_store);
@@ -188,7 +228,7 @@ me.fixMissedCandles = function(cb) {
                 }
             });
             console.log('modified', modified.length, 'shares');
-            next(null, modified);
+            return next(null, modified);
         },
         // обновляю дату изменения в базе об измененных тикерах
         function(tickers, next) {
@@ -197,21 +237,68 @@ me.fixMissedCandles = function(cb) {
             }, next);
         },
     ], function(err) {
-        if (err === 'Все свечки актуальны') {
+        if (!err) {
+            console.info('Пропущенные свечки восстановлены');
             return cb();
         }
-        else if (!err) {
-            console.info('Пропущенные свечки восстановлены');
-            cb();
+        else if (err === 'Все свечки актуальны') {
+            return cb();
         }
         else {
-            cb(err);
+            return cb(err);
         }
     });
 }
 
 
-module.exports = me;
+
+// заполняет пропущенные свечи отдельным запросом для каждого эмитента
+// cb(err)
+// TODO: можно нефигово оптимизировать:
+// (смотри место вызова и дважды не читай одни и те же файлы)
+// но подразумевается, что этот метод отработает всего один раз...
+me.fixMissedCandles_individual = function(cb) {
+    var now = moment();
+    console.log('individual fix missed candles');
+    console.warn('Оптимизируй меня!');
+    Issuer.find({
+        type: type,
+    }, function(err, tickers) {
+        if (err) return cb(err);
+        // получаю данные по "старым" отсутствующим свечам
+        async.each(tickers, function(ticker, done) {
+            var store = ticker.getStore();
+            var candles_existing = store.dailyCandles;
+            var lastSaved = candles_existing[candles_existing.length - 1];
+            var lastDate = lastSaved ? moment(lastSaved.date, 'YYYY-MM-DD') : moment(new Date(1900, 1, 1));
+            // только для "больших" отсутствующих кусков
+            if ((now - lastDate) >= limitations.time) {
+                var mfd_id = store.general.mfd_id;
+                if (!mfd_id) {
+                    console.warn('У акции', store.general.name, 'отсутствует много свечей и не привязан mfd_id');
+                }
+                else {
+                    parser.getTicker(mfd_id, function(err, candles_parsed) {
+                        if (err) return done(err);
+                        store.dailyCandles = mergeCandles(candles_existing, candles_parsed);
+                        store.indayCandles = [];
+                        store.lastCandle = {};
+                        ticker.setStore(store);
+                        return ticker.save(done);
+                    });
+                    return;
+                }
+            }
+            return done();
+        }, cb);
+    })
+}
+
+
+
+//  ╔═╗  ╦═╗  ╦  ╦  ╦  ╔═╗  ╔╦╗  ╔═╗
+//  ╠═╝  ╠╦╝  ║  ╚╗╔╝  ╠═╣   ║   ║╣
+//  ╩    ╩╚═  ╩   ╚╝   ╩ ╩   ╩   ╚═╝
 
 
 // получает список дат, для которых отсутствуют свечи
@@ -229,3 +316,17 @@ function getMissedDates(ticker) {
     }
     return missedDates;
 }
+
+// "умный" конкат - дописывает только несуществующие свечи
+function mergeCandles(_old, _new) {
+    var lastExisting = _old[_old.length - 1] || {};
+    var i = _.findIndex(_new, function(candle) {
+        return candle.date === lastExisting.date;
+    });
+    _new.splice(0, i + 1);
+    return _old.concat(_new);
+}
+
+
+
+module.exports = me;
