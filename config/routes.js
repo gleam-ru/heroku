@@ -43,8 +43,8 @@ module.exports.routes = {
 
     // Shares
     'get /services/shares'                 : 'Shares',
-    'get /services/shares/:ticker'         : 'Shares.ticker',
-    'get /services/shares/:ticker/info'    : 'Shares.getTickerData',
+    'get /services/shares/:mfd_id'         : 'Shares.ticker',
+    'get /services/shares/:mfd_id/info'    : 'Shares.getTickerData',
     //---
 
 

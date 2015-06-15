@@ -2,7 +2,7 @@ $(document).ready(function() {
     var view = $('#shares');
     view.mask();
 
-    $.get('/services/shares/'+ticker+'/info')
+    $.get('/services/shares/'+mfd_id+'/info')
     .done(function(data) {
         var msg = data.msg;
         if (msg) {

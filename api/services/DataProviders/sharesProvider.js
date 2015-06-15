@@ -16,7 +16,7 @@ me.init = function(cb) {
         // заполяет базу акциями из конфиг файла
         me.initialFill,
         // заполняю эмитентов, у которых отсутствует большое количество свечек (вероятно, они новые)
-        me.fixMissedCandles_individual,
+        // me.fixMissedCandles_individual,
         // проверяю данные из базы на "целостность" (наличие всех свечек)
         me.fixMissedCandles,
         // кэширую все
@@ -65,9 +65,9 @@ me.all = function(cb) {
 }
 
 // получает конкретного тикера из акций
-me.get = function(ticker, cb) {
+me.get = function(mfd_id, cb) {
     var cached = cache.get(cacheKey);
-    var data = cached ? cached[ticker] : undefined;
+    var data = cached ? cached[mfd_id] : undefined;
     if (typeof cb !== 'function') {
         // нет колбека. Ну нет, так нет. Возвращаю то, что есть.
         return data;
@@ -79,7 +79,7 @@ me.get = function(ticker, cb) {
         console.warn('Кэш запрошен, но не создан.');
     }
     else if (!data) {
-        console.warn('Запрошен эмитент, которого нет в кэше:', ticker);
+        console.warn('Запрошен эмитент, которого нет в кэше:', mfd_id);
     }
     else {
         console.warn('ЯННП');
@@ -88,17 +88,17 @@ me.get = function(ticker, cb) {
     // а запрошенный тикер вообще есть?
     Issuer.count({
         type: type,
-        path: ticker,
+        path: mfd_id,
     }, function(err, count) {
         if (err) return cb(err);
         if (count < 1) {
-            console.warn('А кто-то урл-ами балуется... запрошен несуществующий тикер:', ticker);
+            console.warn('А кто-то урл-ами балуется... запрошен несуществующий тикер:', mfd_id);
             return cb(null, {});
         }
         console.info('Обновляю кэш не по расписанию!!!');
         me.createCache(function(err, cached) {
             if (err) return cb(err);
-            data = cached ? cached[ticker] : undefined;
+            data = cached ? cached[mfd_id] : undefined;
             if (!data) {
                 console.error('Что-то пошло сильно не так...', 'v0x9cv80xc09');
             }
@@ -116,7 +116,6 @@ me.initialFill = function(cb) {
             name: k,
         }
     });
-    console.log(mfd)
     async.eachSeries(mfd, function(ticker, done) {
         // если тикер существует, то он выглядит так:
         var existing = {
@@ -133,7 +132,6 @@ me.initialFill = function(cb) {
                     general: {
                         mfd_id : ticker.id,
                         name   : ticker.name,
-                        ticker : created.path,
                     },
                     dailyCandles: [],
                     indayCandles: [],
@@ -277,7 +275,7 @@ me.fixMissedCandles_individual = function(cb) {
                 if (!mfd_id) {
                     console.warn('У акции', store.general.name, 'отсутствует много свечей и не привязан mfd_id');
                 }
-                else {
+                else if (now - moment(ticker.updatedAt) > sails.config.app.providers.shares.getAgainTimeout) {
                     parser.getTicker(mfd_id, function(err, candles_parsed) {
                         if (err) return done(err);
                         store.dailyCandles = mergeCandles(candles_existing, candles_parsed);
@@ -287,6 +285,8 @@ me.fixMissedCandles_individual = function(cb) {
                         return ticker.save(done);
                     });
                     return;
+                }
+                else {
                 }
             }
             return done();

@@ -181,6 +181,18 @@ ul.no-dots>li {list-style: none;}
 .dataTable {
     margin-bottom: 0px !important;
     }
+
+.dataTable .buttonColumn {
+    width: 20px !important;
+    text-align: center;
+    padding: 3px 5px 3px 0px;
+    background-image: none !important;
+    word-wrap: break-word !important;
+    }
+    .dataTable .buttonColumn .roundIcon {
+        cursor: pointer;
+        font-size: 14px;
+        }
 .dataTable th {
     border: none !important;
     }

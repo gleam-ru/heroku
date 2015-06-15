@@ -18,8 +18,9 @@ module.exports = {
             rows.push({
                 id: s.id,
                 ticker: s.general.ticker,
+                mfd_id: s.general.mfd_id,
                 name: s.general.name,
-                price: lastCandle.c,
+                price: lastCandle ? lastCandle.c : '',
             });
         });
         return res.render('services/shares', {
@@ -31,11 +32,11 @@ module.exports = {
     },
 
     ticker: function(req, res) {
-        var code = req.param('ticker');
-        var data = provider.shares.get(code.toLowerCase());
+        var mfd_id = req.param('mfd_id');
+        var data = provider.shares.get(mfd_id);
         if (!data) {
             return res.render('404', {
-                msg: 'Тикер <b>'+code+'</b> не найден'
+                msg: 'Тикер <b>'+mfd_id+'</b> не найден'
             });
         }
         return res.render('services/shares_ticker', {
@@ -48,8 +49,8 @@ module.exports = {
 
 
     getTickerData: function(req, res) {
-        var code = req.param('ticker');
-        var data = provider.shares.get(code.toLowerCase());
+        var mfd_id = req.param('mfd_id');
+        var data = provider.shares.get(mfd_id);
         if (!data) {
             return res.send(404);
         }
