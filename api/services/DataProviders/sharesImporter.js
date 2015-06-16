@@ -16,6 +16,9 @@ me.process = function(cb) {
         me.fixMissedCandles_individual,
         // обновляю крайнюю свечу всех эмитентов
         // me.getLastCandle,
+        // кидаю спаршенные данные на амазон
+        // s3.clientToServer
+        //
     ], cb);
 }
 

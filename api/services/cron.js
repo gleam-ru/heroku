@@ -41,7 +41,20 @@ cron.init = function(cb) {
                 console.error('cron new day error', err);
             }
         });
+    });
 
+    // получение недостающих свечей
+    // в 22:00 каждый пн,вт,ср,чт,пт
+    cron.add('sharesNewDay', '0 22 * * 1,2,3,4,5', function() {
+        var importer = require('./sharesImporter.js');
+        async.series([
+            importer.fixMissedCandles,
+            s3.clientToServer,
+        ], function() {
+            if (err) {
+                console.error('cron new day error', err);
+            }
+        });
     });
 
     log.verbose('cron inited');

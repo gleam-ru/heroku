@@ -1,8 +1,8 @@
 var importer = require('./sharesImporter.js');
 var me = {};
 
-var type        = sails.config.app.providers.shares.type;
-var cacheKey    = sails.config.app.providers.shares.cache;
+var type     = sails.config.app.providers.shares.type;
+var cacheKey = sails.config.app.providers.shares.cache;
 
 
 
@@ -11,10 +11,10 @@ me.init = function(cb) {
     async.series([
         // импорт отсутствующих эмитентов (есть в конфиге, но нет в базе)
         // или тех эмитентов, у которых более 4 пропущенных месяцев свечей
-        importer.process,
+        // importer.process,
         // проверяю данные из базы на "целостность" (наличие всех свечек)
         // при необходимости - докачиваю
-        importer.fixMissedCandles,
+        // importer.fixMissedCandles,
         // кэширую все
         me.createCache,
         //
@@ -104,6 +104,7 @@ me.createCache = function(cb) {
             }
         });
         cache.set(cacheKey, cached);
+        console.info('current shares updated:', _.keys(cached).length);
         cb(null, cached);
     });
 }
