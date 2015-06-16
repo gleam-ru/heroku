@@ -176,7 +176,7 @@ me.fixMissedCandles = function(cb) {
                         // по-умолчанию это происходит при старте сервера (me.init -> me.fixMissedCandles_individual)
                         console.warn('У акции', store.general.name, 'отсутствует много свечей!!! (они не будут докачаны)');
                     }
-                    else if (range > 86400000) { // >1 day
+                    else if (range > 172800000) { // >2 days
                         var mfd_id = store.general.mfd_id;
                         if (!mfd_id) {
                             console.warn('У акции', store.general.name, 'отсутствуют некоторые свечи и не привязан mfd_id');
@@ -193,13 +193,13 @@ me.fixMissedCandles = function(cb) {
                 if (tickerMfdIds.length === 0) {
                     return next('Все свечки актуальны');
                 }
-                console.info('Missed candles!', 'date:', firstMissedDate.format('DD.MM.YYYY'), 'tkrs:', tickerMfdIds);
+                console.info('Missed candles!', 'date:', firstMissedDate.format('DD.MM.YYYY'), 'cnt:', tickerMfdIds.length);
                 return next(null, firstMissedDate, tickerMfdIds, tickers);
             })
         },
         // получаю пропущенные данные из парсера
         function(date, tickers_to_parse, tickers, next) {
-            parser.getFromDate(date, tickers_to_parse, function(err, parsed) {
+            parser.getByDate(date, tickers_to_parse, function(err, parsed) {
                 if (err) return next(err);
                 console.log('parsed', _.keys(parsed).length, 'shares candles');
                 return next(null, parsed, tickers);

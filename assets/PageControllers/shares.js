@@ -59,8 +59,8 @@ $(document).ready(function() {
     table.DataTable({
         data: shares.rows,
         columns: columns,
-        sDom: 'ft',
-        paging: false,
+        sDom: 'ftp',
+        paging: true,
         deferRender: true,
         sScrollX: '100%',
         bScrollCollapse: true,
