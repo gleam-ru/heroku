@@ -1,12 +1,18 @@
 var s3 = require('s3');
 var me = {};
 
-me.client = s3.createClient({
-    s3Options: {
-        accessKeyId: sails.config.amazon.s3.key,
-        secretAccessKey: sails.config.amazon.s3.secret,
-    },
-});
+me.getClient = function() {
+    if (!me.client) {
+        me.client = s3.createClient({
+            s3Options: {
+                accessKeyId: sails.config.amazon.s3.key,
+                secretAccessKey: sails.config.amazon.s3.secret,
+            },
+        });
+    }
+    console.error(sails.config.amazon.s3)
+    return me.client;
+}
 
 
 
@@ -21,7 +27,7 @@ me.uploadFile = function(src, cb) {
         }
     };
 
-    var uploader = me.client.uploadFile(params);
+    var uploader = me.getClient().uploadFile(params);
     uploader.on('error', function(err) {
         console.error("unable to upload file:", src, err.stack);
         return cb(err);
@@ -43,7 +49,7 @@ me.clientToServer = function(cb) {
             Prefix: sails.config.amazon.s3.defaultDir,
         },
     };
-    var uploader = me.client.uploadDir(params);
+    var uploader = me.getClient().uploadDir(params);
     uploader.on('error', function(err) {
         console.error("unable to sync to amazon s3:", err.stack);
         cb(err);
@@ -64,7 +70,7 @@ me.serverToClient = function(cb) {
             Prefix: sails.config.amazon.s3.defaultDir,
         },
     };
-    var downloader = me.client.downloadDir(params);
+    var downloader = me.getClient().downloadDir(params);
     downloader.on('error', function(err) {
         console.error("unable to sync from amazon d3:", err.stack);
         cb(err);
