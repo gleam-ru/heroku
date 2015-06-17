@@ -30,9 +30,10 @@ window.MyTable = Vue.extend({
                 bStateSave: true,
                 sScrollX: '100%',
                 bScrollCollapse: true,
-                sDom: 'pft',
-                pagingType: 'simple',
-                // paging: false,
+                // http://legacy.datatables.net/usage/options
+                sDom: 'lpft',
+                aLengthMenu: [[10, 50, 100, -1], [10, 50, 100, "все"]],
+                paging: true,
                 language: datatables_localization,
             },
             columns: [],
@@ -591,10 +592,14 @@ window.MyTable = Vue.extend({
     // DOM-зависимые ивенты
     compiled: function() {
         var vm = this;
-        var dt = this.$$.dt;
+        var dt = vm.$$.dt;
         vm.dt.table = $(dt).dataTable(vm.dt);
         // первая страница по-умолчанию
         vm.dt.table.fnPageChange(0);
+        // перемещаю селектор строк в заголовок
+        $(vm.$el).find('.dataTables_length').appendTo($(vm.$$.header))
+        // перемещаю поиск в заголовок
+        $(vm.$el).find('.dataTables_filter').appendTo($(vm.$$.header))
 
         // Transitions
         var wrapper = vm.dt.table.closest('.height-transition');

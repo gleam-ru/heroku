@@ -104,5 +104,5 @@ include ./els
   //- table
   //- 
   .table
-    h3.yes-select.ib {{currentFilter ? currentFilter.text : 'Без фильтра'}}
+    h3(v-el='header').yes-select.ib {{currentFilter ? currentFilter.text : 'Без фильтра'}}
     table(v-el='dt').yes-select
