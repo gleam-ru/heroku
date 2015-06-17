@@ -71,13 +71,18 @@ ul.no-dots>li {list-style: none;}
 
 /* невидим для телефонов */
 @media screen and (max-width: 600px) {
-  .not-mobile {
-    visibility: hidden;
-    display: none;
-  }
+    .not-mobile {
+        visibility: hidden;
+        display: none;
+    }
 }
 
-
+@media screen and (max-width: 1023px) {
+    .not-tablet {
+        visibility: hidden;
+        display: none;
+    }
+}
 
 /*
  *  ╔╦╗╦ ╦  ╔═╗╔╦╗╦ ╦╦  ╔═╗╔═╗
@@ -256,10 +261,15 @@ ul.no-dots>li {list-style: none;}
  *  @astra
  */
 
+/* ослобаги */
+body {
+    overflow: hidden;
+    }
+
 /* http://stackoverflow.com/questions/3296644/hiding-the-scrollbar-on-an-html-page */
 /* убираю скроллбар */
 body::-webkit-scrollbar {
-    display: none;
+    /*display: none;*/
     }
 
 /* паддинги страницы */
