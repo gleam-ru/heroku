@@ -27,7 +27,10 @@ window.MyTable = Vue.extend({
             tableInfo: [],
             dt: {
                 pageLength: 10,
-                bStateSave: true,
+                stateSave: true,
+                stateSaveParams: function (settings, data) {
+                    data.search.search = "";
+                },
                 sScrollX: '100%',
                 bScrollCollapse: true,
                 // http://legacy.datatables.net/usage/options
