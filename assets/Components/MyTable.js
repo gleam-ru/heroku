@@ -440,22 +440,6 @@ window.MyTable = Vue.extend({
 
         // колонки для dt
         vm.dt.columns = vm.columns.slice();
-<<<<<<< HEAD
-
-        // колонка с кнопкой
-        vm.dt.columns.push({
-            width: "10px",
-            targets: -1,
-            data: null,
-            sortable: false,
-            defaultContent: ''+
-                '<span class="buy">'+
-                    Jade.els.roundIcon('fa-plus')+
-                '</span>',
-        });
-
-=======
->>>>>>> github/master
         // рендереры колонок для dt
         vm.dt.fnDrawCallback = function() {
             var info = [];
