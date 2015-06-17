@@ -10,7 +10,6 @@ me.getClient = function() {
             },
         });
     }
-    console.error(sails.config.amazon.s3)
     return me.client;
 }
 

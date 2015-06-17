@@ -79,7 +79,7 @@ module.exports.bootstrap = function(cb) {
     if (!sails.config.heroku) {
         async.series([
             // s3.clientToServer,
-            s3.serverToClient,
+            // s3.serverToClient,
             provider.init,
             cache.init,
             // cron.init,
