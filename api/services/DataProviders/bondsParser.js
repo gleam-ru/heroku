@@ -51,7 +51,7 @@ function createBond(list) {
     var bond = {
         'name':         list[1],                   // 'Облигация'
         'num':          list[0],                   // 'Тикер'
-        // 'lastPrice':    myParseFloat(list[2]),     // ??
+        'lastPrice':    myParseFloat(list[2]),     // ??
         'bid':          myParseFloat(list[3]),     //
         'ask':          myParseFloat(list[4]),     //
         // 'yie':          myParseFloat(list[5]),     // 'Доходность, %'
@@ -68,6 +68,16 @@ function createBond(list) {
         'state':        list[17],                  // 'Статус' (a - торгуются, n - прекращены)
         // 'lastDeal':     list[19]                   // 'Время'
     }
+    // 17.06.2015
+    // наверное так делать не стоит...
+    // но донор_1 (2stocks) отдает облигации, у которых
+    // нет предложения/спроса, но есть цена последней сделки
+    // это... странно.
+    bond.bid = bond.bid || bond.lastPrice;
+    bond.ask = bond.ask || bond.lastPrice;
+    //
+    //
+    //
     return bond;
 }
 
