@@ -172,6 +172,7 @@ $(document).ready(function() {
             data: "percent",
             title: "Доходность (%)",
             filterType: "number",
+            order: "desc", // дефолтная сортировка, проверка по ключу!!!
         }, {
             id: "percentWTaxes",
             data: "percentWTaxes",
