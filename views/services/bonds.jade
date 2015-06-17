@@ -123,7 +123,7 @@ block afterAll
           span(v-text='bond.cpVal')
           span.comment
             span  (
-            span(v-text='bond.cpYie * 100')
+            span(v-text='bond.cpYie.toFixed(2) * 100')
             span %)
       tr
         td Периодичность купона: 
