@@ -249,19 +249,26 @@ function calculate(_bond) {
     else {
 
         var buy_price  = bond.rate * (bond.bid / 100) + bond.nkd;
-        var sell_price = bond.rate + bond.cpVal;
+
+        // полученные в будущем купоны (штук)
+        var futureCps = Math.ceil(bond.expiresIn / bond.cpDur);
+        // (по аналогии с nkd) - купонный доход, который будет выплачен при погашении
+        var kd = futureCps * bond.cpVal;
+        var sell_price = bond.rate + kd;
 
         var taxes = 0.13; // 13% ндс
-        // налоги по разнице между покупкой и продажей
-        var taxes_rate = (bond.bid < 100) ? (1 - bond.bid * 0.01) * bond.rate * taxes : 0;
-        // налоги по купону
-        var taxes_cp = bond.cpVal * taxes;
+        var partOfYear = bond.expiresIn / 365;
 
-        bond.percent = (sell_price / buy_price - 1) / (bond.expiresIn / 365) * 100;
+        // налоги по разнице между покупкой и продажей
+        var taxes_rate = (bond.bid < 100) ? (1 - 0.01 * bond.bid) * bond.rate * taxes : 0;
+        // налоги по купону
+        var taxes_cp = kd * taxes;
+
+        bond.percent = (sell_price / buy_price - 1) / partOfYear * 100;
         // withoutRateTaxes
-        bond.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / (bond.expiresIn / 365) * 100;
+        bond.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / partOfYear * 100;
         // withoutRateTaxes and CouponTaxes
-        bond.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / (bond.expiresIn / 365) * 100;
+        bond.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / partOfYear * 100;
     }
 
     return bond;

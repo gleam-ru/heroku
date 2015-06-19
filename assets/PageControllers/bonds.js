@@ -244,27 +244,26 @@ function initCalculator() {
                 bond.price = bond.rate * bond.bid / 100 + bond.nkd;
 
                 var buy_price  = bond.rate * (bond.bid / 100) + bond.nkd;
-                var sell_price = bond.rate + bond.cpVal;
+
+                // полученные в будущем купоны (штук)
+                var futureCps = Math.ceil(bond.expiresIn / bond.cpDur);
+                // (по аналогии с nkd) - купонный доход, который будет выплачен при погашении
+                var kd = futureCps * bond.cpVal;
+                var sell_price = bond.rate + kd;
 
                 var taxes = 0.13; // 13% ндс
+                var partOfYear = bond.expiresIn / 365;
+
                 // налоги по разнице между покупкой и продажей
-                var taxes_rate = (bond.bid < 100) ? (1 - bond.bid * 0.01) * bond.rate * taxes : 0;
+                var taxes_rate = (bond.bid < 100) ? (1 - 0.01 * bond.bid) * bond.rate * taxes : 0;
                 // налоги по купону
-                var taxes_cp = bond.cpVal * taxes;
+                var taxes_cp = kd * taxes;
 
-                vm.percent = (sell_price / buy_price - 1) / (bond.expiresIn / 365) * 100;
+                vm.percent = (sell_price / buy_price - 1) / partOfYear * 100;
                 // withoutRateTaxes
-                vm.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / (bond.expiresIn / 365) * 100;
+                vm.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / partOfYear * 100;
                 // withoutRateTaxes and CouponTaxes
-                vm.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / (bond.expiresIn / 365) * 100;
-
-
-                vm.percent = vm.percent.toFixed(2);
-                vm.percent_woRT = vm.percent_woRT.toFixed(2);
-                vm.percent_woRTCT = vm.percent_woRTCT.toFixed(2);
-                bond.price = parseFloat(bond.price).toFixed(0);
-                bond.cpYie = parseFloat(bond.cpYie).toFixed(2);
-
+                vm.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / partOfYear * 100;
             },
             // TODO: дописать обратную связь
         },
@@ -280,6 +279,11 @@ function initCalculator() {
                 bond.price = parseFloat(bond.price).toFixed(0);
                 bond.cpYie = parseFloat(bond.cpYie).toFixed(2);
             },
+            toFixed: function(num, len) {
+                if (!num) num = 0;
+                if (!len) len = 0;
+                return parseFloat(num).toFixed(len);
+            }
         },
         compiled: function() {
             var vm = this;
