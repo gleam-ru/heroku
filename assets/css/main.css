@@ -39,6 +39,7 @@ input.fillMePls {
 .ow-h {overflow: hidden;}
 .pointer {cursor: pointer;}
 .ib {display: inline-block;}
+.tc {display: table-cell;}
 
 .i {font-style: italic;}
 .b {font-weight: bold;}

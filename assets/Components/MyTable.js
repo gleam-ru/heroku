@@ -486,11 +486,11 @@ window.MyTable = Vue.extend({
         // наши, "местные" колонки
         vm.columns = _(vm.columns)
             .map(function(column) {
-                if (column.className === 'buttonColumn') {
+                if (column.className && column.className.indexOf('custom') !== -1) {
                     return false;
                 }
                 return {
-                    text: column.title,
+                    text: column.vueTitle || column.title,
                     value: column.id,
                     filterType: column.filterType || 'string',
                 }

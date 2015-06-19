@@ -30,6 +30,11 @@ block postHead
           cursor: pointer;
           font-size: 14px;
           }
+      #bonds th .roundIcon {
+        font-size: 10px;
+        margin-left: 5px;
+        margin-top: -1px;
+        }
 
     .height-transition {
       overflow: hidden;
@@ -123,8 +128,8 @@ block afterAll
           span(v-text='bond.cpVal')
           span.comment
             span  (
-            span(v-text='bond.cpYie.toFixed(2) * 100')
-            span %)
+            span(v-text='bond.cpYie')
+            span )
       tr
         td Периодичность купона: 
         td 
@@ -152,15 +157,22 @@ block afterAll
           span %
           span.comment
             span  (
-            span(v-text='bond.price.toFixed(0)')
+            span(v-text='bond.price')
             span  руб.)
       tr
         td Доходность: 
         td 
-          span(v-text='percent.toFixed(2)')
+          span(v-text='percent')
           span %
       tr
-        td Доходность (-13%): 
+        td Доходность
+          .comment (без налога покупка/погашение): 
         td 
-          span(v-text='percentWTaxes.toFixed(2)')
+          span(v-text='percent_woRT')
+          span %
+      tr
+        td Доходность
+          .comment (без всех налогов): 
+        td 
+          span(v-text='percent_woRTCT')
           span %

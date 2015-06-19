@@ -243,12 +243,26 @@ function calculate(_bond) {
     // ваще неликвид...
     if (!bond.bid) {
         bond.percent = 0;
+        bond.percent_woRT = 0;
+        bond.percent_woRTCT = 0;
     }
     else {
-        bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
+
+        var buy_price  = bond.rate * (bond.bid / 100) + bond.nkd;
+        var sell_price = bond.rate + bond.cpVal;
+
+        var taxes = 0.13; // 13% ндс
+        // налоги по разнице между покупкой и продажей
+        var taxes_rate = (bond.bid < 100) ? (1 - bond.bid * 0.01) * bond.rate * taxes : 0;
+        // налоги по купону
+        var taxes_cp = bond.cpVal * taxes;
+
+        bond.percent = (sell_price / buy_price - 1) / (bond.expiresIn / 365) * 100;
+        // withoutRateTaxes
+        bond.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / (bond.expiresIn / 365) * 100;
+        // withoutRateTaxes and CouponTaxes
+        bond.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / (bond.expiresIn / 365) * 100;
     }
-    // Процентная ставка по облигации с учетом налога 13%
-    bond.percentWTaxes = bond.percent * 0.87;
 
     return bond;
 }
@@ -270,7 +284,8 @@ function format(bond) {
         // 'cpYie', // ОЧЕНЬ приличные потери в точности
         'price',
         'percent',
-        'percentWTaxes',
+        'percent_woRT',
+        'percent_woRTCT',
     ];
     _.each(nums, function(num) {
         bond[num] = bond[num] ? (1 * bond[num].toFixed(2)) : '';
@@ -293,7 +308,8 @@ function format(bond) {
         bond.cpYie,
         bond.price,
         bond.percent,
-        bond.percentWTaxes,
+        bond.percent_woRT,
+        bond.percent_woRTCT,
     ];
 }
 

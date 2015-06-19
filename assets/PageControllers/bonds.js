@@ -36,6 +36,14 @@ $(document).ready(function() {
                         }
                         window.mp_help.click();
                     });
+
+                    $('.tt').each(function() {
+                        $(this).tooltipster({
+                            position: 'top',
+                            maxWidth: 200,
+                        });
+                    });
+
                 },
             }
         });
@@ -73,23 +81,24 @@ $(document).ready(function() {
         // передавать ключи от 1к+ объектов - слишком много трафика
         rows = _.map(loaded.data, function(row) {
             return {
-                id            : row[0],
-                name          : row[1],
-                num           : row[2],
-                rate          : row[3],
-                cpVal         : row[4],
-                cpDur         : row[5],
-                endDate       : row[6],
-                bid           : row[7],
-                ask           : row[8],
-                nkd           : row[9],
-                cpDate        : row[10],
-                state         : row[11],
-                expiresIn     : row[12],
-                cpYie         : row[13],
-                price         : row[14],
-                percent       : row[15],
-                percentWTaxes : row[16],
+                id             : row[0],
+                name           : row[1],
+                num            : row[2],
+                rate           : row[3],
+                cpVal          : row[4],
+                cpDur          : row[5],
+                endDate        : row[6],
+                bid            : row[7],
+                ask            : row[8],
+                nkd            : row[9],
+                cpDate         : row[10],
+                state          : row[11],
+                expiresIn      : row[12],
+                cpYie          : row[13],
+                price          : row[14],
+                percent        : row[15],
+                percent_woRT   : row[16],
+                percent_woRTCT : row[17],
             }
         });
     })
@@ -116,7 +125,7 @@ $(document).ready(function() {
             title: "Наименование",
             filterType: "string",
         }, {
-            className: "buttonColumn",
+            className: "buttonColumn custom",
             data: null,
             defaultContent: Jade.els.roundIcon('fa-calculator'),
             handler: function(data) { // row data
@@ -129,7 +138,7 @@ $(document).ready(function() {
                 });
             },
         }, {
-            className: "buttonColumn",
+            className: "buttonColumn custom",
             data: null,
             defaultContent: Jade.els.roundIcon('fa-plus'),
             handler: function() {
@@ -148,12 +157,12 @@ $(document).ready(function() {
         }, {
             id: "endDate",
             data: "endDate",
-            title: "Погашение (дата)",
+            title: "Погаш.",
             filterType: "date",
         }, {
             id: "expiresIn",
             data: "expiresIn",
-            title: "Погашение (дни)",
+            title: "Погаш. (дни)",
             filterType: "number",
         }, {
             id: "cpVal",
@@ -170,14 +179,33 @@ $(document).ready(function() {
         }, {
             id: "percent",
             data: "percent",
-            title: "Доходность (%)",
+            className: "percent",
+            vueTitle: 'Доходность (%)',
+            title: "Д-1 (%)"+
+                '<span class="tt" title="Простая доходность">'+
+                    Jade.els.roundIcon('fa-question')+
+                '</span>',
             filterType: "number",
-            order: "desc", // дефолтная сортировка, проверка по ключу!!!
         }, {
-            id: "percentWTaxes",
-            data: "percentWTaxes",
-            title: "Доходность (-13%)",
+            id: "percent_woRT",
+            data: "percent_woRT",
+            className: "percent_woRT",
             filterType: "number",
+            vueTitle: 'Доходность (%, без налога с разницы покупка/продажа)',
+            title: "Д-2 (%)"+
+                '<span class="tt" title="Доходность без налога с разницы покупка/продажа">'+
+                    Jade.els.roundIcon('fa-question')+
+                '</span>',
+        }, {
+            id: "percent_woRTCT",
+            data: "percent_woRTCT",
+            className: "percent_woRTCT",
+            filterType: "number",
+            vueTitle: 'Доходность (%, без всех налогов)',
+            title: "Д-3 (%)"+
+                '<span class="tt" title="Доходность без налога с разницы покупка/продажа и налога с купона">'+
+                    Jade.els.roundIcon('fa-question')+
+                '</span>',
         },
     ];
 
@@ -190,7 +218,8 @@ function initCalculator() {
             return {
                 bid: 0,
                 percent: 0,
-                percentWTaxes: 0,
+                percent_woRT: 0,
+                percent_woRTCT: 0,
                 bond: {
                     name: ''
                 },
@@ -203,27 +232,41 @@ function initCalculator() {
 
                 vm.bid = parseFloat(vm.bid);
                 if (!vm.bid) {
-                    vm.bid = '';
+                    vm.bid = ''
                     vm.percent = '';
-                    vm.percentWTaxes = '';
+                    vm.percent_woRT = '';
+                    vm.percent_woRTCT = '';
                     return;
                 }
-                this.bond.bid = vm.bid;
 
+                vm.bond.bid = vm.bid;
                 // настоящая цена
                 bond.price = bond.rate * bond.bid / 100 + bond.nkd;
-                // Процентная ставка по облигации
-                bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
 
-                vm.bid           = 1 * vm.bid.toFixed(2);
-                vm.percent       = 1 * bond.percent;
-                vm.percentWTaxes = 1 * bond.percent * 0.87;
+                var buy_price  = bond.rate * (bond.bid / 100) + bond.nkd;
+                var sell_price = bond.rate + bond.cpVal;
+
+                var taxes = 0.13; // 13% ндс
+                // налоги по разнице между покупкой и продажей
+                var taxes_rate = (bond.bid < 100) ? (1 - bond.bid * 0.01) * bond.rate * taxes : 0;
+                // налоги по купону
+                var taxes_cp = bond.cpVal * taxes;
+
+                vm.percent = (sell_price / buy_price - 1) / (bond.expiresIn / 365) * 100;
+                // withoutRateTaxes
+                vm.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / (bond.expiresIn / 365) * 100;
+                // withoutRateTaxes and CouponTaxes
+                vm.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / (bond.expiresIn / 365) * 100;
+
+
+                vm.percent = vm.percent.toFixed(2);
+                vm.percent_woRT = vm.percent_woRT.toFixed(2);
+                vm.percent_woRTCT = vm.percent_woRTCT.toFixed(2);
+                bond.price = parseFloat(bond.price).toFixed(0);
+                bond.cpYie = parseFloat(bond.cpYie).toFixed(2);
+
             },
-            // TODO: дописать обратнуюс связь
-            // percent: function() {
-            // },
-            // percentWTaxes: function() {
-            // },
+            // TODO: дописать обратную связь
         },
         methods: {
             getView: function() {
@@ -233,11 +276,14 @@ function initCalculator() {
                 var vm = this;
                 vm.bond = data;
                 vm.bid = data.bid;
+                var bond = vm.bond;
+                bond.price = parseFloat(bond.price).toFixed(0);
+                bond.cpYie = parseFloat(bond.cpYie).toFixed(2);
             },
         },
         compiled: function() {
             var vm = this;
             vm.bid = vm.$$.bid;
-        }
+        },
     });
 }
