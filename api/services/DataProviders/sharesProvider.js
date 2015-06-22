@@ -96,6 +96,7 @@ me.createCache = function(cb) {
 
         _.each(shares, function(issuer) {
             var store = issuer.getStore();
+            store.general.href = store.general.ticker || store.general.mfd_id;
             cached[store.general.mfd_id] = {
                 id: issuer.id,
                 general: store.general,

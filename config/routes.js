@@ -44,7 +44,8 @@ module.exports.routes = {
     // Shares
     'get /services/shares'                 : 'Shares',
     'get /services/shares/:mfd_id'         : 'Shares.ticker',
-    'get /services/shares/:mfd_id/info'    : 'Shares.getTickerData',
+    'get /services/shares/:mfd_id/edit'    : 'Shares.editorPage', // админка
+    'get /services/shares/:mfd_id/info'    : 'Shares.getTickerData', // апи
     //---
 
 

@@ -70,7 +70,7 @@ module.exports.navigation = [
     //
     {
         name     : "GO",
-        href     : "/services/shares",
+        href     : "/services/shares/647/edit",
         canSee   : ["admin"],
     },
 ];

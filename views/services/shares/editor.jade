@@ -1,0 +1,27 @@
+extends ../../layouts/default.jade
+
+block postHead
+  script window.ticker = '#{ticker}'
+  script(src='/PageControllers/sharesTickerEditor.js' defer)
+
+  style.
+    
+
+
+block pageHead
+  h1 #{ticker.general.name || ticker.general.ticker}
+
+block pageHead_small
+  | 
+  .no-select
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Сервисы', href:'/services'},
+      {name:'Акции', href:'/services/shares'},
+      {name:(ticker.general.name || ticker.general.ticker), href:'/services/shares/'+ticker.general.href},
+      {name:'Редактирование'}
+    ])
+
+block content
+  #shares_editor

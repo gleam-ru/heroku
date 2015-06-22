@@ -20,21 +20,27 @@ $(document).ready(function() {
                 var tr = '';
                 tr += ''+
                     '<a class="inTableIcon"'+
-                        'href="'+href+'/'+full.mfd_id+'" '+
+                        'href="'+href+'/'+full.href+'/edit" '+
+                        '>'+
+                        Jade.els.roundIcon('fa-paw')+
+                    '</a>';
+                tr += ''+
+                    '<a class="inTableIcon"'+
+                        'href="'+href+'/'+full.href+'" '+
                         'target=_blank'+
                         '>'+
                         Jade.els.roundIcon('fa-area-chart')+
                     '</a>';
                 tr += ''+
                     '<a class="inTableIcon"'+
-                        'href="'+href+'/'+full.mfd_id+'" '+
+                        'href="'+href+'/'+full.href+'" '+
                         'target=_blank'+
                         '>'+
                         Jade.els.roundIcon('fa-external-link')+
                     '</a>';
                 tr += ''+
                     '<a class="inTableIcon"'+
-                        'href="'+href+'/'+full.mfd_id+'" '+
+                        'href="'+href+'/'+full.href+'" '+
                         'target=_blank'+
                         '>'+
                         Jade.els.roundIcon('fa-comments')+

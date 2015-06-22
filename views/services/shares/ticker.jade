@@ -1,4 +1,4 @@
-extends ../layouts/default.jade
+extends ../../layouts/default.jade
 
 block postHead
   script(src="/bower_components/d3/d3.js" defer)
@@ -104,6 +104,10 @@ block postHead
 
 block pageHead
   h1 #{ticker.general.name || ticker.general.ticker}
+    a.tt(
+      href=ticker.general.href+'/edit',
+      )
+      +roundIcon('fa-paw')
     if (1 || ticker.general.site)
       a.tt(
         href='/'

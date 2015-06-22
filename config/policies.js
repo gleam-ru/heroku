@@ -11,21 +11,26 @@ module.exports.policies = {
 
     // работать с профилем может только аутентифицированный пользователь
     ProfileController: {
-        '*' : ['redirect', 'authenticated']
+        '*' : ['redirect', 'authenticated'],
     },
 
     SettingsController: {
-        '*' : ['redirect', 'authenticated']
+        '*' : ['redirect', 'authenticated'],
     },
 
     // Облигации, работа с фильрами
     BondsController: {
-        'updateFilter': ['authenticated']
+        'updateFilter': ['authenticated'],
+    },
+
+    // Админка акций
+    SharesController: {
+        'editorPage': ['rememberMe', 'authenticated', 'isAdmin'],
     },
 
     // Админка
     AdminController: {
-        '*': ['authenticated', 'isAdmin']
+        '*': ['authenticated', 'isAdmin'],
     },
 
 };
