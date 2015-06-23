@@ -6,10 +6,6 @@ $(document).ready(function() {
             title: 'ID',
             visible: false,
         }, {
-            data: 'mfd_id',
-            title: 'mfd_id',
-            visible: false,
-        }, {
             title: 'Ссылки',
             width: 84, // 28px * количество_иконок
             render: function(data, type, full) {
@@ -20,7 +16,7 @@ $(document).ready(function() {
                 var tr = '';
                 tr += ''+
                     '<a class="inTableIcon"'+
-                        'href="'+href+'/'+full.href+'/edit" '+
+                        'href="'+href+'/'+full.id+'/edit" '+
                         '>'+
                         Jade.els.roundIcon('fa-paw')+
                     '</a>';
@@ -52,8 +48,11 @@ $(document).ready(function() {
             title: 'Имя',
             // render: function(data, type, full, meta) {
             render: function(data, type, full) {
-                return '<a class="ib" href="'+href+'/'+full.mfd_id+'">'+data+'</a>';
+                return '<a class="ib" href="'+href+'/'+full.href+'">'+data+'</a>';
             },
+        }, {
+            data: 'code',
+            title: 'Код',
         }, {
             data: 'price',
             title: 'Цена',

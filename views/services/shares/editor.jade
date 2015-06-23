@@ -1,10 +1,15 @@
 extends ../../layouts/default.jade
 
 block postHead
-  script window.ticker = '#{ticker}'
   script(src='/PageControllers/sharesTickerEditor.js' defer)
-
+  +PasteInlineData([
+    'ticker', ticker
+  ])
   style.
+    .invisible {
+      visibility: hidden;
+      opacity: 0;
+      }
     
 
 
@@ -19,9 +24,26 @@ block breadcrumbs
       {name:'Главная', href:'/'},
       {name:'Сервисы', href:'/services'},
       {name:'Акции', href:'/services/shares'},
-      {name:(ticker.general.name || ticker.general.ticker), href:'/services/shares/'+ticker.general.href},
+      {name:(ticker.general.name || ticker.general.ticker_code), href:'/services/shares/'+ticker.id},
       {name:'Редактирование'}
     ])
 
 block content
   #shares_editor
+    #general
+      h4 Код тикера
+      input.ib(
+        type='text'
+        name='ticker_code'
+        placeholder='moex:gazp'
+        v-model='ticker_code'
+        style='max-width: 100px; margin-right: 20px;'
+        )
+      button.g-btn.type_midnight.size_small(
+        type='submit'
+        v-class='invisible: !modified_ticker_code'
+        v-on='click: postTickerCode'
+        )
+        | Сохранить
+      +separator()
+block afterAll

@@ -40,9 +40,10 @@ me.all = function(cb) {
 
 
 // получает конкретного тикера
-me.get = function(mfd_id, cb) {
+// cb(err, res)
+me.get = function(id, cb) {
     var cached = cache.get(cacheKey);
-    var data = cached ? cached[mfd_id] : undefined;
+    var data = cached ? cached[id] : undefined;
     if (typeof cb !== 'function') {
         // нет колбека. Ну нет, так нет. Возвращаю то, что есть.
         return data;
@@ -54,7 +55,7 @@ me.get = function(mfd_id, cb) {
         console.warn('Кэш запрошен, но не создан.');
     }
     else if (!data) {
-        console.warn('Запрошен эмитент, которого нет в кэше:', mfd_id);
+        console.warn('Запрошен эмитент, которого нет в кэше! ID:', id);
     }
     else {
         console.warn('ЯННП');
@@ -62,24 +63,49 @@ me.get = function(mfd_id, cb) {
 
     // а запрошенный тикер вообще есть?
     Issuer.count({
-        type: type,
-        path: mfd_id,
+        id: id,
     }, function(err, count) {
         if (err) return cb(err);
         if (count < 1) {
-            console.warn('А кто-то урл-ами балуется... запрошен несуществующий тикер:', mfd_id);
+            console.warn('А кто-то урл-ами балуется... запрошен несуществующий тикер! ID:', id);
             return cb(null, {});
         }
-        console.info('Обновляю кэш не по расписанию!!!');
+        console.warn('Обновляю кэш не по расписанию!!!');
         me.createCache(function(err, cached) {
             if (err) return cb(err);
-            data = cached ? cached[mfd_id] : undefined;
+            data = cached ? cached[id] : undefined;
             if (!data) {
-                console.error('Что-то пошло сильно не так...', 'v0x9cv80xc09');
+                console.error('Что-то пошло сильно не так...');
             }
             return cb(null, data);
         });
     });
+}
+
+
+// cb(err, res);
+me.getByHref = function(href, cb) {
+    var cached = me.all();
+    var found = _.find(cached, function(v, k) {
+        return href === v.general.ticker_code;
+    });
+    if (typeof cb !== 'function') {
+        return found;
+    }
+    if (cached) {
+        return cb(null, found);
+    }
+    // не было кэша? оО
+    // Создаю и ищу в нем
+    console.warn('Обновляю кэш не по расписанию!!! (2)');
+    async.waterfall([
+        me.createCache,
+        function(cached, next) {
+            next(null, _.find(cached, function(v, k) {
+                return href === v.general.ticker_code;
+            }));
+        }
+    ], cb)
 }
 
 
@@ -92,22 +118,26 @@ me.createCache = function(cb) {
         type: type,
     }, function(err, shares) {
         if (err) return cb(err);
-        var cached = {};
-
-        _.each(shares, function(issuer) {
-            var store = issuer.getStore();
-            store.general.href = store.general.ticker || store.general.mfd_id;
-            cached[store.general.mfd_id] = {
-                id: issuer.id,
-                general: store.general,
-                candles: store.dailyCandles,
-                lastCandle: store.lastCandle,
-            }
-        });
-        cache.set(cacheKey, cached);
+        _.each(shares, me.cache);
+        var cached = cache.get(cacheKey);
         console.info('current shares updated:', _.keys(cached).length);
         cb(null, cached);
     });
+}
+
+me.cache = function(issuer) {
+    var cached = cache.get(cacheKey) || {};
+
+    var store = issuer.getStore();
+    store.general.href = store.general.ticker_code || issuer.id;
+    cached[issuer.id] = {
+        id: issuer.id,
+        general: store.general,
+        candles: store.dailyCandles,
+        lastCandle: store.lastCandle,
+    }
+
+    cache.set(cacheKey, cached);
 }
 
 

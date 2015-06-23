@@ -3,7 +3,9 @@ extends ../../layouts/default.jade
 block postHead
   script(src="/bower_components/d3/d3.js" defer)
   script(src="/bower_components/techan/dist/techan.js" defer)
-  script window.mfd_id = '#{ticker.general.mfd_id}'
+  +PasteInlineData([
+    'ticker', ticker
+  ])
 
   script(src='/PageControllers/sharesTicker.js' defer)
 
@@ -105,7 +107,7 @@ block postHead
 block pageHead
   h1 #{ticker.general.name || ticker.general.ticker}
     a.tt(
-      href=ticker.general.href+'/edit',
+      href='/services/shares/'+ticker.id+'/edit',
       )
       +roundIcon('fa-paw')
     if (1 || ticker.general.site)
@@ -133,9 +135,9 @@ block pageHead
         title='\
           <p>Полезные ссылки:</p>\
           <ul>\
-            <li><a target="_blank" href="http://moex.com/ru/issue.aspx?code='+ticker.general.ticker+'">Moex</a></li>\
-            <li><a target="_blank" href="https://www.google.ru/webhp?ion=1&espv=2&ie=UTF-8#q='+ticker.general.ticker+'&newwindow=1&tbm=nws&tbs=sbd:1">News (g)</a></li>\
-            <li><a target="_blank" href="https://yandex.ru/search/?text='+ticker.general.ticker+'">News (y)</a></li>\
+            <li><a target="_blank" href="http://moex.com/ru/issue.aspx?code='+ticker.general.ticker_code+'">Moex</a></li>\
+            <li><a target="_blank" href="https://www.google.ru/webhp?ion=1&espv=2&ie=UTF-8#q='+ticker.general.ticker_code+'&newwindow=1&tbm=nws&tbs=sbd:1">News (g)</a></li>\
+            <li><a target="_blank" href="https://yandex.ru/search/?text='+ticker.general.ticker_code+'">News (y)</a></li>\
           </ul>\
         '
         )

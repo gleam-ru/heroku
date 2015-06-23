@@ -42,11 +42,12 @@ module.exports.routes = {
     'post /services/bonds/updateFilter' : 'Bonds.updateFilter',
 
     // Shares
-    'get /services/shares'                 : 'Shares',
-    'get /services/shares/:mfd_id'         : 'Shares.ticker',
-    'get /services/shares/:mfd_id/edit'    : 'Shares.editorPage', // админка
-    'get /services/shares/:mfd_id/info'    : 'Shares.getTickerData', // апи
+    'get /services/shares'              : 'Shares',
+    'get /services/shares/:href'        : 'Shares.ticker',
+    'get /services/shares/:id/edit'     : 'Shares.editorPage', // админка
+    'get /services/shares/:id/info'     : 'Shares.getTickerData', // апи
     //---
+    'post /services/shares/:id/general'     : 'Shares.updateGeneral',
 
 
 
