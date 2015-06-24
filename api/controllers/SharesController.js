@@ -107,22 +107,45 @@ module.exports = {
 
     updateGeneral: function(req, res) {
         var id = req.param('id');
-        var ticker_code = req.param('ticker_code');
+        var propEditor = req.param('propEditor');
 
-        var existingInCache = provider.shares.get(id);
-        Issuer.findOne({
-            id: existingInCache.id,
-        }, function(err, found) {
-            if (err) res.send(500, err);
-            if (!found) res.send(404);
+        function iterator(prop, next) {
+            provider.shares.get(id, function(err, cached) {
+                if (err) return next(err);
 
-            var store = found.getStore();
-            store.general.ticker_code = ticker_code;
-            found.setStore(store);
+                Issuer.findOne({
+                    id: cached.id,
+                }, function(err, found) {
+                    if (err) return next(err);
+                    if (!found) return next('Not found');
 
-            provider.shares.cache(found);
-            return res.send();
-        })
+                    var store = found.getStore();
+                    if (prop.key === 'ticker.general.ticker_code') {
+                        store.general.ticker_code = prop.value;
+                    }
+                    else if (prop.key === 'ticker.general.site') {
+                        store.general.site = prop.value;
+                    }
+                    found.setStore(store);
+                    provider.shares.cache(found);
+                    return next();
+                });
+            });
+        };
+
+        async.eachSeries(propEditor, iterator, function(err) {
+            if (err === 'Not found') {
+                return res.send(404);
+            }
+            else if (err) {
+                console.error(err);
+                return res.send(500, err);
+            }
+            else {
+                return res.send();
+            }
+        });
+
     },
 
 

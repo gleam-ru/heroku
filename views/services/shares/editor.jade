@@ -10,7 +10,16 @@ block postHead
       visibility: hidden;
       opacity: 0;
       }
-    
+    prop-editor {
+      display: block;
+      margin-bottom: 10px;
+      }
+      prop-editor.code input {
+        max-width: 100px;
+        }
+      prop-editor.site input {
+        max-width: 400px;
+        }
 
 
 block pageHead
@@ -31,19 +40,32 @@ block breadcrumbs
 block content
   #shares_editor
     #general
-      h4 Код тикера
-      input.ib(
-        type='text'
-        name='ticker_code'
-        placeholder='moex:gazp'
-        v-model='ticker_code'
-        style='max-width: 100px; margin-right: 20px;'
+      h4 Основные параметры
+      prop-editor.code(
+        prop='ticker.general.ticker_code'
+        href='/general'
+        ph='код (gazp)'
         )
-      button.g-btn.type_midnight.size_small(
-        type='submit'
-        v-class='invisible: !modified_ticker_code'
-        v-on='click: postTickerCode'
+      prop-editor.site(
+        prop='ticker.general.site'
+        href='/general'
+        ph='сайт'
         )
-        | Сохранить
       +separator()
+      h4 Форумы
+
+
 block afterAll
+  #propEditor
+    input.ib(
+      type='text'
+      v-model='prop_text'
+      placeholder='{{ph}}'
+      style='margin-right: 20px; margin-bottom: 10px;'
+      )
+    button.g-btn.type_midnight.size_small(
+      type='submit'
+      v-class='invisible: !prop_is_modified'
+      v-on='click: sendData'
+      )
+      | Сохранить

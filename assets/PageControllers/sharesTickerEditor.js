@@ -1,31 +1,70 @@
 $(document).ready(function() {
     href = '/services/shares/'+ticker.id;
 
-    window.vue_tkr = new Vue({
-        el: '#general',
-        data: {
-            stored_ticker_code: ticker.general.ticker_code,
-            ticker_code: ticker.general.ticker_code,
-        },
-        watch: {
+
+    Vue.component('prop-editor', {
+        template: '#propEditor',
+        paramAttributes: ['prop', 'href', 'ph'],
+
+        data: function() {
+            return {
+                prop_orig: '',
+                prop_text: '',
+            }
         },
         computed: {
-            modified_ticker_code: function() {
-                return this.ticker_code !== this.stored_ticker_code;
+            prop_is_modified: function() {
+                if (this.prop_orig === undefined && this.prop_text === '') {
+                    return false;
+                }
+                return this.prop_text !== this.prop_orig;
             },
         },
         methods: {
-            postTickerCode: function() {
+            sendData: function() {
                 var vm = this;
-                var msg = {
-                    ticker_code: vm.ticker_code,
-                };
-                $.post(href+'/general', msg)
+                var msg = {propEditor: []};
+
+                msg.propEditor.push({
+                    key   : vm.prop,
+                    value : vm.prop_text,
+                });
+
+                $.post(href+vm.href, msg)
                 .done(function() {
-                    vm.stored_ticker_code      = vm.ticker_code;
-                    ticker.general.ticker_code = vm.ticker_code;
+                    vm.prop_orig = vm.prop_text;
+                    vm.setOrig(vm.ticker_code);
                 });
             },
+            getOrig: function() {
+                var orig = window;
+                var path = this.prop.split('.');
+                while (path.length) {
+                    orig = orig[path.shift()];
+                }
+                return orig;
+            },
+            setOrig: function(value) {
+                var orig = window;
+                var path = this.prop.split('.');
+                while (path.length) {
+                    orig = orig[path.shift()];
+                }
+                orig = value;
+            }
+        },
+        compiled: function() {
+            var vm = this;
+            vm.prop_orig = vm.getOrig();
+            vm.prop_text = vm.getOrig();
+            window.qwe = vm;
         },
     });
+
+
+
+    new Vue({
+        el: '#general',
+    });
+
 });
