@@ -109,31 +109,49 @@ module.exports = {
         var id = req.param('id');
         var propEditor = req.param('propEditor');
 
-        function iterator(prop, next) {
-            provider.shares.get(id, function(err, cached) {
-                if (err) return next(err);
-
+        async.waterfall([
+            function(next) {
                 Issuer.findOne({
-                    id: cached.id,
+                    id: id,
                 }, function(err, found) {
                     if (err) return next(err);
                     if (!found) return next('Not found');
-
-                    var store = found.getStore();
+                    return next(null, found);
+                });
+            },
+            function(found, next) {
+                var store = found.getStore();
+                _.each(propEditor, function(prop) {
                     if (prop.key === 'ticker.general.ticker_code') {
                         store.general.ticker_code = prop.value;
                     }
                     else if (prop.key === 'ticker.general.site') {
                         store.general.site = prop.value;
                     }
-                    found.setStore(store);
-                    provider.shares.cache(found);
-                    return next();
-                });
-            });
-        };
+                    else if (prop.key === 'ticker.general.forums') {
+                        var forum = prop.value;
 
-        async.eachSeries(propEditor, iterator, function(err) {
+                        if (!store.general.forums) store.general.forums = {};
+
+                        console.log('shares adminig:', store.general.name);
+                        if (prop.remove) {
+                            delete store.general.forums[forum.id];
+                            console.log('forum removed:', forum);
+                        }
+                        else {
+                            store.general.forums[forum.id] = {
+                                name: forum.key,
+                                href: forum.value,
+                            }
+                            console.log('forum upd:', forum);
+                        }
+                    }
+                });
+                found.setStore(store);
+                provider.shares.cache(found);
+                return next();
+            }
+        ], function(err) {
             if (err === 'Not found') {
                 return res.send(404);
             }
@@ -144,7 +162,7 @@ module.exports = {
             else {
                 return res.send();
             }
-        });
+        })
 
     },
 

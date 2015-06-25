@@ -20,6 +20,19 @@ block postHead
       prop-editor.site input {
         max-width: 400px;
         }
+    kv-editor {
+      display: block;
+      margin-bottom: 10px;
+      }
+      kv-editor button {
+        margin-top: 3px !important;
+        }
+      kv-editor.forum input.key {
+        max-width: 200px;
+        }
+      kv-editor.forum input.value {
+        max-width: 400px;
+        }
 
 
 block pageHead
@@ -53,7 +66,23 @@ block content
         )
       +separator()
       h4 Форумы
-
+      template(
+        v-repeat='forum: forums'
+        )
+        kv-editor.forum(
+          prop='ticker.general.forums'
+          href='/general'
+          editor_id='{{forum.id}}'
+          key='{{forum.key}}'
+          value='{{forum.value}}'
+          key_ph='Название'
+          value_ph='Ссылка'
+          )
+      button.g-btn.type_midnight.size_small(
+        v-on='click: addForum'
+        )
+        | Добавить форум
+      +separator()
 
 block afterAll
   #propEditor
@@ -61,11 +90,37 @@ block afterAll
       type='text'
       v-model='prop_text'
       placeholder='{{ph}}'
-      style='margin-right: 20px; margin-bottom: 10px;'
+      style='margin-right: 20px;'
       )
     button.g-btn.type_midnight.size_small(
       type='submit'
       v-class='invisible: !prop_is_modified'
+      v-on='click: sendData'
+      )
+      | Сохранить
+
+  #kvEditor
+    input.key.ib(
+      type='text'
+      v-model='key_text'
+      placeholder='{{key_ph}}'
+      style='margin-right: 20px;'
+      )
+    input.value.ib(
+      type='text'
+      v-model='value_text'
+      placeholder='{{value_ph}}'
+      style='margin-right: 20px;'
+      )
+    button.g-btn.type_midnight.size_small(
+      type='submit'
+      v-on='click: removeData'
+      style='margin-right: 20px;'
+      )
+      | Удалить
+    button.g-btn.type_midnight.size_small(
+      type='submit'
+      v-class='invisible: !kv_is_modified'
       v-on='click: sendData'
       )
       | Сохранить
