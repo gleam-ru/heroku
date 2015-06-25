@@ -99,8 +99,14 @@ module.exports = {
         }
         return res.render('services/shares/editor', {
             ticker: {
-                id: found.id,
-                general: found.general || {},
+                id      : found.id,
+                general : found.general || {},
+                info    : {
+                    mfd_id       : found.general.mfd_id,
+                    candlesCount : found.candles.length,
+                    lastDay      : found.candles[found.candles.length - 1].date,
+                    lastCandle   : found.lastCandle,
+                }
             }
         });
     },

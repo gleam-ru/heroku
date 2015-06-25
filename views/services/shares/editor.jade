@@ -39,7 +39,7 @@ block pageHead
   h1 #{ticker.general.name || ticker.general.ticker}
 
 block pageHead_small
-  | 
+  | mfd_id: #{ticker.info.mfd_id}, свечей: #{ticker.info.candlesCount} (#{ticker.info.lastDay})
   .no-select
 block breadcrumbs
   +breadcrumbs([
@@ -124,3 +124,6 @@ block afterAll
       v-on='click: sendData'
       )
       | Сохранить
+
+
+  
