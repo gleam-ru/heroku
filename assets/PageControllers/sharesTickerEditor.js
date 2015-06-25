@@ -16,6 +16,13 @@ $(document).ready(function() {
                     value: v.href,
                 }
             }),
+            links: _.map(ticker.general.links, function(v, k) {
+                return {
+                    id: k,
+                    key: v.name,
+                    value: v.href,
+                }
+            }),
         },
         methods: {
             addForum: function() {
@@ -36,11 +43,39 @@ $(document).ready(function() {
                     return forum.id == id;
                 });
                 this.forums.$remove(forum_index);
-            }
+            },
+            addLink: function() {
+                var vm = this;
+                var maxId = _(vm.links)
+                    .map(function(link) {
+                        return parseInt(link.id.replace('link_', ''));
+                    })
+                    .max()
+                if (maxId < 0) maxId = 0;
+                vm.links.push({
+                    id: 'link_'+(maxId + 1),
+                    key: '',
+                    value: '',
+                });
+            },
+            removeLink: function(id) {
+                var link_index = _.findIndex(this.links, function(link) {
+                    return link.id == id;
+                });
+                this.links.$remove(link_index);
+            },
         },
         created: function() {
             var vm = this;
-            this.$on('kv-editor-removed', vm.removeForum);
+            this.$on('kv-editor-removed', function(child) {
+                var id = child.editor_id;
+                if (child.prop === 'ticker.general.forums') {
+                    vm.removeForum(id)
+                }
+                else if (child.prop === 'ticker.general.links') {
+                    vm.removeLink(id);
+                }
+            });
         },
     });
 
@@ -182,7 +217,7 @@ function initKVEditor() {
 
                 $.post(href+vm.href, msg)
                 .done(function() {
-                    vm.$dispatch('kv-editor-removed', vm.editor_id);
+                    vm.$dispatch('kv-editor-removed', vm);
                     vm.key_orig   = vm.key_text;
                     vm.value_orig = vm.value_text;
                     vm.setOrig(vm.key_text, vm.value_text);

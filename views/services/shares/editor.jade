@@ -27,10 +27,10 @@ block postHead
       kv-editor button {
         margin-top: 3px !important;
         }
-      kv-editor.forum input.key {
+      kv-editor.link input.key {
         max-width: 200px;
         }
-      kv-editor.forum input.value {
+      kv-editor.link input.value {
         max-width: 400px;
         }
 
@@ -69,7 +69,7 @@ block content
       template(
         v-repeat='forum: forums'
         )
-        kv-editor.forum(
+        kv-editor.link(
           prop='ticker.general.forums'
           href='/general'
           editor_id='{{forum.id}}'
@@ -82,6 +82,24 @@ block content
         v-on='click: addForum'
         )
         | Добавить форум
+      +separator()
+      h4 Полезные ссылки
+      template(
+        v-repeat='link: links'
+        )
+        kv-editor.link(
+          prop='ticker.general.links'
+          href='/general'
+          editor_id='{{link.id}}'
+          key='{{link.key}}'
+          value='{{link.value}}'
+          key_ph='Название'
+          value_ph='Ссылка'
+          )
+      button.g-btn.type_midnight.size_small(
+        v-on='click: addLink'
+        )
+        | Добавить ссылку
       +separator()
 
 block afterAll
@@ -126,4 +144,3 @@ block afterAll
       | Сохранить
 
 
-  

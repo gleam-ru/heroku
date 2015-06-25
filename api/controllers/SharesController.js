@@ -152,6 +152,24 @@ module.exports = {
                             console.log('forum upd:', forum);
                         }
                     }
+                    else if (prop.key === 'ticker.general.links') {
+                        var link = prop.value;
+
+                        if (!store.general.links) store.general.links = {};
+
+                        console.log('shares adminig:', store.general.name);
+                        if (prop.remove) {
+                            delete store.general.links[link.id];
+                            console.log('link removed:', link);
+                        }
+                        else {
+                            store.general.links[link.id] = {
+                                name: link.key,
+                                href: link.value,
+                            }
+                            console.log('link upd:', link);
+                        }
+                    }
                 });
                 found.setStore(store);
                 provider.shares.cache(found);
