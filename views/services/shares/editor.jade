@@ -2,9 +2,9 @@ extends ../../layouts/default.jade
 
 block postHead
   script(src='/PageControllers/sharesTickerEditor.js' defer)
-  +PasteInlineData([
-    'ticker', ticker
-  ])
+  +PasteInlineData(['ticker', ticker])
+  +PasteInlineData(['branches', branches])
+
   style.
     .invisible {
       visibility: hidden;
@@ -19,6 +19,13 @@ block postHead
         }
       prop-editor.site input {
         max-width: 400px;
+        }
+    sel-editor {
+      display: block;
+      margin-bottom: 10px;
+      }
+      sel-editor select {
+        max-width: 200px;
         }
     kv-editor {
       display: block;
@@ -63,6 +70,12 @@ block content
         prop='ticker.general.site'
         href='/general'
         ph='сайт'
+        )
+      sel-editor(
+        prop='ticker.general.branch'
+        href='/general'
+        ph=''
+        model='{{branches}}'
         )
       +separator()
       h4 Форумы
@@ -116,7 +129,7 @@ block afterAll
       v-on='click: sendData'
       )
       | Сохранить
-
+  
   #kvEditor
     input.key.ib(
       type='text'
@@ -142,5 +155,21 @@ block afterAll
       v-on='click: sendData'
       )
       | Сохранить
-
-
+  
+  #selEditor
+    select.ib(
+      v-model='curr'
+      style='margin-right: 20px;'
+      )
+      option(
+        v-repeat='opt: model'
+        value='{{opt.id}}'
+        )
+        | {{opt.name}}
+    button.g-btn.type_midnight.size_small(
+      type='submit'
+      v-class='invisible: !is_modified'
+      v-on='click: sendData'
+      )
+      | Сохранить
+  

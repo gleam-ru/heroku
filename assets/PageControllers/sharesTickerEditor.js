@@ -23,6 +23,7 @@ $(document).ready(function() {
                     value: v.href,
                 }
             }),
+            branches: branches,
         },
         methods: {
             addForum: function() {
@@ -85,6 +86,7 @@ $(document).ready(function() {
 function initVueComponents() {
     initPropEditor();
     initKVEditor();
+    initSelEditor();
 }
 
 
@@ -120,14 +122,14 @@ function initPropEditor() {
                 $.post(href+vm.href, msg)
                 .done(function() {
                     vm.prop_orig = vm.prop_text;
-                    vm.setOrig(vm.ticker_code);
+                    vm.setOrig(vm.prop_text);
                 });
             },
             getOrig: function() {
                 var orig = window;
                 var path = this.prop.split('.');
                 while (path.length) {
-                    orig = orig[path.shift()];
+                    orig = orig[path.shift()];;
                 }
                 return orig;
             },
@@ -135,7 +137,7 @@ function initPropEditor() {
                 var orig = window;
                 var path = this.prop.split('.');
                 while (path.length) {
-                    orig = orig[path.shift()];
+                    orig = orig[path.shift()];;
                 }
                 orig = value;
             }
@@ -144,7 +146,6 @@ function initPropEditor() {
             var vm = this;
             vm.prop_orig = vm.getOrig();
             vm.prop_text = vm.getOrig();
-            window.qwe = vm;
         },
     });
 }
@@ -253,6 +254,88 @@ function initKVEditor() {
             vm.key_text = vm.key;
             vm.value_orig = vm.value;
             vm.value_text = vm.value;
+        },
+    });
+}
+
+function initSelEditor() {
+    Vue.component('sel-editor', {
+        template: '#selEditor',
+        paramAttributes: ['prop', 'model', 'href', 'ph'],
+
+        data: function() {
+            return {
+                orig: '',
+                curr: '',
+            }
+        },
+        computed: {
+            is_modified: function() {
+                if (this.orig === undefined && this.curr === '') {
+                    return false;
+                }
+                return this.curr !== this.orig;
+            },
+        },
+        methods: {
+            sendData: function() {
+                var vm = this;
+                var msg = {propEditor: []};
+
+                var selected = _.find(vm.model, {name: vm.curr});
+
+                msg.propEditor.push({
+                    key   : vm.prop,
+                    value : selected.value,
+                });
+
+                $.post(href+vm.href, msg)
+                .done(function() {
+                    vm.orig = vm.curr;
+                    vm.setOrig(vm.curr);
+                });
+            },
+            getOrig: function() {
+                var orig = window;
+                var path = this.prop.split('.');
+                while (path.length) {
+                    orig = orig[path.shift()];
+                }
+                return orig;
+            },
+            setOrig: function(value) {
+                var orig = window;
+                var path = this.prop.split('.');
+                while (path.length) {
+                    var new_orig = orig[path.shift()];
+                    if (!new_orig) new_orig = {};
+                    orig = new_orig;
+                }
+                orig = value;
+            }
+        },
+        compiled: function() {
+            var vm = this;
+
+            vm.model = [{
+                value: 0,
+                name: vm.ph,
+            }].concat(_.map(vm.model, function(sel) {
+                return {
+                    value: sel.id,
+                    name: sel.name,
+                }
+            }));
+
+            var orig = vm.getOrig() || 0;
+            var found = _.find(vm.model, function(option) {
+                return option.value == orig;
+            });
+            vm.orig = found.name;
+            vm.curr = found.name;
+
+            // vm.prop_orig = vm.getOrig();
+            // vm.prop_text = vm.getOrig();
             window.qwe = vm;
         },
     });

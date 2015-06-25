@@ -97,7 +97,42 @@ module.exports = {
                 msg: 'Тикер <b>ID: '+id+'</b> не найден'
             });
         }
+        // TODO: хранить в БД, но я не придумал как это нормально организовать
+        var branches = [
+            {
+                id: 1,
+                name: 'Нефтегаз',
+            }, {
+                id: 2,
+                name: 'Потребительский сектор',
+            }, {
+                id: 3,
+                name: 'Химия и нефтехимия',
+            }, {
+                id: 4,
+                name: 'Металлургия',
+            }, {
+                id: 5,
+                name: 'Машиностроение',
+            }, {
+                id: 6,
+                name: 'Телекоммуникации',
+            }, {
+                id: 7,
+                name: 'Энергетика',
+            }, {
+                id: 8,
+                name: 'Финансы',
+            }, {
+                id: 9,
+                name: 'Транспорт',
+            }, {
+                id: 10,
+                name: 'Другая',
+            },
+        ];
         return res.render('services/shares/editor', {
+            branches: branches,
             ticker: {
                 id      : found.id,
                 general : found.general || {},
@@ -133,6 +168,9 @@ module.exports = {
                     }
                     else if (prop.key === 'ticker.general.site') {
                         store.general.site = prop.value;
+                    }
+                    else if (prop.key === 'ticker.general.branch') {
+                        store.general.branch = prop.value;
                     }
                     else if (prop.key === 'ticker.general.forums') {
                         var forum = prop.value;
