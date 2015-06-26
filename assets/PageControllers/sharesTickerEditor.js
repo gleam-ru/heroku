@@ -7,7 +7,7 @@ $(document).ready(function() {
             tabs: [
                 {
                     name      : 'Инфо',
-                    component : '',
+                    component : 'tab_info',
                     active    : false,
                 }, {
                     name      : 'Полезности',
@@ -50,11 +50,13 @@ $(document).ready(function() {
             },
         },
         components: {
-            tab_general : tab_general(),
+            tab_info    : tab_info(),
             tab_useful  : tab_useful(),
+            tab_general : tab_general(),
         },
         compiled: function() {
             var vm = this;
+            // vm.activate('Инфо');
             vm.activate('Основное');
         },
     });
@@ -64,6 +66,25 @@ $(document).ready(function() {
 });
 
 
+
+var tab_info = function() {
+    return {
+        template: '#info',
+        data: function() {
+            var info = {};
+            info.id = ticker.id;
+            info.mfd_id = ticker.general.mfd_id;
+            info.candlesCount = ticker.info.candlesCount;
+            info.lastDailyDate = ticker.info.lastDay;
+            info.lastIndayDate = ticker.info.lastCandle.date ? ticker.info.lastCandle.date : '...';
+            info.indayCount = ticker.info.indayCount ? ticker.info.indayCount : 0;
+            return {
+                info: info,
+                ticker: ticker,
+            }
+        },
+    }
+}
 
 var tab_useful = function() {
     return {

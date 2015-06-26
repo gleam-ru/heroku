@@ -141,6 +141,7 @@ module.exports = {
                     candlesCount : found.candles.length,
                     lastDay      : found.candles[found.candles.length - 1].date,
                     lastCandle   : found.lastCandle,
+                    indayCount   : found.indayCandles.length,
                 }
             }
         });
@@ -174,7 +175,6 @@ module.exports = {
                     }
                     else if (prop.key === 'ticker.general.forums') {
                         var forum = prop.value;
-
                         if (!store.general.forums) store.general.forums = {};
 
                         console.log('shares adminig:', store.general.name);

@@ -73,7 +73,6 @@ block pageHead
   h1 #{ticker.general.name || ticker.general.ticker}
 
 block pageHead_small
-  | mfd_id: #{ticker.info.mfd_id}, свечей: #{ticker.info.candlesCount} (#{ticker.info.lastDay})
   .no-select
 block breadcrumbs
   +breadcrumbs([
@@ -115,6 +114,26 @@ block afterAll
   //- 
   //- TABs
   //- 
+  #info
+    ul
+      li
+        a.mr-10(
+          href='http://mfd.ru/marketdata/ticker/?id={{ticker.general.mfd_id}}'
+          target='_blank'
+          )
+          i.fa.fa-external-link
+        | MFD_id: {{info.mfd_id}}
+      li
+        a.mr-10(
+          href='/services/shares/{{ticker.id}}/info'
+          target='_blank'
+          )
+          i.fa.fa-external-link
+        | Всего свечей: {{info.candlesCount}}
+      li Крайняя daily свеча: {{info.lastDailyDate}}
+      li Крайняя inday свеча: {{info.lastIndayDate}}
+      li Количество сегодняшних свечей: {{info.indayCount}}
+
   #useful
     h4 Форумы
     template(
