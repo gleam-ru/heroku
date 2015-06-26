@@ -173,6 +173,9 @@ module.exports = {
                     else if (prop.key === 'ticker.general.branch') {
                         store.general.branch = prop.value;
                     }
+                    else if (prop.key === 'ticker.general.shares_count') {
+                        store.general.shares_count = prop.value;
+                    }
                     else if (prop.key === 'ticker.general.forums') {
                         var forum = prop.value;
                         if (!store.general.forums) store.general.forums = {};

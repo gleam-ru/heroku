@@ -118,7 +118,7 @@ block afterAll
     ul
       li
         a.mr-10(
-          href='http://mfd.ru/marketdata/ticker/?id={{ticker.general.mfd_id}}'
+          href='http://mfd.ru/marketdata/ticker/?id={{info.mfd_id}}'
           target='_blank'
           )
           i.fa.fa-external-link
@@ -133,7 +133,6 @@ block afterAll
       li Крайняя daily свеча: {{info.lastDailyDate}}
       li Крайняя inday свеча: {{info.lastIndayDate}}
       li Количество сегодняшних свечей: {{info.indayCount}}
-
   #useful
     h4 Форумы
     template(

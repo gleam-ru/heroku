@@ -135,6 +135,7 @@ me.cache = function(issuer) {
         general: store.general,
         candles: store.dailyCandles,
         lastCandle: store.lastCandle,
+        indayCandles: store.indayCandles,
     }
 
     cache.set(cacheKey, cached);
