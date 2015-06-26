@@ -1,29 +1,90 @@
 $(document).ready(function() {
     href = '/services/shares/'+ticker.id;
 
-    initVueComponents();
-
-
-
-
     new Vue({
-        el: '#general',
+        el: '#tabs',
         data: {
-            forums: _.map(ticker.general.forums, function(v, k) {
-                return {
-                    id: k,
-                    key: v.name,
-                    value: v.href,
+            tabs: [
+                {
+                    name      : 'Инфо',
+                    component : '',
+                    active    : false,
+                }, {
+                    name      : 'Полезности',
+                    component : 'tab_useful',
+                    active    : false,
+                }, {
+                    name      : 'Основное',
+                    component : 'tab_general',
+                    active    : false,
+                }, {
+                    name      : 'Отчетность',
+                    component : '',
+                    active    : false,
+                // }, {
+                //     name      : 'Другое',
+                //     component : '',
+                //     active    : false,
                 }
-            }),
-            links: _.map(ticker.general.links, function(v, k) {
-                return {
-                    id: k,
-                    key: v.name,
-                    value: v.href,
+            ]
+        },
+        methods: {
+            getActive: function() {
+                return _.find(this.tabs, function(tab) {
+                    return tab.active === true;
+                });
+            },
+            activate: function(name) {
+                var vm = this;
+                var active = vm.getActive();
+                if (active) {
+                    $(active.component).hide();
+                    active.active = false;
                 }
-            }),
-            branches: branches,
+                var activating = _.find(vm.tabs, {name: name});
+                if (activating) {
+                    $(activating.component).show();
+                    activating.active = true;
+                }
+                return activating;
+            },
+        },
+        components: {
+            tab_general : tab_general(),
+            tab_useful  : tab_useful(),
+        },
+        compiled: function() {
+            var vm = this;
+            vm.activate('Основное');
+        },
+    });
+
+
+
+});
+
+
+
+var tab_useful = function() {
+    return {
+        template: '#useful',
+        data: function() {
+            return {
+                forums: _.map(ticker.general.forums, function(v, k) {
+                    return {
+                        id: k,
+                        key: v.name,
+                        value: v.href,
+                    }
+                }),
+                links: _.map(ticker.general.links, function(v, k) {
+                    return {
+                        id: k,
+                        key: v.name,
+                        value: v.href,
+                    }
+                }),
+            }
         },
         methods: {
             addForum: function() {
@@ -66,6 +127,9 @@ $(document).ready(function() {
                 this.links.$remove(link_index);
             },
         },
+        components: {
+            'kv-editor'   : kvEditor(),
+        },
         created: function() {
             var vm = this;
             this.$on('kv-editor-removed', function(child) {
@@ -78,20 +142,32 @@ $(document).ready(function() {
                 }
             });
         },
-    });
+    }
+}
 
-});
-
-
-function initVueComponents() {
-    initPropEditor();
-    initKVEditor();
-    initSelEditor();
+var tab_general = function() {
+    return {
+        template: '#general',
+        data: function() {
+            return {
+                branches: branches,
+            }
+        },
+        methods: {
+        },
+        components: {
+            'prop-editor' : propEditor(),
+            'sel-editor'  : selEditor(),
+        },
+        created: function() {
+        },
+    }
 }
 
 
-function initPropEditor() {
-    Vue.component('prop-editor', {
+
+var propEditor = function() {
+    return {
         template: '#propEditor',
         paramAttributes: ['prop', 'href', 'ph'],
 
@@ -129,7 +205,7 @@ function initPropEditor() {
                 var orig = window;
                 var path = this.prop.split('.');
                 while (path.length) {
-                    orig = orig[path.shift()];;
+                    orig = orig[path.shift()];
                 }
                 return orig;
             },
@@ -147,11 +223,11 @@ function initPropEditor() {
             vm.prop_orig = vm.getOrig();
             vm.prop_text = vm.getOrig();
         },
-    });
+    };
 }
 
-function initKVEditor() {
-    Vue.component('kv-editor', {
+var kvEditor = function() {
+    return {
         template: '#kvEditor',
         paramAttributes: ['editor_id', 'prop', 'href', 'key', 'value', 'key_ph', 'value_ph'],
 
@@ -255,11 +331,11 @@ function initKVEditor() {
             vm.value_orig = vm.value;
             vm.value_text = vm.value;
         },
-    });
+    };
 }
 
-function initSelEditor() {
-    Vue.component('sel-editor', {
+var selEditor = function() {
+    return {
         template: '#selEditor',
         paramAttributes: ['prop', 'model', 'href', 'ph'],
 
@@ -331,6 +407,10 @@ function initSelEditor() {
             var found = _.find(vm.model, function(option) {
                 return option.value == orig;
             });
+            if (!found) {
+                console.error('smth went wrong...')
+                found = {};
+            }
             vm.orig = found.name;
             vm.curr = found.name;
 
@@ -338,5 +418,5 @@ function initSelEditor() {
             // vm.prop_text = vm.getOrig();
             window.qwe = vm;
         },
-    });
+    };
 }

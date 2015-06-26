@@ -10,6 +10,33 @@ block postHead
       visibility: hidden;
       opacity: 0;
       }
+    .hidden {
+      display: none;
+      }
+    .tab.header + .tab.header::before {
+      content: '|';
+      font-size: 24px;
+      font-family: Serif;
+      padding: 0px 10px;
+      line-height: 24px;
+      }
+    .tab.header h3:hover {
+      color: #ffa412;
+      }
+    .tab.header h3 {
+      line-height: 24px;
+      padding: 0px;
+      border-bottom: dashed 1px #CCC;
+      cursor: pointer;
+      color: #1abc9c;
+      }
+    .tab.header .active {
+      border-bottom: none;
+      cursor: auto;
+      color: inherit !important;
+      }
+
+
     prop-editor {
       display: block;
       margin-bottom: 10px;
@@ -59,63 +86,108 @@ block breadcrumbs
 
 block content
   #shares_editor
-    #general
-      h4 Основные параметры
-      prop-editor.code(
-        prop='ticker.general.ticker_code'
-        href='/general'
-        ph='код (gazp)'
-        )
-      prop-editor.site(
-        prop='ticker.general.site'
-        href='/general'
-        ph='сайт'
-        )
-      sel-editor(
-        prop='ticker.general.branch'
-        href='/general'
-        ph=''
-        model='{{branches}}'
-        )
-      +separator()
-      h4 Форумы
+    #tabs
       template(
-        v-repeat='forum: forums'
+        v-repeat='tab: tabs'
         )
-        kv-editor.link(
-          prop='ticker.general.forums'
-          href='/general'
-          editor_id='{{forum.id}}'
-          key='{{forum.key}}'
-          value='{{forum.value}}'
-          key_ph='Название'
-          value_ph='Ссылка'
-          )
-      button.g-btn.type_midnight.size_small(
-        v-on='click: addForum'
-        )
-        | Добавить форум
-      +separator()
-      h4 Полезные ссылки
+        span.tab.header.no-select
+          h3.ib(
+            v-on='click: activate(tab.name)'
+            v-class='active: tab.active'
+            )
+            | {{tab.name}}
+      div.g-hr.no-select(style='margin: 0px 0px 40px 0px;')
+        span.g-hr-h
       template(
-        v-repeat='link: links'
+        v-repeat='tab: tabs'
         )
-        kv-editor.link(
-          prop='ticker.general.links'
-          href='/general'
-          editor_id='{{link.id}}'
-          key='{{link.key}}'
-          value='{{link.value}}'
-          key_ph='Название'
-          value_ph='Ссылка'
+        div.tab.body(
+          v-component='{{tab.component}}'
+          v-class='hidden: !tab.active'
           )
-      button.g-btn.type_midnight.size_small(
-        v-on='click: addLink'
-        )
-        | Добавить ссылку
-      +separator()
+
+
+
+
 
 block afterAll
+  
+  //- 
+  //- TABs
+  //- 
+  #useful
+    h4 Форумы
+    template(
+      v-repeat='forum: forums'
+      )
+      kv-editor.link(
+        prop='ticker.general.forums'
+        href='/general'
+        editor_id='{{forum.id}}'
+        key='{{forum.key}}'
+        value='{{forum.value}}'
+        key_ph='Название'
+        value_ph='Ссылка'
+        )
+    button.g-btn.type_midnight.size_small(
+      v-on='click: addForum'
+      )
+      | Добавить
+    +separator()
+    h4 Ссылки
+    template(
+      v-repeat='link: links'
+      )
+      kv-editor.link(
+        prop='ticker.general.links'
+        href='/general'
+        editor_id='{{link.id}}'
+        key='{{link.key}}'
+        value='{{link.value}}'
+        key_ph='Название'
+        value_ph='Ссылка'
+        )
+    button.g-btn.type_midnight.size_small(
+      v-on='click: addLink'
+      )
+      | Добавить
+  #general
+    //- h4 Тикер
+    prop-editor.code(
+      prop='ticker.general.ticker_code'
+      href='/general'
+      ph='код (gazp)'
+      )
+    //- h4 Отрасль
+    sel-editor(
+      prop='ticker.general.branch'
+      href='/general'
+      ph=''
+      model='{{branches}}'
+      )
+    //- +separator()
+    //- h3 Ссылка на отчетность
+    prop-editor.site(
+      prop='ticker.general.site'
+      href='/general'
+      ph='Сайт (а лучше ссылка на отчетность)'
+      )
+    +separator()
+    h4 Количество акций
+    prop-editor.ib(
+      prop='ticker.general.shares_count'
+      href='/general'
+      ph='штук'
+      )
+
+
+
+
+
+  //- 
+  //- ELs
+  //- 
+
   #propEditor
     input.ib(
       type='text'
