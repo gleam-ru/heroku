@@ -1,6 +1,30 @@
 $(document).ready(function() {
     href = '/services/shares/'+ticker.id;
 
+
+    ticker.reports = {
+        fields: [
+            {
+                id   : 1,
+                key  : 'income',
+                name : 'выручка',
+            }, {
+                id   : 2,
+                key  : 'profit',
+                name : 'прибыль',
+            }
+        ],
+        data: [
+            {
+                id   : 1,
+                name : '1 кв. 2014',
+                from : '01.01.2014',
+                to   : '01.04.2014',
+            }
+        ],
+    };
+
+
     new Vue({
         el: '#tabs',
         data: {
@@ -19,7 +43,7 @@ $(document).ready(function() {
                     active    : false,
                 }, {
                     name      : 'Отчетность',
-                    component : '',
+                    component : 'tab_reports',
                     active    : false,
                 // }, {
                 //     name      : 'Другое',
@@ -53,11 +77,12 @@ $(document).ready(function() {
             tab_info    : tab_info(),
             tab_useful  : tab_useful(),
             tab_general : tab_general(),
+            tab_reports : tab_reports(),
         },
         compiled: function() {
             var vm = this;
             // vm.activate('Инфо');
-            vm.activate('Основное');
+            vm.activate('Отчетность');
         },
     });
 
@@ -181,6 +206,54 @@ var tab_general = function() {
             'sel-editor'  : selEditor(),
         },
         created: function() {
+        },
+    }
+}
+
+var tab_reports = function() {
+    return {
+        template: '#reports',
+        data: function() {
+            return {
+                reports: ticker.reports,
+            }
+        },
+        methods: {
+            addField: function() {
+                var vm = this;
+                var maxId = _(vm.reports.fields)
+                    .map(function(field) {
+                        return field.id;
+                    })
+                    .max()
+                vm.reports.fields.push({
+                    id   : maxId + 1,
+                    key  : '',
+                    name : '',
+                });
+            },
+            removeField: function(id) {
+                var vm = this;
+                var index = _.findIndex(vm.reports.fields, function(field) {
+                    return field.id == id;
+                });
+                vm.reports.fields.$remove(index);
+            },
+        },
+        components: {
+            'kv-editor'   : kvEditor(),
+        },
+        created: function() {
+            var vm = this;
+            this.$on('kv-editor-removed', function(child) {
+                var id = child.editor_id;
+                if (child.prop === 'ticker.reports.fields') {
+                    vm.removeField(id)
+                }
+                else if (child.prop === 'ticker.reports.data') {
+                    // vm.removeData(id);
+                }
+            });
         },
     }
 }

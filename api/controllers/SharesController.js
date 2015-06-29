@@ -142,7 +142,11 @@ module.exports = {
                     lastDay      : found.candles[found.candles.length - 1].date,
                     lastCandle   : found.lastCandle,
                     indayCount   : found.indayCandles.length,
-                }
+                },
+                reports: {
+                    // fields: [],
+                    // data: [],
+                },
             }
         });
     },

@@ -36,6 +36,27 @@ block postHead
       color: inherit !important;
       }
 
+    .reports {
+      width: 100%;
+      }
+      .reports tr th,
+      .reports tr td {
+        line-height: 30px;
+        padding: 0px !important;
+        vertical-align: middle;
+        }
+      .reports tr th {
+        font-weight: bold;
+        }
+      .reports .cellRemove {
+        width: 120px;
+        text-align: center;
+        }
+      .reports .cellEdit {
+        width: 170px;
+        text-align: center;
+        }
+
 
     prop-editor {
       display: block;
@@ -198,8 +219,55 @@ block afterAll
       ph='штук'
       )
 
+  #reports
+    h4 Интересующие параметры
+    template(
+      v-repeat='field: reports.fields'
+      )
+      kv-editor.link(
+        prop='ticker.reports.fields'
+        href='/general'
+        editor_id='{{field.id}}'
+        key='{{field.key}}'
+        value='{{field.name}}'
+        key_ph='key'
+        value_ph='name'
+        )
+    button.g-btn.type_midnight.size_small(
+      v-on='click: addField'
+      )
+      | Добавить
 
-
+    +separator()
+    h4 Отчеты
+    table.reports
+      tr
+        th ID
+        th Название
+        th Период
+        th.cellRemove
+        th.cellEdit
+      template(
+        v-repeat='report: reports.data'
+        )
+        tr
+          td {{report.id}}
+          td {{report.name}}
+          td {{report.from}} - {{report.to}}
+          td.cellRemove
+            button.g-btn.type_midnight.size_small(
+              v-on='click: removeReport'
+              )
+              | Удалить
+          td.cellEdit
+            button.g-btn.type_midnight.size_small(
+              v-on='click: editReport'
+              )
+              | Редактировать
+    button.g-btn.type_midnight.size_small(
+      v-on='click: addReport'
+      )
+      | Добавить
 
 
   //- 
