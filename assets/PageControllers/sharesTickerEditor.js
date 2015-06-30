@@ -215,6 +215,7 @@ var tab_reports = function() {
         template: '#reports',
         data: function() {
             return {
+                reportWindow: initReportWindow(),
                 reports: ticker.reports,
             }
         },
@@ -239,6 +240,9 @@ var tab_reports = function() {
                 });
                 vm.reports.fields.$remove(index);
             },
+            editReport: function(report) {
+                this.reportWindow.show(report, this.reports.fields);
+            }
         },
         components: {
             'kv-editor'   : kvEditor(),
@@ -513,4 +517,46 @@ var selEditor = function() {
             window.qwe = vm;
         },
     };
+}
+
+
+
+var initReportWindow = function() {
+    return new Vue({
+        el: '#report',
+        data: function() {
+            return {
+                name   : '',
+                from   : '',
+                to     : '',
+                fields : [],
+            }
+        },
+        computed: {
+        },
+        methods: {
+            show: function(report, fields) {
+                var vm    = this;
+                vm.name   = report.name;
+                vm.from   = report.from;
+                vm.to     = report.to;
+                vm.fields = fields
+                $.magnificPopup.open({
+                    modal: true,
+                    items: {
+                        src: $(vm.$el),
+                        type: 'inline',
+                    },
+                });
+            },
+            save: function() {
+                $.magnificPopup.close();
+            },
+            cancel: function() {
+                $.magnificPopup.close();
+            },
+        },
+        compiled: function() {
+        },
+    });
 }
