@@ -232,8 +232,33 @@ module.exports = {
                             }
                             else {
                                 found.key  = field.key;
-                                found.name = field.value;
+                                found.value = field.value;
                                 console.log('field modified:', found, '->', field);
+                            }
+                        }
+                    }
+                    else if (prop.key === 'ticker.reports.data') {
+                        var report = prop.value;
+
+                        if (!store.reports) store.reports = {};
+                        if (!store.reports.data) store.reports.data = [];
+
+                        console.log('shares adminig:', store.general.name);
+                        if (prop.remove) {
+                            var removed = _.remove(store.reports.data, {id: report.id});
+                            console.log('report removed:', removed);
+                        }
+                        else {
+                            var found = _.find(store.reports.data, {id: report.id});
+                            if (!found) {
+                                store.reports.data.push(report);
+                                console.log('report added:', report);
+                            }
+                            else {
+                                console.log('report modified');
+                                console.log('old:', found);
+                                _.extend(found, report);
+                                console.log('new:', found);
                             }
                         }
                     }

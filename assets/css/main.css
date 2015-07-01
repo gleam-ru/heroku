@@ -16,7 +16,7 @@ input-grey: #fafafa;
 
 input.has-error {
     background-color: #F9ECEC;
-    box-shadow: 0px 0px 3px 1px #E74343 !important;
+    box-shadow: 0px 0px 0px 1px #E74343 !important;
     }
 input.fillMePls {
     box-shadow: 0px 0px 3px 1px #138132 !important;

@@ -1,31 +1,17 @@
 $(document).ready(function() {
     href = '/services/shares/'+ticker.id;
 
-
-    /*
-    ticker.reports = {
-        fields: [
-            {
-                id    : 1,
-                key   : 'income',
-                value : 'выручка',
-            }, {
-                id    : 2,
-                key   : 'profit',
-                value : 'прибыль',
-            }
-        ],
-        data: [
-            {
-                id   : 1,
-                name : '1 кв. 2014',
-                from : '01.01.2014',
-                to   : '01.04.2014',
-            }
-        ],
-    };
-    //*/
-
+    // var defaultFields = [
+    //     {
+    //         id    : 1,
+    //         key   : 'income',
+    //         value : 'выручка',
+    //     }, {
+    //         id    : 2,
+    //         key   : 'profit',
+    //         value : 'прибыль',
+    //     }
+    // ];
 
     new Vue({
         el: '#tabs',
@@ -218,8 +204,8 @@ var tab_reports = function() {
         template: '#reports',
         data: function() {
             return {
-                reportWindow: initReportWindow(),
                 reports: ticker.reports || {fields:[], data: []},
+                reportWindow: initReportWindow(this),
             }
         },
         methods: {
@@ -232,10 +218,18 @@ var tab_reports = function() {
                     .max();
                 if (maxId < 0) maxId = 0;
                 vm.reports.fields.push({
-                    id   : 1 + 1 * maxId,
-                    key  : '',
-                    name : '',
+                    id    : 1 + 1 * maxId,
+                    key   : '',
+                    value : '',
                 });
+            },
+            updateField: function(field) {
+                var vm = this;
+                var id = field.id;
+                var index = _.findIndex(vm.reports.fields, function(field) {
+                    return field.id == id;
+                });
+                vm.reports.fields.$set(index, field);
             },
             removeField: function(id) {
                 var vm = this;
@@ -244,9 +238,64 @@ var tab_reports = function() {
                 });
                 vm.reports.fields.$remove(index);
             },
+
+            reportSaved: function(report) {
+                var vm = this;
+                var idx = _.findIndex(vm.reports.data, {id: report.id});
+                if (idx !== -1) {
+                    vm.reports.data.$set(idx, report)
+                }
+                else {
+                    vm.reports.data.push(report);
+                }
+            },
+            reportRemoved: function(report) {
+                var vm = this;
+                var idx = _.findIndex(vm.reports.data, {id: report.id});
+                vm.reports.data.$remove(idx);
+            },
+
+            addReport: function() {
+                var maxId = _.max(this.reports.data, function(report) {
+                    return report.id;
+                });
+                if (!maxId || maxId < 0) {
+                    maxId = 0;
+                }
+                else {
+                    maxId = maxId.id;
+                }
+                this.reportWindow.show(this.reports.fields, {
+                    id: 1 + 1 * maxId,
+                });
+            },
             editReport: function(report) {
-                this.reportWindow.show(report, this.reports.fields);
-            }
+                this.reportWindow.show(this.reports.fields, report);
+            },
+            removeReport: function(report) {
+                var vm = this;
+                var msg = {propEditor: []};
+                var report = {
+                    id    : report.id,
+                    name  : report.name,
+                    from  : report.from,
+                    to    : report.to,
+                    data  : report.data,
+                }
+                msg.propEditor.push({
+                    key   : 'ticker.reports.data',
+                    remove: true,
+                    value : report,
+                });
+                $.post(href+'/general', msg)
+                .done(function() {
+                    vm.reportRemoved(report);
+                })
+                .error(function(err){
+                    console.error(err);
+                    mp.alert('шо-то пошло не так... см ошибку в консоли');
+                });
+            },
         },
         components: {
             'kv-editor'   : kvEditor(),
@@ -254,13 +303,21 @@ var tab_reports = function() {
         created: function() {
             var vm = this;
 
-            this.$on('kv-editor-removed', function(child) {
+            vm.$on('kv-editor-removed', function(child) {
                 var id = child.editor_id;
                 if (child.prop === 'ticker.reports.fields') {
                     vm.removeField(id)
                 }
-                else if (child.prop === 'ticker.reports.data') {
-                    // vm.removeData(id);
+            });
+
+            vm.$on('kv-editor-saved', function(child) {
+                var id = child.editor_id;
+                if (child.prop === 'ticker.reports.fields') {
+                    vm.updateField({
+                        id: id,
+                        key: child.key_orig,
+                        value: child.value_orig,
+                    })
                 }
             });
         },
@@ -380,6 +437,7 @@ var kvEditor = function() {
                     vm.key_orig   = vm.key_text;
                     vm.value_orig = vm.value_text;
                     vm.setOrig(vm.key_text, vm.value_text);
+                    vm.$dispatch('kv-editor-saved', vm);
                 });
             },
 
@@ -397,10 +455,10 @@ var kvEditor = function() {
 
                 $.post(href+vm.href, msg)
                 .done(function() {
-                    vm.$dispatch('kv-editor-removed', vm);
                     vm.key_orig   = vm.key_text;
                     vm.value_orig = vm.value_text;
                     vm.setOrig(vm.key_text, vm.value_text);
+                    vm.$dispatch('kv-editor-removed', vm);
                 });
 
             },
@@ -526,26 +584,37 @@ var selEditor = function() {
 
 
 
-var initReportWindow = function() {
+var initReportWindow = function(parent) {
     return new Vue({
         el: '#report',
         data: function() {
             return {
+                id     : 0,
                 name   : '',
                 from   : '',
                 to     : '',
                 fields : [],
+                // тот, кто будет получать уведомления о сохранении
+                parent : parent,
             }
         },
         computed: {
+            bad_name: function() {
+                return !this.name || this.name.length < 1;
+            },
+            bad_period: function() {
+                return !this.from || !this.to || moment(this.from, 'YYYY-MM-DD') > moment(this.to, 'YYYY-MM-DD');
+            },
         },
         methods: {
-            show: function(report, fields) {
+            show: function(fields, report) {
                 var vm    = this;
+                vm.id     = report.id;
                 vm.name   = report.name;
                 vm.from   = report.from;
                 vm.to     = report.to;
-                vm.fields = fields
+                vm.fields = fields;
+                vm.data   = {};
                 $.magnificPopup.open({
                     modal: true,
                     items: {
@@ -555,11 +624,60 @@ var initReportWindow = function() {
                 });
             },
             save: function() {
-                $.magnificPopup.close();
+                var vm = this;
+                var msg = {propEditor: []};
+                var report = {
+                    id: vm.id,
+                    name: vm.name,
+                    from: vm.from,
+                    to: vm.to,
+                    data: vm.data,
+                }
+                msg.propEditor.push({
+                    key   : 'ticker.reports.data',
+                    value : report,
+                });
+                $.post(href+'/general', msg)
+                .done(function() {
+                    vm.parent.reportSaved(report);
+                    $.magnificPopup.close();
+                })
+                .error(function(err){
+                    console.error(err);
+                    mp.alert('шо-то пошло не так... см ошибку в консоли');
+                });
             },
             cancel: function() {
                 $.magnificPopup.close();
             },
+        },
+        ready: function() {
+            var vm = this;
+
+            $(vm.$$.dp_from).pickmeup({
+                date: vm.from,
+                format: 'Y-m-d',
+                view: 'years',
+                position: 'bottom',
+                change: function(date) {
+                    vm.from = date;
+                },
+            });
+
+            $(vm.$$.dp_to).pickmeup({
+                date: vm.to,
+                format: 'Y-m-d',
+                view: 'years',
+                position: 'bottom',
+                change: function(date) {
+                    vm.to = date;
+                },
+            });
+        },
+        beforeDestroy: function() {
+            var vm = this;
+            $(vm.$$.dp_from).pickmeup('destroy');
+            $(vm.$$.dp_to).pickmeup('destroy');
         },
         compiled: function() {
         },

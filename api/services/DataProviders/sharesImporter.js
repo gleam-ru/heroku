@@ -6,10 +6,10 @@ var type        = sails.config.app.providers.shares.type;
 var limitations = sails.config.app.providers.shares.parserLimitations; // если попросить слишком много данных сразу, то мфд выкинет по таймауту
 var bindings    = sails.config.app.providers.shares.mfd;
 
-
-
 me.process = function(cb) {
     async.series([
+        // метод должен отработать всего один раз
+        // me.hotfix,
         // заполяет базу акциями из конфиг файла
         me.initialFill,
         // заполняю эмитентов, у которых отсутствует большое количество свечек (вероятно, они новые)
@@ -22,6 +22,28 @@ me.process = function(cb) {
     ], cb);
 }
 
+
+
+// импорт данных при разработке производился "на лету"...
+// сложно угадать финальный формат данных.
+// Этот метод приводит все сохранное в
+// актуальный ожидаемый вид
+me.hotfix = function(cb) {
+    Issuer.find({
+        type: type,
+    }, function(err, shares) {
+        if (err) return cb(err);
+        _.each(shares, function(share) {
+            var store = share.getStore();
+            if (!store.reports) store.reports = {};
+            if (!store.reports.data) store.reports.data = [];
+            if (!store.reports.fields) store.reports.fields = [];
+            share.setStore(store);
+        });
+        return cb();
+    });
+
+}
 
 
 // создает записи в БД о тех эмитентах,
@@ -55,6 +77,10 @@ me.initialFill = function(cb) {
                     dailyCandles: [],
                     indayCandles: [],
                     lastCandle: {},
+                    reports: {
+                        fields: [],
+                        data: [],
+                    }
                 });
                 created.save(done);
             });

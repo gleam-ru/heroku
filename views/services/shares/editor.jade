@@ -294,7 +294,7 @@ block afterAll
           td {{report.from}} - {{report.to}}
           td.cellRemove
             button.g-btn.type_midnight.size_small(
-              v-on='click: removeReport'
+              v-on='click: removeReport(report)'
               )
               | Удалить
           td.cellEdit
@@ -381,20 +381,25 @@ block afterAll
       v-model='name'
       placeholder='Название периода'
       style='margin-bottom: 10px;'
+      v-class='has-error: bad_name'
       )
     //- 
     input.ib(
       type='text'
       v-model='from'
+      v-el='dp_from'
       placeholder='Начало'
       style='max-width: 45%'
+      v-class='has-error: bad_period'
       )
     span.ib(style='width: 10%; text-align: center; vertical-align: middle; line-height: 30px;') -
     input.ib(
       type='text'
       v-model='to'
+      v-el='dp_to'
       placeholder='Окончание'
       style='max-width: 45%'
+      v-class='has-error: bad_period'
       )
     //- 
     h4 Результаты
@@ -402,11 +407,11 @@ block afterAll
     table
       tr(v-repeat='field: fields')
         td
-          span.ib {{field.name}}
+          span.ib {{field.value}}
         td
           input(
             type='text'
-            v-model='field.value'
+            v-model='data[field.key]'
             )
     .buttons
       button.g-btn.type_midnight.size_small(
