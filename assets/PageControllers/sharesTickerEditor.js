@@ -2,16 +2,17 @@ $(document).ready(function() {
     href = '/services/shares/'+ticker.id;
 
 
+    /*
     ticker.reports = {
         fields: [
             {
-                id   : 1,
-                key  : 'income',
-                name : 'выручка',
+                id    : 1,
+                key   : 'income',
+                value : 'выручка',
             }, {
-                id   : 2,
-                key  : 'profit',
-                name : 'прибыль',
+                id    : 2,
+                key   : 'profit',
+                value : 'прибыль',
             }
         ],
         data: [
@@ -23,6 +24,7 @@ $(document).ready(function() {
             }
         ],
     };
+    //*/
 
 
     new Vue({
@@ -139,9 +141,10 @@ var tab_useful = function() {
                     .map(function(forum) {
                         return parseInt(forum.id.replace('forum_', ''));
                     })
-                    .max()
+                    .max();
+                if (maxId < 0) maxId = 0;
                 vm.forums.push({
-                    id: 'forum_'+(maxId + 1),
+                    id: 'forum_'+(1 * maxId + 1),
                     key: '',
                     value: '',
                 });
@@ -158,10 +161,10 @@ var tab_useful = function() {
                     .map(function(link) {
                         return parseInt(link.id.replace('link_', ''));
                     })
-                    .max()
+                    .max();
                 if (maxId < 0) maxId = 0;
                 vm.links.push({
-                    id: 'link_'+(maxId + 1),
+                    id: 'link_'+(1 * maxId + 1),
                     key: '',
                     value: '',
                 });
@@ -216,7 +219,7 @@ var tab_reports = function() {
         data: function() {
             return {
                 reportWindow: initReportWindow(),
-                reports: ticker.reports,
+                reports: ticker.reports || {fields:[], data: []},
             }
         },
         methods: {
@@ -226,9 +229,10 @@ var tab_reports = function() {
                     .map(function(field) {
                         return field.id;
                     })
-                    .max()
+                    .max();
+                if (maxId < 0) maxId = 0;
                 vm.reports.fields.push({
-                    id   : maxId + 1,
+                    id   : 1 + 1 * maxId,
                     key  : '',
                     name : '',
                 });
@@ -249,6 +253,7 @@ var tab_reports = function() {
         },
         created: function() {
             var vm = this;
+
             this.$on('kv-editor-removed', function(child) {
                 var id = child.editor_id;
                 if (child.prop === 'ticker.reports.fields') {
@@ -311,7 +316,7 @@ var propEditor = function() {
                 var orig = window;
                 var path = this.prop.split('.');
                 while (path.length) {
-                    orig = orig[path.shift()];;
+                    orig = orig[path.shift()];
                 }
                 orig = value;
             }

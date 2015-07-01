@@ -91,6 +91,7 @@ module.exports = {
 
     editorPage: function(req, res) {
         var id = req.param('id');
+        // TODO: async
         var found = provider.shares.get(id);
         if (!found) {
             return res.render('404', {
@@ -135,7 +136,6 @@ module.exports = {
             branches: branches,
             ticker: {
                 id      : found.id,
-                general : found.general || {},
                 info    : {
                     mfd_id       : found.general.mfd_id,
                     candlesCount : found.candles.length,
@@ -143,10 +143,8 @@ module.exports = {
                     lastCandle   : found.lastCandle,
                     indayCount   : found.indayCandles.length,
                 },
-                reports: {
-                    // fields: [],
-                    // data: [],
-                },
+                general : found.general || {},
+                reports : found.reports,
             }
         });
     },
@@ -213,6 +211,30 @@ module.exports = {
                                 href: link.value,
                             }
                             console.log('link upd:', link);
+                        }
+                    }
+                    else if (prop.key === 'ticker.reports.fields') {
+                        var field = prop.value;
+
+                        if (!store.reports) store.reports = {};
+                        if (!store.reports.fields) store.reports.fields = [];
+
+                        console.log('shares adminig:', store.general.name);
+                        if (prop.remove) {
+                            var removed = _.remove(store.reports.fields, {id: field.id});
+                            console.log('field removed:', removed);
+                        }
+                        else {
+                            var found = _.find(store.reports.fields, {id: field.id});
+                            if (!found) {
+                                store.reports.fields.push(field);
+                                console.log('field added:', field);
+                            }
+                            else {
+                                found.key  = field.key;
+                                found.name = field.value;
+                                console.log('field modified:', found, '->', field);
+                            }
                         }
                     }
                 });

@@ -133,6 +133,7 @@ me.cache = function(issuer) {
     cached[issuer.id] = {
         id: issuer.id,
         general: store.general,
+        reports: store.reports,
         candles: store.dailyCandles,
         lastCandle: store.lastCandle,
         indayCandles: store.indayCandles,
