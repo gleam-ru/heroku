@@ -375,7 +375,10 @@ block afterAll
     )
     //- 
     h4 Период
-      +roundIcon('fa-undo')
+      span(
+        v-on='click: setLastPeriod'
+        )
+        +roundIcon('fa-undo')
     input.ib(
       type='text'
       v-model='name'
@@ -403,7 +406,10 @@ block afterAll
       )
     //- 
     h4 Результаты
-      +roundIcon('fa-undo')
+      span(
+        v-on='click: setLastResults'
+        )
+        +roundIcon('fa-undo')
     table
       tr(v-repeat='field: fields')
         td
