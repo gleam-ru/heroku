@@ -14,7 +14,7 @@ $(document).ready(function() {
     //     }
     // ];
 
-    new Vue({
+    window.qwe = new Vue({
         el: '#tabs',
         data: {
             tabs: [
@@ -66,12 +66,17 @@ $(document).ready(function() {
                     activating = _.find(vm.tabs, {alias: name});
                 }
                 if (!activating) {
+                    var matches = window.location.href.match(/\#(.*)/g);
+                    var alias = matches ? matches[0].replace('#', '') : undefined;
+                    activating = _.find(vm.tabs, {alias: alias});
+                }
+                if (!activating) {
                     activating = vm.tabs[0];
                 }
 
                 $(activating.component).show();
                 activating.active = true;
-                window.history.pushState(activating.alias, activating.name, window.href+'?'+activating.alias);
+                window.location.hash = '#'+activating.alias;
 
                 return activating;
             },
@@ -84,9 +89,8 @@ $(document).ready(function() {
         },
         compiled: function() {
             var vm = this;
-            var matches = window.location.href.match(/\?(.*)/g);
-            var alias = matches ? matches[0].replace('?', '') : undefined;
-            vm.activate(alias);
+            vm.activate();
+            $(window).bind('hashchange', vm.activate);
         },
     });
 
