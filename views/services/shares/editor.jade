@@ -106,6 +106,9 @@ block postHead
       prop-editor.site input {
         max-width: 400px;
         }
+      prop-editor.count input {
+        max-width: 400px;
+        }
     sel-editor {
       display: block;
       margin-bottom: 10px;
@@ -161,7 +164,7 @@ block content
         )
         div.tab.body(
           v-component='{{tab.component}}'
-          v-class='hidden: !tab.active'
+          v-show='tab.active'
           )
 
 
@@ -199,7 +202,6 @@ block afterAll
       )
       kv-editor.link(
         prop='ticker.general.forums'
-        href='/general'
         editor_id='{{forum.id}}'
         key='{{forum.key}}'
         value='{{forum.value}}'
@@ -217,7 +219,6 @@ block afterAll
       )
       kv-editor.link(
         prop='ticker.general.links'
-        href='/general'
         editor_id='{{link.id}}'
         key='{{link.key}}'
         value='{{link.value}}'
@@ -232,13 +233,11 @@ block afterAll
     //- h4 Тикер
     prop-editor.code(
       prop='ticker.general.ticker_code'
-      href='/general'
       ph='код (gazp)'
       )
     //- h4 Отрасль
     sel-editor(
       prop='ticker.general.branch'
-      href='/general'
       ph=''
       model='{{branches}}'
       )
@@ -246,14 +245,12 @@ block afterAll
     //- h3 Ссылка на отчетность
     prop-editor.site(
       prop='ticker.general.site'
-      href='/general'
       ph='Сайт (а лучше ссылка на отчетность)'
       )
     +separator()
     h4 Количество акций
-    prop-editor.ib(
+    prop-editor.count(
       prop='ticker.general.shares_count'
-      href='/general'
       ph='штук'
       )
 
@@ -264,7 +261,6 @@ block afterAll
       )
       kv-editor.link(
         prop='ticker.reports.fields'
-        href='/general'
         editor_id='{{field.id}}'
         key='{{field.key}}'
         value='{{field.value}}'
@@ -278,7 +274,7 @@ block afterAll
 
     +separator()
     h4 Отчеты
-    table.reports
+    table.reports(v-if='!no_reports')
       tr
         th ID
         th Название

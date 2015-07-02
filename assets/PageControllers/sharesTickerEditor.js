@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    href = '/services/shares/'+ticker.id;
+    window.href = '/services/shares/'+ticker.id+'/update';
+
 
     // var defaultFields = [
     //     {
@@ -18,20 +19,24 @@ $(document).ready(function() {
         data: {
             tabs: [
                 {
-                    name      : 'Инфо',
-                    component : 'tab_info',
-                    active    : false,
-                }, {
-                    name      : 'Полезности',
-                    component : 'tab_useful',
-                    active    : false,
-                }, {
                     name      : 'Основное',
+                    alias     : 'general',
                     component : 'tab_general',
                     active    : false,
                 }, {
+                    name      : 'Полезности',
+                    alias     : 'useful',
+                    component : 'tab_useful',
+                    active    : false,
+                }, {
                     name      : 'Отчетность',
+                    alias     : 'reports',
                     component : 'tab_reports',
+                    active    : false,
+                }, {
+                    name      : 'Инфо',
+                    alias     : 'info',
+                    component : 'tab_info',
                     active    : false,
                 // }, {
                 //     name      : 'Другое',
@@ -53,11 +58,21 @@ $(document).ready(function() {
                     $(active.component).hide();
                     active.active = false;
                 }
-                var activating = _.find(vm.tabs, {name: name});
-                if (activating) {
-                    $(activating.component).show();
-                    activating.active = true;
+                var activating;
+                if (!activating) {
+                    activating = _.find(vm.tabs, {name: name});
                 }
+                if (!activating) {
+                    activating = _.find(vm.tabs, {alias: name});
+                }
+                if (!activating) {
+                    activating = vm.tabs[0];
+                }
+
+                $(activating.component).show();
+                activating.active = true;
+                window.history.pushState(activating.alias, activating.name, window.href+'?'+activating.alias);
+
                 return activating;
             },
         },
@@ -69,8 +84,9 @@ $(document).ready(function() {
         },
         compiled: function() {
             var vm = this;
-            // vm.activate('Инфо');
-            vm.activate('Отчетность');
+            var matches = window.location.href.match(/\?(.*)/g);
+            var alias = matches ? matches[0].replace('?', '') : undefined;
+            vm.activate(alias);
         },
     });
 
@@ -208,6 +224,11 @@ var tab_reports = function() {
                 reportWindow: initReportWindow(this),
             }
         },
+        computed:  {
+            no_reports: function() {
+                return this.reports.data.length === 0;
+            }
+        },
         methods: {
             //
             // Параметры
@@ -221,7 +242,7 @@ var tab_reports = function() {
                     .max();
                 if (maxId < 0) maxId = 0;
                 vm.reports.fields.push({
-                    id    : 1 + 1 * maxId,
+              id    : 1 + 1 * maxId,
                     key   : '',
                     value : '',
                 });
@@ -256,16 +277,15 @@ var tab_reports = function() {
             },
             removeReport: function(report) {
                 var vm = this;
-                var msg = {propEditor: []};
-                var id = report.id;
-                msg.propEditor.push({
-                    key   : 'ticker.reports.data',
-                    remove: true,
-                    value : {id: id},
-                });
-                $.post(href+'/general', msg)
+                $.post(href, {
+                    message: {
+                        key    : 'ticker.reports.data',
+                        remove : true,
+                        value  : {id: report.id},
+                    }
+                })
                 .done(function() {
-                    var idx = _.findIndex(vm.reports.data, {id: id});
+                    var idx = _.findIndex(vm.reports.data, {id: report.id});
                     vm.reports.data.$remove(idx);
                 })
                 .error(function(err){
@@ -342,14 +362,13 @@ var propEditor = function() {
         methods: {
             sendData: function() {
                 var vm = this;
-                var msg = {propEditor: []};
 
-                msg.propEditor.push({
-                    key   : vm.prop,
-                    value : vm.prop_text,
-                });
-
-                $.post(href+vm.href, msg)
+                $.post(href+vm.href, {
+                    message: {
+                        key   : vm.prop,
+                        value : vm.prop_text,
+                    }
+                })
                 .done(function() {
                     vm.prop_orig = vm.prop_text;
                     vm.setOrig(vm.prop_text);
@@ -374,6 +393,7 @@ var propEditor = function() {
         },
         compiled: function() {
             var vm = this;
+            if (typeof vm.href === 'undefined') vm.href = '';
             vm.prop_orig = vm.getOrig();
             vm.prop_text = vm.getOrig();
         },
@@ -413,20 +433,17 @@ var kvEditor = function() {
         methods: {
             sendData: function() {
                 var vm = this;
-                var msg = {propEditor: []};
 
-                msg.propEditor.push({
-                    key   : vm.prop,
-                    value : {
-                        id    : vm.editor_id,
-                        key   : vm.key_text,
-                        value : vm.value_text,
-                    },
-                });
-
-                console.log('sending', msg);
-
-                $.post(href+vm.href, msg)
+                $.post(href+vm.href, {
+                    message: {
+                        key   : vm.prop,
+                        value : {
+                            id    : vm.editor_id,
+                            key   : vm.key_text,
+                            value : vm.value_text,
+                        },
+                    }
+                })
                 .done(function() {
                     vm.key_orig   = vm.key_text;
                     vm.value_orig = vm.value_text;
@@ -437,17 +454,16 @@ var kvEditor = function() {
 
             removeData: function() {
                 var vm = this;
-                var msg = {propEditor: []};
 
-                msg.propEditor.push({
-                    key    : vm.prop,
-                    remove : true,
-                    value  : {
-                        id    : vm.editor_id,
-                    },
-                });
-
-                $.post(href+vm.href, msg)
+                $.post(href+vm.href, {
+                    message: {
+                        key    : vm.prop,
+                        remove : true,
+                        value  : {
+                            id : vm.editor_id,
+                        },
+                    }
+                })
                 .done(function() {
                     vm.key_orig   = vm.key_text;
                     vm.value_orig = vm.value_text;
@@ -481,6 +497,7 @@ var kvEditor = function() {
         },
         compiled: function() {
             var vm = this;
+            if (typeof vm.href === 'undefined') vm.href = '';
             vm.key_orig = vm.key;
             vm.key_text = vm.key;
             vm.value_orig = vm.value;
@@ -511,16 +528,14 @@ var selEditor = function() {
         methods: {
             sendData: function() {
                 var vm = this;
-                var msg = {propEditor: []};
-
                 var selected = _.find(vm.model, {name: vm.curr});
 
-                msg.propEditor.push({
-                    key   : vm.prop,
-                    value : selected.value,
-                });
-
-                $.post(href+vm.href, msg)
+                $.post(href+vm.href, {
+                    message: {
+                        key   : vm.prop,
+                        value : selected.value,
+                    }
+                })
                 .done(function() {
                     vm.orig = vm.curr;
                     vm.setOrig(vm.curr);
@@ -547,6 +562,7 @@ var selEditor = function() {
         },
         compiled: function() {
             var vm = this;
+            if (typeof vm.href === 'undefined') vm.href = '';
 
             vm.model = [{
                 value: 0,
@@ -568,10 +584,6 @@ var selEditor = function() {
             }
             vm.orig = found.name;
             vm.curr = found.name;
-
-            // vm.prop_orig = vm.getOrig();
-            // vm.prop_text = vm.getOrig();
-            window.qwe = vm;
         },
     };
 }
@@ -630,7 +642,6 @@ var initReportWindow = function(parent) {
             },
             save: function() {
                 var vm = this;
-                var msg = {propEditor: []};
                 var report = {
                     id: vm.id,
                     name: vm.name,
@@ -638,11 +649,13 @@ var initReportWindow = function(parent) {
                     to: vm.to,
                     data: vm.data,
                 }
-                msg.propEditor.push({
-                    key   : 'ticker.reports.data',
-                    value : report,
-                });
-                $.post(href+'/general', msg)
+
+                $.post(href, {
+                    message: {
+                        key   : 'ticker.reports.data',
+                        value : report,
+                    }
+                })
                 .done(function() {
                     vm.parent.reportSaved(report);
                     vm.close();

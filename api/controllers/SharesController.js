@@ -151,7 +151,7 @@ module.exports = {
 
     updateGeneral: function(req, res) {
         var id = req.param('id');
-        var propEditor = req.param('propEditor');
+        var message = req.param('message');
 
         async.waterfall([
             function(next) {
@@ -163,117 +163,118 @@ module.exports = {
                     return next(null, found);
                 });
             },
-            function(found, next) {
-                var store = found.getStore();
-                _.each(propEditor, function(prop) {
-                    if (prop.key === 'ticker.general.ticker_code') {
-                        store.general.ticker_code = prop.value;
-                    }
-                    else if (prop.key === 'ticker.general.site') {
-                        store.general.site = prop.value;
-                    }
-                    else if (prop.key === 'ticker.general.branch') {
-                        store.general.branch = prop.value;
-                    }
-                    else if (prop.key === 'ticker.general.shares_count') {
-                        store.general.shares_count = prop.value;
-                    }
-                    else if (prop.key === 'ticker.general.forums') {
-                        var forum = prop.value;
-                        if (!store.general.forums) store.general.forums = {};
+            function(share, next) {
+                var store = share.getStore();
+                if (!message.key) {
+                    console.warn('SharesController.updateGeneral получено сообщение без ключа!', message);
+                }
+                else if (message.key === 'ticker.general.ticker_code') {
+                    store.general.ticker_code = message.value;
+                }
+                else if (message.key === 'ticker.general.site') {
+                    store.general.site = message.value;
+                }
+                else if (message.key === 'ticker.general.branch') {
+                    store.general.branch = message.value;
+                }
+                else if (message.key === 'ticker.general.shares_count') {
+                    store.general.shares_count = message.value;
+                }
+                else if (message.key === 'ticker.general.forums') {
+                    var forum = message.value;
+                    if (!store.general.forums) store.general.forums = {};
 
-                        console.log('shares adminig:', store.general.name);
-                        if (prop.remove) {
-                            delete store.general.forums[forum.id];
-                            console.log('forum removed:', forum);
+                    console.log('shares adminig:', store.general.name);
+                    if (message.remove) {
+                        delete store.general.forums[forum.id];
+                        console.log('forum removed:', forum);
+                    }
+                    else {
+                        store.general.forums[forum.id] = {
+                            name: forum.key,
+                            href: forum.value,
+                        }
+                        console.log('forum upd:', forum);
+                    }
+                }
+                else if (message.key === 'ticker.general.links') {
+                    var link = message.value;
+
+                    if (!store.general.links) store.general.links = {};
+
+                    console.log('shares adminig:', store.general.name);
+                    if (message.remove) {
+                        delete store.general.links[link.id];
+                        console.log('link removed:', link);
+                    }
+                    else {
+                        store.general.links[link.id] = {
+                            name: link.key,
+                            href: link.value,
+                        }
+                        console.log('link upd:', link);
+                    }
+                }
+                else if (message.key === 'ticker.reports.fields') {
+                    var field = message.value;
+
+                    if (!store.reports) store.reports = {};
+                    if (!store.reports.fields) store.reports.fields = [];
+
+                    console.log('shares adminig:', store.general.name);
+                    if (message.remove) {
+                        var removed = _.remove(store.reports.fields, {id: field.id});
+                        console.log('field removed:', removed);
+                    }
+                    else {
+                        var found_field = _.find(store.reports.fields, {id: field.id});
+                        if (!found_field) {
+                            store.reports.fields.push(field);
+                            console.log('field added:', field);
                         }
                         else {
-                            store.general.forums[forum.id] = {
-                                name: forum.key,
-                                href: forum.value,
+                            if (found_field.key != field.key) {
+                                console.log('field key modified:', found_field.key, '->', field.key);
+                                _.each(store.reports.data, function(report) {
+                                    report.data[field.key] = report.data[found_field.key];
+                                    report.data[found_field.key] = undefined;
+                                });
+                                found_field.key = field.key;
                             }
-                            console.log('forum upd:', forum);
+                            if (found_field.value != field.value) {
+                                console.log('field value modified:', found_field.value, '->', field.value);
+                                found_field.value = field.value;
+                            }
                         }
                     }
-                    else if (prop.key === 'ticker.general.links') {
-                        var link = prop.value;
+                }
+                else if (message.key === 'ticker.reports.data') {
+                    var report = message.value;
 
-                        if (!store.general.links) store.general.links = {};
+                    if (!store.reports) store.reports = {};
+                    if (!store.reports.data) store.reports.data = [];
 
-                        console.log('shares adminig:', store.general.name);
-                        if (prop.remove) {
-                            delete store.general.links[link.id];
-                            console.log('link removed:', link);
+                    console.log('shares adminig:', store.general.name);
+                    if (message.remove) {
+                        var removed = _.remove(store.reports.data, {id: report.id});
+                        console.log('report removed:', removed);
+                    }
+                    else {
+                        var found_report = _.find(store.reports.data, {id: report.id});
+                        if (!found_report) {
+                            store.reports.data.push(report);
+                            console.log('report added:', report);
                         }
                         else {
-                            store.general.links[link.id] = {
-                                name: link.key,
-                                href: link.value,
-                            }
-                            console.log('link upd:', link);
+                            console.log('report modified');
+                            console.log('old:', found_report);
+                            _.extend(found_report, report);
+                            console.log('new:', found_report);
                         }
                     }
-                    else if (prop.key === 'ticker.reports.fields') {
-                        var field = prop.value;
-
-                        if (!store.reports) store.reports = {};
-                        if (!store.reports.fields) store.reports.fields = [];
-
-                        console.log('shares adminig:', store.general.name);
-                        if (prop.remove) {
-                            var removed = _.remove(store.reports.fields, {id: field.id});
-                            console.log('field removed:', removed);
-                        }
-                        else {
-                            var found = _.find(store.reports.fields, {id: field.id});
-                            if (!found) {
-                                store.reports.fields.push(field);
-                                console.log('field added:', field);
-                            }
-                            else {
-                                if (found.key != field.key) {
-                                    console.log('field key modified:', found.key, '->', field.key);
-                                    _.each(store.reports.data, function(report) {
-                                        report.data[field.key] = report.data[found.key];
-                                        report.data[found.key] = undefined;
-                                    });
-                                    found.key = field.key;
-                                }
-                                if (found.value != field.value) {
-                                    console.log('field value modified:', found.value, '->', field.value);
-                                    found.value = field.value;
-                                }
-                            }
-                        }
-                    }
-                    else if (prop.key === 'ticker.reports.data') {
-                        var report = prop.value;
-
-                        if (!store.reports) store.reports = {};
-                        if (!store.reports.data) store.reports.data = [];
-
-                        console.log('shares adminig:', store.general.name);
-                        if (prop.remove) {
-                            var removed = _.remove(store.reports.data, {id: report.id});
-                            console.log('report removed:', removed);
-                        }
-                        else {
-                            var found = _.find(store.reports.data, {id: report.id});
-                            if (!found) {
-                                store.reports.data.push(report);
-                                console.log('report added:', report);
-                            }
-                            else {
-                                console.log('report modified');
-                                console.log('old:', found);
-                                _.extend(found, report);
-                                console.log('new:', found);
-                            }
-                        }
-                    }
-                });
-                found.setStore(store);
-                provider.shares.cache(found);
+                }
+                share.setStore(store);
+                provider.shares.cache(share);
                 return next();
             }
         ], function(err) {
