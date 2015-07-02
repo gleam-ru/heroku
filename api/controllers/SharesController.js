@@ -231,9 +231,18 @@ module.exports = {
                                 console.log('field added:', field);
                             }
                             else {
-                                found.key  = field.key;
-                                found.value = field.value;
-                                console.log('field modified:', found, '->', field);
+                                if (found.key != field.key) {
+                                    console.log('field key modified:', found.key, '->', field.key);
+                                    _.each(store.reports.data, function(report) {
+                                        report.data[field.key] = report.data[found.key];
+                                        report.data[found.key] = undefined;
+                                    });
+                                    found.key = field.key;
+                                }
+                                if (found.value != field.value) {
+                                    console.log('field value modified:', found.value, '->', field.value);
+                                    found.value = field.value;
+                                }
                             }
                         }
                     }
