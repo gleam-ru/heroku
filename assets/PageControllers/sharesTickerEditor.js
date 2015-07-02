@@ -674,15 +674,13 @@ var initReportWindow = function(parent) {
                 var vm    = this;
                 var last = vm.getLastReport();
 
-                vm.data['income'].$set('123');
-
-                // var temp = vm.data;
-                // if (last.data) {
-                //     _.each(vm.fields, function(field) {
-                //         temp[field.key] = last.data[field.key] || '';
-                //     })
-                // }
-                // vm.data.$set(temp);
+                var temp = {};
+                if (last.data) {
+                    _.each(vm.fields, function(field) {
+                        temp[field.key] = last.data[field.key] || '';
+                    });
+                }
+                vm.data = _.clone(temp);
             },
         },
         ready: function() {
