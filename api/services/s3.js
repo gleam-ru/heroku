@@ -59,15 +59,18 @@ me.clientToServer = function(cb) {
         },
     };
     var uploader = me.getClient().uploadDir(params);
-    uploader.on('error', function(err) {
-        console.error("unable to sync to amazon s3:", err.stack);
-        console.timeEnd('serverToClient')
-        cb(err);
+    uploader.on('fileUploadStart', function(localFilePath, s3Key) {
+        console.log("fileUploadStart", localFilePath, s3Key);
     });
     uploader.on('end', function() {
         console.log("s3 uploading is complete");
         console.timeEnd('clientToServer')
         cb();
+    });
+    uploader.on('error', function(err) {
+        console.error("unable to sync to amazon s3:", err.stack);
+        console.timeEnd('serverToClient')
+        cb(err);
     });
 }
 
@@ -84,15 +87,18 @@ me.serverToClient = function(cb) {
         },
     };
     var downloader = me.getClient().downloadDir(params);
-    downloader.on('error', function(err) {
-        console.error("unable to sync from amazon d3:", err.stack);
-        console.timeEnd('serverToClient')
-        cb(err);
+    downloader.on('fileDownloadStart', function(localFilePath, s3Key) {
+        console.log("fileDownloadStart", localFilePath, s3Key);
     });
     downloader.on('end', function() {
         console.log("s3 downloading is complete");
         console.timeEnd('serverToClient')
         cb();
+    });
+    downloader.on('error', function(err) {
+        console.error("unable to sync from amazon d3:", err.stack);
+        console.timeEnd('serverToClient')
+        cb(err);
     });
 }
 
