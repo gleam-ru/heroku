@@ -36,6 +36,8 @@ block pageHead
         title='Официальный сайт'
         )
         +roundIcon('fa-external-link')
+    else
+      +roundIcon('fa-external-link', true)
     if (tickerForums && tickerForums.length)
       - var forumsList = ''
       - forumsList += '<ul>'
@@ -45,6 +47,8 @@ block pageHead
         title='<p>Популярные форумы:</p>#{forumsList}'
         )
         +roundIcon('fa-comments')
+    else 
+        +roundIcon('fa-comments', true)
     if (tickerLinks && tickerLinks.length)
       - var linksList = ''
       - linksList += '<ul>'
@@ -54,6 +58,8 @@ block pageHead
         title='<p>Полезные ссылки:</p>#{linksList}'
         )
         +roundIcon('fa-paperclip')
+    else
+      +roundIcon('fa-paperclip', true)
     if (1)
       a.tt(
         href='/'
