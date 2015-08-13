@@ -1,21 +1,14 @@
 var s3 = require('s3');
 var me = {};
 
-if (!sails.config.local.s3) {
-    console.warn('Отсуствует ключ для amazon_s3');
+if (!sails.config.local || !sails.config.local.s3) {
+    console.warn('Ключ для amazon_s3 отсутствует в local.js');
 }
 else {
     _.extend(sails.config.amazon.s3, sails.config.local.s3);
 }
 
-me.client = s3.createClient({
-    s3Options: {
-        accessKeyId: sails.config.amazon.s3.key,
-        secretAccessKey: sails.config.amazon.s3.secret,
-    },
-});
-
-
+// me.client;
 me.getClient = function() {
     if (!me.client) {
         me.client = s3.createClient({
