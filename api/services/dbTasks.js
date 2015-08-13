@@ -31,15 +31,23 @@ me.bondsNewDay = function(done) {
                 // устанавливаю макс/мин значения у дейли свечи
                 _.each(store.indayCandles, function(candle) {
                     // bid
-                    if (candle.bid > daily.bid.h)
-                        daily.bid.h = candle.bid;
-                    if (candle.bid < daily.bid.l)
-                        daily.bid.l = candle.bid;
+                    if (candle.bid) {
+                        if (candle.bid > daily.bid.h) {
+                            daily.bid.h = candle.bid;
+                        }
+                        if (candle.bid < daily.bid.l) {
+                            daily.bid.l = candle.bid;
+                        }
+                    }
                     // ask
-                    if (candle.ask > daily.ask.h)
-                        daily.ask.h = candle.ask;
-                    if (candle.ask < daily.ask.l)
-                        daily.ask.l = candle.ask;
+                    if (candle.ask) {
+                        if (candle.ask > daily.ask.h) {
+                            daily.ask.h = candle.ask;
+                        }
+                        if (candle.ask < daily.ask.l) {
+                            daily.ask.l = candle.ask;
+                        }
+                    }
                 });
             }
             // удаляю дневные данные

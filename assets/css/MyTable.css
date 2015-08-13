@@ -150,35 +150,33 @@
         font-weight: 700;
         font-size: 13px;
         }
+    .my-table .table .dataTables_length {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 10px;
+        }
+        .my-table .table .dataTables_length select {
+            width: inherit;
+            height: 30px;
+            line-height: 30px;
+            padding: 3px;
+            }
+    .my-table .table .dataTables_filter {
+        font-family: sans-serif;
+        margin: 0px;
+        display: inline-block;
+        margin-left: 10px;
+        height: 30px;
+        }
+        .my-table .table .dataTables_filter input {
+            vertical-align: text-top;
+            }
     .my-table .table .dataTables_paginate {
         padding: 0px !important;
         margin-bottom: 9px;
         text-align: right !important;
         margin-left: 20px;
         }
-        .my-table .table .dataTables_paginate>a:hover {
-            box-shadow: 0 0 0 26px rgba(0,0,0,0.1) inset;
-            }
-        .my-table .table .dataTables_paginate>a {
-            color: #fff !important;
-            background: none !important;
-            background-color: #2c3e50 !important;
-            box-shadow: 0 -2px 0 rgba(0,0,0,0.15) inset;
-
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-
-            border: none !important;
-            border-radius: 3px;
-
-            padding: 4px 12px;
-            transition: all 0.25s ease;
-            }
-        .my-table .table .dataTables_paginate .paginate_button {margin-left: 0px;}
-        .my-table .table .dataTables_paginate .paginate_button:not(:first-child) {
-            margin-left: 5px;
-            }
 .my-table .block-for-transition {
     transition: all 0.15s linear;
     overflow: hidden;
@@ -200,10 +198,17 @@
         display: block;
         width: 100%;
         }
-    .my-table .table .dataTables_wrapper.no-footer {
-        margin-top: 0px;
+    .my-table .table .dataTables_filter {
+        display: block;
+        margin: 10px 1px;
         }
-    .my-table .table .dataTables_wrapper .dataTables_paginate {
+}
+
+@media screen and (max-width: 800px) {
+    .my-table .table .dataTables_wrapper.no-footer {
+        margin-top: 10px;
+        }
+    .my-table .table .dataTables_paginate {
         text-align: left !important;
         float: none;
         margin: 0px 0px 7px 0px;

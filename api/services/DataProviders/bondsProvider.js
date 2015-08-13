@@ -133,6 +133,7 @@ function saveBonds(bondsArr, cb) {
             };
 
             if (!Array.isArray(store.indayCandles)) store.indayCandles = [];
+            if (!Array.isArray(store.dailyCandles)) store.dailyCandles = [];
             if (existingStore.lastCandle) {
                 store.indayCandles.push(existingStore.lastCandle);
             }
@@ -190,6 +191,9 @@ function beforeCreate(bond) {
 // рассчет динамических ключей облигации
 // на основании сохраненных
 function calculate(_bond) {
+    var now = moment();
+    var flashback = 3; // last 3 days to restore missed bids
+
     var store = _bond.getStore();
     var bond = {};
     _.extend(bond, {id: _bond.id});
@@ -205,13 +209,70 @@ function calculate(_bond) {
         bond.cpYie = (bond.cpVal / bond.rate) * (365 / bond.cpDur);
     }
 
+    // предложение (%%) по облигации
+    // попытка узнать предложение, которое было в течение текущего дня
+    if (!bond.bid) {
+        var indayCandles = store.indayCandles || [];
+        for (var i = indayCandles.length - 1; i >= 0; i--) {
+            if (indayCandles[i].bid) {
+                bond.bid = indayCandles[i].bid;
+                break;
+            }
+        }
+    }
+
+    // предложения за сегодня отсутствуют,
+    // надо проверить - а были ли в предыдущие дни?
+    //
+    if (!bond.bid) {
+        var i = 0;
+        var candles = store.dailyCandles || [];
+        var pastCandle = candles[candles.length - 1 - i++];
+        while (pastCandle && i < flashback) {
+            var possibleBid = pastCandle.bid.l || pastCandle.bid.o || pastCandle.bid.h;
+            if (possibleBid) {
+                if (now - (moment(pastCandle.date)) < ((flashback + 3) * 1000*60*60*24)) {
+                    bond.bid = possibleBid;
+                }
+                break;
+            }
+            pastCandle = candles[candles.length - 1 - i++];
+        }
+    }
+
     // настоящая цена
     bond.price = bond.rate * bond.bid / 100 + bond.nkd;
-    // Процентная ставка по облигации
-    if (!bond.bid) bond.percent = 0;
-    else bond.percent = ((bond.rate + bond.nkd + bond.rate * bond.cpYie * bond.expiresIn / 365) / bond.price - 1) * 365 / bond.expiresIn * 100;
-    // Процентная ставка по облигации с учетом налога 13%
-    bond.percentWTaxes = bond.percent * 0.87;
+
+    // ваще неликвид...
+    if (!bond.bid) {
+        bond.percent = 0;
+        bond.percent_woRT = 0;
+        bond.percent_woRTCT = 0;
+    }
+    else {
+
+        var buy_price  = bond.rate * (bond.bid / 100) + bond.nkd;
+
+        // полученные в будущем купоны (штук)
+        var futureCps = Math.ceil(bond.expiresIn / bond.cpDur);
+        // (по аналогии с nkd) - купонный доход, который будет выплачен при погашении
+        var kd = futureCps * bond.cpVal;
+        var sell_price = bond.rate + kd;
+
+        var taxes = 0.13; // 13% ндс
+        var partOfYear = bond.expiresIn / 365;
+
+        // налоги по разнице между покупкой и продажей
+        var taxes_rate = (bond.bid < 100) ? (1 - 0.01 * bond.bid) * bond.rate * taxes : 0;
+        // налоги по купону
+        var taxes_cp = kd * taxes;
+
+        bond.percent = (sell_price / buy_price - 1) / partOfYear * 100;
+        // withoutRateTaxes
+        bond.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / partOfYear * 100;
+        // withoutRateTaxes and CouponTaxes
+        bond.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / partOfYear * 100;
+    }
 
     return bond;
 }
@@ -230,10 +291,11 @@ function format(bond) {
         'nkd',
         'dur',
         'expiresIn',
-        'cpYie',
+        // 'cpYie', // ОЧЕНЬ приличные потери в точности
         'price',
         'percent',
-        'percentWTaxes',
+        'percent_woRT',
+        'percent_woRTCT',
     ];
     _.each(nums, function(num) {
         bond[num] = bond[num] ? (1 * bond[num].toFixed(2)) : '';
@@ -256,7 +318,8 @@ function format(bond) {
         bond.cpYie,
         bond.price,
         bond.percent,
-        bond.percentWTaxes,
+        bond.percent_woRT,
+        bond.percent_woRTCT,
     ];
 }
 

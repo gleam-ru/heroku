@@ -7,8 +7,9 @@ window.href = window.location.pathname.replace(/\/$/, "");
 // datatables localization
 window.datatables_localization = {
     "processing": "Подождите...",
-    "search": "Поиск:",
-    "lengthMenu": "Показать _MENU_ записей",
+    "search": "",
+    "searchPlaceholder": "Поиск в таблице",
+    "lengthMenu": "_MENU_",
     "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
     "infoEmpty": "Записи с 0 до 0 из 0 записей",
     "infoFiltered": "(отфильтровано из _MAX_ записей)",
@@ -18,8 +19,8 @@ window.datatables_localization = {
     "emptyTable:": "В таблице отсутствуют данные",
     "paginate": {
         "first": "Первая",
-        "previous": "Предыдущая",
-        "next": "Следующая",
+        "previous": "<",
+        "next": ">",
         "last": "Последняя"
     },
     "aria": {
@@ -48,7 +49,7 @@ $(document).ready(function() {
     // datatables
     window.dateFormat = "DD.MM.YYYY";
     $.fn.dataTable.moment(dateFormat);
-
+    $.fn.dataTable.ext.pager.numbers_length = 5;
 
 
     // tooltipster

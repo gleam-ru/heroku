@@ -27,12 +27,16 @@ window.MyTable = Vue.extend({
             tableInfo: [],
             dt: {
                 pageLength: 10,
-                bStateSave: true,
+                stateSave: true,
+                stateSaveParams: function (settings, data) {
+                    data.search.search = "";
+                },
                 sScrollX: '100%',
                 bScrollCollapse: true,
-                sDom: 'pft',
-                pagingType: 'simple',
-                // paging: false,
+                // http://legacy.datatables.net/usage/options
+                sDom: 'lpft',
+                aLengthMenu: [[10, 50, 100, -1], [10, 50, 100, "все"]],
+                paging: true,
                 language: datatables_localization,
             },
             columns: [],
@@ -82,14 +86,14 @@ window.MyTable = Vue.extend({
             var vm = this;
             var idx = vm.editingFilterIndex ? vm.editingFilterIndex : -1;
             if ($.cookie) {
-                $.cookie('_editingFilterIndex'+vm.filters, idx, {expires: 365});
+                $.cookie('_editingFilterIndex', idx, {expires: 365});
             }
         },
         currentFilterIndex: function() {
             var vm = this;
             var idx = vm.currentFilterIndex ? vm.currentFilterIndex : -1;
             if ($.cookie) {
-                $.cookie('_currentFilterIndex'+vm.filters, idx, {expires: 365});
+                $.cookie('_currentFilterIndex', idx, {expires: 365});
             }
         },
     },
@@ -458,15 +462,24 @@ window.MyTable = Vue.extend({
             vm.tableInfo = info;
         };
 
+        // дефолтная сортировка
+        var i = 0;
+        vm.dt.order = [];
+        _.each(vm.dt.columns, function(column) {
+            if (column.order) {
+                vm.dt.order.push([i, column.order]);
+            }
+            i++;
+        })
 
 
         //  ╦  ╔═╗╔═╗╦╔═╗
         //  ║  ║ ║║ ╦║║
         //  ╩═╝╚═╝╚═╝╩╚═╝
         // текущий редактируемый фильтр
-        vm.editingFilterIndex = $.cookie ? $.cookie('_editingFilterIndex'+vm.filters) : -1;
+        vm.editingFilterIndex = $.cookie ? $.cookie('_editingFilterIndex') : -1;
         // текущий активный фильтр
-        vm.currentFilterIndex = $.cookie ? $.cookie('_currentFilterIndex'+vm.filters) : 0;
+        vm.currentFilterIndex = $.cookie ? $.cookie('_currentFilterIndex') : 0;
         // загружаем данные по фильтрам
         vm.savedFilters = vm.filters;
         vm.updateEditingFilter();
@@ -474,11 +487,11 @@ window.MyTable = Vue.extend({
         // наши, "местные" колонки
         vm.columns = _(vm.columns)
             .map(function(column) {
-                if (column.className === 'buttonColumn') {
+                if (column.className && column.className.indexOf('custom') !== -1) {
                     return false;
                 }
                 return {
-                    text: column.title,
+                    text: column.vueTitle || column.title,
                     value: column.id,
                     filterType: column.filterType || 'string',
                 }
@@ -583,10 +596,14 @@ window.MyTable = Vue.extend({
     // DOM-зависимые ивенты
     compiled: function() {
         var vm = this;
-        var dt = this.$$.dt;
+        var dt = vm.$$.dt;
         vm.dt.table = $(dt).dataTable(vm.dt);
         // первая страница по-умолчанию
         vm.dt.table.fnPageChange(0);
+        // перемещаю селектор строк в заголовок
+        $(vm.$el).find('.dataTables_length').appendTo($(vm.$$.header))
+        // перемещаю поиск в заголовок
+        $(vm.$el).find('.dataTables_filter').appendTo($(vm.$$.header))
 
         // Transitions
         var wrapper = vm.dt.table.closest('.height-transition');
