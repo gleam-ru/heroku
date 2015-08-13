@@ -29,19 +29,6 @@ module.exports.bootstrap = function(cb) {
         sails.config.amazon.s3.key    = process.env.AMAZON_S3_KEY;
         sails.config.amazon.s3.secret = process.env.AMAZON_S3_SECRET;
     }
-    else {
-        if (sails.config.local) {
-            if (!sails.config.local.s3) {
-                console.warn('Отсуствует ключ для amazon_s3');
-            }
-            else {
-                _.extend(sails.config.amazon.s3, sails.config.local.s3);
-            }
-        }
-        else {
-            console.warn('Необходимо добавить config/local.js!');
-        }
-    }
 
 
     // создаем нужные директории
@@ -78,10 +65,11 @@ module.exports.bootstrap = function(cb) {
     // TODO: сделать покрасиввее
     if (!sails.config.heroku) {
         async.series([
-            // s3.clientToServer,
-            provider.init,
             cache.init,
-            // cron.init,
+            // s3.serverToClient,
+            provider.init,
+            cron.init,
+            // s3.clientToServer,
         ],
         function(err) {
             if (err) return cb(err);
@@ -94,9 +82,9 @@ module.exports.bootstrap = function(cb) {
     }
     else {
         async.series([
+            cache.init,
             s3.serverToClient,
             provider.init,
-            cache.init,
             cron.init,
         ],
         function(err) {

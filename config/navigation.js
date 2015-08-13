@@ -35,6 +35,10 @@ module.exports.navigation = [
                 name     : "Облигации",
                 href     : "/services/bonds",
             },
+            {
+                name     : "Акции",
+                href     : "/services/shares",
+            },
         ]
     },
 
@@ -62,15 +66,6 @@ module.exports.navigation = [
     {
         name     : "Админка",
         href     : "/adm",
-        canSee   : ["admin"],
-    },
-
-    //
-    // dev
-    //
-    {
-        name     : "GO",
-        href     : "/services/shares/647/edit",
         canSee   : ["admin"],
     },
 ];

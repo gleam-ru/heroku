@@ -14,10 +14,10 @@ me.process = function(cb) {
         me.initialFill,
         // заполняю эмитентов, у которых отсутствует большое количество свечек (вероятно, они новые)
         me.fixMissedCandles_individual,
-        // обновляю крайнюю свечу всех эмитентов
+        // TODO: обновляю крайнюю свечу всех эмитентов
         // me.getLastCandle,
         // кидаю спаршенные данные на амазон
-        // s3.clientToServer
+        // s3.clientToServer,
         //
     ], cb);
 }
@@ -66,6 +66,7 @@ me.initialFill = function(cb) {
         Issuer.findOne(existing, function(err, found) {
             if (err) return done(err);
             if (found) return done();
+            console.log('share creating:', existing)
             Issuer.create(existing, function(err, created) {
                 if (err) return done(err);
                 console.info('Эмитент создан!', ticker.id, ticker.name);
@@ -108,6 +109,7 @@ me.fixMissedCandles = function(cb) {
                 var tickerMfdIds = [];
                 _.each(tickers, function(ticker) {
                     var store = ticker.getStore();
+                    if (!store) return;
                     var candles = store.dailyCandles;
                     var lastSaved = candles[candles.length - 1];
                     var lastDate = lastSaved ? moment(lastSaved.date, 'YYYY-MM-DD') : moment(new Date(1900, 1, 1));
@@ -210,6 +212,7 @@ me.fixMissedCandles_individual = function(cb) {
         // получаю данные по "старым" отсутствующим свечам
         async.each(tickers, function(ticker, done) {
             var store = ticker.getStore();
+            if (!store) return done();
             var candles_existing = store.dailyCandles;
             var lastSaved = candles_existing[candles_existing.length - 1];
             var lastDate = lastSaved ? moment(lastSaved.date, 'YYYY-MM-DD') : moment(new Date(1900, 1, 1));
@@ -219,18 +222,22 @@ me.fixMissedCandles_individual = function(cb) {
                 if (!mfd_id) {
                     console.warn('У акции', store.general.name, 'отсутствует много свечей и не привязан mfd_id');
                 }
-                else if (now - moment(ticker.updatedAt) > sails.config.app.providers.shares.getAgainTimeout) {
+                else if (now - moment(ticker.updatedAt) < sails.config.app.providers.shares.timeToForget) {
                     parser.getTicker(mfd_id, function(err, candles_parsed) {
                         if (err) return done(err);
-                        store.dailyCandles = mergeCandles(candles_existing, candles_parsed);
-                        store.indayCandles = [];
-                        store.lastCandle = {};
-                        ticker.setStore(store);
-                        return ticker.save(done);
+                        if (candles_parsed.length > 0) {
+                            store.dailyCandles = mergeCandles(candles_existing, candles_parsed);
+                            store.indayCandles = [];
+                            store.lastCandle = {};
+                            ticker.setStore(store);
+                            return ticker.save(done);
+                        }
+                        return done();
                     });
                     return;
                 }
                 else {
+                    console.info('"забываем" эмитента:', ticker)
                 }
             }
             return done();

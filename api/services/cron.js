@@ -57,7 +57,7 @@ cron.init = function(cb) {
         });
     });
 
-    log.verbose('cron inited');
+    console.log('cron inited');
     if (cb) cb();
 }
 

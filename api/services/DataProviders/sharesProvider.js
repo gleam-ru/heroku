@@ -11,10 +11,10 @@ me.init = function(cb) {
     async.series([
         // импорт отсутствующих эмитентов (есть в конфиге, но нет в базе)
         // или тех эмитентов, у которых более 4 месяцев пропущенных свечей
-        // importer.process,
+        importer.process,
         // проверяю данные из базы на "целостность" (наличие всех свечек)
         // при необходимости - докачиваю
-        // importer.fixMissedCandles,
+        importer.fixMissedCandles,
         // кэширую все
         me.createCache,
         //

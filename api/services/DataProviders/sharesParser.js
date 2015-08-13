@@ -85,7 +85,8 @@ me.getByDate = function(date_start, tickers, cb) {
 
 
 // cb(err, [candles])
-me.getTicker = function(ticker, cb) {
+// banned - смотри описание в sails.config.app.providers.shares.possibleBanTimeout
+me.getTicker = function(ticker, cb, banned) {
     var url = ''+
         'http://mfd.ru/export/handler.ashx?'+qs({
             'Tickers'            : ticker.toString(),
@@ -110,7 +111,16 @@ me.getTicker = function(ticker, cb) {
         uri: url,
     }, function(err, response, body) {
         console.info('mfd req:', url);
-        if (err) return cb(err);
+        if (err) {
+            if (banned) {
+                return cb(err);
+            }
+            else {
+                return setTimeout(function() {
+                    me.getTicker(ticker, cb, true);
+                }, sails.config.app.providers.shares.possibleBanTimeout)
+            }
+        }
         if (!body) return cb('Получена пустая страница: url');
 
         require('csv-parse')(body, {
