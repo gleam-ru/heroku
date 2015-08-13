@@ -36,7 +36,7 @@ block pageHead
         title='Официальный сайт'
         )
         +roundIcon('fa-external-link')
-    if (tickerForums)
+    if (tickerForums && tickerForums.length)
       - var forumsList = ''
       - forumsList += '<ul>'
       - tickerForums.forEach(function(f) {forumsList += '<li><a target="_blank" href="'+f.href+'">'+f.name+'</a></li>'})
@@ -45,7 +45,7 @@ block pageHead
         title='<p>Популярные форумы:</p>#{forumsList}'
         )
         +roundIcon('fa-comments')
-    if (tickerLinks)
+    if (tickerLinks && tickerLinks.length)
       - var linksList = ''
       - linksList += '<ul>'
       - tickerLinks.forEach(function(l) {linksList += '<li><a target="_blank" href="'+l.href+'">'+l.name+'</a></li>'})

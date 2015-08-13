@@ -136,10 +136,40 @@ function createChart(data, cb) {
         .attr("class", "ctx")
         .attr("transform", "translate("+(margin[3])+","+(0)+")");
 
+        // иногда данных много => брашеру не нужно знать а них всех :)
+        var step = Math.round(candles.length / (b_width / 10));
+        if (!step) step = 1;
+        var b_candles = [];
+        var current_candle = 0;
+        while(current_candle < candles.length) {
+            var candle = candles[current_candle];
+            if (!candle) {
+                b_candles.push(_.last(candles));
+            }
+            else {
+                var created = _.clone(candle);
+                for (var i = 0; i < step; i++) {
+                    candle = candles[current_candle + i];
+                    if (!candle) {
+                        break;
+                    }
+                    if (created.high < candle.high) {
+                        created.high = candle.high;
+                    }
+                    if (created.low > candle.low) {
+                        created.low = candle.low;
+                    }
+                    created.close = candle.close;
+                }
+                b_candles.push(created);
+            }
+            current_candle += step;
+        }
+
         // брашер (график)
         var gBrusherPlot = ctx.append("g")
             .attr("class", "close")
-            .datum(candles)
+            .datum(b_candles)
 
         // брашер (ось времени)
         var gBrusherX = ctx.append("g")
@@ -228,7 +258,7 @@ function createChart(data, cb) {
     // цена
     var b_y = d3.scale
         .linear()
-        .domain(techan.scale.plot.ohlc(candles, accessor).domain())
+        .domain(techan.scale.plot.ohlc(b_candles, accessor).domain())
         .range([b_height, 0]);
 
 
