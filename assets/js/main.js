@@ -29,6 +29,22 @@ window.datatables_localization = {
     }
 }
 
+// стандартные сообщения
+window.messages = {
+    issue: ''+
+        '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>'+
+        '',
+    auth: ''+
+        '<p>Для данного действия необходимо <br />'+
+            '<a href="/auth?register">зарегистрироваться</a> или <br />'+
+            '<a href="/auth">войти в систему</a>.'+
+        '</p>'+
+        '',
+    not_implemented: ''+
+        '<p>Извините, данная возможность пока не реализована</p>'+
+        '',
+}
+
 $(document).ready(function() {
     // pickmeup
     var locale = {
@@ -56,22 +72,25 @@ $(document).ready(function() {
     $.fn.tooltipster('setDefaults', {
         theme: 'tooltipster-light'
     });
+    window.initTT = function() {
+        $('.tt').each(function() {
+            var el = $(this);
+            var opts = {};
+            opts.position = 'bottom';
+            opts.maxWidth = 350;
 
-    $('.tt').each(function() {
-        var el = $(this);
-        var opts = {};
-        opts.position = 'bottom';
-        opts.maxWidth = 350;
+            if (el.hasClass('tt_interactive')) {
+                opts.interactive = true;
+                opts.interactiveTolerance = 100;
+            }
+            if (el.hasClass('tt_html'))
+                opts.contentAsHTML = true;
 
-        if (el.hasClass('tt_interactive')) {
-            opts.interactive = true;
-            opts.interactiveTolerance = 100;
-        }
-        if (el.hasClass('tt_html'))
-            opts.contentAsHTML = true;
+            el.tooltipster(opts);
+        });
+    }
+    initTT();
 
-        el.tooltipster(opts);
-    });
 
 
 

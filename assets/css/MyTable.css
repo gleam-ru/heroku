@@ -209,8 +209,8 @@
         margin-top: 10px;
         }
     .my-table .table .dataTables_paginate {
-        text-align: left !important;
+        /*text-align: left !important;*/
         float: none;
-        margin: 0px 0px 7px 0px;
+        margin: 7px 0px 7px 0px;
         }
 }

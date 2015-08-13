@@ -9,29 +9,21 @@ $(document).ready(function() {
             title: 'Ссылки',
             width: 84, // 28px * количество_иконок
             render: function(data, type, full) {
-                var empty_space = '<span class="emptyRoundIcon"></span>';
-                if (full.code) {
-                    console.log(full)
-                }
-                // оф сайт
-                // форумы
-                // моекс
-                // новости
                 var tr = '';
+
                 // admin
-                if (user && user.access === 'admin') {
+                if (user && user.access === 'admin')
                     tr += ''+
                         '<a class="inTableIcon"'+
                             'href="'+href+'/'+full.id+'/edit" '+
                             '>'+
                             Jade.els.roundIcon('fa-paw')+
                         '</a>';
-                }
-                else {
-                    // tr += empty_space;
-                }
+
+
+
                 // moex
-                if (full.code) {
+                if (full.code)
                     tr += ''+
                         '<a class="inTableIcon"'+
                             'title="MOEX" '+
@@ -40,12 +32,13 @@ $(document).ready(function() {
                             '>'+
                             Jade.els.roundIcon('fa-area-chart')+
                         '</a>';
-                }
-                else {
+                else
                     tr += Jade.els.roundIcon('fa-area-chart', true)
-                }
+
+
+
                 // main (external) page
-                if (full.site) {
+                if (full.site)
                     tr += ''+
                         '<a class="inTableIcon"'+
                             'href="'+full.site+'" '+
@@ -53,18 +46,70 @@ $(document).ready(function() {
                             '>'+
                             Jade.els.roundIcon('fa-external-link')+
                         '</a>';
-
-                }
-                else {
+                else
                     tr += Jade.els.roundIcon('fa-external-link', true)
-                }
-                // tr += ''+
-                //     '<a class="inTableIcon"'+
-                //         'href="'+href+'/'+full.href+'" '+
-                //         'target=_blank'+
-                //         '>'+
-                //         Jade.els.roundIcon('fa-comments')+
-                //     '</a>';
+
+
+
+                // forums
+                if (_.keys(full.forums).length)
+                    tr += ''+
+                        '<span class="inTableIcon tt tt_interactive tt_html cur-p"'+
+                            'title="'+
+                                '<ul><p>Полезные форумы:</p>'+
+                                    _.map(full.forums, function(f) {
+                                            return {
+                                                name: f.name,
+                                                href: f.href,
+                                            }
+                                        })
+                                        .map(function(f) {
+                                            return '<li><a target=\'_blank\' href=\''+f.href+'\'>'+f.name+'</a></li>';
+                                        })
+                                        .join('')+
+                                '</ul>'+
+                            '"'+
+                        '>'+
+                            Jade.els.roundIcon('fa-comments')+
+                        '</span>';
+                else
+                    tr += Jade.els.roundIcon('fa-comments', true)
+
+
+
+                // links
+                if (_.keys(full.links).length)
+                    tr += ''+
+                        '<span class="inTableIcon tt tt_interactive tt_html cur-p"'+
+                            'title="'+
+                                '<ul><p>Полезные ссылки:</p>'+
+                                    _.map(full.links, function(l) {
+                                            return {
+                                                name: l.name,
+                                                href: l.href,
+                                            }
+                                        })
+                                        .map(function(l) {
+                                            return '<li><a target=\'_blank\' href=\''+l.href+'\'>'+l.name+'</a></li>';
+                                        })
+                                        .join('')+
+                                '</ul>'+
+                            '"'+
+                        '>'+
+                            Jade.els.roundIcon('fa-paperclip')+
+                        '</span>';
+                else
+                    tr += Jade.els.roundIcon('fa-paperclip', true)
+
+
+
+                tr += ''+
+                    '<a class="inTableIcon"'+
+                        'title="Добавить в портфель"'+
+                        'href="#"'+
+                        '>'+
+                        Jade.els.roundIcon('fa-plus')+
+                    '</a>';
                 return tr;
             },
         }, {
@@ -85,14 +130,35 @@ $(document).ready(function() {
 
 
 
-    table.DataTable({
+    var DT = table.dataTable({
         data: shares.rows,
         columns: columns,
-        sDom: 'ftp',
+        sDom: 'lfpt',
+        stateSave: true,
+        oSearch: {
+            // smart: true,
+            bRegex: true,
+        },
+        stateSaveParams: function (settings, data) {
+            // data.search.search = "";
+        },
         paging: true,
         deferRender: true,
         sScrollX: '100%',
         bScrollCollapse: true,
         language: datatables_localization,
+        fnDrawCallback: initTT,
     });
+
+    // http://stackoverflow.com/questions/25382569/jquery-datatables-or-search-filter
+    $('#table_filter input').on('keyup click search input', function() {
+        var input = $(this);
+        var keywords = input.val().split(' ');
+        var filter = '';
+        for (var i = 0; i < keywords.length; i++) {
+            filter = (filter !== '') ? filter + '|' + keywords[i] : keywords[i];
+        }
+        DT.fnFilter(filter, null, true, false, true, true);
+    });
+
 });

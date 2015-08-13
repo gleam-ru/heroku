@@ -24,6 +24,8 @@ module.exports = {
                 name   : s.general.name,
                 code   : s.general.ticker_code || '',
                 price  : lastCandle ? lastCandle.c : '',
+                forums : s.general.forums,
+                links  : s.general.links,
             });
         });
         return res.render('services/shares/shares', {

@@ -1,19 +1,3 @@
-// стандартные сообщения
-window.messages = {
-    issue: ''+
-        '<p>Пожалуйста, опишите проблему <a href="/about/feedback">здесь</a>.</p>'+
-        '',
-    auth: ''+
-        '<p>Для данного действия необходимо <br />'+
-            '<a href="/auth?register">зарегистрироваться</a> или <br />'+
-            '<a href="/auth">войти в систему</a>.'+
-        '</p>'+
-        '',
-    not_implemented: ''+
-        '<p>Извините, данная возможность пока не реализована</p>'+
-        '',
-}
-
 window.MyTable = Vue.extend({
     // шаблон
     template: Jade.MyTableTemplate(),
