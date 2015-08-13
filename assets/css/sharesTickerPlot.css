@@ -1,0 +1,78 @@
+.candlesPlot {
+    overflow: visible !important;
+    }
+    .candlesPlot text {
+        font: 11px sans-serif;
+        }
+    .candlesPlot .rect {
+        fill: none;
+        stroke: #bbb;
+        stroke-width: 1;
+        shape-rendering: crispEdges;
+        }
+    .candlesPlot .axis path,
+    .candlesPlot .axis line {
+        fill: none;
+        stroke: #bbb;
+        shape-rendering: crispEdges;
+        }
+    .candlesPlot .focus {
+        }
+        .candlesPlot .focus .positive text {
+            fill: #6BA484;
+            }
+        .candlesPlot .focus .negative text {
+            fill: #D7523F;
+            }
+        .candlesPlot .focus .domain {
+            stroke: none !important;
+            }
+        .candlesPlot .focus .y.axis .tick line,
+        .candlesPlot .focus .x.axis .tick line {
+            stroke: #dedede;
+            stroke-dasharray: 1;
+            }
+
+/* candles */
+path.candle {
+    }
+    path.candle.body {
+        shape-rendering: crispEdges;
+        stroke-width: 0;
+        }
+    path.candle.up {
+        fill: #6BA484;
+        stroke: #000;
+        }
+    path.candle.down {
+        fill: #D7523F;
+        stroke: #000;
+        }
+
+/* volumes */
+path.volume {
+    fill: #EEEEEE;
+    }
+
+/* brusher */
+path.line {
+    fill: none;
+    stroke: rgba(0,0,0, 0.5);
+    stroke-width: 1;
+    }
+.extent {
+    shape-rendering: crispEdges;
+    stroke: #bbb;
+    fill: rgba(0,0,0, 0.1);
+    }
+
+/* crosshair */
+.crosshair path.wire {
+    stroke: #bbb;
+    shape-rendering: crispEdges;
+    }
+.crosshair .axisannotation path {
+    fill: #DDDDDD;
+    stroke: #bbb;
+    shape-rendering: crispEdges;
+    }

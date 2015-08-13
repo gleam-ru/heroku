@@ -1,6 +1,7 @@
 extends ../../layouts/default.jade
 
 block postHead
+  link(rel='stylesheet', href='/css/sharesTickerPlot.css')
   script(src="/bower_components/d3/d3.js" defer)
   script(src="/bower_components/techan/dist/techan.js" defer)
   +PasteInlineData([
@@ -8,89 +9,6 @@ block postHead
   ])
 
   script(src='/PageControllers/sharesTicker.js' defer)
-
-
-  
-  //- plot
-  style.
-    .candlesPlot {
-      overflow: visible !important;
-      }
-      .candlesPlot text {
-        font: 11px sans-serif;
-        }
-      .candlesPlot .rect {
-        fill: none;
-        stroke: #bbb;
-        stroke-width: 1;
-        shape-rendering: crispEdges;
-        }
-      .candlesPlot .axis path,
-      .candlesPlot .axis line {
-        fill: none;
-        stroke: #bbb;
-        shape-rendering: crispEdges;
-        }
-      .candlesPlot .focus {
-        }
-        .candlesPlot .focus .positive text {
-          fill: #6BA484;
-          }
-        .candlesPlot .focus .negative text {
-          fill: #D7523F;
-          }
-        .candlesPlot .focus .domain {
-          stroke: none !important;
-          }
-        .candlesPlot .focus .y.axis .tick line,
-        .candlesPlot .focus .x.axis .tick line {
-          stroke: #dedede;
-          stroke-dasharray: 1;
-          }
-
-    /* candles */
-    path.candle {
-      }
-      path.candle.body {
-        shape-rendering: crispEdges;
-        stroke-width: 0;
-        }
-      path.candle.up {
-        fill: #6BA484;
-        stroke: #000;
-        }
-      path.candle.down {
-        fill: #D7523F;
-        stroke: #000;
-        }
-    
-    /* volumes */
-    path.volume {
-      fill: #EEEEEE;
-      }
-    
-    /* brusher */
-    path.line {
-      fill: none;
-      stroke: rgba(0,0,0, 0.5);
-      stroke-width: 1;
-      }
-    .extent {
-      shape-rendering: crispEdges;
-      stroke: #bbb;
-      fill: rgba(0,0,0, 0.1);
-      }
-
-    /* crosshair */
-    .crosshair path.wire {
-      stroke: #bbb;
-      shape-rendering: crispEdges;
-      }
-    .crosshair .axisannotation path {
-      fill: #DDDDDD;
-      stroke: #bbb;
-      shape-rendering: crispEdges;
-      }
 
   style.
     .roundIcon {
@@ -106,40 +24,34 @@ block postHead
 
 block pageHead
   h1 #{ticker.general.name || ticker.general.ticker}
-    a.tt(
-      href='/services/shares/'+ticker.id+'/edit',
-      )
-      +roundIcon('fa-paw')
-    if (1 || ticker.general.site)
+    if (user && user.access === 'admin')
+      a.tt(
+        href='/services/shares/'+ticker.id+'/edit',
+        )
+        +roundIcon('fa-paw')
+    if (ticker.general.site)
       a.tt(
         href='/'
         target='_blank'
         title='Официальный сайт'
         )
-        +roundIcon('fa-round')
-    if (1 || ticker.general.forums)
-      a.tt.tt_interactive.tt_html(
-        href='/'
-        title='\
-          <p>Популярные форумы:</p>\
-          <ul>\
-            <li><a target="_blank" href="http://google.com">Google</a></li>\
-            <li><a target="_blank" href="http://yandex.ru">Yandex</a></li>\
-          </ul>\
-        '
+        +roundIcon('fa-external-link')
+    if (tickerForums)
+      - var forumsList = ''
+      - forumsList += '<ul>'
+      - tickerForums.forEach(function(f) {forumsList += '<li><a target="_blank" href="'+f.href+'">'+f.name+'</a></li>'})
+      - forumsList += '</ul>'
+      span.tt.tt_interactive.tt_html.cur-p(
+        title='<p>Популярные форумы:</p>#{forumsList}'
         )
         +roundIcon('fa-comments')
-    if (1 || ticker.general.links)
-      a.tt.tt_interactive.tt_html(
-        href='/'
-        title='\
-          <p>Полезные ссылки:</p>\
-          <ul>\
-            <li><a target="_blank" href="http://moex.com/ru/issue.aspx?code='+ticker.general.ticker_code+'">Moex</a></li>\
-            <li><a target="_blank" href="https://www.google.ru/webhp?ion=1&espv=2&ie=UTF-8#q='+ticker.general.ticker_code+'&newwindow=1&tbm=nws&tbs=sbd:1">News (g)</a></li>\
-            <li><a target="_blank" href="https://yandex.ru/search/?text='+ticker.general.ticker_code+'">News (y)</a></li>\
-          </ul>\
-        '
+    if (tickerLinks)
+      - var linksList = ''
+      - linksList += '<ul>'
+      - tickerLinks.forEach(function(l) {linksList += '<li><a target="_blank" href="'+l.href+'">'+l.name+'</a></li>'})
+      - linksList += '</ul>'
+      span.tt.tt_interactive.tt_html.cur-p(
+        title='<p>Полезные ссылки:</p>#{linksList}'
         )
         +roundIcon('fa-paperclip')
     if (1)
@@ -149,7 +61,6 @@ block pageHead
         )
         +roundIcon('fa-plus')
 block pageHead_small
-  | Тут будет полное имя эмитента
 block breadcrumbs
   +breadcrumbs([
       {name:'Главная', href:'/'},

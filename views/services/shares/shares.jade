@@ -1,6 +1,7 @@
 extends ../../layouts/default.jade
 
 block postHead
+  +PasteInlineData(['user', user])
   +PasteInlineData(['shares', shares])
   script(src='/PageControllers/shares.js' defer)
 
@@ -12,7 +13,7 @@ block postHead
       .my-table td {
         line-height: 30px;
         }
-    .my-table .inTableIcon {
+    .my-table .roundIcon {
       margin-right: 5px;
       }    
       .my-table .roundIcon {

@@ -20,6 +20,7 @@ module.exports = {
                 id     : s.id,
                 ticker : s.general.ticker,
                 href   : s.general.href,
+                site   : s.general.site,
                 name   : s.general.name,
                 code   : s.general.ticker_code || '',
                 price  : lastCandle ? lastCandle.c : '',
@@ -62,7 +63,19 @@ module.exports = {
                     ticker: {
                         id: ticker.id,
                         general: ticker.general || {},
-                    }
+                    },
+                    tickerForums: _.map(ticker.general.forums, function(f) {
+                        return {
+                            name: f.name,
+                            href: f.href,
+                        }
+                    }),
+                    tickerLinks: _.map(ticker.general.links, function(l) {
+                        return {
+                            name: l.name,
+                            href: l.href,
+                        }
+                    }),
                 });
             }
         });

@@ -22,6 +22,8 @@ input.fillMePls {
     box-shadow: 0px 0px 3px 1px #138132 !important;
     }
 
+.cur-p {cursor: pointer;}
+
 /* _margin */
 .no-m  {margin: 0px !important;}
 .mt-10 {margin-top: 10px !important;}
@@ -140,8 +142,9 @@ ul.no-dots>li {list-style: none;}
     opacity: 0.5;
     transition: all 0.25s ease;
     }
-
-
+.roundIcon.disabled {
+    opacity: 0.2;
+    }
 
 
 

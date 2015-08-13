@@ -2,7 +2,7 @@ mixin button(text)
   span(class="g-btn type_midnight size_small")
     span #{text}
 
-mixin roundIcon(name)
-  span.fa-stack.fa-lg.roundIcon
+mixin roundIcon(name, disabled)
+  span(class=disabled ? 'disabled' : '').fa-stack.fa-lg.roundIcon
     i.fa.fa-circle.fa-stack-2x
     i.fa.fa-stack-1x.fa-inverse(class=name)
