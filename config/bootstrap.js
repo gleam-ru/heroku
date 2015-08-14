@@ -66,7 +66,7 @@ module.exports.bootstrap = function(cb) {
     if (!sails.config.heroku) {
         async.series([
             cache.init,
-            // s3.serverToClient,
+            s3.serverToClient,
             provider.init,
             cron.init,
             // s3.clientToServer,
@@ -81,6 +81,7 @@ module.exports.bootstrap = function(cb) {
         return;
     }
     else {
+        cb();
         async.series([
             cache.init,
             s3.serverToClient,
@@ -90,7 +91,10 @@ module.exports.bootstrap = function(cb) {
         function(err) {
             if (err) log.error('Bootstrap failed', err);
             console.log("i'm listening, my master...")
-            cb();
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
         });
         return;
     }

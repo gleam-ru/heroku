@@ -1,2 +1,1 @@
-worker: node app.js --prod
-heroku scale web=0 worker=1
+web: node app.js --prod
