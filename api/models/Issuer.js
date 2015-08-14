@@ -40,6 +40,7 @@ module.exports = {
         },
 
         setStore: function(store) {
+            console.log('setStore', store ? store.general : 'no_store')
             // console.log('update issuer file', this.id);
             if (this.path) {
                 var fullPath = path(root, this.type, this.path);
