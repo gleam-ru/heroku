@@ -214,7 +214,12 @@ me.fixMissedCandles_individual = function(cb) {
             var store = ticker.getStore();
             if (!store) return done();
             var candles_existing = store.dailyCandles;
-            var lastSaved = candles_existing[candles_existing.length - 1];
+            try {
+                var lastSaved = candles_existing[candles_existing.length - 1];
+            }
+            catch (err) {
+                console.log(ticker, store)
+            }
             var lastDate = lastSaved ? moment(lastSaved.date, 'YYYY-MM-DD') : moment(new Date(1900, 1, 1));
             // только для "больших" отсутствующих кусков
             if ((now - lastDate) >= limitations.time) {

@@ -25,7 +25,7 @@ module.exports = {
         getStore: function() {
             var me = this;
             // console.log('read issuer file', this.id);
-            var store = {};
+            var store;
             if (this.path) {
                 var fullPath = path(root, this.type, this.path);
                 try {
@@ -34,7 +34,6 @@ module.exports = {
                 catch (err) {
                     console.warn('bad issuer-s store. EXTERMINATE!!!', me)
                     Issuer.destroy({id: me.id}, function(){})
-                    store = undefined;
                 }
             }
             return store;

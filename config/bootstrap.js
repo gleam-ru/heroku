@@ -64,6 +64,7 @@ module.exports.bootstrap = function(cb) {
 
     // TODO: сделать покрасиввее
     if (!sails.config.heroku) {
+        cb();
         async.series([
             cache.init,
             s3.serverToClient,
@@ -73,10 +74,14 @@ module.exports.bootstrap = function(cb) {
         ],
         function(err) {
             if (err) return cb(err);
-            console.log("i'm listening, my master...");
-            // dbTasks.bondsNewDay();
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
+            console.log("i'm listening, my master...")
             // provider.bonds.update();
-            cb();
+            // dbTasks.bondsNewDay();
         });
         return;
     }
