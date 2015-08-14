@@ -1,1 +1,1 @@
-web: node app.js --prod
+worker: node app.js --prod
