@@ -40,7 +40,6 @@ module.exports = {
         },
 
         setStore: function(store) {
-            console.log('setStore', store ? store.general : 'no_store')
             // console.log('update issuer file', this.id);
             if (this.path) {
                 var fullPath = path(root, this.type, this.path);
@@ -54,9 +53,10 @@ module.exports = {
     beforeCreate: function (issuer, next) {
         ensureStoreFile(issuer, next);
     },
-    beforeUpdate: function (issuer, next) {
-        ensureStoreFile(issuer, next);
-    },
+    // TODO: deprecated?
+    // beforeUpdate: function (issuer, next) {
+    //     ensureStoreFile(issuer, next);
+    // },
 
 };
 
@@ -68,7 +68,23 @@ function ensureStoreFile(issuer, next) {
     var fullPath = path(root, issuer.type);
     mkdirp.sync(fullPath);
     var filePath = path(fullPath, issuer.path);
-    jf.writeFileSync(filePath, {});
+    var defaultStore = {};
+    if (issuer.type === 'share') {
+        defaultStore = {
+            general: {
+                mfd_id : ticker.id,
+                name   : ticker.name,
+            },
+            dailyCandles: [],
+            indayCandles: [],
+            lastCandle: {},
+            reports: {
+                fields: [],
+                data: [],
+            }
+        };
+    }
+    jf.writeFileSync(filePath, defaultStore);
     if (sails.config.dev !== true) {
         s3.uploadFile(filePath, next);
     }
