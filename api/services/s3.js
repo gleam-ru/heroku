@@ -59,9 +59,9 @@ me.clientToServer = function(cb) {
         },
     };
     var uploader = me.getClient().uploadDir(params);
-    uploader.on('fileUploadStart', function(localFilePath, s3Key) {
-        console.log("fileUploadStart", localFilePath, s3Key);
-    });
+    // uploader.on('fileUploadStart', function(localFilePath, s3Key) {
+    //     console.log("fileUploadStart", localFilePath, s3Key);
+    // });
     uploader.on('end', function() {
         console.log("s3 uploading is complete");
         console.timeEnd('clientToServer')
@@ -87,9 +87,9 @@ me.serverToClient = function(cb) {
         },
     };
     var downloader = me.getClient().downloadDir(params);
-    downloader.on('fileDownloadStart', function(localFilePath, s3Key) {
-        console.log("fileDownloadStart", localFilePath, s3Key);
-    });
+    // downloader.on('fileDownloadStart', function(localFilePath, s3Key) {
+    //     console.log("fileDownloadStart", localFilePath, s3Key);
+    // });
     downloader.on('end', function() {
         console.log("s3 downloading is complete");
         console.timeEnd('serverToClient')

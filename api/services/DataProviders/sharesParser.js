@@ -48,7 +48,14 @@ me.getByDate = function(date_start, tickers, cb) {
         }, function(err, response, body) {
             console.info('mfd req:', url);
             if (err) return next(err);
-            if (!body) return next('Получена пустая страница: '+url);
+            if (response.statusCode === 500) {
+                console.warn('err500 от mfd!')
+                return next(null, [])
+            }
+            if (!body) {
+                console.warn('Получена пустая страница')
+                return next(null, []);
+            }
             // разбираю полученную цсв-шку
             require('csv-parse')(body, {
                 delimiter: ';',
@@ -121,7 +128,14 @@ me.getTicker = function(ticker, cb, banned) {
                 }, sails.config.app.providers.shares.possibleBanTimeout)
             }
         }
-        if (!body) return cb('Получена пустая страница: url');
+        if (response.statusCode === 500) {
+            console.warn('err500 от mfd!')
+            return cb(null, [])
+        }
+        if (!body) {
+            console.warn('Получена пустая страница')
+            return cb(null, []);
+        }
 
         require('csv-parse')(body, {
             delimiter: ';',

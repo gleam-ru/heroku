@@ -7,33 +7,42 @@
 
 module.exports = {
     index: function(req, res) {
-        // строки для таблицы на странице
-        var rows = [];
-        var shares = provider.shares.all(); // {ticker: {}, ...}
-        if (!shares) {
-            console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
-        }
-        // TODO: перенести это на клиент
-        _.each(shares, function(s) {
-            var lastCandle = s.lastCandle.c ? s.lastCandle : s.candles[s.candles.length - 1];
-            rows.push({
-                id     : s.id,
-                ticker : s.general.ticker,
-                href   : s.general.href,
-                site   : s.general.site,
-                name   : s.general.name,
-                code   : s.general.ticker_code || '',
-                price  : lastCandle ? lastCandle.c : '',
-                forums : s.general.forums,
-                links  : s.general.links,
-            });
-        });
-        return res.render('services/shares/shares', {
+        var data = {
             title: 'Акции',
             shares: {
-                rows: rows,
+                rows: [],
             },
-        });
+        }
+
+        // строки для таблицы на странице
+        // {ticker: {}, ...}
+        Q
+            .nfbind(provider.shares.all)()
+            .then(function(shares) {
+                if (!shares) {
+                    console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
+                }
+                else {
+                    // TODO: перенести это на клиент
+                    _.each(shares, function(s) {
+                        var lastCandle = s.lastCandle.c ? s.lastCandle : s.candles[s.candles.length - 1];
+                        data.shares.rows.push({
+                            id     : s.id,
+                            ticker : s.general.ticker,
+                            href   : s.general.href,
+                            site   : s.general.site,
+                            name   : s.general.name,
+                            code   : s.general.ticker_code || '',
+                            price  : lastCandle ? lastCandle.c : '',
+                            forums : s.general.forums,
+                            links  : s.general.links,
+                        });
+                    });
+                }
+            })
+            .then(function() {
+                res.render('services/shares/shares', data);
+            })
     },
 
     ticker: function(req, res) {

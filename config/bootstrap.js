@@ -1,29 +1,13 @@
-/**
- * Bootstrap
- * (sails.config.bootstrap)
- *
- * An asynchronous bootstrap function that runs before your Sails app gets lifted.
- * This gives you an opportunity to set up your data model, run jobs, or perform some special logic.
- */
-
-// просто глобально нужные вещи...
-// http://bost.ocks.org/mike/shuffle/
-Array.prototype.shuffle = function() {
-    var array = this;
-    var m = array.length;
-    var t;
-    var i;
-    while (m) {
-        i = Math.floor(Math.random() * m--);
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-    }
-    return array;
-}
-
-
 module.exports.bootstrap = function(cb) {
+
+
+    // MODULES
+    global.Q        = require('q');
+    global.moment   = require('moment');
+    global.fs       = require('fs-extra');
+
+
+
 
     if (process.env.I_AM_HEROKU) {
         sails.config.amazon.s3.key    = process.env.AMAZON_S3_KEY;
@@ -66,14 +50,17 @@ module.exports.bootstrap = function(cb) {
     if (!sails.config.heroku) {
         cb();
         async.series([
-            cache.init,
-            s3.serverToClient,
+            // cache.init,
+            // s3.serverToClient,
             provider.init,
-            cron.init,
+            // cron.init,
             // s3.clientToServer,
         ],
         function(err) {
-            if (err) return cb(err);
+            // if (err) return cb(err);
+            if (err) {
+                console.error('bootstrap:', err, err.message, err.stack);
+            }
             console.log("i'm listening, my master...")
             console.log("i'm listening, my master...")
             console.log("i'm listening, my master...")
