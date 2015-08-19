@@ -7,6 +7,8 @@ var donor1 = "http://www.2stocks.ru/main/invest/bonds/services/obl_prices?page="
 var donor2 = "http://bonds.finam.ru/trades/today/default.asp?resultsType=1&tradesOnly=0&close=on&bid=on&ask=on";
 // var donorRisks = "http://www.ra-national.ru/ratings/raiting-emitters/risks-releases-bonds";
 
+var me = {}
+me.isParsing = false;
 
 /**
  * парсит сайты с облигациями,
@@ -14,7 +16,13 @@ var donor2 = "http://bonds.finam.ru/trades/today/default.asp?resultsType=1&trade
  */
 // var fs = require('fs-extra');
 // var fakeParse = JSON.parse(fs.readFileSync('./parsed/test.json'));
-exports.parse = function(callback) {
+me.parse = function(callback) {
+    // var jf = require('jsonfile');
+    // var data = jf.readFileSync('parsed.json');
+    // callback(null, data.parsed);
+    // /*
+    me.isParsing = true;
+    console.time('bonds_parsing')
     async.parallel({
         twoStocks: function(asyncCb) {
             // [{}, {}]
@@ -27,7 +35,10 @@ exports.parse = function(callback) {
             parseDonor2(donor2, asyncCb);
         },
     }, function(err, results) {
-        if(err) return callback(err);
+        if (err) {
+            console.error('parsing trouble!!!', err)
+            return callback(err);
+        }
 
         var donor1 = results.twoStocks;
         var donor2 = results.finam;
@@ -37,10 +48,13 @@ exports.parse = function(callback) {
             var bond = _.find(donor1, {name: d2Bond.name});
             _.extend(bond, d2Bond);
         });
-
+        me.isParsing = false;
+        console.timeEnd('bonds_parsing')
         return callback(err, donor1);
     });
+    //*/
 }
+
 
 
 /**
@@ -109,6 +123,13 @@ function parseBondsPage(body) {
     var bonds = [];
 
     var table = $(body).find('#content .main-content .content-body table');
+    // иногда сайт отдает какую-то непонятную,
+    // похоже что "битую" страницу.
+    // на это и проверка...
+    if (table.length === 0) {
+        console.warn('donor-1 broken page...')
+        return;
+    }
     var rows = table.find('tr');
 
     // 0 - header, он не нужен.
@@ -130,17 +151,29 @@ function parseBondsPage(body) {
 /**
  * подгатавливает страницу для парсинга
  * (качает и декодирует)
+ *
+ * counter - количество попыток "перекачать" битую страницу
  */
-function getPageBondsData(src, callback) {
+function getPageBondsData(src, callback, counter) {
     request({
         uri: src,
-        encoding: null
+        encoding: null,
+        timeout: 1000 * 60 * 5, // 5 min
     }, function(error, response, body) {
-        var bonds = [];
         if(error) return callback(error);
-
         body = iConv.decode(body, 'cp-1251');
-        bonds = parseBondsPage(body);
+        var bonds = parseBondsPage(body);
+        if (!bonds) {
+            // broken page
+            var attempt = (counter || 0) + 1;
+            if (attempt > 3) {
+                return callback(new Error('2stocks поломался...'))
+            }
+            else {
+                console.warn('donor-1 is trying to be requested again ('+attempt+')')
+                return getPageBondsData(src, callback, attempt)
+            }
+        }
         return callback(error, bonds);
     });
 }
@@ -151,7 +184,7 @@ function getPageBondsData(src, callback) {
  * (пока не закончатся данные на сайте-доноре)
  */
 function getTotalBondsData(src, data, i, callback) {
-    console.log('Parsing page #'+i);
+    console.log('donor-1 is parsing page #'+i);
     getPageBondsData(src+i, function(err, result) {
         if(err) return callback(err);
         if(result.length === 0) {
@@ -179,7 +212,7 @@ function parseDonor2(url, callback) {
             console.error('ошибка в получении данных из донора-2');
             return callback(error);
         }
-        console.log('Donor-2 is parsing...');
+        console.log('donor-2 is parsing...');
 
         body = iConv.decode(body, 'cp-1251');
         // 07.10.14 - почему то в таблице ДВА tbody... я работаю с последним
@@ -203,5 +236,11 @@ function parseDonor2(url, callback) {
 
 function myParseFloat(num) {
     num = num.replace(/,/g, '.');
-    return isNaN(num) ? "" : parseFloat(num);
+    return parseFloat(num) || 0;
 }
+
+
+
+
+
+module.exports = me;
