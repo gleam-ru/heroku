@@ -27,34 +27,34 @@ cron.init = function(cb) {
     // UTC TIME!!!
     // http://www.corntab.com/pages/crontab-gui
     cron.add('bondsParser', '45 5,7,9,11,13,15 * * 1,2,3,4,5', function() {
-        provider.bonds.update();
+        provider.bonds.hardUpdate();
     });
 
     // пакование парса облигаций в дейли свечи
     // в 3:00 каждый пн,вт,ср,чт,пт
     cron.add('bondsNewDay', '0 3 * * 1,2,3,4,5', function() {
-        async.series([
-            dbTasks.bondsNewDay,
-            s3.clientToServer,
-        ], function() {
-            if (err) {
-                console.error('cron new day error', err);
-            }
-        });
+        // async.series([
+        //     dbTasks.bondsNewDay,
+        //     s3.clientToServer,
+        // ], function() {
+        //     if (err) {
+        //         console.error('cron new day error', err);
+        //     }
+        // });
     });
 
     // получение недостающих свечей
     // в 22:00 каждый пн,вт,ср,чт,пт
     cron.add('sharesNewDay', '0 22 * * 1,2,3,4,5', function() {
-        var importer = require('./sharesImporter.js');
-        async.series([
-            importer.fixMissedCandles,
-            s3.clientToServer,
-        ], function() {
-            if (err) {
-                console.error('cron new day error', err);
-            }
-        });
+        // var importer = require('./sharesImporter.js');
+        // async.series([
+        //     importer.fixMissedCandles,
+        //     s3.clientToServer,
+        // ], function() {
+        //     if (err) {
+        //         console.error('cron new day error', err);
+        //     }
+        // });
     });
 
     console.log('cron inited');
