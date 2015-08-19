@@ -18,8 +18,6 @@ module.exports.models = {
     *                                                                          *
     ***************************************************************************/
     connection: 'RgpLocalhostMysqlServer',
-    autoCreatedAt: false,
-    autoUpdatedAt: false,
 
     /***************************************************************************
     *                                                                          *

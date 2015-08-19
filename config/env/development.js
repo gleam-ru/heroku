@@ -21,7 +21,7 @@ module.exports = {
     dev: true,
 
     models: {
-        connection: 'RgpLocalhostMysqlServer',
+        connection: 'mongolab',
     },
 
     port: 1337,
