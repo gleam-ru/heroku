@@ -31,19 +31,9 @@ me.all = function() {
 
 
 
-
-// парс + сохранение + апдейт
-// cb(err, updated)
-me.hardUpdate = function() {
-    return Q
-        .ninvoke(importer, 'process')
-        .then(me.cache)
-}
-
-
-
 // обновляет из базы
 me.softUpdate = function() {
+    console.log('softUpdate');
     return me
         .fetchFromDB()
         .then(me.cache)
@@ -51,8 +41,22 @@ me.softUpdate = function() {
 
 
 
+// парс + сохранение + апдейт
+// cb(err, updated)
+me.hardUpdate = function() {
+    console.log('hardUpdate');
+    return Q
+        .ninvoke(importer, 'process')
+        .then(me.cache)
+}
+
+
+
+
+
 // забирает данные из базы
 me.fetchFromDB = function() {
+    console.log('fetchFromDB');
     return Q.resolve()
         .then(function() {
             return Statistics

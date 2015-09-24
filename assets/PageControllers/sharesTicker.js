@@ -29,20 +29,20 @@ $(document).ready(function() {
 
 
 function createChart(data, cb) {
-    var candles = data.candles;
+    var candles = data.dailyCandles;
     // candles = candles.slice(0, 360);
     var accessor = techan.plot.candlestick().accessor();
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
+    var parseDate = d3.time.format("%d.%m.%Y").parse;
     candles = _(candles)
         .map(function(c) {
-            if (!c.vol) return undefined;
+            if (!c.v) return undefined;
             return {
-                date   : parseDate(c.date),
+                date   : parseDate(c.d),
                 open   : +c.o,
                 high   : +c.h,
                 low    : +c.l,
                 close  : +c.c,
-                volume : +c.vol
+                volume : +c.v
             };
         })
         .compact()

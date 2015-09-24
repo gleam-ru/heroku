@@ -59,8 +59,8 @@ $(document).ready(function() {
                                 '<ul><p>Полезные форумы:</p>'+
                                     _.map(full.forums, function(f) {
                                             return {
-                                                name: f.name,
-                                                href: f.href,
+                                                name: f.key,
+                                                href: f.value,
                                             }
                                         })
                                         .map(function(f) {
@@ -85,8 +85,8 @@ $(document).ready(function() {
                                 '<ul><p>Полезные ссылки:</p>'+
                                     _.map(full.links, function(l) {
                                             return {
-                                                name: l.name,
-                                                href: l.href,
+                                                name: l.key,
+                                                href: l.value,
                                             }
                                         })
                                         .map(function(l) {

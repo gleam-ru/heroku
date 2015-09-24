@@ -4,13 +4,56 @@ me.process = function(cb) {
     Q.all([
         _statistics(),
         _admin(),
+        _branches(),
+        // _shares(),
         // _bond_JamesBond(),
     ])
     .nodeify(cb)
 }
 
+function _branches(next) {
+    console.log('filler:_branches');
+    var branches = [
+        {name: 'Нефтегаз'},
+        {name: 'Потребительский сектор'},
+        {name: 'Химия и нефтехимия'},
+        {name: 'Металлургия'},
+        {name: 'Машиностроение'},
+        {name: 'Телекоммуникации'},
+        {name: 'Энергетика'},
+        {name: 'Финансы'},
+        {name: 'Транспорт'},
+        {name: 'Другая'},
+    ];
+    return Q.resolve()
+        .then(function() {
+            return Branch.findOrCreate(branches, branches)
+        })
+        .nodeify(next)
+}
+
+
+
+
+function _shares(next) {
+    console.log('filler:_shares');
+    var bindings = sails.config.app.providers.shares.mfd;
+    var sharesList = _.map(bindings, function(id, name) {
+        return {
+            mfd_id: id,
+            name: name,
+        }
+    });
+    return Q.resolve()
+        .then(function() {
+            return Share.findOrCreate(sharesList, sharesList)
+        })
+        .nodeify(next)
+}
+
 
 function _bond_JamesBond(next) {
+    console.log('filler:_bond_JamesBond');
     var now = moment().format('DD.MM.YYYY');
     return Q.resolve()
         .then(function() {
@@ -53,6 +96,7 @@ function _bond_JamesBond(next) {
 }
 
 function _admin(next) {
+    console.log('filler:_admin');
     return Q.resolve()
         .then(function() {
             return User
@@ -76,6 +120,7 @@ function _admin(next) {
 
 
 function _statistics(next) {
+    console.log('filler:_statistics');
     return Q.resolve()
         .then(function() {
             return Statistics

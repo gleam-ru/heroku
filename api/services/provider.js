@@ -8,7 +8,7 @@ provider.init = function(cb) {
     console.log('provider init')
     async.series([
         provider.bonds.init,
-        // provider.shares.init,
+        provider.shares.init,
         // provider.currencies.init,
         // s3.clientToServer,
     ], cb);

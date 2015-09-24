@@ -106,7 +106,7 @@ var tab_info = function() {
         data: function() {
             var info = {};
             info.id = ticker.id;
-            info.mfd_id = ticker.general.mfd_id;
+            info.mfd_id = ticker.mfd_id;
             info.candlesCount = ticker.info.candlesCount;
             info.lastDailyDate = ticker.info.lastDay;
             info.lastIndayDate = ticker.info.lastCandle.date ? ticker.info.lastCandle.date : '...';
@@ -124,20 +124,8 @@ var tab_useful = function() {
         template: '#useful',
         data: function() {
             return {
-                forums: _.map(ticker.general.forums, function(v, k) {
-                    return {
-                        id: k,
-                        key: v.name,
-                        value: v.href,
-                    }
-                }),
-                links: _.map(ticker.general.links, function(v, k) {
-                    return {
-                        id: k,
-                        key: v.name,
-                        value: v.href,
-                    }
-                }),
+                forums: ticker.forums || [],
+                links: ticker.links || [],
             }
         },
         methods: {
@@ -189,10 +177,10 @@ var tab_useful = function() {
             var vm = this;
             this.$on('kv-editor-removed', function(child) {
                 var id = child.editor_id;
-                if (child.prop === 'ticker.general.forums') {
+                if (child.prop === 'ticker.forums') {
                     vm.removeForum(id)
                 }
-                else if (child.prop === 'ticker.general.links') {
+                else if (child.prop === 'ticker.links') {
                     vm.removeLink(id);
                 }
             });
@@ -246,7 +234,7 @@ var tab_reports = function() {
                     .max();
                 if (maxId < 0) maxId = 0;
                 vm.reports.fields.push({
-              id    : 1 + 1 * maxId,
+                    id    : 1 + 1 * maxId,
                     key   : '',
                     value : '',
                 });
@@ -578,9 +566,9 @@ var selEditor = function() {
                 }
             }));
 
-            var orig = vm.getOrig() || 0;
+            var orig = vm.getOrig() || {name: '', id: 0};
             var found = _.find(vm.model, function(option) {
-                return option.value == orig;
+                return option.value == orig.id;
             });
             if (!found) {
                 console.error('smth went wrong...')

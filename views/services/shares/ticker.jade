@@ -23,15 +23,15 @@ block postHead
 
 
 block pageHead
-  h1 #{ticker.general.name || ticker.general.ticker}
+  h1 #{ticker.name}
     if (user && user.access === 'admin')
       a.tt(
         href='/services/shares/'+ticker.id+'/edit',
         )
         +roundIcon('fa-paw')
-    if (ticker.general.site)
+    if (ticker.site)
       a.tt(
-        href='/'
+        href='#{ticker.site}'
         target='_blank'
         title='Официальный сайт'
         )
@@ -41,7 +41,7 @@ block pageHead
     if (tickerForums && tickerForums.length)
       - var forumsList = ''
       - forumsList += '<ul>'
-      - tickerForums.forEach(function(f) {forumsList += '<li><a target="_blank" href="'+f.href+'">'+f.name+'</a></li>'})
+      - tickerForums.forEach(function(f) {forumsList += '<li><a target="_blank" href="'+f.value+'">'+f.key+'</a></li>'})
       - forumsList += '</ul>'
       span.tt.tt_interactive.tt_html.cur-p(
         title='<p>Популярные форумы:</p>#{forumsList}'
@@ -52,7 +52,7 @@ block pageHead
     if (tickerLinks && tickerLinks.length)
       - var linksList = ''
       - linksList += '<ul>'
-      - tickerLinks.forEach(function(l) {linksList += '<li><a target="_blank" href="'+l.href+'">'+l.name+'</a></li>'})
+      - tickerLinks.forEach(function(l) {linksList += '<li><a target="_blank" href="'+l.value+'">'+l.key+'</a></li>'})
       - linksList += '</ul>'
       span.tt.tt_interactive.tt_html.cur-p(
         title='<p>Полезные ссылки:</p>#{linksList}'
@@ -72,7 +72,7 @@ block breadcrumbs
       {name:'Главная', href:'/'},
       {name:'Сервисы', href:'/services'},
       {name:'Акции', href:'/services/shares'},
-      {name:(ticker.general.name || ticker.general.ticker)}
+      {name: ticker.name}
     ])
 
 block content
