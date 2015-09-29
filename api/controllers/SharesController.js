@@ -31,7 +31,8 @@ module.exports = {
 
         var getShare;
         // MONGO!!!
-        if (href.length === 24) {
+        var mongoIdLength = 24;
+        if (href.length === mongoIdLength) {
             getShare = provider.shares.getById;
         }
         else {
@@ -42,6 +43,11 @@ module.exports = {
             .then(function(share) {
                 if (!share) {
                     throw new Error('404');
+                }
+                if (share && share.code && href.length === mongoIdLength) {
+                    var err = new Error('301');
+                    err.redirectTo = '/services/shares/'+share.code;
+                    throw err;
                 }
                 return res.render('services/shares/ticker', {
                     ticker: {
@@ -58,6 +64,9 @@ module.exports = {
                     return res.render('404', {
                         msg: 'Тикер <b>'+href+'</b> не найден',
                     });
+                }
+                else if (err.message === '301') {
+                    return res.redirect(err.redirectTo || '/')
                 }
                 else {
                     return res.serverError(err);
@@ -91,7 +100,6 @@ module.exports = {
         provider.shares.getById(id)
             .then(function(share) {
                 if (!share) {
-                    console.log(id)
                     throw new Error('404');
                 }
                 data.ticker = {
@@ -120,7 +128,6 @@ module.exports = {
                 data.branches = branches;
             })
             .then(function() {
-                console.log(data.ticker)
                 return res.render('services/shares/editor', data)
             })
             .catch(function(err) {
@@ -145,7 +152,6 @@ module.exports = {
                 if (!share) {
                     throw new Error('404');
                 }
-                console.warn(message)
 
                 if (!message.key) {
                     console.warn('SharesController.updateGeneral получено сообщение без ключа!', message);

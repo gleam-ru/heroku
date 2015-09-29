@@ -110,6 +110,7 @@ me.getByCode = function(code) {
                     })
                     .then(function(share) {
                         cache.set('share_by_code_'+code, share);
+                        return share;
                     })
             }
         })
