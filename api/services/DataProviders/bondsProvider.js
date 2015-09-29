@@ -99,7 +99,7 @@ me.cache = function(bonds) {
 // на основании сохраненных
 function calculate(bond) {
     var now = moment();
-    var flashback = 3; // last 3 days to restore missed bids
+    var flashback = sails.config.app.bonds.flashback;
 
     // купонный доход
     if (bond.cpDur <= 0) {
