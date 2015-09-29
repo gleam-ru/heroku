@@ -27,7 +27,7 @@ module.exports.bootstrap = function(cb) {
         async.series([
             filler.process,
             provider.init,
-            // cache.init,
+            cache.init,
             // cron.init,
         ],
         function(err) {
@@ -35,12 +35,6 @@ module.exports.bootstrap = function(cb) {
             if (err) {
                 console.error('bootstrap:', err, err.message, err.stack);
             }
-            console.log("i'm listening, my master...")
-            console.log("i'm listening, my master...")
-            console.log("i'm listening, my master...")
-            console.log("i'm listening, my master...")
-            console.log("i'm listening, my master...")
-            console.log("i'm listening, my master...")
             // provider.bonds.update();
             // dbTasks.bondsNewDay();
             cb();
@@ -50,13 +44,15 @@ module.exports.bootstrap = function(cb) {
     else {
         cb();
         async.series([
-            cache.init,
-            s3.serverToClient,
+            filler.process,
             provider.init,
+            cache.init,
             cron.init,
         ],
         function(err) {
-            if (err) log.error('Bootstrap failed', err);
+            if (err) {
+                console.error('Bootstrap failed', err);
+            }
             console.log("i'm listening, my master...")
             console.log("i'm listening, my master...")
             console.log("i'm listening, my master...")
