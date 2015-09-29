@@ -9,6 +9,16 @@ block pageHead_small
 
 
 block content
+  h4 Общее
+  ul
+    li
+      a(target='_blank' href='http://forum.roundabout.ru/showthread.php?1402-%D0%A1%D0%B5%D1%80%D0%B2%D0%B8%D1%81-%D0%B4%D0%BB%D1%8F-%D0%BF%D0%BE%D0%B4%D0%B1%D0%BE%D1%80%D0%B0-%D0%BE%D0%B1%D0%BB%D0%B8%D0%B3%D0%B0%D1%86%D0%B8%D0%B9/page99999') ОК (обл) форум
+    li
+      a(target='_blank' href='https://mongolab.com/databases/blozhik/') mongo
+    li
+      a(target='_blank' href='https://papertrailapp.com/events?q=program%3Aapp%2Fweb.1') papertrail
+    li
+      a(target='_blank' href='https://dashboard.heroku.com/apps/blozhik/') heroku
   h4 Облигации
   if (info && info.length > 0)
     +info(info)
@@ -17,8 +27,8 @@ block content
       a(href='/adm/bonds_reparse') Репарс
     li
       a(href='/adm/bonds_cache') Обнови кэш из бд
+  h4 Акции
+  ul
     li
-      a(href='/adm/amazon_to_client') Скачать файлы из амазона
-    li
-      a(href='/adm/client_to_amazon') Загрузить файлы на амазон
+      a(href='/adm/shares_cache') Общий кэш
 

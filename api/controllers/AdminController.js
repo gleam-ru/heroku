@@ -30,21 +30,15 @@ module.exports = {
         });
     },
 
-
-    amazon_to_client: function(req, res) {
-        s3.serverToClient();
-        req.flash('info', 'качаю файлы с амазона');
-        return res.render('admin', {
-            info: req.flash('info'),
-        });
-    },
-    client_to_amazon: function(req, res) {
-        s3.clientToServer();
-        req.flash('info', 'сохраняю текущую директорию на амазон');
-        return res.render('admin', {
-            info: req.flash('info'),
-        });
-    },
-
+    // обновить кэш акций данными из базы
+    shares_cache: function(req, res) {
+        provider.shares.cacheAll()
+            .then(function(shares) {
+                req.flash('info', 'Кэш акций обновлен: '+shares.length);
+                return res.render('admin', {
+                    info: req.flash('info'),
+                });
+            })
+    }
 };
 
