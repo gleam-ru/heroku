@@ -150,7 +150,7 @@ module.exports = {
                 if (!message.key) {
                     console.warn('SharesController.updateGeneral получено сообщение без ключа!', message);
                 }
-                else if (message.key === 'ticker.ticker_code') {
+                else if (message.key === 'ticker.code') {
                     share.code = message.value;
                 }
                 else if (message.key === 'ticker.site') {
@@ -263,8 +263,6 @@ module.exports = {
             })
             .then(function(share) {
                 console.info('share updated', share.site);
-
-                provider.shares.cache(share);
                 return res.ok();
             })
             .catch(function(err) {

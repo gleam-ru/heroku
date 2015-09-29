@@ -38,4 +38,11 @@ module.exports = {
         },
     },
 
+
+    // обновляю кэш после сохранения
+    afterUpdate: function(updated, next) {
+        provider.shares.cache(updated);
+        next();
+    },
+
 };
