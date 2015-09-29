@@ -355,6 +355,12 @@ var propEditor = function() {
             sendData: function() {
                 var vm = this;
 
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 $.post(href+vm.href, {
                     message: {
                         key   : vm.prop,
@@ -364,6 +370,7 @@ var propEditor = function() {
                 .done(function() {
                     vm.prop_orig = vm.prop_text;
                     vm.setOrig(vm.prop_text);
+                    el.enable();
                 });
             },
             getOrig: function() {
@@ -426,6 +433,12 @@ var kvEditor = function() {
             sendData: function() {
                 var vm = this;
 
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 $.post(href+vm.href, {
                     message: {
                         key   : vm.prop,
@@ -441,6 +454,7 @@ var kvEditor = function() {
                     vm.value_orig = vm.value_text;
                     vm.setOrig(vm.key_text, vm.value_text);
                     vm.$dispatch('kv-editor-saved', vm);
+                    el.enable();
                 });
             },
 
@@ -522,6 +536,12 @@ var selEditor = function() {
                 var vm = this;
                 var selected = _.find(vm.model, {name: vm.curr});
 
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 $.post(href+vm.href, {
                     message: {
                         key   : vm.prop,
@@ -531,6 +551,7 @@ var selEditor = function() {
                 .done(function() {
                     vm.orig = vm.curr;
                     vm.setOrig(vm.curr);
+                    el.enable();
                 });
             },
             getOrig: function() {
@@ -634,6 +655,13 @@ var initReportWindow = function(parent) {
             },
             save: function() {
                 var vm = this;
+
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 var report = {
                     id: vm.id,
                     name: vm.name,
@@ -655,6 +683,9 @@ var initReportWindow = function(parent) {
                 .error(function(err){
                     console.error(err);
                     mp.alert('шо-то пошло не так... см ошибку в консоли');
+                })
+                .always(function() {
+                    el.enable();
                 });
             },
             cancel: function() {

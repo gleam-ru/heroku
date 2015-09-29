@@ -114,6 +114,22 @@ $(document).ready(function() {
             this.find('#mask').fadeOut(500, function(){ $(this).remove();});
         }
     }
+    $.fn.unmask = function() {
+        this.mask(false);
+    }
+    $.fn.disable = function(state) {
+        if(state === undefined || state) {
+            // disable
+            this.addClass('disabled');
+        }
+        else {
+            this.removeClass('disabled');
+        }
+
+    }
+    $.fn.enable = function() {
+        this.disable(false);
+    }
 
 
 
