@@ -27,8 +27,11 @@ me.saveBonds = function(parsedBonds, cb) {
                     _.extend(found, {
                         bid       : parsed.bid || 0,
                         ask       : parsed.ask || 0,
+                        cpVal     : parsed.cpVal || 0,
                         nkd       : parsed.nkd || 0,
+                        cpDur     : parsed.cpDur || 0,
                         cpDate    : parsed.cpDate,
+                        endDate   : parsed.endDate,
                         dur       : parsed.dur,
                         state     : parsed.state,
                         expiresIn : parsed.expiresIn,
