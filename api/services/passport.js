@@ -193,7 +193,7 @@ function userByPassport(req, _passport, _user, done) {
         function(asyncCb) {
             Passport.findOne({
                 strategy   : _passport.strategy,
-                identifier : _passport.identifier,
+                identifier : String(_passport.identifier),
             }, asyncCb);
         },
         // ищу пользователя паспорта
