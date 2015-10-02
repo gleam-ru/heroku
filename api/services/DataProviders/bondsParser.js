@@ -78,7 +78,7 @@ function createBond(list) {
         // 'dealRubs':     myParseFloat(list[12]),    // 'Объем торгов, руб.'
         // 'dealCount':    myParseFloat(list[13]),    // 'Кол-во сделок'
         'endDate':      list[14],                  // 'Дата погашения'
-        // 'dur':          myParseFloat(list[15]),    // 'Дюрация, дней'
+        'dur':          myParseFloat(list[15]),    // 'Дюрация, дней'
         'state':        list[17],                  // 'Статус' (a - торгуются, n - прекращены)
         // 'lastDeal':     list[19]                   // 'Время'
     }

@@ -32,9 +32,8 @@ me.saveBonds = function(parsedBonds, cb) {
                         cpDur     : parsed.cpDur || 0,
                         cpDate    : parsed.cpDate,
                         endDate   : parsed.endDate,
-                        dur       : parsed.dur,
                         state     : parsed.state,
-                        expiresIn : parsed.expiresIn,
+                        expiresIn : parsed.dur,
                     });
                     return found.save();
                 }
