@@ -22,6 +22,9 @@ module.exports = {
 
     models: {
         connection: 'mongolab',
+        // connection: 'HerokuMysqlServer',
+        // autoUpdatedAt: false,
+        // autoCreatedAt: false,
     },
 
     port: 1337,
