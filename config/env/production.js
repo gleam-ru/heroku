@@ -16,7 +16,7 @@ module.exports = {
     heroku: true,
 
     models: {
-        connection: 'HerokuMysqlServer',
+        connection: 'mongolab',
     },
 
     port: 5000,
