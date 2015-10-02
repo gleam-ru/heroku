@@ -26,7 +26,7 @@ cron.add = function(name, pattern, foo) {
 cron.init = function(cb) {
     // UTC TIME!!!
     // http://www.corntab.com/pages/crontab-gui
-    cron.add('bondsParser', '45 5,7,9,11,13,15 * * 1,2,3,4,5', function() {
+    cron.add('bondsParser', '45 5,6,7,8,9,10,11,12,13,14,15,16 * * 1,2,3,4,5', function() {
         provider.bonds.hardUpdate();
     });
 
