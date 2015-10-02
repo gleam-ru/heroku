@@ -26,11 +26,13 @@ me.fixMissedCandles_individual = function() {
     var now = moment();
     return Q.resolve()
         .then(function() {
+            console.log('get all shares from db...')
             return Share
                 .find({dead: false})
         })
         .then(function(shares) {
-            return Q.all(_.map(shares, function(share) {
+            var tasks = [];
+            _.each(shares, function(share) {
                 var candles_existing = share.dailyCandles;
                 var lastSaved = _.last(candles_existing);
                 var lastDate = lastSaved ? moment(lastSaved.d, 'DD.MM.YYYY') : moment(new Date(1900, 1, 1));
@@ -43,19 +45,30 @@ me.fixMissedCandles_individual = function() {
                     return;
                 }
                 else if (now - moment(share.updatedAt) < sails.config.app.providers.shares.timeToForget) {
-                    return Q
+                    tasks.push(Q
                         .ninvoke(parser, 'getTicker', mfd_id)
                         .then(function(candles_parsed) {
                             share.dailyCandles = mergeCandles(candles_existing, candles_parsed);
                             share.indayCandles = [];
                             return share.save();
-                        })
+                        }))
+                    return;
                 }
                 else {
                     console.info('"забываем" эмитента:', share.name)
-                    return share.die();
+                    tasks.push(Q.resolve()
+                        .then(function() {
+                            share.die();
+                            return;
+                        }))
+                    return;
                 }
-            }))
+            });
+            return Q
+                .all(tasks)
+                .then(function() {
+                    return shares;
+                })
         })
 }
 
@@ -67,7 +80,7 @@ me.fixMissedCandles = function(shares) {
     var now = moment();
     return Q.resolve()
         .then(function() {
-            if (shares) {
+            if (shares && shares.length) {
                 return shares;
             }
             else {
@@ -119,7 +132,7 @@ me.fixMissedCandles = function(shares) {
         })
         .then(function(results) {
             return Q
-                .ninvoke(parser, 'getByDate', [from, ids])
+                .ninvoke(parser, 'getByDate', results.from, results.ids)
                 .then(function(parsed) {
                     console.log('parsed', _.keys(parsed).length, 'shares candles');
                     return {
@@ -155,6 +168,10 @@ me.fixMissedCandles = function(shares) {
         .catch(function(err) {
             if (err.originalError === 'candles_are_good') {
                 return Q.resolve();
+            }
+            else {
+                console.error('err in sharesImporter');
+                throw err;
             }
         })
 }
