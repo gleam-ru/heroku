@@ -11,6 +11,7 @@ module.exports.app = {
         bonds: {
             type: 'bond', // Issuer.type
             cache: 'bonds',
+            flashback: 3, // last 3 days to restore missed bids
         },
         shares: {
             // если много парсить - мфд рвет соединение.

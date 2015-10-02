@@ -152,6 +152,18 @@ ul.no-dots>li {list-style: none;}
     opacity: 0.2;
     }
 
+/* деактивированные элементы интерфейса */
+.disabled {
+    }
+    .disabled button {
+        opacity: 0.5;
+        cursor: default;
+        }
+    .disabled input {
+        color: #aaa;
+        cursor: default;
+        }
+
 
 
 /***

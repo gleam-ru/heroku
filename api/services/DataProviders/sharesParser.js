@@ -70,12 +70,12 @@ me.getByDate = function(date_start, tickers, cb) {
                     var ticker = parsed_tickers[name];
                     if (!ticker) parsed_tickers[name] = {candles: []};
                     parsed_tickers[name].candles.push({
-                        date: moment(row['<DATE>'], 'YYYYMMDD').format('YYYY-MM-DD'),
+                        d: moment(row['<DATE>'], 'YYYYMMDD').format('DD.MM.YYYY'),
                         o: parseFloat(row['<OPEN>']),
                         h: parseFloat(row['<HIGH>']),
                         l: parseFloat(row['<LOW>']),
                         c: parseFloat(row['<CLOSE>']),
-                        vol: parseInt(row['<VOL>']),
+                        v: parseInt(row['<VOL>']),
                     });
                 });
                 return next();
@@ -148,12 +148,12 @@ me.getTicker = function(ticker, cb, banned) {
             var candles = [];
             _.each(rows, function(row) {
                 candles.push({
-                    date: moment(row['<DATE>'], 'YYYYMMDD').format('YYYY-MM-DD'),
+                    d: moment(row['<DATE>'], 'YYYYMMDD').format('DD.MM.YYYY'),
                     o: parseFloat(row['<OPEN>']),
                     h: parseFloat(row['<HIGH>']),
                     l: parseFloat(row['<LOW>']),
                     c: parseFloat(row['<CLOSE>']),
-                    vol: parseInt(row['<VOL>']),
+                    v: parseInt(row['<VOL>']),
                 });
             });
             return cb(null, candles);

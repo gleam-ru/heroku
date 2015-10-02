@@ -6,7 +6,7 @@ var options = {
 var cache = LRU(options);
 
 cache.init = function(cb) {
-    log.verbose('cache inited');
+    console.log('cache inited');
     if (cb) cb();
 }
 

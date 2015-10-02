@@ -47,7 +47,7 @@ module.exports.routes = {
     'get /services/shares/:id/edit'     : 'Shares.editorPage', // админка
     'get /services/shares/:id/info'     : 'Shares.getTickerData', // апи
     //---
-    'post /services/shares/:id/update'     : 'Shares.updateGeneral',
+    'post /services/shares/:id/update'  : 'Shares.updateGeneral',
 
 
 
@@ -67,8 +67,7 @@ module.exports.routes = {
     'get /adm'                  : 'Admin',
     'get /adm/bonds_reparse'    : 'Admin.bonds_reparse',
     'get /adm/bonds_cache'      : 'Admin.bonds_cache',
-    'get /adm/amazon_to_client' : 'Admin.amazon_to_client',
-    'get /adm/client_to_amazon' : 'Admin.client_to_amazon',
+    'get /adm/shares_cache'     : 'Admin.shares_cache',
 
 
 

@@ -1,146 +1,176 @@
 var importer = require('./sharesImporter.js');
 var me = {};
 
-var type     = sails.config.app.providers.shares.type;
-var cacheKey = sails.config.app.providers.shares.cache;
 
-
-
-// установка дефолтных значений
 me.init = function(cb) {
-    async.series([
+    Q.resolve()
         // импорт отсутствующих эмитентов (есть в конфиге, но нет в базе)
         // или тех эмитентов, у которых более 4 месяцев пропущенных свечей
-        importer.process,
-        // проверяю данные из базы на "целостность" (наличие всех свечек)
-        // при необходимости - докачиваю
-        importer.fixMissedCandles,
+        .then(function() {
+            // return Q.ninvoke(importer, 'process')
+        })
         // кэширую все
-        me.createCache,
-        //
-    ], cb);
+        .then(function() {
+            // return me.cacheAll();
+        })
+        .nodeify(cb)
 }
 
-
-
-// получает всех тикеров
-// {ticker: {}, ticker: {}}
-me.all = function(cb) {
-    var data = cache.get(cacheKey);
-    if (typeof cb !== 'function') {
-        return data;
-    }
-    if (data) {
-        return cb(null, data);
-    }
-    console.warn('Обновляю кэш не по расписанию!!!');
-    return me.createCache(cb);
-}
-
-
-
-// получает конкретного тикера
-// cb(err, res)
-me.get = function(id, cb) {
-    var cached = cache.get(cacheKey);
-    var data = cached ? cached[id] : undefined;
-    if (typeof cb !== 'function') {
-        // нет колбека. Ну нет, так нет. Возвращаю то, что есть.
-        return data;
-    }
-    if (cached && data) {
-        return cb(null, data);
-    }
-    else if (!cached) {
-        console.warn('Кэш запрошен, но не создан.');
-    }
-    else if (!data) {
-        console.warn('Запрошен эмитент, которого нет в кэше! ID:', id);
-    }
-    else {
-        console.warn('ЯННП');
-    }
-
-    // а запрошенный тикер вообще есть?
-    Issuer.count({
-        id: id,
-    }, function(err, count) {
-        if (err) return cb(err);
-        if (count < 1) {
-            console.warn('А кто-то урл-ами балуется... запрошен несуществующий тикер! ID:', id);
-            return cb(null, {});
-        }
-        console.warn('Обновляю кэш не по расписанию!!!');
-        me.createCache(function(err, cached) {
-            if (err) return cb(err);
-            data = cached ? cached[id] : undefined;
-            if (!data) {
-                console.error('Что-то пошло сильно не так...');
+// начальное кэширование
+me.cacheAll = function(shares) {
+    console.log('shares:cache')
+    return Q.resolve()
+        .then(function() {
+            if (shares) {
+                return shares;
             }
-            return cb(null, data);
-        });
-    });
+            else {
+                return me.getAllFromDB();
+            }
+        })
+        .then(function(shares) {
+            return me.createSharesTableCache(shares);
+        })
 }
 
-
-// cb(err, res);
-me.getByHref = function(href, cb) {
-    var cached = me.all();
-    var found = _.find(cached, function(v, k) {
-        return href === v.general.ticker_code;
-    });
-    if (typeof cb !== 'function') {
-        return found;
-    }
-    if (cached) {
-        return cb(null, found);
-    }
-    // не было кэша? оО
-    // Создаю и ищу в нем
-    console.warn('Обновляю кэш не по расписанию!!! (2)');
-    async.waterfall([
-        me.createCache,
-        function(cached, next) {
-            next(null, _.find(cached, function(v, k) {
-                return href === v.general.ticker_code;
-            }));
+// кэширует акцию
+me.cache = function(share) {
+    if (share) {
+        if (share.id) {
+            cache.set('share_by_id_'+share.id, share);
         }
-    ], cb)
-}
-
-
-
-// TODO: может жрать много оперативки
-// (не течет, просто жрет)
-// cb(err, res)
-me.createCache = function(cb) {
-    Issuer.find({
-        type: type,
-    }, function(err, shares) {
-        if (err) return cb(err);
-        _.each(shares, me.cache);
-        var cached = cache.get(cacheKey);
-        console.info('current shares updated:', _.keys(cached).length);
-        cb(null, cached);
-    });
-}
-
-me.cache = function(issuer) {
-    var cached = cache.get(cacheKey) || {};
-
-    var store = issuer.getStore();
-    store.general.href = store.general.ticker_code || issuer.id;
-    cached[issuer.id] = {
-        id: issuer.id,
-        general: store.general,
-        reports: store.reports,
-        candles: store.dailyCandles,
-        lastCandle: store.lastCandle,
-        indayCandles: store.indayCandles,
+        if (share.code) {
+            cache.set('share_by_code_'+share.code, share);
+        }
     }
-
-    cache.set(cacheKey, cached);
+    return share;
 }
+
+
+
+
+// получает всех эмитентов из бд
+me.getAllFromDB = function() {
+    console.log('shares:getAllFromDB')
+    return Q.resolve()
+        .then(function() {
+            // return Share.find({dead: false}).populateAll();
+            // return Share
+            //     .find({dead: false})
+            //     .prune(['dailyCandles'])
+            //     .populateAll();
+            return Share.find({
+                    where: {
+                        dead: false,
+                    },
+                    // select: ['reports'],
+                })
+        })
+}
+
+// получает акцию по айдишнику
+// если нет в кэше - база+кэш+return
+me.getById = function(id) {
+    console.log('shares:getById', id)
+    return Q.resolve()
+        .then(function() {
+            var alreadyInCache = cache.get('share_by_id_'+id);
+            if (alreadyInCache) {
+                return alreadyInCache;
+            }
+            else {
+                return Q.resolve()
+                    .then(function() {
+                        console.log('shares:getById:fromDB', id)
+                        return Share.findOne({id: id}).populateAll();
+                    })
+                    .then(function(share) {
+                        cache.set('share_by_id_'+id, share);
+                        return share;
+                    })
+            }
+        })
+}
+
+// получает акцию по коду
+// если нет в кэше - база+кэш+return
+me.getByCode = function(code) {
+    console.log('shares:getByCode', code)
+    return Q.resolve()
+        .then(function() {
+            var alreadyInCache = cache.get('share_by_code_'+code);
+            if (alreadyInCache) {
+                return alreadyInCache;
+            }
+            else {
+                return Q.resolve()
+                    .then(function() {
+                        console.log('shares:getByCode:fromDB', code)
+                        return Share.findOne({code: code}).populateAll();
+                    })
+                    .then(function(share) {
+                        cache.set('share_by_code_'+code, share);
+                        return share;
+                    })
+            }
+        })
+}
+
+
+
+
+
+
+// кэш для таблички сервисы/акции
+me.createSharesTableCache = function(shares) {
+    console.log('shares:createSharesTableCache')
+    return Q.resolve()
+        .then(function() {
+            if (shares) {
+                return shares;
+            }
+            else {
+                return me.getAllFromDB();
+            }
+        })
+        .then(function(shares) {
+            var toCache = _.map(shares, function(s) {
+                var lastCandle = _.last(s.dailyCandles);
+                return {
+                    id     : s.id,
+                    name   : s.name,
+                    code   : s.code || '',
+                    href   : s.code || s.id,
+                    site   : s.site,
+                    price  : lastCandle ? lastCandle.c : '',
+                    forums : s.forums,
+                    links  : s.links,
+                }
+            });
+            cache.set('all_shares_table', toCache);
+            console.log('shares:createSharesTableCache_finished', toCache.length)
+            return toCache;
+        })
+}
+
+// получает данные для таблицы сервисы/акции
+me.getSharesTable = function() {
+    console.log('shares:getSharesTable')
+    return Q.resolve()
+        .then(function() {
+            var cached = cache.get('all_shares_table');
+            if (cached) {
+                return cached;
+            }
+            else {
+                console.warn('shares:getSharesTable:createSharesTableCache - обновляю не по расписанию')
+                return me.createSharesTableCache();
+            }
+        })
+}
+
+
+
 
 
 

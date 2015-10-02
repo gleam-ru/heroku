@@ -106,7 +106,7 @@ var tab_info = function() {
         data: function() {
             var info = {};
             info.id = ticker.id;
-            info.mfd_id = ticker.general.mfd_id;
+            info.mfd_id = ticker.mfd_id;
             info.candlesCount = ticker.info.candlesCount;
             info.lastDailyDate = ticker.info.lastDay;
             info.lastIndayDate = ticker.info.lastCandle.date ? ticker.info.lastCandle.date : '...';
@@ -124,20 +124,8 @@ var tab_useful = function() {
         template: '#useful',
         data: function() {
             return {
-                forums: _.map(ticker.general.forums, function(v, k) {
-                    return {
-                        id: k,
-                        key: v.name,
-                        value: v.href,
-                    }
-                }),
-                links: _.map(ticker.general.links, function(v, k) {
-                    return {
-                        id: k,
-                        key: v.name,
-                        value: v.href,
-                    }
-                }),
+                forums: ticker.forums || [],
+                links: ticker.links || [],
             }
         },
         methods: {
@@ -189,10 +177,10 @@ var tab_useful = function() {
             var vm = this;
             this.$on('kv-editor-removed', function(child) {
                 var id = child.editor_id;
-                if (child.prop === 'ticker.general.forums') {
+                if (child.prop === 'ticker.forums') {
                     vm.removeForum(id)
                 }
-                else if (child.prop === 'ticker.general.links') {
+                else if (child.prop === 'ticker.links') {
                     vm.removeLink(id);
                 }
             });
@@ -246,7 +234,7 @@ var tab_reports = function() {
                     .max();
                 if (maxId < 0) maxId = 0;
                 vm.reports.fields.push({
-              id    : 1 + 1 * maxId,
+                    id    : 1 + 1 * maxId,
                     key   : '',
                     value : '',
                 });
@@ -367,6 +355,12 @@ var propEditor = function() {
             sendData: function() {
                 var vm = this;
 
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 $.post(href+vm.href, {
                     message: {
                         key   : vm.prop,
@@ -376,6 +370,7 @@ var propEditor = function() {
                 .done(function() {
                     vm.prop_orig = vm.prop_text;
                     vm.setOrig(vm.prop_text);
+                    el.enable();
                 });
             },
             getOrig: function() {
@@ -438,6 +433,12 @@ var kvEditor = function() {
             sendData: function() {
                 var vm = this;
 
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 $.post(href+vm.href, {
                     message: {
                         key   : vm.prop,
@@ -453,6 +454,7 @@ var kvEditor = function() {
                     vm.value_orig = vm.value_text;
                     vm.setOrig(vm.key_text, vm.value_text);
                     vm.$dispatch('kv-editor-saved', vm);
+                    el.enable();
                 });
             },
 
@@ -534,6 +536,12 @@ var selEditor = function() {
                 var vm = this;
                 var selected = _.find(vm.model, {name: vm.curr});
 
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 $.post(href+vm.href, {
                     message: {
                         key   : vm.prop,
@@ -543,6 +551,7 @@ var selEditor = function() {
                 .done(function() {
                     vm.orig = vm.curr;
                     vm.setOrig(vm.curr);
+                    el.enable();
                 });
             },
             getOrig: function() {
@@ -578,9 +587,9 @@ var selEditor = function() {
                 }
             }));
 
-            var orig = vm.getOrig() || 0;
+            var orig = vm.getOrig() || {name: '', id: 0};
             var found = _.find(vm.model, function(option) {
-                return option.value == orig;
+                return option.value == orig.id;
             });
             if (!found) {
                 console.error('smth went wrong...')
@@ -646,6 +655,13 @@ var initReportWindow = function(parent) {
             },
             save: function() {
                 var vm = this;
+
+                var el = $(vm.$el);
+                if (el.hasClass('disabled')) {
+                    return false;
+                }
+                el.disable();
+
                 var report = {
                     id: vm.id,
                     name: vm.name,
@@ -667,6 +683,9 @@ var initReportWindow = function(parent) {
                 .error(function(err){
                     console.error(err);
                     mp.alert('шо-то пошло не так... см ошибку в консоли');
+                })
+                .always(function() {
+                    el.enable();
                 });
             },
             cancel: function() {

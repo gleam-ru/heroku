@@ -75,37 +75,32 @@ passport.use(new LocalStrategy(sails.config.passport.local,
         else {
             query.username = identifier;
         }
-        User.findOne(query, function (err, user) {
-            if (err) return cb(err);
-            if (!user) {
-                if (isEmail)
-                    msg = 'Неправильный почтовый адрес';
-                else
-                    msg = 'Неправильное имя пользователя';
-                return cb(new Error(msg), null);
-            }
-            Passport.findOne({
-                strategy : 'local',
-                user     : user.id,
-            }, function (err, passport) {
-                if (err) return cb(err);
-                if (!passport) {
-                    return cb(new Error('У пользователя не установлен пароль, авторизация невозможна'), false);
+        User
+            .findOne(query)
+            .populateAll()
+            .then(function(user) {
+                if (!user) {
+                    if (isEmail) {
+                        throw new Error('Неправильный почтовый адрес');
+                    }
+                    else{
+                        throw new Error('Неправильное имя пользователя');
+                    }
                 }
-                else {
-                    passport.validatePassword(password, function (err, res) {
-                        if (err) {
-                            return cb(err);
-                        }
+                var user_passport = _.find(user.passports, {strategy: 'local'})
+                if (!user_passport) {
+                    throw new Error('У пользователя не установлен пароль, авторизация невозможна');
+                }
+                return Q
+                    .ninvoke(user_passport, 'validatePassword', password)
+                    .then(function(res) {
                         if (!res) {
-                            return cb(new Error('Неправильный пароль'), false);
-                        } else {
-                            return cb(null, user);
+                            throw new Error('Неправильный пароль');
                         }
-                    });
-                }
-            });
-        });
+                        return user;
+                    })
+            })
+            .nodeify(cb)
     }
 ));
 
@@ -198,7 +193,7 @@ function userByPassport(req, _passport, _user, done) {
         function(asyncCb) {
             Passport.findOne({
                 strategy   : _passport.strategy,
-                identifier : _passport.identifier,
+                identifier : String(_passport.identifier),
             }, asyncCb);
         },
         // ищу пользователя паспорта

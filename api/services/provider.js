@@ -10,7 +10,7 @@ provider.init = function(cb) {
         provider.bonds.init,
         provider.shares.init,
         // provider.currencies.init,
-        s3.clientToServer,
+        // s3.clientToServer,
     ], cb);
 }
 

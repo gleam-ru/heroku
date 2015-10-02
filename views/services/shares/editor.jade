@@ -132,7 +132,7 @@ block postHead
 
 
 block pageHead
-  h1 #{ticker.general.name || ticker.general.ticker}
+  h1 #{ticker.name}
 
 block pageHead_small
   .no-select
@@ -141,7 +141,7 @@ block breadcrumbs
       {name:'Главная', href:'/'},
       {name:'Сервисы', href:'/services'},
       {name:'Акции', href:'/services/shares'},
-      {name:(ticker.general.name || ticker.general.ticker_code), href:'/services/shares/'+ticker.id},
+      {name:(ticker.name || ticker.ticker_code), href:'/services/shares/'+ticker.id},
       {name:'Редактирование'}
     ])
 
@@ -201,7 +201,7 @@ block afterAll
       v-repeat='forum: forums'
       )
       kv-editor.link(
-        prop='ticker.general.forums'
+        prop='ticker.forums'
         editor_id='{{forum.id}}'
         key='{{forum.key}}'
         value='{{forum.value}}'
@@ -218,7 +218,7 @@ block afterAll
       v-repeat='link: links'
       )
       kv-editor.link(
-        prop='ticker.general.links'
+        prop='ticker.links'
         editor_id='{{link.id}}'
         key='{{link.key}}'
         value='{{link.value}}'
@@ -232,25 +232,25 @@ block afterAll
   #general
     //- h4 Тикер
     prop-editor.code(
-      prop='ticker.general.ticker_code'
+      prop='ticker.code'
       ph='код (gazp)'
       )
     //- h4 Отрасль
     sel-editor(
-      prop='ticker.general.branch'
+      prop='ticker.branch'
       ph=''
       model='{{branches}}'
       )
     //- +separator()
     //- h3 Ссылка на отчетность
     prop-editor.site(
-      prop='ticker.general.site'
+      prop='ticker.site'
       ph='Сайт (а лучше ссылка на отчетность)'
       )
     +separator()
     h4 Количество акций
     prop-editor.count(
-      prop='ticker.general.shares_count'
+      prop='ticker.shares_count'
       ph='штук'
       )
 

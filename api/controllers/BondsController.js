@@ -25,15 +25,13 @@ module.exports = {
 
     // список облигаций
     bonds: function(req, res) {
-        provider.bonds.get(function(err, bonds) {
-            if (err) {
-                log.error(err);
-                return res.send(500);
-            }
-            return res.send({
-                data: bonds,
-            });
-        });
+        provider.bonds.all()
+            .then(function(bonds) {
+                return res.send({
+                    data: bonds,
+                });
+            })
+            .catch(res.serverError)
     },
 
     // получение сохраненных фильтров
