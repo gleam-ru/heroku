@@ -12,7 +12,7 @@ window.MyTable = Vue.extend({
             dt: {
                 pageLength: 10,
                 stateSave: true,
-                stateDuration: -1,
+                stateDuration: 999999999,
                 stateSaveParams: function (settings, data) {
                     data.search.search = "";
                 },

@@ -7,11 +7,11 @@ me.init = function(cb) {
         // импорт отсутствующих эмитентов (есть в конфиге, но нет в базе)
         // или тех эмитентов, у которых более 4 месяцев пропущенных свечей
         .then(function() {
-            // return Q.ninvoke(importer, 'process')
+            return Q.ninvoke(importer, 'process')
         })
         // кэширую все
         .then(function() {
-            // return me.cacheAll();
+            return me.cacheAll();
         })
         .nodeify(cb)
 }

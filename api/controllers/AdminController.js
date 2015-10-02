@@ -15,7 +15,7 @@ module.exports = {
 
     // запуск парсера
     bonds_reparse: function (req, res) {
-        provider.bonds.update();
+        provider.bonds.hardUpdate();
         req.flash('info', 'парьсим, насяйнике!');
         return res.render('admin', {
             info: req.flash('info'),
@@ -23,7 +23,7 @@ module.exports = {
     },
     // обновить кэш облигаций данными из базы
     bonds_cache: function (req, res) {
-        provider.bonds.updateCurrent();
+        provider.bonds.softUpdate();
         req.flash('info', 'смотрю базу');
         return res.render('admin', {
             info: req.flash('info'),
