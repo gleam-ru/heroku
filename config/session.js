@@ -68,7 +68,7 @@ module.exports.session = {
     ***************************************************************************/
 
     // https://github.com/balderdashy/sails/issues/1187
-    adapter: 'sails-mongo',
+    adapter: 'mongo',
     host: 'ds055802.mongolab.com',
     port: 55802,
     user: 'root',
