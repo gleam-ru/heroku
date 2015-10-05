@@ -42,12 +42,13 @@ me.saveBonds = function(parsedBonds, cb) {
                         .create(parsed)
                         .catch(function(err) {
                             if (err.originalError === 'forever_bond') {
-                                // console.warn('forever_bond', parsed.num);
+                                console.warn('forever_bond', parsed.num);
                             }
                             else if (err.originalError === 'stale_bond') {
-                                // console.warn('stale_bond', parsed.num);
+                                console.warn('stale_bond', parsed.num);
                             }
                             else {
+                                console.error('save bond error', err)
                                 throw err;
                             }
                         });
