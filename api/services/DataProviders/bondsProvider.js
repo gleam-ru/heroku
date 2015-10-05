@@ -48,6 +48,9 @@ me.hardUpdate = function() {
     return Q
         .ninvoke(importer, 'process')
         .then(me.cache)
+        .catch(function(err) {
+            console.error('bonds hard update error', err)
+        })
 }
 
 
