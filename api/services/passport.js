@@ -89,6 +89,7 @@ passport.use(new LocalStrategy(sails.config.passport.local,
                 }
                 var user_passport = _.find(user.passports, {strategy: 'local'})
                 if (!user_passport) {
+                    console.error('bad user:', user);
                     throw new Error('У пользователя не установлен пароль, авторизация невозможна');
                 }
                 return Q
