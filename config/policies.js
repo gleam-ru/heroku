@@ -20,7 +20,7 @@ module.exports.policies = {
 
     // Облигации, работа с фильрами
     BondsController: {
-        'updateFilter': ['authenticated'],
+        'updateFilter': ['rememberMe', 'authenticated'],
     },
 
     // Админка акций
@@ -30,7 +30,7 @@ module.exports.policies = {
 
     // Админка
     AdminController: {
-        '*': ['authenticated', 'isAdmin'],
+        '*': ['rememberMe', 'authenticated', 'isAdmin'],
     },
 
 };

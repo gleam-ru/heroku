@@ -23,6 +23,7 @@ me.saveBonds = function(parsedBonds, cb) {
         .then(function(bonds) {
             return Q.all(_.map(parsedBonds, function(parsed) {
                 var found = _.find(bonds, {num: parsed.num, name: parsed.name})
+                var nextPromice;
                 if (found) {
                     _.extend(found, {
                         bid       : parsed.bid || 0,
@@ -35,26 +36,26 @@ me.saveBonds = function(parsedBonds, cb) {
                         state     : parsed.state,
                         expiresIn : parsed.dur,
                     });
-                    return found.save();
+                    nextPromice = found.save();
                 }
                 else {
-                    return Bond
+                    nextPromice = Bond
                         .create(parsed)
-                        .catch(function(err) {
-                            console.warn('im here')
-                            console.warn(err)
-                            if (err.originalError === 'forever_bond') {
-                                console.warn('forever_bond', parsed.num);
-                            }
-                            else if (err.originalError === 'stale_bond') {
-                                console.warn('stale_bond', parsed.num);
-                            }
-                            else {
-                                console.error('save bond error', err)
-                                throw err;
-                            }
-                        });
                 }
+                return nextPromice
+                    .catch(function(err) {
+                        if (err === 'forever_bond' || err.originalError === 'forever_bond') {
+                            console.warn('forever_bond', parsed.num);
+                        }
+                        else if (err === 'stale_bond' || err.originalError === 'stale_bond') {
+                            console.warn('stale_bond', parsed.num);
+                        }
+                        else {
+                            console.error('save bond error', err)
+                            throw err;
+                        }
+                        return;
+                    });
             }))
         })
         .then(function(bonds) {
