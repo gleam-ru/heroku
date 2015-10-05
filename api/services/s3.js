@@ -2,7 +2,7 @@ var s3 = require('s3');
 var me = {};
 
 if (!sails.config.local || !sails.config.local.s3) {
-    console.warn('Ключ для amazon_s3 отсутствует в local.js');
+    console.info('Ключ для amazon_s3 отсутствует в local.js');
 }
 else {
     _.extend(sails.config.amazon.s3, sails.config.local.s3);
