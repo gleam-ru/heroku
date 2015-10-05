@@ -41,6 +41,8 @@ me.saveBonds = function(parsedBonds, cb) {
                     return Bond
                         .create(parsed)
                         .catch(function(err) {
+                            console.warn('im here')
+                            console.warn(err)
                             if (err.originalError === 'forever_bond') {
                                 console.warn('forever_bond', parsed.num);
                             }
