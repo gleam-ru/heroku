@@ -63,3 +63,59 @@ module.exports.bootstrap = function(cb) {
     }
 
 };
+
+
+
+
+
+
+
+/**
+ * Вдруг еще раз понадобятся - чтобы по коммитам/стешам не лазить
+ *
+ */
+
+
+
+//
+// Убирает все свечи из бд начиная с lastGoodDate
+/*
+function(next) {
+    Q.resolve()
+        .then(function() {
+            console.log('share find')
+            return Share.find();
+        })
+        .then(function(shares) {
+            console.log('shares found')
+            var tasks = [];
+            var lastGoodDate = '10.08.2015';
+            lastGoodDate = moment(lastGoodDate, 'DD.MM.YYYY');
+            _.each(shares, function(share) {
+                var task = Q.resolve()
+                    .then(function() {
+                        var len_1 = share.dailyCandles.length;
+                        share.dailyCandles = _.filter(share.dailyCandles, function(candle) {
+                            var candleDate = moment(candle.d, 'DD.MM.YYYY');
+                            return candleDate < lastGoodDate;
+                        })
+                        var len_2 = share.dailyCandles.length;
+                        if (len_2 < len_1) {
+                            console.log('saving: ', share.name, len_1, len_2);
+                            return share.save();
+                        }
+                        else {
+                            return Q.resolve();
+                        }
+                    })
+                tasks.push(task);
+            })
+            console.log('tasks.length', tasks.length)
+            return Q.all(tasks);
+        })
+        .then(function() {
+            console.info('bad candles removed')
+        })
+        .nodeify(next);
+}
+//*/
