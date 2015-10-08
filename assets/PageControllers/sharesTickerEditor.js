@@ -587,10 +587,8 @@ var selEditor = function() {
                 }
             }));
 
-            var orig = vm.getOrig() || {name: '', id: 0};
-            var found = _.find(vm.model, function(option) {
-                return option.value == orig.id;
-            });
+            var orig = vm.getOrig() || 0;
+            var found = _.find(vm.model, {value: orig});
             if (!found) {
                 console.error('smth went wrong...')
                 found = {};
