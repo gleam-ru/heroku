@@ -21,8 +21,8 @@ module.exports = {
     dev: true,
 
     models: {
-        // connection: 'mongolab_dev',
-        connection: 'mongolab',
+        connection: 'mongolab_dev',
+        // connection: 'mongolab',
     },
 
     port: 1337,

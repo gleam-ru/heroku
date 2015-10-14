@@ -587,7 +587,7 @@ var selEditor = function() {
                 }
             }));
 
-            var orig = vm.getOrig() || 0;
+            var orig = vm.getOrig() ? vm.getOrig().id : 0;
             var found = _.find(vm.model, {value: orig});
             if (!found) {
                 console.error('smth went wrong...')
