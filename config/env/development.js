@@ -21,6 +21,7 @@ module.exports = {
     dev: true,
 
     models: {
+        // connection: 'mongolab_dev',
         connection: 'mongolab',
     },
 

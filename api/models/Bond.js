@@ -38,6 +38,7 @@ module.exports = {
 function format(bond, next) {
     // вечных облигаций не бывыает
     if (!bond.endDate) {
+        console.info('forever_bond', bond.name, bond.num)
         return next('forever_bond');
     }
 
@@ -58,6 +59,7 @@ function format(bond, next) {
 
     // должны бы уже выплатить... не следим.
     if (!bond.expiresIn || bond.expiresIn < 0) {
+        console.info('stale_bond', bond.name, bond.num)
         return next('stale_bond');
     }
 

@@ -70,6 +70,14 @@ module.exports.connections = {
         password: 'root',
         database: 'blozhik'
     },
+    mongolab_dev: {
+        adapter: 'sails-mongo',
+        host: 'ds033734.mongolab.com',
+        port: 33734,
+        user: 'root',
+        password: 'root',
+        database: 'blozhik_dev'
+    },
 
 
 
