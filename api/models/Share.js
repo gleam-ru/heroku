@@ -8,23 +8,23 @@
 module.exports = {
 
     attributes: {
-        branch        : {model: 'branch'},
-        name          : {type: 'string'},
-        code          : {type: 'string', unique: true},
-        site          : {type: 'string'},
-        mfd_id        : {type: 'integer', unique: true, required: true},
+        branch          : {model: 'branch'},
+        name            : {type: 'string'},
+        code            : {type: 'string', unique: true},
+        site            : {type: 'string'},
+        mfd_id          : {type: 'integer', unique: true, required: true},
 
-        bid_candle    : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
-        ask_candle    : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
-        indayCandles  : {type: 'array', defaultsTo: []},
-        dailyCandles  : {type: 'array', defaultsTo: []},
-
-        shares_count  : {type: 'integer', defaultsTo: 0},
-        forums        : {type: 'array', defaultsTo: []},
-        links         : {type: 'array', defaultsTo: []},
+        dailyCandles    : {type: 'array', defaultsTo: []},
+        lastCandle      : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
+        indayCandle     : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
 
 
-        reports       : {type: 'json', defaultsTo: {
+        shares_count    : {type: 'integer', defaultsTo: 0},
+        forums          : {type: 'array', defaultsTo: []},
+        links           : {type: 'array', defaultsTo: []},
+
+
+        reports         : {type: 'json', defaultsTo: {
             fields : [],
             data   : [],
         }},

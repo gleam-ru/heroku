@@ -1,5 +1,5 @@
-var moment = require('moment');
-var parser = require('./sharesParser.js');
+var moment   = require('moment');
+var parser   = require('./sharesParser.js');
 var me = {};
 
 var type        = sails.config.app.providers.shares.type;
@@ -12,6 +12,13 @@ me.process = function(cb) {
         })
         .then(function(shares) {
             return me.fixMissedCandles(shares);
+        })
+        .then(function() {
+            return me.updateIndayCandles();
+        })
+        .catch(function(err) {
+            console.error('shares importer error!')
+            console.error(err, err.stack)
         })
         .nodeify(cb)
 }
@@ -49,7 +56,7 @@ me.fixMissedCandles_individual = function() {
                         .ninvoke(parser, 'getTicker', mfd_id)
                         .then(function(candles_parsed) {
                             share.dailyCandles = mergeCandles(candles_existing, candles_parsed);
-                            share.indayCandles = [];
+                            share.lastCandle = _.last(share.dailyCandles);
                             return share.save();
                         }))
                     return;
@@ -162,6 +169,7 @@ me.fixMissedCandles = function(shares) {
         .then(function(modified) {
             console.log('modified', modified.length, 'shares');
             Q.all(_.map(modified, function(share) {
+                share.lastCandle = _.last(share.dailyCandles);
                 return share.save()
             }))
         })
@@ -176,6 +184,75 @@ me.fixMissedCandles = function(shares) {
         })
 }
 
+
+me.updateIndayCandles = function() {
+    console.log('updateIndayCandles');
+    var accum = {};
+    return Q.resolve()
+        .then(function() {
+            console.log('updateIndayCandles:getSharesList')
+            return Share.find({
+                    where: {
+                        dead: false,
+                    },
+                    select: ['name', 'mfd_id', 'indayCandle'],
+                })
+        })
+        .then(function(shares) {
+            accum.shares = shares;
+            return Q.ninvoke(parser, 'getInday', _.map(shares, 'mfd_id'))
+        })
+        .then(function(parsed) {
+            console.log('updateIndayCandles:formatParsedShares')
+            accum.tasks = [];
+            var task;
+            _.each(parsed, function(data, name) {
+                data.indayCandle = {
+                    d: moment().format('DD.MM.YYYY'),
+                    o: 0,
+                    h: 0,
+                    l: 0,
+                    c: 0,
+                    v: 0,
+                }
+                _.extend(data.indayCandle, _.last(data.candles));
+                data.indayCandle.v = 0;
+                _.each(data.candles, function(candle) {
+                    if (data.indayCandle.h < candle.h) {
+                        data.indayCandle.h = candle.h;
+                    }
+                    if (data.indayCandle.l > candle.l) {
+                        data.indayCandle.l = candle.l;
+                    }
+                    data.indayCandle.v += candle.v;
+                })
+                task = Q.resolve()
+                    .then(function() {
+                        var originalShare = _.find(accum.shares, {name: name});
+                        originalShare.indayCandle = data.indayCandle;
+                        return originalShare.save();
+                    })
+                    .catch(function(err) {
+                        console.error('updateIndayCandles:saving error!')
+                        console.error(err, err.stack)
+                    })
+                accum.tasks.push(task);
+            })
+        })
+        .then(function() {
+            console.log('updateIndayCandles:saving')
+            return Q.all(accum.tasks);
+        })
+        .then(function(updated) {
+            console.log('updateIndayCandles:done')
+            accum = null;
+            return updated;
+        })
+        .catch(function(err) {
+            console.error('sharesImporter:updateIndayCandles error!')
+            console.error(err, err.stack);
+        })
+}
 
 //  ╔═╗  ╦═╗  ╦  ╦  ╦  ╔═╗  ╔╦╗  ╔═╗
 //  ╠═╝  ╠╦╝  ║  ╚╗╔╝  ╠═╣   ║   ║╣

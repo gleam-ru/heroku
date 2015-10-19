@@ -19,13 +19,27 @@ me.init = function(cb) {
 // начальное кэширование
 me.cacheAll = function(shares) {
     console.log('shares:cache')
-    return Q.resolve()
+    return me.dropCached()
         .then(function() {
             if (shares) {
                 return shares;
             }
             else {
-                return me.getAllFromDB();
+                return Share.find({
+                    where: {
+                        dead: false,
+                    },
+                    select: [
+                        'id',
+                        'name',
+                        'code',
+                        'site',
+                        'forums',
+                        'links',
+                        'lastCandle',
+                        'indayCandle',
+                    ],
+                })
             }
         })
         .then(function(shares) {
@@ -46,6 +60,32 @@ me.cache = function(share) {
     return share;
 }
 
+// дроп закешированных "одиночек"
+me.dropCached = function() {
+    console.log('shares:dropCached');
+    return Q.resolve()
+        .then(function() {
+            var dropped = [];
+            _.each(cache.keys(), function(key) {
+                if (key.indexOf('share_by_id_') !== -1 || key.indexOf('share_by_code_') !== -1) {
+                    dropped.push(key);
+                    cache.del(key);
+                }
+            })
+            return dropped;
+        })
+}
+
+// обновляет inday свечи
+me.updateIndayCandles = function() {
+    return Q.resolve()
+        .then(function() {
+            return importer.updateIndayCandles();
+        })
+        .then(function(updated) {
+            return me.cacheAll(updated);
+        })
+}
 
 
 
@@ -135,16 +175,16 @@ me.createSharesTableCache = function(shares) {
         })
         .then(function(shares) {
             var toCache = _.map(shares, function(s) {
-                var lastCandle = _.last(s.dailyCandles);
                 return {
-                    id     : s.id,
-                    name   : s.name,
-                    code   : s.code || '',
-                    href   : s.code || s.id,
-                    site   : s.site,
-                    price  : lastCandle ? lastCandle.c : '',
-                    forums : s.forums,
-                    links  : s.links,
+                    id        : s.id,
+                    name      : s.name,
+                    code      : s.code || '',
+                    href      : s.code || s.id,
+                    site      : s.site,
+                    price     : s.indayCandle ? s.indayCandle.c : '',
+                    yesterday : s.lastCandle ? s.lastCandle.c : '',
+                    forums    : s.forums,
+                    links     : s.links,
                 }
             });
             cache.set('all_shares_table', toCache);

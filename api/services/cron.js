@@ -49,6 +49,19 @@ cron.init = function(cb) {
         // });
     });
 
+
+
+
+    // обновление inday свечей
+    cron.add('sharesInday', '5,30 5,6,7,8,9,10,11,12,13,14,15,16 * * 1,2,3,4,5', function() {
+        provider.shares
+            .updateIndayCandles()
+            .catch(function(err) {
+                console.error('sharesInday cron error');
+                console.error(err, err.stack)
+            });
+    });
+
     // получение недостающих свечей
     // в 22:00 каждый пн,вт,ср,чт,пт
     cron.add('sharesNewDay', '0 22 * * 1,2,3,4,5', function() {

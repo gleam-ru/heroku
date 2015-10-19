@@ -5,6 +5,7 @@ module.exports.bootstrap = function(cb) {
     global.Q        = require('q');
     global.moment   = require('moment');
     global.fs       = require('fs-extra');
+    global._        = require('lodash');
 
 
 
@@ -28,7 +29,7 @@ module.exports.bootstrap = function(cb) {
             filler.process,
             provider.init,
             cache.init,
-            // cron.init,
+            cron.init,
         ],
         function(err) {
             // if (err) return cb(err);
@@ -74,8 +75,6 @@ module.exports.bootstrap = function(cb) {
  * Вдруг еще раз понадобятся - чтобы по коммитам/стешам не лазить
  *
  */
-
-
 
 //
 // Убирает все свечи из бд начиная с lastGoodDate

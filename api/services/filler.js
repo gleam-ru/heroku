@@ -2,7 +2,7 @@ var me = {};
 
 me.process = function(cb) {
     Q.all([
-        _statistics(),
+        // _statistics(),
         _admin(),
         _branches(),
         // _shares(),

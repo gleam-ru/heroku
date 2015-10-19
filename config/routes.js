@@ -67,7 +67,10 @@ module.exports.routes = {
     'get /adm'                  : 'Admin',
     'get /adm/bonds_reparse'    : 'Admin.bonds_reparse',
     'get /adm/bonds_cache'      : 'Admin.bonds_cache',
-    'get /adm/shares_cache'     : 'Admin.shares_cache',
+    //---
+    'get /adm/shares_updateInday' : 'Admin.shares_updateInday',
+    'get /adm/shares_cache'       : 'Admin.shares_cache',
+    'get /adm/shares_dropCache'   : 'Admin.shares_dropCache',
 
 
 

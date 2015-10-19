@@ -39,6 +39,26 @@ module.exports = {
                     info: req.flash('info'),
                 });
             })
-    }
+    },
+
+    shares_dropCache: function(req, res) {
+        provider.shares.dropCached()
+            .then(function(dropped) {
+                req.flash('info', 'dropped: '+dropped.toString());
+                return res.render('admin', {
+                    info: req.flash('info'),
+                });
+            })
+    },
+
+    shares_updateInday: function(req, res) {
+        provider.shares.updateIndayCandles()
+            .then(function() {
+                req.flash('info', 'updated');
+                return res.render('admin', {
+                    info: req.flash('info'),
+                });
+            })
+    },
 };
 
