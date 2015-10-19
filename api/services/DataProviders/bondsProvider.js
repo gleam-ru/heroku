@@ -49,7 +49,7 @@ me.hardUpdate = function() {
         .ninvoke(importer, 'process')
         .then(me.cache)
         .catch(function(err) {
-            console.error('bonds hard update error', err)
+            console.error('bonds hard update error', err, err.stack)
         })
 }
 
@@ -62,14 +62,14 @@ me.fetchFromDB = function() {
     console.log('fetchFromDB');
     return Q.resolve()
         .then(function() {
-            return Statistics
-                .findOne({name: 'bondsUpdatedAt'})
-                .then(function(stat) {
-                    return Bond
-                        .find()
-                        .where({
-                            updatedAt: {'>=': stat.data},
-                        })
+            return Statistics.findOne({name: 'bondsUpdatedAt'})
+        })
+        .then(function(stat) {
+            return Bond
+                .find()
+                .where({
+                    dead: false,
+                    updatedAt: {'>=': stat.data},
                 })
         })
 }

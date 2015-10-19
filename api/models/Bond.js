@@ -15,8 +15,8 @@ module.exports = {
         cpDur         : {type: 'float'},
         endDate       : {type: 'string'},
 
-        bid           : {type: 'float'},
-        ask           : {type: 'float'},
+        bid           : {type: 'float', defaultsTo: 0},
+        ask           : {type: 'float', defaultsTo: 0},
         nkd           : {type: 'float'},
         state         : {type: 'string'},
         cpDate        : {type: 'string'},
@@ -26,6 +26,13 @@ module.exports = {
         ask_candle    : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:''}},
         indayCandles  : {type: 'array', defaultsTo: []},
         dailyCandles  : {type: 'array', defaultsTo: []},
+
+        // старые выпуски
+        dead          : {type: 'boolean', defaultsTo: false},
+        die: function() {
+            this.dead = true;
+            return this.save();
+        },
     },
 
 
@@ -60,6 +67,7 @@ function format(bond, next) {
     // должны бы уже выплатить... не следим.
     if (!bond.expiresIn || bond.expiresIn < 0) {
         console.info('stale_bond', bond.name, bond.num)
+        bond.dead = true;
         return next('stale_bond');
     }
 
