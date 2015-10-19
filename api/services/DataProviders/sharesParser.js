@@ -35,8 +35,8 @@ me.getInday = function(tickers, cb) {
     function iterator(range, next) {
         // подготовка ссылки
         var url = ''+
-            'http://mfd.ru/export/handler.ashx?'+qs(_.extend(query, {
-                'Period'  : '4', // 15 min
+            'http://mfd.ru/export/handler.ashx?'+qs(_.extend({}, query, {
+                'Period'  : '5', // 30 min
                 'Tickers' : range.toString(),
             }));
         // запрос на сервер
@@ -44,7 +44,7 @@ me.getInday = function(tickers, cb) {
             method: 'GET',
             uri: url,
         }, function(err, response, body) {
-            console.info('daily candles mfd req:', url);
+            console.info('inday candles mfd req:', url);
             if (err) return next(err);
             if (response.statusCode === 500) {
                 console.warn('err500 от mfd!')
@@ -110,7 +110,7 @@ me.getByDate = function(date_start, tickers, cb) {
     function iterator(range, next) {
         // подготовка ссылки
         var url = ''+
-            'http://mfd.ru/export/handler.ashx?'+qs(_.extend(query, {
+            'http://mfd.ru/export/handler.ashx?'+qs(_.extend({}, query, {
                 'Tickers'            : range.toString(),
                 'StartDate'          : date_start.format('DD.MM.YYYY'),
             }));
