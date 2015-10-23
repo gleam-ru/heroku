@@ -182,14 +182,14 @@ var AuthController = {
                 errors = [errors];
             }
             var flashes = [];
-            _(errors).each(function(err) {
+            _.each(errors, function(err) {
                 if (!err.Errors) {
                     // ошибка, но не от валидации...
                     flashes.push(err.message || err);
                 }
                 else {
-                    _(err.Errors).each(function(trouble) {
-                        _(trouble).each(function(instance) {
+                    _.each(err.Errors, function(trouble) {
+                        _.each(trouble, function(instance) {
                             flashes.push(instance.message);
                         });
                     });
