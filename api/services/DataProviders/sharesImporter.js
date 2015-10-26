@@ -42,7 +42,7 @@ me.fixMissedCandles_individual = function() {
             _.each(shares, function(share) {
                 var candles_existing = share.dailyCandles;
                 var lastSaved = _.last(candles_existing);
-                var lastDate = lastSaved ? moment(lastSaved.d, 'DD.MM.YYYY') : moment(new Date(1900, 1, 1));
+                var lastDate = lastSaved ? moment(lastSaved.d, ddf) : moment(new Date(1900, 1, 1));
                 if ((now - lastDate) < limitations.time) {
                     return;
                 }
@@ -91,6 +91,7 @@ me.fixMissedCandles = function(shares) {
                 return shares;
             }
             else {
+                console.log('find all shares')
                 return Share.find({dead: false});
             }
         })
@@ -98,10 +99,11 @@ me.fixMissedCandles = function(shares) {
             var firstMissedDate = moment();
             var shareMfdIds = [];
 
+            console.log('formatting list-to-download')
             _.each(shares, function(share) {
                 var candles = share.dailyCandles;
                 var lastSaved = _.last(candles);
-                var lastDate = lastSaved ? moment(lastSaved.d, 'DD.MM.YYYY') : moment(new Date(1900, 1, 1));
+                var lastDate = lastSaved ? moment(lastSaved.d, ddf) : moment(new Date(1900, 1, 1));
 
                 var range = now - lastDate;
                 if (range > limitations.time) {
@@ -130,7 +132,7 @@ me.fixMissedCandles = function(shares) {
             if (shareMfdIds.length === 0) {
                 throw new Error('candles_are_good');
             }
-            console.info('Missed candles!', 'date:', firstMissedDate.format('DD.MM.YYYY'), 'count:', shareMfdIds.length);
+            console.info('Missed candles!', 'date:', firstMissedDate.format(ddf), 'count:', shareMfdIds.length);
             return {
                 from: firstMissedDate,
                 ids: shareMfdIds,
@@ -208,7 +210,7 @@ me.updateIndayCandles = function() {
             var task;
             _.each(parsed, function(data, name) {
                 data.indayCandle = {
-                    d: moment().format('DD.MM.YYYY'),
+                    d: moment().format(ddf),
                     o: 0,
                     h: 0,
                     l: 0,
@@ -261,9 +263,9 @@ me.updateIndayCandles = function() {
 
 // "умный" конкат - дописывает только несуществующие свечи
 function mergeCandles(_old, _new) {
-    var lastExisting = _old[_old.length - 1] || {};
+    var lastExisting = _.last(_old) || {d: '01.01.1900'};
     var i = _.findIndex(_new, function(candle) {
-        return candle.date === lastExisting.date;
+        return moment(lastExisting, ddf) < moment(candle.d, ddf);
     });
     _new.splice(0, i + 1);
     return _old.concat(_new);

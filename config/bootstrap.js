@@ -7,6 +7,10 @@ module.exports.bootstrap = function(cb) {
     global.fs       = require('fs-extra');
     global._        = require('lodash');
 
+    // проверить по DD.MM.YYYY перед заменой!!! некоторые сервисы требуют
+    // повторной инициализации ddf
+    global.ddf = 'DD.MM.YYYY'; // Default Date Format
+
 
 
 
@@ -89,13 +93,13 @@ function(next) {
             console.log('shares found')
             var tasks = [];
             var lastGoodDate = '10.08.2015';
-            lastGoodDate = moment(lastGoodDate, 'DD.MM.YYYY');
+            lastGoodDate = moment(lastGoodDate, ddf);
             _.each(shares, function(share) {
                 var task = Q.resolve()
                     .then(function() {
                         var len_1 = share.dailyCandles.length;
                         share.dailyCandles = _.filter(share.dailyCandles, function(candle) {
-                            var candleDate = moment(candle.d, 'DD.MM.YYYY');
+                            var candleDate = moment(candle.d, ddf);
                             return candleDate < lastGoodDate;
                         })
                         var len_2 = share.dailyCandles.length;

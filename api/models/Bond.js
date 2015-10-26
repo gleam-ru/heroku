@@ -49,8 +49,8 @@ function format(bond, next) {
         return next('forever_bond');
     }
 
-    bond.endDate = moment(bond.endDate, 'DD.MM.YYYY');
-    bond.cpDate  = moment(bond.cpDate,  'DD.MM.YYYY');
+    bond.endDate = moment(bond.endDate, ddf);
+    bond.cpDate  = moment(bond.cpDate,  ddf);
 
     bond.rate    = parseFloat(bond.rate);   // номинал
     bond.cpVal   = parseFloat(bond.cpVal);  // размер купона
@@ -72,8 +72,8 @@ function format(bond, next) {
     }
 
     // приводим даты к виду, ожидаемому базой
-    bond.endDate   = bond.endDate.format('DD.MM.YYYY');
-    bond.cpDate    = bond.cpDate.format('DD.MM.YYYY');
+    bond.endDate   = bond.endDate.format(ddf);
+    bond.cpDate    = bond.cpDate.format(ddf);
 
     return next();
 }

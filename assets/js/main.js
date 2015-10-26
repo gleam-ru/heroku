@@ -63,7 +63,7 @@ $(document).ready(function() {
 
 
     // datatables
-    window.dateFormat = "DD.MM.YYYY";
+    window.dateFormat = ddf;
     $.fn.dataTable.moment(dateFormat);
     $.fn.dataTable.ext.pager.numbers_length = 5;
 

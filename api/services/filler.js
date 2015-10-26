@@ -54,7 +54,7 @@ function _shares(next) {
 
 function _bond_JamesBond(next) {
     console.log('filler:_bond_JamesBond');
-    var now = moment().format('DD.MM.YYYY');
+    var now = moment().format(ddf);
     return Q.resolve()
         .then(function() {
             return Bond

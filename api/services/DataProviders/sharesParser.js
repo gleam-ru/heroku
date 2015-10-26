@@ -2,14 +2,16 @@ var moment = require('moment');
 var request = require('request');
 var qs = require('querystring').stringify;
 var me = {};
+var ddf = 'DD.MM.YYYY';
 
 var query = {
     'Tickers'            : '',
     'Period'             : '7',
     'timeframeValue'     : '1',
     'timeframeDatePart'  : 'day',
-    'StartDate'          : moment().format('DD.MM.YYYY'),
-    'EndDate'            : moment().format('DD.MM.YYYY'),
+    'StartDate'          : moment().format(ddf),
+    'EndDate'            : moment().format(ddf),
+    // .subtract(1, 'day').format(ddf)
     'SaveFormat'         : '0',
     'SaveMode'           : '0',
     'FileName'           : '_',
@@ -70,7 +72,7 @@ me.getInday = function(tickers, cb) {
                         parsed_tickers[name] = {candles: []};
                     }
                     parsed_tickers[name].candles.push({
-                        d: moment(row['<DATE>'], 'YYYYMMDD').format('DD.MM.YYYY'),
+                        d: moment(row['<DATE>'], 'YYYYMMDD').format(ddf),
                         o: parseFloat(row['<OPEN>']),
                         h: parseFloat(row['<HIGH>']),
                         l: parseFloat(row['<LOW>']),
@@ -112,7 +114,7 @@ me.getByDate = function(date_start, tickers, cb) {
         var url = ''+
             'http://mfd.ru/export/handler.ashx?'+qs(_.extend({}, query, {
                 'Tickers'            : range.toString(),
-                'StartDate'          : date_start.format('DD.MM.YYYY'),
+                'StartDate'          : date_start.format(ddf),
             }));
         // запрос на сервер
         request({
@@ -143,7 +145,7 @@ me.getByDate = function(date_start, tickers, cb) {
                     var ticker = parsed_tickers[name];
                     if (!ticker) parsed_tickers[name] = {candles: []};
                     parsed_tickers[name].candles.push({
-                        d: moment(row['<DATE>'], 'YYYYMMDD').format('DD.MM.YYYY'),
+                        d: moment(row['<DATE>'], 'YYYYMMDD').format(ddf),
                         o: parseFloat(row['<OPEN>']),
                         h: parseFloat(row['<HIGH>']),
                         l: parseFloat(row['<LOW>']),
@@ -173,8 +175,8 @@ me.getTicker = function(ticker, cb, banned) {
             'Period'             : '7',
             'timeframeValue'     : '1',
             'timeframeDatePart'  : 'day',
-            'StartDate'          : moment(new Date(1900, 1, 1)).format('DD.MM.YYYY'),
-            'EndDate'            : moment().format('DD.MM.YYYY'),
+            'StartDate'          : moment(new Date(1900, 1, 1)).format(ddf),
+            'EndDate'            : moment().format(ddf),
             'SaveFormat'         : '0',
             'SaveMode'           : '0',
             'FileName'           : '_',
@@ -221,7 +223,7 @@ me.getTicker = function(ticker, cb, banned) {
             var candles = [];
             _.each(rows, function(row) {
                 candles.push({
-                    d: moment(row['<DATE>'], 'YYYYMMDD').format('DD.MM.YYYY'),
+                    d: moment(row['<DATE>'], 'YYYYMMDD').format(ddf),
                     o: parseFloat(row['<OPEN>']),
                     h: parseFloat(row['<HIGH>']),
                     l: parseFloat(row['<LOW>']),

@@ -135,7 +135,7 @@ function calculate(bond) {
         while (pastCandle && i < flashback) {
             var possibleBid = pastCandle.bid.l || pastCandle.bid.o || pastCandle.bid.h;
             if (possibleBid) {
-                if (now - (moment(pastCandle.d, 'DD.MM.YYYY')) < ((flashback + 3) * 1000*60*60*24)) {
+                if (now - (moment(pastCandle.d, ddf)) < ((flashback + 3) * 1000*60*60*24)) {
                     bond.bid = possibleBid;
                 }
                 break;
@@ -184,8 +184,8 @@ function calculate(bond) {
 
 // приводит облигацию к виду, который ожидает клиент
 function format(bond) {
-    bond.endDate = moment(bond.endDate, 'DD.MM.YYYY').format('DD.MM.YYYY');
-    bond.cpDate  = moment(bond.cpDate, 'DD.MM.YYYY').format('DD.MM.YYYY');
+    bond.endDate = moment(bond.endDate, ddf).format(ddf);
+    bond.cpDate  = moment(bond.cpDate, ddf).format(ddf);
     var nums = [
         'rate',
         'cpVal',

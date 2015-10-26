@@ -68,7 +68,7 @@ me.saveBonds = function(parsedBonds, cb) {
                     return stat.save();
                 })
                 .then(function(stat) {
-                    console.log('stat updated', moment(stat.data).format('DD.MM.YYYY'));
+                    console.log('stat updated', moment(stat.data).format(ddf));
                     return bonds;
                 })
         })

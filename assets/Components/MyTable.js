@@ -538,7 +538,7 @@ window.MyTable = Vue.extend({
                     value: "after",
                     apply: function(a, b) {
                         // где-то выше было так:
-                        // var dateFormat = "DD.MM.YYYY";
+                        // var dateFormat = ddf;
                         a = moment(a, dateFormat);
                         b = moment(b, dateFormat);
                         return a.isAfter(b);
@@ -549,7 +549,7 @@ window.MyTable = Vue.extend({
                     value: "before",
                     apply: function(a, b) {
                         // где-то выше было так:
-                        // var dateFormat = "DD.MM.YYYY";
+                        // var dateFormat = ddf;
                         a = moment(a, dateFormat);
                         b = moment(b, dateFormat);
                         return !a.isAfter(b);
