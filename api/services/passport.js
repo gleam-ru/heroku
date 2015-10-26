@@ -140,29 +140,18 @@ passport.rememberme.verify = function(token, cb) {
 };
 // даем новый токен
 passport.rememberme.issue = function(user, cb) {
-    // удаляем все токены данного пользователя
-    Passport.destroy({
+    // и даем ему новый
+    var token = require('crypto').randomBytes(32).toString('hex');
+    Passport.create({
         user     : user.id,
-        strategy : 'rememberme'
-    })
-    .exec(function(err) {
+        strategy : 'rememberme',
+        token    : token
+    }, function(err) {
         if (err) {
-            console.error('unable destroy rememberme passport for user_id:', user.id, err)
+            console.error('unable to give token:', err);
             return cb(err);
         }
-        // и даем ему новый
-        var token = require('crypto').randomBytes(32).toString('hex');
-        Passport.create({
-            user     : user.id,
-            strategy : 'rememberme',
-            token    : token
-        }, function(err) {
-            if (err) {
-                console.error('unable to give token:', err);
-                return cb(err);
-            }
-            return cb(null, token);
-        });
+        return cb(null, token);
     });
 };
 passport.use(new RememberMeStrategy(sails.config.passport.rememberme, passport.rememberme.verify, passport.rememberme.issue));
