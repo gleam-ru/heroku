@@ -127,6 +127,13 @@ $(document).ready(function() {
         }, {
             className: "buttonColumn custom",
             data: null,
+            defaultContent: Jade.els.roundIcon('fa-share'),
+            handler: function(data) { // row data
+                window.open('https://www.google.ru/search?q=rusbonds+'+data.num);
+            },
+        }, {
+            className: "buttonColumn custom",
+            data: null,
             defaultContent: Jade.els.roundIcon('fa-calculator'),
             handler: function(data) { // row data
                 calculator.setData(data);
