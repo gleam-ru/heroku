@@ -24,7 +24,7 @@ block postHead
 
 block pageHead
   h1 #{ticker.name}
-    if (user && user.access === 'admin')
+    if (hasRoles(['admin', 'shares-filler']))
       a.tt(
         href='/services/shares/'+ticker.id+'/edit',
         )

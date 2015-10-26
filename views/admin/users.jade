@@ -1,0 +1,41 @@
+extends ../layouts/default.jade
+
+
+
+block pageHead
+  h1 #{title}
+block pageHead_small
+  p тут происходит магия
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Админка', href:'/about'},
+      {name:'Пользователи', href:'/admin/users'},
+    ])
+
+block postHead
+  style.
+    th {font-weight: bold;}
+    .roundIcon {font-size: 14px;}
+
+block content
+  table.w-100
+    tr 
+      th #
+      th email
+      th roles
+      th roles
+    - var i = 1
+    each user in users
+      tr
+        td #{i++}
+        td #{user.email}
+        td
+          each role in user.roles
+            b #{role.name}
+            br
+        td
+          a(href='/adm/users/#{user.id}/edit')
+            +roundIcon('fa-edit')
+
+

@@ -6,23 +6,30 @@ var passport  = require('passport');
 // создаем сессию для пользователя
 passport.login = function(req, res, user, cb) {
     if (!user) return cb(new Error('user not found'));
-
-    req.login(user, function(err) {
-        if (err) {
-            console.error('unable to log in user:', user.id, err);
-            return cb(err);
-        }
-        res.locals.user = user;
-        // даем ему токен
-        passport.rememberme.issue(user, function(err, token) {
-            if (err) {
-                console.error('unable to give token:', err);
-                return cb(err);
+    return Q.resolve()
+        .then(function() {
+            return User
+                .findOne({id: user.id})
+                .populateAll()
+        })
+        .then(function(user) {
+            if (!user) {
+                throw new Error('user not found - 2')
             }
-            res.cookie(sails.config.passport.rememberme.key, token, { path: '/', httpOnly: true, maxAge: 604800000 });
-            return cb();
-        });
-    });
+            return Q.ninvoke(req, 'login', user)
+                .then(function() {
+                    res.locals.user = user;
+                    return user;
+                })
+
+        })
+        .then(function(user) {
+            return Q.ninvoke(passport.rememberme, 'issue', user)
+                .then(function(token) {
+                    res.cookie(sails.config.passport.rememberme.key, token, { path: '/', httpOnly: true, maxAge: 604800000 });
+                })
+        })
+        .nodeify(cb);
 };
 
 
@@ -42,10 +49,10 @@ passport.serializeUser(function(user, cb) {
 });
 // Так написано в доках-2
 passport.deserializeUser(function(id, cb) {
-    User.findOne(id)
-        .exec(function(err, user) {
-            cb(err, user);
-        });
+    User
+        .findOne(id)
+        .populate('roles')
+        .exec(cb);
 });
 
 
@@ -292,8 +299,6 @@ passport.use(new GoogleStrategy(sails.config.passport.strategies.google,
         done);
     }
 ));
-
-module.exports = passport;
 
 
 

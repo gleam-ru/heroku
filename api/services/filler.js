@@ -2,6 +2,7 @@ var me = {};
 
 me.process = function(cb) {
     Q.all([
+        _role(),
         // _statistics(),
         _admin(),
         _branches(),
@@ -10,6 +11,21 @@ me.process = function(cb) {
     ])
     .nodeify(cb)
 }
+
+function _role(next) {
+    console.log('filler:_role');
+    var roles = [
+        {name: 'admin'},
+        {name: 'user'},
+        {name: 'shares-filler'},
+    ];
+    return Q.resolve()
+        .then(function() {
+            return Role.findOrCreate(roles, roles)
+        })
+        .nodeify(next)
+}
+
 
 function _branches(next) {
     console.log('filler:_branches');
@@ -113,6 +129,23 @@ function _admin(next) {
                     strategy: 'local',
                     password: 'Xa@Bk1rU',
                 })
+                .then(function() {
+                    return User.findOne({id: user.id}).populateAll();
+                })
+        })
+        .then(function(user) {
+            return Role
+                .findOne({name: 'admin'})
+                .then(function(role) {
+                    if (!_.find(user.roles, {name: role.name})) {
+                        user.roles.add(role.id)
+                        return user.save();
+                    }
+                    else {
+                        return user;
+                    }
+                })
+
         })
         .nodeify(next)
 }

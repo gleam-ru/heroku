@@ -12,7 +12,7 @@ $(document).ready(function() {
                 var tr = '';
 
                 // admin
-                if (user && user.access === 'admin')
+                if (hasRoles(['admin', 'shares-filler']))
                     tr += ''+
                         '<a class="inTableIcon"'+
                             'href="'+href+'/'+full.id+'/edit" '+

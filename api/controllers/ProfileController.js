@@ -10,5 +10,5 @@ module.exports = {
         return res.render('profile', {
             title: 'Профиль',
         });
-    }
+    },
 };

@@ -1,5 +1,4 @@
 mixin Navigation(list)
-  - var access = user.access || 'ghost';
   if list
     nav.w-nav
       .w-nav-h
@@ -11,7 +10,7 @@ mixin Navigation(list)
             //- level 1
             //- -------
             each menuPosition in list
-              if (!menuPosition.canSee || menuPosition.canSee.indexOf(access) != -1)
+              if (!menuPosition.canSee || hasRoles(menuPosition.canSee))
                 .w-nav-item.level_1.with_sublevel
                   .w-nav-item-h
                     - var href = menuPosition.href ? menuPosition.href : '/'
@@ -28,7 +27,7 @@ mixin Navigation(list)
                       .w-nav-list.place_down.show_onhover.level_2
                         .w-nav-list-h
                           each child in menuPosition.children
-                            if (!child.canSee || child.canSee.indexOf(access) != -1)
+                            if (!child.canSee || hasRoles(child.canSee))
                               .w-nav-item.level_2
                                 .w-nav-item-h
                                   - var href = child.href ? child.href : '/'

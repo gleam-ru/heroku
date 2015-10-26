@@ -120,5 +120,47 @@ function(next) {
             console.info('bad candles removed')
         })
         .nodeify(next);
-}
+},
+//*/
+
+
+
+//
+//
+/*
+function(next) {
+    var data = {};
+    Q.resolve()
+        .then(function() {
+            return Role.findOne({name: 'user'})
+        })
+        .then(function(role) {
+            data.role = role;
+            console.log('user find')
+            return User.find();
+        })
+        .then(function(users) {
+            console.log('users found')
+            var tasks = [];
+            _.each(users, function(user) {
+                tasks.push(Q.resolve()
+                    .then(function() {
+                        if (!_.find(user.roles, {name: data.role.name})) {
+                            user.roles.add(data.role.id);
+                            return user.save();
+                        }
+                        else {
+                            return user;
+                        }
+                    })
+                );
+            })
+            console.log('tasks.length', tasks.length)
+            return Q.all(tasks);
+        })
+        .then(function() {
+            console.info('roles updtd')
+        })
+        .nodeify(next);
+},
 //*/

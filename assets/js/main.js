@@ -45,6 +45,20 @@ window.messages = {
         '',
 }
 
+window.hasRoles = function(roleNames) {
+    var ok = false;
+    if (!Array.isArray(roleNames)) {
+        roleNames = [roleNames]
+    }
+    _.each(roleNames, function(roleName) {
+        if (_.find(window.user ? window.user.roles : [], {name: roleName})) {
+            ok = true;
+            return false;
+        }
+    })
+    return ok;
+}
+
 $(document).ready(function() {
     // pickmeup
     var locale = {

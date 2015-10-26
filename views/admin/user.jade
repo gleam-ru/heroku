@@ -1,0 +1,32 @@
+extends ../layouts/default.jade
+
+
+
+block pageHead
+  h1 #{title}
+block pageHead_small
+  p тут происходит магия
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Админка', href:'/about'},
+      {name:'Пользователи', href:'/admin/users'},
+      {name:'Редактирование'},
+    ])
+
+block postHead
+  +PasteInlineData(['userid', user.id])
+  script(src='/PageControllers/admin/user.js' defer)
+  style.
+    th {font-weight: bold;}
+    .roundIcon {font-size: 14px;}
+    #roles {min-height: 200px;}
+
+block content
+  h4 Роли
+  select#roles(multiple)
+    each role in roles
+      option(selected=role.selected) #{role.name}
+  span#save
+    +button('save')
+

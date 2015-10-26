@@ -15,7 +15,20 @@ module.exports.http = {
         passportInit: require('passport').initialize(),
         passportSession : require('passport').session(),
         setLocals : function(req, res, cb) {
-            res.locals.user = req.user || {};
+            res.locals.user = req.user || {roles: [{name:'ghost'}]};
+            res.locals.hasRoles = function(roleNames) {
+                var ok = false;
+                if (!Array.isArray(roleNames)) {
+                    roleNames = [roleNames]
+                }
+                _.each(roleNames, function(roleName) {
+                    if (_.find(res.locals.user.roles, {name: roleName})) {
+                        ok = true;
+                        return false;
+                    }
+                })
+                return ok;
+            }
             cb();
         },
 

@@ -46,6 +46,8 @@ input.fillMePls {
 .i {font-style: italic;}
 .b {font-weight: bold;}
 
+.w-100 {width: 100%;}
+
 ul.no-dots>li {list-style: none;}
 
 .no-error .error {display: none;}
