@@ -104,7 +104,7 @@ module.exports = {
     shares_dropCache: function(req, res) {
         provider.shares.dropCached()
             .then(function(dropped) {
-                req.flash('info', 'dropped: '+dropped.toString());
+                req.flash('info', 'dropped: '+dropped.join('\n'));
                 return res.render('admin/index', {
                     info: req.flash('info'),
                 });
