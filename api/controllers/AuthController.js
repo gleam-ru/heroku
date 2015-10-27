@@ -131,33 +131,58 @@ var AuthController = {
             if (!username || !password)
                 return AuthController.tryAgain(req, res, new Error('Все поля обязательны для заполнения'));
 
-            User.create({
-                username: username,
-                email: email,
-            }, function(err, user) {
-                if (err) return AuthController.tryAgain(req, res, err);
-                Passport.create({
-                    user     : user.id,
-                    strategy : 'local',
-                    password : password,
-                }, function(err) {
-                    if (err) {
-                        // что-то пошло не так
-                        return user.destroy(function(err_1) {
-                            if (err_1) console.error('unable to destroy user:', err_1);
-                            return AuthController.tryAgain(req, res, err);
-                        });
-                    }
-                    console.info('New local user! ID: '+user.id);
+            var created = [];
+            return Q.resolve()
+                .then(function() {
+                    return Q.all([
+                        User.create({
+                            username: username,
+                            email: email,
+                        }),
+                        Role.findOne({name: 'user'}),
+                    ])
+                })
+                .then(function(results) {
+                    var user = results[0];
+                    var role = results[1];
+                    user.roles.add(role.id);
+                    return user.save();
+                })
+                .then(function(user) {
+                    created.push(user);
+                    return Passport.create({
+                        user     : user.id,
+                        strategy : 'local',
+                        password : password,
+                    })
+                    .then(function(passport) {
+                        created.push(passport);
+                        return user;
+                    })
+                })
+                .then(function(user) {
+                    console.info('New local user! ID:', user.id, user.email);
                     // аутентифицируем пользователя
                     passport.login(req, res, user, function(err) {
                         if (err) return AuthController.tryAgain(req, res, err);
                         return res.redirect(sails.config.passport.fillCredentials);
                     });
-                });
-            });
+                })
+                .catch(function(err) {
+                    console.error('Ошибка при регистрации. Откат.');
+                    console.info('user cred:', email, username, password);
+                    return Q.all(_.map(created, function(inst) {
+                        return Q.resolve()
+                            .then(function() {
+                                console.log('destroy:', inst);
+                                inst.destroy();
+                            })
+                    }))
+                    .then(function() {
+                        return AuthController.tryAgain(req, res, err);
+                    })
+                })
         }
-
         // WTF?!
         else {
             // dafuq s dat?!
