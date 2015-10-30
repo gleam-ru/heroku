@@ -265,7 +265,7 @@ me.updateIndayCandles = function() {
 function mergeCandles(_old, _new) {
     var lastExisting = _.last(_old) || {d: '01.01.1900'};
     var i = _.findIndex(_new, function(candle) {
-        return moment(lastExisting, ddf) < moment(candle.d, ddf);
+        return moment(lastExisting.d, ddf) < moment(candle.d, ddf);
     });
     _new.splice(0, i + 1);
     return _old.concat(_new);
