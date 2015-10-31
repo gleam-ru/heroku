@@ -54,6 +54,7 @@
   "description": "a Sails application",
   "keywords": [],
   "scripts": {
+    "preinstall": "node -v & npm -v",
     "start": "node app.js",
     "debug": "node debug app.js",
     "postinstall": "bower install"
@@ -66,4 +67,3 @@
   "author": "gleam-ru",
   "license": ""
 }
-
