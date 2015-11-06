@@ -1,4 +1,26 @@
 {
+  "name": "blozhik",
+  "author": "gleam-ru",
+  "private": true,
+  "version": "0.0.0",
+  "description": "a Sails application",
+  "keywords": [],
+  "license": "",
+  "engines": {
+    "npm": "2.1.x",
+    "node": "4.x",
+  },
+  "scripts": {
+    "preinstall": "node -v & npm -v",
+    "start": "node app.js",
+    "debug": "node debug app.js",
+    "postinstall": "npm install --prefix ./node_modules/sails waterline & bower install"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/anonymous node/sails user/blozhik.git"
+  },
   "dependencies": {
     "bcryptjs": "^2.1.0",
     "bower": "^1.4.1",
@@ -47,23 +69,5 @@
     "templatizer": "^1.3.0",
     "validator": "^3.37.0",
     "winston": "^1.0.0"
-  },
-  "name": "blozhik",
-  "private": true,
-  "version": "0.0.0",
-  "description": "a Sails application",
-  "keywords": [],
-  "scripts": {
-    "preinstall": "node -v & npm -v",
-    "start": "node app.js",
-    "debug": "node debug app.js",
-    "postinstall": "npm install --prefix ./node_modules/sails waterline & bower install"
-  },
-  "main": "app.js",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/anonymous node/sails user/blozhik.git"
-  },
-  "author": "gleam-ru",
-  "license": ""
+  }
 }
