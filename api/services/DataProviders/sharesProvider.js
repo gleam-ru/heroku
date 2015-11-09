@@ -82,8 +82,8 @@ me.updateIndayCandles = function() {
         .then(function() {
             return importer.updateIndayCandles();
         })
-        .then(function(updated) {
-            return me.cacheAll(updated);
+        .then(function() {
+            return me.cacheAll();
         })
 }
 
