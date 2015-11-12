@@ -19,7 +19,8 @@
     "tooltipster": "~3.3.0",
     "font-awesome": "~4.3.0",
     "validator-js": "~3.39.0",
-    "techan": "~0.5.0"
+    "techan": "~0.5.0",
+    "c3": "~0.4.10"
   },
   "name": "blozhik",
   "version": "0.0.0",

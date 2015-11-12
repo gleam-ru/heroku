@@ -149,6 +149,7 @@ ul.no-dots>li {list-style: none;}
     display: inline-block;
     opacity: 0.5;
     transition: all 0.25s ease;
+    cursor: pointer;
     }
 .roundIcon.disabled {
     opacity: 0.2;
