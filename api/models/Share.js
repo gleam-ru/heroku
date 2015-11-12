@@ -23,6 +23,7 @@ module.exports = {
         forums          : {type: 'array', defaultsTo: []},
         links           : {type: 'array', defaultsTo: []},
 
+        divs            : {type: 'array', defaultsTo: []},
 
         reports         : {type: 'json', defaultsTo: {
             fields : [],
