@@ -60,6 +60,20 @@ window.hasRoles = function(roleNames) {
 }
 
 $(document).ready(function() {
+    // lodash
+    _.mixin({
+        sortByValues: function(collection, values) {
+            var first = [];
+            _.each(values, function(v) {
+                var idx = collection.indexOf(v);
+                if (idx !== -1) {
+                    first.push(_.pullAt(collection, idx));
+                }
+            })
+            return first.concat(collection);
+        }
+    });
+
     // pickmeup
     var locale = {
         days:        ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],

@@ -6,6 +6,13 @@ block postHead
   +PasteInlineData(['branches', branches])
 
   style.
+    .divy label {width: 100px; display: inline-block;}
+    .divy .g-btn {margin-right: 20px; margin-bottom: 20px;}
+    .divy ul {margin-left: 0px;}
+    .divy li {list-style: none;}
+    .divy > div {position: relative;}
+    .divy .del {position: absolute; left: 330px; top: -8px;}
+
     .invisible {
       visibility: hidden;
       opacity: 0;
@@ -254,6 +261,41 @@ block afterAll
       ph='штук'
       )
 
+  #divs
+    .divy
+      button.g-btn.type_midnight.size_small(
+        v-on='click: add'
+        )
+        | Добавить
+      button.g-btn.type_midnight.size_small.share_divs_save_btn(
+        v-on='click: save'
+        v-class='invisible: !modified'
+        )
+        | Сохранить
+      div(
+        v-repeat='div: divs'
+        )
+        span.del(
+          v-on='click: del($index)'
+          )
+          +roundIcon('fa-close')
+        ul
+          li(v-repeat='key: keys')
+            label {{key}}
+            input(
+              v-model='div[key]'
+              v-on='keyup: changed'
+              )
+      button.g-btn.type_midnight.size_small(
+        v-on='click: add'
+        )
+        | Добавить
+      button.g-btn.type_midnight.size_small.share_divs_save_btn(
+        v-on='click: save'
+        v-class='invisible: !modified'
+        )
+        | Сохранить
+
   #reports
     h4 Интересующие параметры
     template(
@@ -302,6 +344,9 @@ block afterAll
       v-on='click: addReport'
       )
       | Добавить
+
+
+
 
 
   //- 

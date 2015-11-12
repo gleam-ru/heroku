@@ -24,6 +24,11 @@ $(document).ready(function() {
                     component : 'tab_general',
                     active    : false,
                 }, {
+                    name      : 'Дивиденды',
+                    alias     : 'divs',
+                    component : 'tab_divs',
+                    active    : false,
+                }, {
                     name      : 'Полезности',
                     alias     : 'useful',
                     component : 'tab_useful',
@@ -83,6 +88,7 @@ $(document).ready(function() {
         },
         components: {
             tab_info    : tab_info(),
+            tab_divs    : tab_divs(),
             tab_useful  : tab_useful(),
             tab_general : tab_general(),
             tab_reports : tab_reports(),
@@ -115,6 +121,73 @@ var tab_info = function() {
                 info: info,
                 ticker: ticker,
             }
+        },
+    }
+}
+
+var tab_divs = function() {
+    return {
+        template: '#divs',
+        data: function() {
+            return {
+                modified: false,
+                divs: ticker.divs || [],
+                keys: _(ticker.divs)
+                    .map(function(d) {
+                        return _.keys(d);
+                    })
+                    .flatten()
+                    .uniq()
+                    .sortByValues(['year', 'closed', 'value', 'currency', 'comment'])
+                    .value()
+            }
+        },
+        methods: {
+            changed: function() {
+                console.log('event')
+                this.modified = true;
+            },
+            save: function() {
+                var vm = this;
+                if ($(vm.$el).hasClass('disabled')) {
+                    return false;
+                }
+                mp.confirm('Сохранение невозможно отменить. Продолжить?', function() {
+                    $('.share_divs_save_btn').disable();
+                    console.log(vm.divs);
+                    $.post(href, {
+                        message: {
+                            key   : 'ticker.divs',
+                            value : vm.divs,
+                        }
+                    })
+                    .done(function() {
+                        vm.modified = false;
+                    })
+                    .fail(function(err){
+                        console.error(err);
+                        mp.alert('шо-то пошло не так... см ошибку в консоли');
+                    })
+                    .always(function() {
+                        $('.share_divs_save_btn').enable();
+                    });
+                })
+            },
+            add: function() {
+                $.smoothScroll(0);
+                var vm = this;
+                vm.modified = true;
+                var added = {};
+                _.each(vm.keys, function(key) {
+                    added[key] = '';
+                });
+                vm.divs.splice(0, 0, added);
+            },
+            del: function(idx) {
+                var vm = this;
+                vm.modified = true;
+                vm.divs.$remove(idx);
+            },
         },
     }
 }

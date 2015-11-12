@@ -102,16 +102,7 @@ module.exports = {
                 if (!share) {
                     throw new Error('404');
                 }
-                data.ticker = {
-                    id           : share.id,
-                    name         : share.name,
-                    branch       : share.branch,
-                    code         : share.code,
-                    site         : share.site,
-                    shares_count : share.shares_count,
-                    forums       : share.forums,
-                    links        : share.links,
-                    reports      : share.reports,
+                data.ticker = _.extend(share, {
                     info         : {
                         mfd_id       : share.mfd_id,
                         candlesCount : share.dailyCandles.length,
@@ -119,7 +110,7 @@ module.exports = {
                         lastCandle   : _.last(share.dailyCandles),
                         indayCount   : share.indayCandles.length,
                     }
-                }
+                });
             })
             .then(function() {
                 return Branch.find();
@@ -264,6 +255,9 @@ module.exports = {
                             console.log('new:', found_report);
                         }
                     }
+                }
+                else if (message.key === 'ticker.divs') {
+                    share.divs = message.value;
                 }
                 return share.save();
             })
