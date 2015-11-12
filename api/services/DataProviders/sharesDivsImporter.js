@@ -4,8 +4,8 @@ var me = {};
 
 me.process = function() {
     return Q.resolve()
-        .then(parser.parse())
-        .then(me.massUpdateInDataBase())
+        .then(parser.parse)
+        .then(me.massUpdateInDataBase)
 }
 
 me.massUpdateInDataBase = function(parsedList) {
@@ -15,11 +15,11 @@ me.massUpdateInDataBase = function(parsedList) {
 me.updateInDataBase = function(parsed) {
     return Q.resolve()
         .then(function() {
-            return Share.findOne({code: parsed.code})
+            return Share.findOne({code: parsed.code.toLowerCase()})
         })
         .then(function(share) {
             if (!share) {
-                console.warn('not found parsed share! code:', parsedShare.code);
+                console.warn('not found parsed share! code:', parsed.code);
                 return Q.resolve();
             }
             share.divs = parsed.divs;
@@ -27,10 +27,10 @@ me.updateInDataBase = function(parsed) {
         })
         .then(function(saved) {
             if (saved) {
-                console.log('saved!', parsedShare.code);
+                console.log('saved!', parsed.code);
             }
             else {
-                console.log('not saved!', parsedShare.code);
+                console.log('not saved!', parsed.code);
             }
         })
 }

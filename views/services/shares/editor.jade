@@ -1,6 +1,7 @@
 extends ../../layouts/default.jade
 
 block postHead
+  script(src='/Components/VueTabs.js' defer)
   script(src='/PageControllers/sharesTickerEditor.js' defer)
   +PasteInlineData(['ticker', ticker])
   +PasteInlineData(['branches', branches])
@@ -19,28 +20,6 @@ block postHead
       }
     .hidden {
       display: none;
-      }
-    .tab.header + .tab.header::before {
-      content: '|';
-      font-size: 24px;
-      font-family: Serif;
-      padding: 0px 10px;
-      line-height: 24px;
-      }
-    .tab.header h3:hover {
-      color: #ffa412;
-      }
-    .tab.header h3 {
-      line-height: 24px;
-      padding: 0px;
-      border-bottom: dashed 1px #CCC;
-      cursor: pointer;
-      color: #1abc9c;
-      }
-    .tab.header .active {
-      border-bottom: none;
-      cursor: auto;
-      color: inherit !important;
       }
 
     .reports {
@@ -155,24 +134,6 @@ block breadcrumbs
 block content
   #shares_editor
     #tabs
-      template(
-        v-repeat='tab: tabs'
-        )
-        span.tab.header.no-select
-          h3.ib(
-            v-on='click: activate(tab.name)'
-            v-class='active: tab.active'
-            )
-            | {{tab.name}}
-      div.g-hr.no-select(style='margin: 0px 0px 40px 0px;')
-        span.g-hr-h
-      template(
-        v-repeat='tab: tabs'
-        )
-        div.tab.body(
-          v-component='{{tab.component}}'
-          v-show='tab.active'
-          )
 
 
 

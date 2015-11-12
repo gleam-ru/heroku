@@ -1,0 +1,20 @@
+include ./els
+
+template(
+  v-repeat='tab: tabs'
+  )
+  span.tab.header.no-select
+    h3.ib(
+      v-on='click: activate(tab.name)'
+      v-class='active: tab.active'
+      )
+      | {{tab.name}}
+div.g-hr.no-select(style='margin: 0px 0px 40px 0px;')
+  span.g-hr-h
+template(
+  v-repeat='tab: tabs'
+  )
+  div.tab.body(
+    v-component='{{tab.component}}'
+    v-show='tab.active'
+    )

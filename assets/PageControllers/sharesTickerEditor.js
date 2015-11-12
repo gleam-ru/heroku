@@ -14,7 +14,7 @@ $(document).ready(function() {
     //     }
     // ];
 
-    window.qwe = new Vue({
+    window.qwe = new VueTabs({
         el: '#tabs',
         data: {
             tabs: [
@@ -50,53 +50,12 @@ $(document).ready(function() {
                 }
             ]
         },
-        methods: {
-            getActive: function() {
-                return _.find(this.tabs, function(tab) {
-                    return tab.active === true;
-                });
-            },
-            activate: function(name) {
-                var vm = this;
-                var active = vm.getActive();
-                if (active) {
-                    $(active.component).hide();
-                    active.active = false;
-                }
-                var activating;
-                if (!activating) {
-                    activating = _.find(vm.tabs, {name: name});
-                }
-                if (!activating) {
-                    activating = _.find(vm.tabs, {alias: name});
-                }
-                if (!activating) {
-                    var matches = window.location.href.match(/\#(.*)/g);
-                    var alias = matches ? matches[0].replace('#', '') : undefined;
-                    activating = _.find(vm.tabs, {alias: alias});
-                }
-                if (!activating) {
-                    activating = vm.tabs[0];
-                }
-
-                $(activating.component).show();
-                activating.active = true;
-                window.location.hash = '#'+activating.alias;
-
-                return activating;
-            },
-        },
         components: {
             tab_info    : tab_info(),
             tab_divs    : tab_divs(),
             tab_useful  : tab_useful(),
             tab_general : tab_general(),
             tab_reports : tab_reports(),
-        },
-        compiled: function() {
-            var vm = this;
-            vm.activate();
-            $(window).bind('hashchange', vm.activate);
         },
     });
 

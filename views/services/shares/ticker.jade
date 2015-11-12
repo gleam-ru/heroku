@@ -3,6 +3,9 @@ extends ../../layouts/default.jade
 block postHead
   link(rel='stylesheet', href='/css/sharesTickerPlot.css')
   script(src="/bower_components/d3/d3.js" defer)
+  script(src='/bower_components/nvd3/build/nv.d3.js' defer)
+  script(src='/Components/ticker.charts.price.js' defer)
+  script(src='/Components/VueTabs.js' defer)
   script(src="/bower_components/techan/dist/techan.js" defer)
   +PasteInlineData([
     'ticker', ticker

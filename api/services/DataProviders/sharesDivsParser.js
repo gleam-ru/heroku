@@ -17,7 +17,7 @@ me.parse = function() {
         // .then(me.getTickersList())
         .then(function() {
             return [
-            'gazp',
+            'urka',
             'sber',
             ]
         })
@@ -73,6 +73,10 @@ me.parse = function() {
             //     })
             //     return results;
             // })
+            .catch(function(err) {
+                console.error(err);
+                console.error(err.stack);
+            })
         })
 }
 
