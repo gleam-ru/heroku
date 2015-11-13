@@ -36,6 +36,9 @@ window.VueTabs = Vue.extend({
             $(activating.component).show();
             activating.active = true;
             window.location.hash = '#'+activating.alias;
+            if (activating.activatedCb) {
+                activating.activatedCb();
+            }
 
             return activating;
         },

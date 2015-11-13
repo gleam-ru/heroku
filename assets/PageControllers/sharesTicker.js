@@ -15,15 +15,20 @@ $(document).ready(function() {
             data: {
                 tabs: [
                     {
-                        name      : 'Цена',
-                        alias     : 'price',
-                        component : 'tab_price',
-                        active    : false,
+                        name        : 'Цена',
+                        alias       : 'price',
+                        component   : 'tab_price',
+                        active      : false,
                     }, {
-                        name      : 'Дивиденды',
-                        alias     : 'divs',
-                        component : 'tab_divs',
-                        active    : false,
+                        name        : 'Дивиденды',
+                        alias       : 'divs',
+                        component   : 'tab_divs',
+                        active      : false,
+                        activatedCb : function() {
+                            var ev = document.createEvent('UIEvents');
+                            ev.initUIEvent('resize', true, false, window, 0);
+                            window.dispatchEvent(ev);
+                        },
                     }
                 ]
             },
