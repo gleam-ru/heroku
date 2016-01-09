@@ -3,6 +3,17 @@ module.exports.bootstrap = function(cb) {
 
     // MODULES
     global.Q        = require('q');
+    global.Q.series = function(list) {
+        var done = Q();
+        var results = [];
+        _.each(list, function(fn) {
+            done = done.then(function() {
+                return fn();
+            })
+            results.push(done)
+        })
+        return Q.all(results);
+    }
     global.moment   = require('moment');
     global.fs       = require('fs-extra');
     global._        = require('lodash');

@@ -36,6 +36,9 @@ me.saveBonds = function(parsedBonds, cb) {
                         state     : parsed.state,
                         expiresIn : parsed.dur,
                     });
+                    if (parsed.risk) {
+                        found.risk = parsed.risk;
+                    }
                     nextPromice = found.save();
                 }
                 else {
@@ -45,10 +48,8 @@ me.saveBonds = function(parsedBonds, cb) {
                 return nextPromice
                     .catch(function(err) {
                         if (err === 'forever_bond' || err.originalError === 'forever_bond') {
-                            console.warn('forever_bond', parsed.num);
                         }
                         else if (err === 'stale_bond' || err.originalError === 'stale_bond') {
-                            console.warn('stale_bond', parsed.num);
                         }
                         else {
                             console.error('save bond error', err)

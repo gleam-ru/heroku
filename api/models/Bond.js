@@ -10,6 +10,7 @@ module.exports = {
     attributes: {
         name          : {type: 'string'},
         num           : {type: 'string', required: true},
+        risk          : {type: 'string', defaultsTo: ''},
         rate          : {type: 'float'},
         cpVal         : {type: 'float'},
         cpDur         : {type: 'float'},
