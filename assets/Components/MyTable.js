@@ -510,7 +510,7 @@ window.MyTable = Vue.extend({
                     text: "Равно",
                     value: "equal",
                     apply: function(a, b) {
-                        return a == b;
+                        return a == b || a.trim() == b.trim();
                     },
                 },
                 {
@@ -573,6 +573,22 @@ window.MyTable = Vue.extend({
                         a = parseFloat(a);
                         b = parseFloat(b);
                         return a < b;
+                    },
+                },
+            ],
+            string_moreless: [
+                {
+                    text: "Больше",
+                    value: "more",
+                    apply: function(a, b) {
+                        return a.trim() > b.trim();
+                    },
+                },
+                {
+                    text: "Меньше",
+                    value: "less",
+                    apply: function(a, b) {
+                        return a.trim() < b.trim();
                     },
                 },
             ],

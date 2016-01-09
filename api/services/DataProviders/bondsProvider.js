@@ -224,6 +224,7 @@ function format(bond) {
         bond.percent,
         bond.percent_woRT,
         bond.percent_woRTCT,
+        bond.risk,
     ];
 }
 

@@ -111,8 +111,9 @@ $(document).ready(function() {
                 opts.interactive = true;
                 opts.interactiveTolerance = 100;
             }
-            if (el.hasClass('tt_html'))
+            if (el.hasClass('tt_html')) {
                 opts.contentAsHTML = true;
+            }
 
             el.tooltipster(opts);
         });

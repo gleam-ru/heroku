@@ -37,12 +37,7 @@ $(document).ready(function() {
                         window.mp_help.click();
                     });
 
-                    $('.tt').each(function() {
-                        $(this).tooltipster({
-                            position: 'top',
-                            maxWidth: 200,
-                        });
-                    });
+                    initTT();
 
                 },
             }
@@ -99,6 +94,7 @@ $(document).ready(function() {
                 percent        : row[15],
                 percent_woRT   : row[16],
                 percent_woRTCT : row[17],
+                risk           : row[18],
             }
         });
     })
@@ -119,6 +115,91 @@ $(document).ready(function() {
             title: "ID",
             filterType: "number",
             visible: false,
+        }, {
+            id: "risk",
+            data: "risk",
+            className: "risksColumn",
+            vueTitle: 'Уровень риска',
+            title: [
+                'A',
+                '<span',
+                    'class="tt tt_html tt_interactive"',
+                    'title="',
+                        'Данные предоставлены компанией <a target=\'_blank\' href=\'http://arsagera.ru/my_ne_rabotaem_s_klientom_esli_on/ne_razdelyaet_nash_podhod/sistema_upravleniya_kapitalom1/ranzhirovanie_aktivov/obligacii/\'>Arsagera</a>:',
+                        '<br />',
+                        '<br />',
+                        'Сопоставление рейтингов:',
+                        '<table>',
+                            '<tr>',
+                                '<td>A</td>',
+                                '<td>&nbsp;-&nbsp;5.1</td>',
+                            '</tr>',
+                            '<tr>',
+                                '<td>B</td>',
+                                '<td>&nbsp;-&nbsp;5.2</td>',
+                            '</tr>',
+                            '<tr>',
+                                '<td>C</td>',
+                                '<td>&nbsp;-&nbsp;5.3</td>',
+                            '</tr>',
+                            '<tr>',
+                                '<td>D</td>',
+                                '<td>&nbsp;-&nbsp;5.4</td>',
+                            '</tr>',
+                            '<tr>',
+                                '<td>E</td>',
+                                '<td>&nbsp;-&nbsp;5.5</td>',
+                            '</tr>',
+                            '<tr>',
+                                '<td>F</td>',
+                                '<td>&nbsp;-&nbsp;5.6</td>',
+                            '</tr>',
+                            '<tr>',
+                                '<td>\'\'</td>',
+                                '<td>&nbsp;-&nbsp;нет данных</td>',
+                            '</tr>',
+                        '</table>',
+                    '"',
+                '/>',
+                    Jade.els.roundIcon('fa-question'),
+                '</span>',
+            ].join(' '),
+            render: function (data) {
+                var color;
+                if (!data) {
+                    color = '#fff';
+                }
+                else if (data === 'A') {
+                    color = '#00A343';
+                }
+                else if (data === 'B') {
+                    color = '#149C45';
+                }
+                else if (data === 'C') {
+                    color = '#6A824D';
+                }
+                else if (data === 'D') {
+                    color = '#907751';
+                }
+                else if (data === 'E') {
+                    color = '#A87054';
+                }
+                else if (data === 'F') {
+                    color = '#D16257';
+                }
+                else {
+                    color = '#00f';
+                    console.warn('unknown risk', data);
+                }
+                return [
+                    '<div',
+                        'style=\'background:'+color+';\'',
+                    '>',
+                        data,
+                    '</div>',
+                ].join(' ');
+            },
+            filterType: "string_moreless",
         }, {
             id: "name",
             data: "name",
