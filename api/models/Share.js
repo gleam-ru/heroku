@@ -14,9 +14,11 @@ module.exports = {
         site            : {type: 'string'},
         mfd_id          : {type: 'integer', unique: true, required: true},
 
-        dailyCandles    : {type: 'array', defaultsTo: []},
+        candles         : {collection: 'Candles', via: 'share'},
+
+        // dailyCandles    : {type: 'array', defaultsTo: []},
         lastCandle      : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
-        indayCandle     : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
+        // indayCandle     : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
 
 
         shares_count    : {type: 'integer', defaultsTo: 0},
@@ -36,6 +38,11 @@ module.exports = {
         die: function() {
             this.dead = true;
             return this.save();
+        },
+
+        getDailyCandles: function() {
+            var candles = _.find(this.candles, {type: 'daily'});
+            return candles ? candles : [];
         },
     },
 

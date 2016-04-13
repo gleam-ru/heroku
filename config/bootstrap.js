@@ -2,14 +2,27 @@ module.exports.bootstrap = function(cb) {
 
 
     // MODULES
-    global.Q        = require('q');
     global.moment   = require('moment');
     global.fs       = require('fs-extra');
     global._        = require('lodash');
+    global.Q        = require('q');
+    global.Q.series = function(list) {
+        var done = Q();
+        var results = [];
+        _.each(list, function(fn) {
+            done = done.then(function() {
+                return fn();
+            })
+            results.push(done)
+        })
+        return Q.all(results);
+    }
 
     // проверить по DD.MM.YYYY перед заменой!!! некоторые сервисы требуют
     // повторной инициализации ddf
     global.ddf = 'DD.MM.YYYY'; // Default Date Format
+
+    global.appRoot = __dirname+'/..';
 
 
 
@@ -28,12 +41,57 @@ module.exports.bootstrap = function(cb) {
 
 
     // TODO: сделать покрасиввее
+    var p = require(appRoot+'/api/services/DataProviders/sharesDivsImporter.js');
     if (!sails.config.heroku) {
         async.series([
-            filler.process,
-            provider.init,
-            cache.init,
-            cron.init,
+            function(next) {
+                return Q()
+                    .then(function() {
+                        return Share.find();
+                    })
+                    .then(function(shares) {
+                        return Q.series(_.map(shares, function(s) {
+                            return function() {
+                                return Q()
+                                    .then(function() {
+                                        console.log('process:', s.name);
+                                        var candles = {
+                                            share: s.id,
+                                            type: 'inday',
+                                            data: [s.indayCandle],
+                                        };
+                                        return Candles.findOrCreate(candles, candles);
+                                    })
+                                    .then(function() {
+                                        console.log('indayCandle moved');
+                                        s.indayCandle = undefined;
+                                        var candles = {
+                                            share: s.id,
+                                            type: 'daily',
+                                            data: s.dailyCandles,
+                                        };
+                                        return Candles.findOrCreate(candles, candles);
+                                    })
+                                    .then(function() {
+                                        console.log('dailyCandles moved');
+                                        s.dailyCandles = undefined;
+                                        return s.save();
+                                    })
+                                    .then(function(saved) {
+                                        console.log('process:', s.name, 'complete');
+                                    })
+                                    .catch(function(err) {
+                                        console.error('redatabase error', err, err.stack);
+                                    })
+                            }
+                        }))
+                    })
+                    .nodeify(next);
+            },
+            // filler.process,
+            // provider.init,
+            // cayche.init,
+            // cron.init,
         ],
         function(err) {
             // if (err) return cb(err);
@@ -41,7 +99,7 @@ module.exports.bootstrap = function(cb) {
                 console.error('bootstrap:', err, err.message, err.stack);
             }
             // provider.bonds.update();
-            // dbTasks.bondsNewDay();
+            // dbTasks.bondsNeaDay();
             cb();
         });
         return;
@@ -126,7 +184,7 @@ function(next) {
 
 
 //
-//
+// Добавление всем пользователям роли "пользователь"
 /*
 function(next) {
     var data = {};

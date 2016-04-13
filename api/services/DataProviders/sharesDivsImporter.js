@@ -22,15 +22,13 @@ me.updateInDataBase = function(parsed) {
                 console.warn('not found parsed share! code:', parsed.code);
                 return Q.resolve();
             }
+            console.log('share is found', share.code)
             share.divs = parsed.divs;
             return share.save();
         })
         .then(function(saved) {
             if (saved) {
                 console.log('saved!', parsed.code);
-            }
-            else {
-                console.log('not saved!', parsed.code);
             }
         })
 }
