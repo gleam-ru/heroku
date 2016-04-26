@@ -23,7 +23,6 @@ module.exports = function(resolve) {
                             '>',
                         '</info>',
                         '<filters',
-                            'v-el:filters',
                             ':filters.sync="filters"',
                             ':active.sync="activeFilterIdx"',
                             ':editing.sync="editingFilterIdx"',
@@ -31,6 +30,7 @@ module.exports = function(resolve) {
                         '</filters>',
                     '</div>',
                     '<tbl',
+                        'v-ref:tbl',
                         ':rows="rows"',
                         ':columns="columns"',
                         ':title="tableTitle"',
@@ -59,11 +59,15 @@ module.exports = function(resolve) {
                 },
                 tableTitle: function() {
                     return this.activeFilter && this.activeFilter.text || 'Фильтр не выбран';
-                }
+                },
+                tbl: function() {
+                    return this.$refs.tbl;
+                },
             },
             watch: {
                 activeFilterIdx: function() {
                     console.log('idx changed');
+                    this.applyFilter(this.activeFilter);
                 },
                 editingFilterIdx: function(idx) {
                     if (idx === null) {
@@ -83,10 +87,36 @@ module.exports = function(resolve) {
                 // отрабатывает во время "сохранить" в редакторе
                 updateFilter: function(idx, data) {
                     this.filters.$set(idx, data);
-                }
+                },
+                // применяет фильтр к таблице
+                applyFilter: function(filter) {
+                    console.debug('apply', filter);
+                    var vm = this;
+
+                    if (!filter) {
+                        filter = {};
+                    }
+
+                    $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
+                        return _.every(filter.conditions, function(condition) {
+                            var column = condition.column;
+
+                            var columnIdx = _.findIndex(vm.columns, column);
+                            // aData == [value, value, ...] - row
+                            var data = aData[columnIdx];
+
+                            var applyFoo = vm.editor.getFilterFoo(condition.column.filter, condition.type.value);
+
+                            return applyFoo(data, condition.value);
+                        });
+                    };
+                    vm.tbl.table.fnDraw();
+                },
             },
             compiled: function() {
+                window.vvm = this;
                 var vm = this;
+
                 vm.editor = imported.editor;
                 vm.editor.parent = vm;
             },

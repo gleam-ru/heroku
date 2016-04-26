@@ -42,6 +42,7 @@ module.exports = function(resolve) {
                 };
             },
             compiled: function() {
+                console.debug('apply');
                 window.tp = this;
                 var vm = this;
                 var tableEl = vm.$els.dt;

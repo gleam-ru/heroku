@@ -49,7 +49,7 @@ me.template = [
                 '<span @click="cancel">'+Jade.els.button('Отмена')+'</span>',
             '</div>',
         '</div>',
-        // '<pre>{{$data | json}}</pre>',
+        '<pre>{{$data | json}}</pre>',
     '</div>',
 ].join(' ');
 
@@ -146,6 +146,25 @@ me.data = {
         ],
     },
 };
+
+me.getFilterFoo = function(type, value) {
+    var filtersByType = me.data.types[type];
+    if (!filtersByType) {
+        console.warn('не удалось найти фильтр по типу:', type);
+        return function() {};
+    }
+    var filter = _.find(filtersByType, {value: value});
+    if (!filter) {
+        console.warn('не удалось найти фильтр по значению:', value);
+        return function() {};
+    }
+    if (!filter.apply) {
+        console.warn('у фильтра отсутствует метод apply:', filter);
+        return function() {};
+    }
+    return filter.apply;
+};
+
 
 // открывает окно с редактированием фильтра
 me.show = function(filter, additional) {
