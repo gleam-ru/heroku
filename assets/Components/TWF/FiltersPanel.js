@@ -49,7 +49,10 @@ module.exports = function(resolve) {
                     }
                 },
                 add: function() {
-                    this.filters.push({text: Math.random().toString(36).substring(5)});
+                    this.filters.push({
+                        text: Math.random().toString(36).substring(5),
+                        conditions: [],
+                    });
                 },
                 edit: function(idx) {
                     this.editing = idx === this.editing ? null : idx;
