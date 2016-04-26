@@ -10,7 +10,7 @@ module.exports = function(resolve) {
                     '<h3>Сохраненные фильтры</h3>',
                     '<ul>',
                         '<li v-for="filter in filters">',
-                            '<span @click="edit($index)">',
+                            '<span @click="edit($index)" v-show="!isGhost">',
                                 '<i class="fa fa-gear"></i>',
                             '</span>',
                             //
@@ -21,17 +21,18 @@ module.exports = function(resolve) {
                                 '{{filter.text}}',
                             '</span>',
                             //
-                            '<span style="color: red;" @click="remove($index)">',
+                            '<span style="color: red;" @click="remove($index)" v-show="!isGhost">',
                                 '<i class="fa fa-times"></i>',
                             '</span>',
                         '</li>',
                     '</ul>',
-                    '<span @click="add" class="g-btn type_midnight size_small"><span>Добавить</span></span>',
+                    '<span @click="add" v-show="!isGhost" class="g-btn type_midnight size_small"><span>Добавить</span></span>',
                 '</div>',
-            ].join(''),
+            ].join(' '),
             props: ['filters', 'active', 'editing'],
             data: function() {
                 return {
+                    isGhost: window.user.isGhost,
                 };
             },
             methods: {
