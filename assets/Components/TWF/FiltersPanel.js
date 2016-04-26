@@ -41,6 +41,12 @@ module.exports = function(resolve) {
                 remove: function(idx) {
                     var filter = this.filters[idx];
                     this.filters.$remove(filter);
+                    if (idx === this.editing) {
+                        this.editing = null;
+                    }
+                    if (idx === this.active) {
+                        this.active = null;
+                    }
                 },
                 add: function() {
                     this.filters.push({text: Math.random().toString(36).substring(5)});
