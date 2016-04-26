@@ -11,7 +11,7 @@ module.exports = function(resolve) {
                     '<table v-el:dt></table>',
                 '</div>',
             ].join(''),
-            props: ['title', 'rows', 'columns'],
+            props: ['title', 'rows', 'columns', 'info'],
             data: function() {
                 return {
                     config: {
@@ -49,21 +49,23 @@ module.exports = function(resolve) {
 
                 vm.config.data = vm.rows;
                 vm.config.columns = vm.columns;
+
                 vm.config.fnDrawCallback = function() {
-                    // var info = [];
-                    // var table = vm.dt.table;
-                    // if (table) {
-                    //     var settings = table.dataTable().fnSettings();
-                    //     info.push({
-                    //         text: 'Всего',
-                    //         value: settings.fnRecordsTotal(),
-                    //     });
-                    //     info.push({
-                    //         text: 'После фильрации',
-                    //         value: settings.fnRecordsDisplay(),
-                    //     });
-                    // }
-                    // vm.tableInfo = info;
+                    var table = vm.table;
+                    if (!table) {
+                        return;
+                    }
+                    var settings = table.dataTable().fnSettings();
+                    vm.info = [
+                        {
+                            key   : 'Всего',
+                            value :  settings.fnRecordsTotal(),
+                        },
+                        {
+                            key   : 'После фильтрации',
+                            value : settings.fnRecordsDisplay(),
+                        },
+                    ];
                 };
 
                 vm.table = $(tableEl).dataTable(vm.config);

@@ -49,121 +49,10 @@ me.template = [
                 '<span @click="cancel">'+Jade.els.button('Отмена')+'</span>',
             '</div>',
         '</div>',
-        '<pre>{{$data | json}}</pre>',
+        // '<pre>{{$data | json}}</pre>',
     '</div>',
 ].join(' ');
 
-me.data = {
-    types: {
-        string: [
-            {
-                text: "Содержит",
-                value: "contains",
-                apply: function(a, b) {
-                    if (!a) a = "";
-                    if (!b) b = "";
-                    return a.toLowerCase().indexOf(b.toLowerCase()) > -1;
-                },
-            },
-            {
-                text: "Не содержит",
-                value: "not_contains",
-                apply: function(a, b) {
-                    if (!a) a = "";
-                    if (!b) b = "";
-                    return a.toLowerCase().indexOf(b.toLowerCase()) == -1;
-                },
-            },
-            {
-                text: "Равно",
-                value: "equal",
-                apply: function(a, b) {
-                    return a == b;
-                },
-            },
-            {
-                text: "Не равно",
-                value: "not_equal",
-                apply: function(a, b) {
-                    return a != b;
-                },
-            },
-            {
-                text: "Регулярное выражение",
-                value: "regexp",
-                apply: function(a, b) {
-                    if (!a) a = "";
-                    if (!b) b = "";
-                    b = b.replace(/[\\]/g, "\\$&");
-                    var re = new RegExp(b, "i");
-                    return re.test(a);
-                },
-            },
-        ],
-        date: [
-            {
-                text: "Позже",
-                value: "after",
-                apply: function(a, b) {
-                    // где-то выше было так:
-                    // var dateFormat = ddf;
-                    a = moment(a, dateFormat);
-                    b = moment(b, dateFormat);
-                    return a.isAfter(b);
-                },
-            },
-            {
-                text: "Раньше",
-                value: "before",
-                apply: function(a, b) {
-                    // где-то выше было так:
-                    // var dateFormat = ddf;
-                    a = moment(a, dateFormat);
-                    b = moment(b, dateFormat);
-                    return !a.isAfter(b);
-                },
-            },
-        ],
-        number: [
-            {
-                text: "Больше",
-                value: "more",
-                apply: function(a, b) {
-                    a = parseFloat(a);
-                    b = parseFloat(b);
-                    return a > b;
-                },
-            },
-            {
-                text: "Меньше",
-                value: "less",
-                apply: function(a, b) {
-                    a = parseFloat(a);
-                    b = parseFloat(b);
-                    return a < b;
-                },
-            },
-        ],
-    },
-};
-
-me.getFilterFoo = function(type, value) {
-    var filtersByType = me.data.types[type];
-    if (!filtersByType) {
-        console.warn('не удалось найти фильтр по типу:', type);
-        return function() {};
-    }
-    var filter = _.find(filtersByType, {value: value});
-    if (!filter) {
-        console.warn('не удалось найти фильтр по значению:', value);
-        return function() {};
-    }
-    if (!filter.apply) {
-        console.warn('у фильтра отсутствует метод apply:', filter);
-        return function() {};
-    }
-    return filter.apply;
-};
 
 
 // открывает окно с редактированием фильтра
@@ -223,7 +112,7 @@ me.show = function(filter, additional) {
                                 console.warn('не указан тип колонки');
                                 return [];
                             }
-                            opts = this.static.types[column.filter];
+                            opts = this.static.filterTypes[column.filter];
                             if (!opts) {
                                 console.warn('отсутствуют условия фильтрации для типа', column.filter);
                                 return [];
@@ -245,7 +134,7 @@ me.show = function(filter, additional) {
 
                         // сохранить состояние
                         save: function(idx) {
-                            var data = JSON.parse(JSON.stringify(this.$data));
+                            var data = _.cloneDeep(this.$data);
                             delete data.static;
                             me.parent.updateFilter(idx, data);
                             me.hide();
@@ -283,14 +172,11 @@ me.show = function(filter, additional) {
                             template: '<input type="text" v-model="value" />',
                             props: ['value'],
                         }),
-                    }
+                    },
                 }); // end of vue cmp
             },
             close: function() {
-                // destroy vue
                 me.parent.editingFilterIdx = null;
-
-                // return vm.$destroy();
             },
         }
     });

@@ -30,14 +30,6 @@ $(document).ready(function() {
                         key   : 'Ближайшее обновление',
                         value : 'через 19 минут',
                     },
-                    {
-                        key   : 'Всего',
-                        value : shares.rows.length,
-                    },
-                    {
-                        key   : 'После фильтрации',
-                        value : shares.rows.length,
-                    }
                 ],
                 rows: shares.rows,
                 columns: [
@@ -57,7 +49,13 @@ $(document).ready(function() {
                 ],
                 filters: [
                     {text: 'test filter', conditions: []},
-                    {text: 'one more', conditions: []},
+                    {text: 'one more', conditions: [
+                        {
+                            column: {data: 'name'},
+                            type: {value: 'contains'},
+                            value: 'яро',
+                        }
+                    ]},
                 ],
             }
         });

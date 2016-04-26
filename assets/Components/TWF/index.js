@@ -19,7 +19,7 @@ module.exports = function(resolve) {
                 '<div class="my-table">',
                     '<div class="top">',
                         '<info',
-                            ':infos="info"',
+                            ':infos="info.concat(tableInfo)"',
                             '>',
                         '</info>',
                         '<filters',
@@ -34,6 +34,7 @@ module.exports = function(resolve) {
                         ':rows="rows"',
                         ':columns="columns"',
                         ':title="tableTitle"',
+                        ':info.sync="tableInfo"',
                         '>',
                     '</tbl>',
                 '</div>',
@@ -48,6 +49,98 @@ module.exports = function(resolve) {
             ],
             data: function() {
                 return {
+                    tableInfo: [],
+                    filterTypes: {
+                        string: [
+                            {
+                                text: "Содержит",
+                                value: "contains",
+                                apply: function(a, b) {
+                                    if (!a) a = "";
+                                    if (!b) b = "";
+                                    return a.toLowerCase().indexOf(b.toLowerCase()) > -1;
+                                },
+                            },
+                            {
+                                text: "Не содержит",
+                                value: "not_contains",
+                                apply: function(a, b) {
+                                    if (!a) a = "";
+                                    if (!b) b = "";
+                                    return a.toLowerCase().indexOf(b.toLowerCase()) == -1;
+                                },
+                            },
+                            {
+                                text: "Равно",
+                                value: "equal",
+                                apply: function(a, b) {
+                                    return a == b;
+                                },
+                            },
+                            {
+                                text: "Не равно",
+                                value: "not_equal",
+                                apply: function(a, b) {
+                                    return a != b;
+                                },
+                            },
+                            {
+                                text: "Регулярное выражение",
+                                value: "regexp",
+                                apply: function(a, b) {
+                                    if (!a) a = "";
+                                    if (!b) b = "";
+                                    b = b.replace(/[\\]/g, "\\$&");
+                                    var re = new RegExp(b, "i");
+                                    return re.test(a);
+                                },
+                            },
+                        ],
+                        date: [
+                            {
+                                text: "Позже",
+                                value: "after",
+                                apply: function(a, b) {
+                                    // где-то выше было так:
+                                    // var dateFormat = ddf;
+                                    a = moment(a, dateFormat);
+                                    b = moment(b, dateFormat);
+                                    return a.isAfter(b);
+                                },
+                            },
+                            {
+                                text: "Раньше",
+                                value: "before",
+                                apply: function(a, b) {
+                                    // где-то выше было так:
+                                    // var dateFormat = ddf;
+                                    a = moment(a, dateFormat);
+                                    b = moment(b, dateFormat);
+                                    return !a.isAfter(b);
+                                },
+                            },
+                        ],
+                        number: [
+                            {
+                                text: "Больше",
+                                value: "more",
+                                apply: function(a, b) {
+                                    a = parseFloat(a);
+                                    b = parseFloat(b);
+                                    return a > b;
+                                },
+                            },
+                            {
+                                text: "Меньше",
+                                value: "less",
+                                apply: function(a, b) {
+                                    a = parseFloat(a);
+                                    b = parseFloat(b);
+                                    return a < b;
+                                },
+                            },
+                        ],
+                    },
                 };
             },
             computed: {
@@ -76,8 +169,9 @@ module.exports = function(resolve) {
                     else {
                         console.log('edit filter', idx);
                         this.editor.show(this.editingFilter, {
-                            columns: this.columns,
                             idx: idx,
+                            columns: this.columns,
+                            filterTypes: this.filterTypes,
                         });
                     }
                 }
@@ -87,11 +181,19 @@ module.exports = function(resolve) {
                 // отрабатывает во время "сохранить" в редакторе
                 updateFilter: function(idx, data) {
                     this.filters.$set(idx, data);
+                    // изменили активный фильтр
+                    if (idx === this.activeFilterIdx) {
+                        this.applyFilter();
+                    }
+                    else {
+                        this.activeFilterIdx = idx;
+                    }
                 },
                 // применяет фильтр к таблице
-                applyFilter: function(filter) {
-                    console.debug('apply', filter);
+                applyFilter: function() {
+                    console.debug('apply');
                     var vm = this;
+                    var filter = vm.activeFilter;
 
                     if (!filter) {
                         filter = {};
@@ -99,26 +201,38 @@ module.exports = function(resolve) {
 
                     $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
                         return _.every(filter.conditions, function(condition) {
+                            if (!condition.column || !condition.type || !condition.value) {
+                                // console.warn('вероятно, битый condition', filter, condition);
+                                return true;
+                            }
                             var column = condition.column;
-
                             var columnIdx = _.findIndex(vm.columns, column);
                             // aData == [value, value, ...] - row
                             var data = aData[columnIdx];
-
-                            var applyFoo = vm.editor.getFilterFoo(condition.column.filter, condition.type.value);
-
-                            return applyFoo(data, condition.value);
+                            return condition.type.apply(data, condition.value);
                         });
                     };
                     vm.tbl.table.fnDraw();
                 },
             },
-            compiled: function() {
-                window.vvm = this;
+            beforeCompile: function() {
                 var vm = this;
+                window.ivm = this;
 
                 vm.editor = imported.editor;
                 vm.editor.parent = vm;
+
+                _.each(vm.filters, function(filter) {
+                    _.each(filter.conditions, function(condition) {
+                        condition.column = _.find(vm.columns, condition.column);
+                        if (!condition.column) {
+                            console.warn('Странная колонка в фильтрах');
+                            return;
+                        }
+                        condition.column.text = condition.column.title || condition.column.vueTitle;
+                        condition.type = _.find(vm.filterTypes[condition.column.filter], condition.type);
+                    });
+                });
             },
         };
     })
