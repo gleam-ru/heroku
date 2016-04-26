@@ -42,6 +42,7 @@ module.exports = function(resolve) {
                 '</div>',
             ].join(' '),
             props: [
+                'saveAs',
                 'info',
                 'rows',
                 'columns',
@@ -266,7 +267,7 @@ module.exports = function(resolve) {
                 saveToServer: function() {
                     var vm = this;
                     var msg = {
-                        page: 'shares/filters',
+                        page: vm.saveAs,
                         data: vm.toJSON(),
                     };
                     $.post('/API/usersettings', {msg: msg})

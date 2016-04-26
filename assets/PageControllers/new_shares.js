@@ -9,6 +9,7 @@ $(document).ready(function() {
             template: [
                 '<div>',
                     '<TWF',
+                        ':saveAs="shares/filters"',
                         ':info="info"',
                         ':rows="rows"',
                         ':columns="columns"',

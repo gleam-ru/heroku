@@ -40,7 +40,7 @@ module.exports = {
         UserSettings
             .findOne({
                 user: req.user ? req.user.id : null,
-                page: 'bonds',
+                page: 'bonds/filters',
             })
             .then(function(us) {
                 data.us = (us && us.data) || {

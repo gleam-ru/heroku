@@ -94,7 +94,7 @@ me.getAllFromDB = function() {
     console.log('shares:getAllFromDB')
     return Q.resolve()
         .then(function() {
-            return [];
+            // return [];
             // return Share.find({dead: false}).populateAll();
             // return Share
             //     .find({dead: false})
