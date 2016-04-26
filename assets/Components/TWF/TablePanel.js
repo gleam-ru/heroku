@@ -75,6 +75,22 @@ module.exports = function(resolve) {
                 $(vm.$el).find('.dataTables_length').appendTo($(vm.$els.header));
                 // перемещаю поиск в заголовок
                 $(vm.$el).find('.dataTables_filter').appendTo($(vm.$els.header));
+
+
+                $(tableEl).on('click', '.buttonColumn', function() {
+                    var table = vm.table.DataTable();
+                    var clickedColumnIndex = table.cell($(this)).index().column;
+                    var column = vm.columns[clickedColumnIndex];
+                    if (column && column.handler) {
+                        var data = table.row($(this).parents('tr')).data();
+                        column.handler(data);
+                    }
+                    return false;
+                });
+
+                vm.$nextTick(function() {
+                    vm.table.fnDraw();
+                });
             }
         };
     })

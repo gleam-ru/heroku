@@ -2,10 +2,10 @@ extends ../layouts/default.jade
 
 block postHead
   script(src='/PageControllers/bonds.js' defer)
-  script(type="text/javascript", src="/Components/MyTable.js" defer)
+  //- script(type="text/javascript", src="/Components/MyTable.js" defer)
   script(type="text/javascript", src="/Components/Learning.js" defer)
 
-  link(rel="stylesheet", href="/css/MyTable.css")
+  //- link(rel="stylesheet", href="/css/MyTable.css")
 
   style.
     h1 .roundIcon {
@@ -102,10 +102,7 @@ block content
       #bonds-table
 
 block afterAll
-  #calculator(
-    class='white-popup'
-    v-el='calculator'
-    )
+  #calculator.white-popup
     h3(
       v-text='bond.name'
       )

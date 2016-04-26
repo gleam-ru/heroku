@@ -294,7 +294,7 @@ module.exports = function(resolve) {
                             console.warn('Странная колонка в фильтрах');
                             return;
                         }
-                        condition.column.text = condition.column.title || condition.column.vueTitle;
+                        condition.column.text = condition.column.vueTitle || condition.column.title;
                         condition.type = _.find(vm.filterTypes[condition.column.filter], condition.type);
                     });
                 });

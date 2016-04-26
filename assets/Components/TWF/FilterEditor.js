@@ -4,11 +4,11 @@ var me = {};
 me.parent = null;
 
 me.template = [
-    '<div class="white-popup v-filter-editor">',
+    '<div class="white-popup v-filter-editor" style="max-width:90%;">',
         '<h3>Редактирование фильтра: "{{* text }}"</h3>',
         // '',
         '<h4>Название</h4>',
-        '<input class="name isolated"',
+        '<input type="text" class="name isolated"',
             'v-model="text"',
             '/>',
         // '',
@@ -92,7 +92,7 @@ me.show = function(filter, additional) {
                                     if (!c.data) {
                                         return;
                                     }
-                                    c.text = c.title || c.vueTitle;
+                                    c.text = c.vueTitle || c.title;
                                     return c;
                                 })
                                 .compact()

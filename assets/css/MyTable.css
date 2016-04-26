@@ -218,12 +218,14 @@
 
 
 .v-filter-editor .row > * {display: inline-block;}
-.v-filter-editor .row .column-selector {width: 30%;}
-.v-filter-editor .row .type-selector {width: 30%;}
+.v-filter-editor .row .column-selector {width: calc(50% - 55px);}
+.v-filter-editor .row .type-selector {width: 20%;}
 .v-filter-editor .row .value-selector {width: 30%;}
 .v-filter-editor .row .row-remover {
-    width: 7%;
+    width: 40px;
     text-align: center;
     vertical-align: middle;
     line-height: 40px;
+    font-size: 25px;
+    cursor: pointer;
 }
