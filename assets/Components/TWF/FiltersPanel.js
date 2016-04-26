@@ -40,14 +40,17 @@ module.exports = function(resolve) {
                     this.active = idx === this.active ? null : idx;
                 },
                 remove: function(idx) {
-                    var filter = this.filters[idx];
-                    this.filters.$remove(filter);
-                    if (idx === this.editing) {
-                        this.editing = null;
-                    }
-                    if (idx === this.active) {
-                        this.active = null;
-                    }
+                    var vm = this;
+                    var filter = vm.filters[idx];
+                    mp.confirm('Фильтр <b>"'+filter.text+'"</b> будет удален, его восстановление невозможно.', function() {
+                        vm.filters.$remove(filter);
+                        if (idx === vm.editing) {
+                            vm.editing = null;
+                        }
+                        if (idx === vm.active) {
+                            vm.active = null;
+                        }
+                    });
                 },
                 add: function() {
                     console.debug('im here');
