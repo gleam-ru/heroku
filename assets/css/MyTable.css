@@ -214,3 +214,16 @@
         margin: 7px 0px 7px 0px;
         }
 }
+
+
+
+.v-filter-editor .row > * {display: inline-block;}
+.v-filter-editor .row .column-selector {width: 30%;}
+.v-filter-editor .row .type-selector {width: 30%;}
+.v-filter-editor .row .value-selector {width: 30%;}
+.v-filter-editor .row .row-remover {
+    width: 7%;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+}

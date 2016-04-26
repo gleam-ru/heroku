@@ -6,13 +6,50 @@
  */
 
 module.exports = {
+
+    // страница для переосмысливания vue-страницы
+    // с таблицей с фильтрами
+    new_shares: function(req, res) {
+        var data = {
+            title: 'Акции',
+            shares: {
+                rows: [],
+            },
+        };
+
+        provider.shares.getSharesTable()
+            .then(function(shares) {
+                if (!shares) {
+                    console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
+                }
+                data.shares.rows = shares;
+            })
+            .then(function() {
+                data.shares.info = {
+                    updatedAt: moment().format('DD.MM.YYYY - hh:mm:ss'),
+                    total: data.shares.rows.length,
+                    someMore: 'this is a string',
+                };
+            })
+            .then(function() {
+                data.shares.filters = [];
+            })
+            .then(function() {
+                res.render('services/shares/new_shares', data);
+            })
+            .catch(function(err) {
+                return res.serverError(err);
+            })
+            ;
+    },
+
     index: function(req, res) {
         var data = {
             title: 'Акции',
             shares: {
                 rows: [],
             },
-        }
+        };
 
         provider.shares.getSharesTable()
             .then(function(shares) {
@@ -23,7 +60,7 @@ module.exports = {
             })
             .then(function() {
                 res.render('services/shares/shares', data);
-            })
+            });
     },
 
     ticker: function(req, res) {
@@ -66,12 +103,12 @@ module.exports = {
                     });
                 }
                 else if (err.message === '301') {
-                    return res.redirect(err.redirectTo || '/')
+                    return res.redirect(err.redirectTo || '/');
                 }
                 else {
                     return res.serverError(err);
                 }
-            })
+            });
     },
 
     getTickerData: function(req, res) {
@@ -119,7 +156,7 @@ module.exports = {
                 data.branches = branches;
             })
             .then(function() {
-                return res.render('services/shares/editor', data)
+                return res.render('services/shares/editor', data);
             })
             .catch(function(err) {
                 if (err.message === '404') {
@@ -130,7 +167,7 @@ module.exports = {
                 else {
                     return res.serverError(err);
                 }
-            })
+            });
     },
 
     updateGeneral: function(req, res) {
@@ -272,7 +309,7 @@ module.exports = {
                 else {
                     return res.serverError(err);
                 }
-            })
+            });
     },
 
 

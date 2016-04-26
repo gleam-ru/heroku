@@ -44,53 +44,9 @@ module.exports.bootstrap = function(cb) {
     var p = require(appRoot+'/api/services/DataProviders/sharesDivsImporter.js');
     if (!sails.config.heroku) {
         async.series([
-            function(next) {
-                return Q()
-                    .then(function() {
-                        return Share.find();
-                    })
-                    .then(function(shares) {
-                        return Q.series(_.map(shares, function(s) {
-                            return function() {
-                                return Q()
-                                    .then(function() {
-                                        console.log('process:', s.name);
-                                        var candles = {
-                                            share: s.id,
-                                            type: 'inday',
-                                            data: [s.indayCandle],
-                                        };
-                                        return Candles.findOrCreate(candles, candles);
-                                    })
-                                    .then(function() {
-                                        console.log('indayCandle moved');
-                                        s.indayCandle = undefined;
-                                        var candles = {
-                                            share: s.id,
-                                            type: 'daily',
-                                            data: s.dailyCandles,
-                                        };
-                                        return Candles.findOrCreate(candles, candles);
-                                    })
-                                    .then(function() {
-                                        console.log('dailyCandles moved');
-                                        s.dailyCandles = undefined;
-                                        return s.save();
-                                    })
-                                    .then(function(saved) {
-                                        console.log('process:', s.name, 'complete');
-                                    })
-                                    .catch(function(err) {
-                                        console.error('redatabase error', err, err.stack);
-                                    })
-                            }
-                        }))
-                    })
-                    .nodeify(next);
-            },
             // filler.process,
-            // provider.init,
-            // cayche.init,
+            provider.init,
+            cache.init,
             // cron.init,
         ],
         function(err) {

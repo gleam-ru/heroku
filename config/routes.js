@@ -48,7 +48,10 @@ module.exports.routes = {
     'get  /services/shares/:id/edit'     : 'Shares.editorPage', // админка
     'get  /services/shares/:id/info'     : 'Shares.getTickerData', // апи
     //---
-    'post /services/shares/:id/update'  : 'Shares.updateGeneral',
+    'post /services/shares/:id/update'   : 'Shares.updateGeneral',
+    //---
+    'get  /services/new_shares'          : 'Shares.new_shares',
+    //
 
 
 

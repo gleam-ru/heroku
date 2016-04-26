@@ -230,4 +230,64 @@ $(document).ready(function() {
         });
     }
 
+
+
+    // System.js
+    System.config({
+        baseURL: '/',
+    });
+    System.importAll = function(hash) {
+        var hash = _.clone(hash);
+        var results = {};
+        return Promise.resolve()
+            .then(function() {
+                var raw = _.clone(hash._raw);
+                delete hash._raw;
+                return Promise.all(_.map(raw, function(src) {
+                    return loadFile(src);
+                }))
+            })
+            .then(function() {
+                return Promise.all(_.map(hash, function(src, name) {
+                    return System
+                        .import(src)
+                        .then(function(imported) {
+                            results[name] = imported;
+                        })
+                }))
+            })
+            .then(function() {
+                return results;
+            })
+            ;
+    };
+
+    // http://www.javascriptkit.com/javatutors/loadjavascriptcss.shtml
+    window.loadFile = function(filename, filetype) {
+        if (!filetype) {
+            var splitted = filename.split('.');
+            filetype = splitted[splitted.length - 1];
+        }
+        return Promise.resolve()
+            .then(function() {
+                if (filetype == "js") {
+                    return new Promise(function(resolve, reject) {
+                        $.getScript(filename)
+                            .done(resolve)
+                            .fail(reject)
+                    });
+                }
+                else if (filetype == "css") {
+                    var fileref = document.createElement("link");
+                    fileref.setAttribute("rel", "stylesheet");
+                    fileref.setAttribute("type", "text/css");
+                    fileref.setAttribute("href", filename);
+                    document.getElementsByTagName("head")[0].appendChild(fileref);
+                }
+                else {
+                    throw new Error('unknown file type');
+                }
+            })
+    }
+
 });
