@@ -25,6 +25,32 @@ module.exports = {
                 data.shares.rows = shares;
             })
             .then(function() {
+                return UserSettings.findOne({
+                    user: req.user ? req.user.id : null,
+                    page: 'shares/filters',
+                });
+            })
+            .then(function(us) {
+                data.us = (us && us.data) || {
+                    // defaultsTo
+                    filters: [
+                        {
+                            text: 'test filter',
+                            conditions: []
+                        }, {
+                            text: 'one more',
+                            conditions: [
+                                {
+                                    column: {data: 'name'},
+                                    type: {value: 'contains'},
+                                    value: 'яро',
+                                }
+                            ]
+                        },
+                    ],
+                };
+            })
+            .then(function() {
                 data.shares.info = {
                     updatedAt: moment().format('DD.MM.YYYY - hh:mm:ss'),
                     total: data.shares.rows.length,

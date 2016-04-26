@@ -8,7 +8,7 @@
 module.exports = {
     attributes: {
         user: { model: 'User', required: true },
-        page: { type: 'alphanumeric', defaultsTo: '/', required: true },
+        page: { type: 'string', defaultsTo: '/', required: true },
         data: { type: 'json', defaultsTo: {}, required: true },
     }
 };

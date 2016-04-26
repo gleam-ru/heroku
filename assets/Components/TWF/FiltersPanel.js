@@ -50,15 +50,11 @@ module.exports = function(resolve) {
                         if (idx === vm.active) {
                             vm.active = null;
                         }
+                        vm.$emit('savetoserver');
                     });
                 },
                 add: function() {
-                    console.debug('im here');
                     this.$emit('addfilter');
-                    // this.filters.push({
-                    //     text: Math.random().toString(36).substring(5),
-                    //     conditions: [],
-                    // });
                 },
                 edit: function(idx) {
                     this.editing = idx === this.editing ? null : idx;

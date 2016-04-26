@@ -27,6 +27,7 @@ module.exports = function(resolve) {
                             ':active.sync="activeFilterIdx"',
                             ':editing.sync="editingFilterIdx"',
                             '@addfilter="addFilter()"',
+                            '@savetoserver="saveToServer()"',
                             '>',
                         '</filters>',
                     '</div>',
@@ -190,8 +191,10 @@ module.exports = function(resolve) {
                         idx = this.filters.length - 1;
                     }
                     else {
+                        // существующий
                         this.filters.$set(idx, data);
                     }
+
                     // изменили активный фильтр
                     if (idx === this.activeFilterIdx) {
                         this.applyFilter();
@@ -199,6 +202,9 @@ module.exports = function(resolve) {
                     else {
                         this.activeFilterIdx = idx;
                     }
+
+                    // сохраняю изменения на сервер
+                    this.saveToServer();
                 },
                 // применяет фильтр к таблице
                 applyFilter: function() {
@@ -232,6 +238,46 @@ module.exports = function(resolve) {
                         columns: this.columns,
                         filterTypes: this.filterTypes,
                     });
+                },
+
+                toJSON: function() {
+                    var vm = this;
+                    return {
+                        filters: _.map(vm.filters, function(f) {
+                            return {
+                                text: f.text,
+                                conditions: _.map(f.conditions, function(c) {
+                                    return {
+                                        column: {
+                                            data: c && c.column && c.column.data,
+                                        },
+                                        type: {
+                                            value: c && c.type && c.type.value,
+                                        },
+                                        value: c && c.value,
+                                    };
+                                }),
+                            };
+                        }),
+                    };
+                },
+
+                // сохраняет текущее состояние на сервер
+                saveToServer: function() {
+                    var vm = this;
+                    var msg = {
+                        page: 'shares/filters',
+                        data: vm.toJSON(),
+                    };
+                    $.post('/API/usersettings', {msg: msg})
+                        .done(function() {
+                            console.debug('filters saved to server');
+                        })
+                        .error(function(err) {
+                            console.error(err);
+                            mp.alert('ошибка при сохранении фильтров');
+                        })
+                        ;
                 },
             },
             beforeCompile: function() {

@@ -52,6 +52,9 @@ module.exports.routes = {
     //---
     'get  /services/new_shares'          : 'Shares.new_shares',
     //
+    // фильтры таблички
+    'post /API/usersettings': 'API.updateUserSettings',
+    //
 
 
 

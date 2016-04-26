@@ -22,14 +22,8 @@ $(document).ready(function() {
             },
             data: {
                 info: [
-                    {
-                        key   : 'Данные обновлены',
-                        value : moment().format('DD.MM.YYYY - hh:mm:ss'),
-                    },
-                    {
-                        key   : 'Ближайшее обновление',
-                        value : 'через 19 минут',
-                    },
+                    {key: 'Данные обновлены', value: shares.info.updatedAt},
+                    {key: 'Ближайшее обновление', value: 'через 15 минут'},
                 ],
                 rows: shares.rows,
                 columns: [
@@ -47,16 +41,7 @@ $(document).ready(function() {
                     },
                     // {id: 'name', title: 'Test', filter: 'string', render: function() {console.log(arguments); return 'it wrks';}},
                 ],
-                filters: [
-                    {text: 'test filter', conditions: []},
-                    {text: 'one more', conditions: [
-                        {
-                            column: {data: 'name'},
-                            type: {value: 'contains'},
-                            value: 'яро',
-                        }
-                    ]},
-                ],
+                filters: us.filters || [],
             }
         });
     })
