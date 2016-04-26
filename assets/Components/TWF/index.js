@@ -26,6 +26,7 @@ module.exports = function(resolve) {
                             ':filters.sync="filters"',
                             ':active.sync="activeFilterIdx"',
                             ':editing.sync="editingFilterIdx"',
+                            '@addfilter="addFilter()"',
                             '>',
                         '</filters>',
                     '</div>',
@@ -141,6 +142,10 @@ module.exports = function(resolve) {
                             },
                         ],
                     },
+                    newFilter: {
+                        text: 'Новый фильтр',
+                        conditions: [],
+                    },
                 };
             },
             computed: {
@@ -180,7 +185,13 @@ module.exports = function(resolve) {
                 // обновляет фильтр
                 // отрабатывает во время "сохранить" в редакторе
                 updateFilter: function(idx, data) {
-                    this.filters.$set(idx, data);
+                    if (!idx && idx !== 0) {
+                        this.filters.push(data);
+                        idx = this.filters.length - 1;
+                    }
+                    else {
+                        this.filters.$set(idx, data);
+                    }
                     // изменили активный фильтр
                     if (idx === this.activeFilterIdx) {
                         this.applyFilter();
@@ -213,6 +224,14 @@ module.exports = function(resolve) {
                         });
                     };
                     vm.tbl.table.fnDraw();
+                },
+                addFilter: function() {
+                    var vm = this;
+                    this.editor.show(_.cloneDeep(vm.newFilter), {
+                        idx: null,
+                        columns: this.columns,
+                        filterTypes: this.filterTypes,
+                    });
                 },
             },
             beforeCompile: function() {
