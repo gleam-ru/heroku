@@ -33,13 +33,13 @@ block breadcrumbs
 
 block content
   +providers(providers)
-  div#auth
+  div#auth(v-cloak)
     div.registering(
       v-if='signUp'
       )
       h3.no-select {{signUpText}} | 
         a.pointer(
-          v-on='click: change_vue'
+          @click='change_vue'
           ) {{signInText}}
       for error in errors
         +error(error)
@@ -48,7 +48,7 @@ block content
         action='/auth/register'
         method='post'
         v-el='form'
-        v-on='submit: beforeRegister'
+        @submit='beforeRegister'
         )
         input(
           type='text'
@@ -56,7 +56,7 @@ block content
           placeholder='Имя пользователя'
           value=form.username
           v-model='uname'
-          v-class='has-error: error_username'
+          v-bind:class='{"has-error": error_username}'
           )
         input(
           type='password'
@@ -64,14 +64,14 @@ block content
           placeholder='Пароль' 
           value=form.password
           v-model='pwd_1'
-          v-class='has-error: error_pwd'
+          v-bind:class='{"has-error": error_pwd}'
           )
         input(
           type='password' 
           placeholder='Еще пароль' 
           value=form.password
           v-model='pwd_2'
-          v-class='has-error: error_pwd'
+          v-bind:class='{"has-error": error_pwd}'
           )
         input(
           type='text' 
@@ -79,11 +79,11 @@ block content
           placeholder='Email' 
           value=form.email
           v-model='email'
-          v-class='has-error: error_email'
+          v-bind:class='{"has-error": error_email}'
           )
         button.g-btn.type_midnight.size_small(
           type='submit'
-          v-class='disabled: hasErrors'
+          v-bind:class='{"disabled": hasErrors}'
           )
           | Регистрация
 
@@ -92,14 +92,14 @@ block content
       ) 
       h3.no-select
         a.pointer(
-          v-on='click: change_vue'
+          @click='change_vue'
           ) {{signUpText}}
         |  | {{signInText}}
       form.login(
         role='form'
         action='/auth/login'
         method='post'
-        v-on='submit: beforeLogIn'
+        @submit='beforeLogIn'
         )
         for error in errors
           +error(error)
