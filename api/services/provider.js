@@ -1,11 +1,12 @@
 var provider = {
     bonds: require('./DataProviders/bondsProvider.js'),
     shares: require('./DataProviders/sharesProvider.js'),
+    sharesGoogle: require('./DataProviders/sharesGoogleProvider.js'),
     // currencies: require('./DataProviders/currencyProvider.js'),
 };
 
 provider.init = function(cb) {
-    console.log('provider init')
+    console.log('provider init');
     async.series([
         // provider.bonds.init,
         // provider.shares.init,
