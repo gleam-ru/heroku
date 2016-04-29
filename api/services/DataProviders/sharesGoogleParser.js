@@ -353,9 +353,9 @@ me.getFullData = function() {
             });
             return result;
         })
-        .then(function(res) {
-            console.log(res);
-        })
+        // .then(function(res) {
+        //     console.log(res);
+        // })
         ;
 };
 
@@ -429,7 +429,7 @@ me.createUrl = function(params) {
     return [
         'https://www.google.com/finance?',
         'start=0',
-        '&num=9',
+        '&num=999',
         '&q=%5B', // '['
     ].concat(
         [ // эти параметры нужны в каждом запросе

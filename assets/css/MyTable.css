@@ -229,3 +229,49 @@
     font-size: 25px;
     cursor: pointer;
 }
+
+
+.visible-columns {
+    width: 100%;
+    }
+.visible-columns .left,
+.visible-columns .right {
+    border: solid 1px #ccc;
+    min-height: 100px;
+    padding: 20px;
+    width: 50%;
+    }
+.visible-columns ul, .visible-columns li {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    }
+
+.visible-columns li.item:hover {border-color: #bbb;}
+.visible-columns li.item {
+    padding: 3px;
+    border: solid 1px transparent;
+    transition: border-color .3s;
+    transition: opacity .3s;
+    cursor: pointer;
+    }
+
+.visible-columns .sort-ghost {opacity: 0;}
+
+.visible-columns .left .item {opacity: 0.8;}
+.visible-columns .left .item:hover {opacity: 1;}
+
+.visible-columns .item i.fa {
+    font-size: 22px;
+    vertical-align: middle;
+    padding: 0px 10px 0px 0px;
+    width: 30px;
+    text-align: left;
+    }
+
+.visible-columns input {
+    float: right;
+    font-size: 13px;
+    font-family: sans-serif;
+    padding: 5px;
+    }

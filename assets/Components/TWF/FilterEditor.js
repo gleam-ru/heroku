@@ -1,5 +1,11 @@
 var me = {};
 
+Vue.filter('colorize', function (value, pattern) {
+    var re = new RegExp('('+pattern+')', 'ig');
+    return value ? value.replace(re, '<span style="background: yellow">$1</span>') : '';
+    // return value ? value.replace(pattern, '<span style="background: yellow">'+pattern+'</span>') : '';
+});
+
 // тот, кто открыл окно (TWF)
 me.parent = null;
 
@@ -43,6 +49,15 @@ me.template = [
             '<span @click="add">'+Jade.els.button('Добавить условие')+'</span>',
         '</div>',
         // '',
+        '<h4>Колонки</h4>',
+        '<div class="isolated">',
+            '<visible-columns',
+                ':left="static.columns"',
+                ':right="visibleColumns"',
+                '>',
+            '</visible-columns>',
+        '</div>',
+        // '',
         '<div class="isolated">',
             '<div class="control-buttons">',
                 '<span @click="save(static.idx)">'+Jade.els.button('Сохранить')+'</span>',
@@ -71,6 +86,7 @@ me.show = function(filter, additional) {
                     data: function() {
                         return _.extend(_.cloneDeep(filter), {
                             static: _.extend({}, me.data, additional),
+                            visibleColumns: [],
                         });
                     },
                     methods: {
@@ -171,6 +187,105 @@ me.show = function(filter, additional) {
                         'text-picker': Vue.extend({
                             template: '<input type="text" v-model="value" />',
                             props: ['value'],
+                        }),
+
+                        'visible-columns': Vue.extend({
+                            template: [
+                                '<table class="no-select visible-columns">',
+                                    '<tr>',
+                                        '<td class="left">',
+                                            '<h4>Все <input v-model="allfilter"></h4>',
+                                            '<ul>',
+                                                '<li v-if="!left.length"><i>no items left...</i></li>',
+                                                '<li',
+                                                    ':class="{item: true}"',
+                                                    'v-for="i in left"',
+                                                    '@click="add(i)"',
+                                                    '>',
+                                                    '<i v-if="isAdded(i)" class="fa fa-check-square-o"></i>',
+                                                    '<i v-else="isAdded(i)" class="fa fa-square-o"></i>',
+                                                    '{{{ i.name | colorize allfilter }}}',
+                                                '</li>',
+                                            '</ul>',
+                                        '</td>',
+                                        '<td class="right">',
+                                            '<h4>Выбранные</h4>',
+                                            '<ul id="sortable">',
+                                                '<li v-if="!right.length"><i>no items left...</i></li>',
+                                                '<li',
+                                                    'class="item"',
+                                                    'v-for="i in right"',
+                                                    '@click="remove(i)"',
+                                                    '>',
+                                                    '{{ i.name }}',
+                                                '</li>',
+                                            '</ul>',
+                                        '</td>',
+                                    '</tr>',
+                                '</table>',
+                            ].join(' '),
+                            props: ['left', 'right'],
+                            data: function() {
+                                return {
+                                    allfilter: '',
+                                };
+                            },
+                            methods: {
+                                isAdded: function(i) {
+                                    return _.findIndex(this.right, {name: i.name}) !== -1;
+                                },
+                                add: function(item) {
+                                    if (!this.isAdded(item)) {
+                                        this.right.push(item);
+                                    }
+                                    else {
+                                        this.remove(item);
+                                    }
+                                },
+                                remove: function(item) {
+                                    if (this.right.length < 2) {
+                                        return;
+                                    }
+                                    this.right.$remove(item);
+                                },
+                                reorder: function(oldIndex, newIndex) {
+                                    // move the item in the underlying array
+                                    this.right.splice(newIndex, 0, this.right.splice(oldIndex, 1)[0]);
+                                    // update order property based on position in array
+                                    this.right.forEach(function(item, index) {
+                                        item.order = index;
+                                    });
+                                }
+                            },
+                            ready: function() {
+                                var vm = this;
+                                if (!vm.left) {
+                                    console.warn('отсутствует общий список колонок');
+                                }
+                                vm.left = _(vm.left)
+                                    .map(function(c) {
+                                        var name = c.vueTitle || c.title;
+                                        return name && {name: name};
+                                    })
+                                    .compact()
+                                    .sortBy('name')
+                                    .value()
+                                    ;
+
+                                this.add(vm.left[0]);
+
+                                Sortable.create(document.getElementById('sortable'), {
+                                    draggable: 'li.item',
+                                    ghostClass: "sort-ghost",
+                                    animation: 80,
+                                    forceFallback: true,
+                                    onUpdate: function(evt) {
+                                        console.log('dropped (Sortable)');
+                                        vm.reorder(evt.oldIndex, evt.newIndex);
+                                    }
+                                });
+
+                            },
                         }),
                     },
                 }); // end of vue cmp

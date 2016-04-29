@@ -9,7 +9,7 @@ $(document).ready(function() {
             template: [
                 '<div>',
                     '<TWF',
-                        ':saveAs="shares/filters"',
+                        ':saveas="shares/filters"',
                         ':info="info"',
                         ':rows="rows"',
                         ':columns="columns"',
@@ -26,23 +26,9 @@ $(document).ready(function() {
                     {key: 'Данные обновлены', value: shares.info.updatedAt},
                     {key: 'Ближайшее обновление', value: 'через 15 минут'},
                 ],
-                rows: shares.rows,
-                columns: [
-                    {data: 'name', title: 'Тикер', filter: 'string'},
-                    {data: 'id', title: 'id', filter: 'date'},
-                    {
-                        class: 'buttonColumn',
-                        render: function(a, b, row, pos) {
-                            return [
-                                '<span>',
-                                    Jade.els.roundIcon('fa-question'),
-                                '</span>',
-                            ].join(' ');
-                        }
-                    },
-                    // {id: 'name', title: 'Test', filter: 'string', render: function() {console.log(arguments); return 'it wrks';}},
-                ],
-                filters: us.filters || [],
+                rows: createRows(_shares.data),
+                columns: createColumns(_shares.params),
+                filters: [] || us.filters || [],
             }
         });
     })
@@ -52,3 +38,37 @@ $(document).ready(function() {
     })
     ;
 });
+
+
+function createColumns(params) {
+    var defaultColumns = [
+        {
+            title: 'Name',
+            data: 'name',
+            filter: 'string',
+        }, {
+            title: 'Code',
+            data: 'code',
+            filter: 'string',
+        }
+    ];
+    return defaultColumns.concat(_.map(params, function(p) {
+        return {
+            title: p.title+
+                '<span class="tt" title="'+p.desc+'">'+
+                    Jade.els.roundIcon('fa-question')+
+                '</span>',
+            vueTitle: p.title,
+            data: p.serverName,
+            filter: p.filter || 'number',
+        };
+    }));
+}
+
+function createRows(shares) {
+    return _.map(shares, function(s) {
+        var row = _.extend({}, s, s.cols);
+        delete row.cols;
+        return row;
+    });
+}

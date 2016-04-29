@@ -1,11 +1,12 @@
 module.exports = function(resolve) {
     System.importAll({
-        info    :  '/Components/TWF/InfoPanel.js',
-        table   :  '/Components/TWF/TablePanel.js',
-        filters :  '/Components/TWF/FiltersPanel.js',
-        editor  :  '/Components/TWF/FilterEditor.js',
+        info     :  '/Components/TWF/InfoPanel.js',
+        table    :  '/Components/TWF/TablePanel.js',
+        filters  :  '/Components/TWF/FiltersPanel.js',
+        editor   :  '/Components/TWF/FilterEditor.js',
         _raw: [
             '/css/MyTable.css',
+            '/bower_components/Sortable/Sortable.js',
         ]
     })
     .then(function(imported) {
@@ -42,7 +43,7 @@ module.exports = function(resolve) {
                 '</div>',
             ].join(' '),
             props: [
-                'saveAs',
+                'saveas',
                 'info',
                 'rows',
                 'columns',

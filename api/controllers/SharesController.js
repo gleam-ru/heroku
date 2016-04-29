@@ -17,12 +17,15 @@ module.exports = {
             },
         };
 
-        provider.shares.getSharesTable()
+        // provider.shares.getSharesTable()
+        Q()
             .then(function(shares) {
                 if (!shares) {
                     console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
                 }
-                data.shares.rows = shares;
+                else {
+                    data.shares.rows = shares;
+                }
             })
             .then(function() {
                 return UserSettings.findOne({
@@ -59,6 +62,15 @@ module.exports = {
             })
             .then(function() {
                 data.shares.filters = [];
+            })
+            .then(function() {
+                return provider.sharesGoogle.getFromDB();
+            })
+            .then(function(shares) {
+                data._shares = {
+                    data: shares,
+                    params: provider.sharesGoogle.params,
+                };
             })
             .then(function() {
                 res.render('services/shares/new_shares', data);

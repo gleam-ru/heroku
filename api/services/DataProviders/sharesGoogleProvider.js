@@ -3,12 +3,12 @@ var moment = require('moment');
 var ddf = 'DD.MM.YYYY';
 var me = {};
 
-var parser = require('./sharesGoogleParser');
-var params = parser.params;
+me.parser = require('./sharesGoogleParser');
+me.params = me.parser.params;
 
 // получает json-ифицированые данные от гугла
 me.parse = function() {
-    return parser.getFullData();
+    return me.parser.getFullData();
 };
 
 // Промис
@@ -25,7 +25,8 @@ me.saveToDB = function(shares) {
 // получает данные из БД, промис
 me.getFromDB = function() {
     console.warn('write some code here');
-    return Q();
+    // return Q();
+    return me.parse();
 };
 
 
