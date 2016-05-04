@@ -41,7 +41,7 @@ link(rel="stylesheet", href="/css/main.css")
 //- cdn
 script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' defer)
 //- компиллированные jade шаблоны
-script(type="text/javascript", src="/jade_templates.js" defer)
+script(src="/jade_templates.js" defer)
 //- <!-- build:js /js/combined.min.js -->
 // bower:js
 script(src="/bower_components/datatables/media/js/jquery.dataTables.js" defer)
@@ -57,12 +57,16 @@ script(src="/bower_components/system.js/dist/system.js" defer)
 script(src="/bower_components/vue/dist/vue.js" defer)
 // endbower
 //- Astra
-script(type="text/javascript", src="/js/Astra/plugins.js" defer)
-script(type="text/javascript", src="/js/Astra/jquery.smoothScroll.js" defer)
+script(src="/js/Astra/plugins.js" defer)
+script(src="/js/Astra/jquery.smoothScroll.js" defer)
 
 //- добавляет поддержку moment в datatables
-script(type="text/javascript", src="/js/datatables.moment.patch.js" defer)
+script(src="/js/datatables.moment.patch.js" defer)
+
+//- таскалка колонок. Нужна программная часть, но не нужна возможность таскания самим клиентом
+//- поэтому немного модифицировал код (искать по // MOD:)
+script(src="/js/dataTables.colReorder.modified.js" defer)
 
 //- глобальные методы, локализации, etc...
-script(type="text/javascript", src="/js/main.js" defer)
+script(src="/js/main.js" defer)
 //- <!-- endbuild -->

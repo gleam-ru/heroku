@@ -275,3 +275,10 @@
     font-family: sans-serif;
     padding: 5px;
     }
+
+
+.my-table .table th .roundIcon {
+    font-size: 10px;
+    margin-left: 5px;
+    margin-top: -1px;
+    }

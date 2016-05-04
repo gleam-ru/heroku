@@ -215,9 +215,16 @@ module.exports = function(resolve) {
                     var filter = vm.activeFilter;
 
                     if (!filter) {
-                        filter = {};
+                        filter = {
+                            colReorderReset: true,
+                            visibleColumns: _.cMap(vm.columns, function(c) {
+                                return c.bVisible && {data: c.data};
+                            }),
+                        };
                     }
+                    console.debug('apply filter: ', filter);
 
+                    // фильтрация
                     $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
                         return _.every(filter.conditions, function(condition) {
                             if (!condition.column || !condition.type || !condition.value) {
@@ -231,7 +238,55 @@ module.exports = function(resolve) {
                             return condition.type.apply(data, condition.value);
                         });
                     };
-                    vm.tbl.table.fnDraw();
+
+                    // видимые колонки
+                    var Table = vm.tbl.table;
+                    var tableColumns = Table.columns().dataSrc();
+                    var userColumns = filter.visibleColumns;
+
+                    var currentOrder = [];
+                    var neededOrder1 = []; // видимые, в нужном порядке
+                    var neededOrder2 = []; // остальные
+
+                    _.each(tableColumns, function(columnDataPropName, idx) {
+                        currentOrder.push(idx);
+                        var tableColumn = Table.column(idx); // текущая колонка в таблице
+                        // 1 + - используется для прохождения ифов.
+                        var userColumnIdx = 1 + _.findIndex(userColumns, {data: columnDataPropName}); // сохраненная пользователем
+                        try {
+                            // console.debug('set', userColumnIdx ? 'visible' : 'hidden', columnDataPropName);
+                            // https://datatables.net/reference/api/column().visible()
+                            tableColumn.visible(userColumnIdx, false);
+                        }
+                        catch (err) {
+                            // TODO: разобраться почему DT косячит... ну либо я сам дурак :)
+                        }
+                        if (userColumnIdx) {
+                            neededOrder1.push({
+                                currentIdx: idx,
+                                savedIdx: userColumnIdx,
+                            });
+                        }
+                        else {
+                            neededOrder2.push(idx);
+                        }
+                    });
+
+                    if (filter.colReorderReset) {
+                        Table.colReorder.reset();
+                    }
+                    else {
+                        var order = _(neededOrder1)
+                            .sortBy('savedIdx')
+                            .map('currentIdx')
+                            .concat(neededOrder2)
+                            .value()
+                            ;
+                        Table.colReorder.order(order);
+                    }
+
+                    vm.tbl.table.draw();
+                    initTT();
                 },
                 addFilter: function() {
                     var vm = this;
@@ -259,6 +314,11 @@ module.exports = function(resolve) {
                                         value: c && c.value,
                                     };
                                 }),
+                                visibleColumns: _.map(f.visibleColumns, function(c) {
+                                    return {
+                                        data: c && c.data,
+                                    };
+                                }),
                             };
                         }),
                     };
@@ -271,6 +331,7 @@ module.exports = function(resolve) {
                         page: vm.saveAs,
                         data: vm.toJSON(),
                     };
+                    console.debug('save:', msg);
                     $.post('/API/usersettings', {msg: msg})
                         .done(function() {
                             console.debug('filters saved to server');
@@ -283,8 +344,8 @@ module.exports = function(resolve) {
                 },
             },
             beforeCompile: function() {
+                window.twf = this;
                 var vm = this;
-                window.ivm = this;
 
                 vm.editor = imported.editor;
                 vm.editor.parent = vm;
@@ -301,6 +362,9 @@ module.exports = function(resolve) {
                     });
                 });
             },
+            ready: function() {
+                initTT();
+            }
         };
     })
     .then(resolve)

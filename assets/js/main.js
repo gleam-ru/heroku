@@ -290,4 +290,13 @@ $(document).ready(function() {
             })
     }
 
+
+    // lodash
+    _.mixin({
+        // compactMap
+        cMap : function(arr, foo) {
+            return _.compact(_.map(arr, foo));
+        }
+    });
+
 });

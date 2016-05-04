@@ -20,11 +20,13 @@ module.exports = function(resolve) {
                         stateDuration: 999999999,
                         stateSaveParams: function (settings, data) {
                             data.search.search = "";
+                            data.columns = [];
+                            data.order = [];
                         },
                         sScrollX: '100%',
                         bScrollCollapse: true,
                         // http://legacy.datatables.net/usage/options
-                        sDom: 'lpft',
+                        sDom: 'Rlpft',
                         aLengthMenu: [[10, 50, 100, -1], [10, 50, 100, "все"]],
                         paging: true,
                         language: datatables_localization,
@@ -42,7 +44,6 @@ module.exports = function(resolve) {
                 };
             },
             compiled: function() {
-                console.debug('apply');
                 window.tp = this;
                 var vm = this;
                 var tableEl = vm.$els.dt;
@@ -55,7 +56,7 @@ module.exports = function(resolve) {
                     if (!table) {
                         return;
                     }
-                    var settings = table.dataTable().fnSettings();
+                    var settings = table.settings()[0];
                     vm.info = [
                         {
                             key   : 'Всего',
@@ -68,9 +69,9 @@ module.exports = function(resolve) {
                     ];
                 };
 
-                vm.table = $(tableEl).dataTable(vm.config);
+                vm.table = $(tableEl).DataTable(vm.config);
                 // первая страница по-умолчанию
-                vm.table.fnPageChange(0);
+                // vm.table.page(2);
                 // перемещаю селектор строк в заголовок
                 $(vm.$el).find('.dataTables_length').appendTo($(vm.$els.header));
                 // перемещаю поиск в заголовок
@@ -78,7 +79,7 @@ module.exports = function(resolve) {
 
 
                 $(tableEl).on('click', '.buttonColumn', function() {
-                    var table = vm.table.DataTable();
+                    var table = vm.table;
                     var clickedColumnIndex = table.cell($(this)).index().column;
                     var column = vm.columns[clickedColumnIndex];
                     if (column && column.handler) {
@@ -89,7 +90,7 @@ module.exports = function(resolve) {
                 });
 
                 vm.$nextTick(function() {
-                    vm.table.fnDraw();
+                    vm.table.draw();
                 });
             }
         };

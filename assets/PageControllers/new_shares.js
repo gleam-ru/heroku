@@ -28,7 +28,28 @@ $(document).ready(function() {
                 ],
                 rows: createRows(_shares.data),
                 columns: createColumns(_shares.params),
-                filters: [] || us.filters || [],
+                // filters: us.filters || [],
+                filters: [
+                    {
+                        "text":"test #1",
+                        "conditions": [
+                            {
+                                "column": {"data":"code"},
+                                "type": {"value":"contains"},
+                                "value":"F"
+                            }, {
+                                "column": {"data":"PE"},
+                                "type": {"value":"less"},
+                                "value": "8"
+                            }
+                        ],
+                        "visibleColumns": [
+                            {"data":"code"},
+                            {"data":"name"},
+                            {"data":"PE"}
+                        ]
+                    }
+                ],
             }
         });
     })
@@ -46,13 +67,15 @@ function createColumns(params) {
             title: 'Name',
             data: 'name',
             filter: 'string',
+            bVisible: true,
         }, {
             title: 'Code',
             data: 'code',
             filter: 'string',
+            bVisible: true,
         }
     ];
-    return defaultColumns.concat(_.map(params, function(p) {
+    return defaultColumns.concat(_.cMap(params, function(p) {
         return {
             title: p.title+
                 '<span class="tt" title="'+p.desc+'">'+
@@ -61,6 +84,7 @@ function createColumns(params) {
             vueTitle: p.title,
             data: p.serverName,
             filter: p.filter || 'number',
+            bVisible: false,
         };
     }));
 }

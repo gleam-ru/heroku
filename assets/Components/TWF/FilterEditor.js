@@ -86,7 +86,7 @@ me.show = function(filter, additional) {
                     data: function() {
                         return _.extend(_.cloneDeep(filter), {
                             static: _.extend({}, me.data, additional),
-                            visibleColumns: [],
+                            // visibleColumns: [],
                         });
                     },
                     methods: {
@@ -264,15 +264,23 @@ me.show = function(filter, additional) {
                                 }
                                 vm.left = _(vm.left)
                                     .map(function(c) {
-                                        var name = c.vueTitle || c.title;
-                                        return name && {name: name};
+                                        return _.extend({}, c, {name: c.vueTitle || c.title});
                                     })
                                     .compact()
                                     .sortBy('name')
                                     .value()
                                     ;
 
-                                this.add(vm.left[0]);
+                                vm.right = _(vm.right)
+                                    .map(function(c) {
+                                        return _.find(vm.left, c);
+                                    })
+                                    .value()
+                                    ;
+
+                                if (vm.right.length < 1) {
+                                    vm.add(vm.left[0]);
+                                }
 
                                 Sortable.create(document.getElementById('sortable'), {
                                     draggable: 'li.item',
