@@ -4,7 +4,6 @@
  * @description :: Server-side logic for managing shares
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-
 module.exports = {
 
     // страница для переосмысливания vue-страницы
@@ -64,15 +63,24 @@ module.exports = {
                 data.shares.filters = [];
             })
             .then(function() {
-                return provider.sharesGoogle.getFromDB();
+                var saved = cache.get('temp');
+                if (saved) {
+                    console.debug('from cache');
+                    return saved;
+                }
+                else {
+                    return provider.sharesGoogle.getFromDB();
+                }
             })
             .then(function(shares) {
+                cache.set('temp', shares);
                 data._shares = {
                     data: shares,
                     params: provider.sharesGoogle.params,
                 };
             })
             .then(function() {
+                temp = data;
                 res.render('services/shares/new_shares', data);
             })
             .catch(function(err) {
