@@ -48,6 +48,24 @@ $(document).ready(function() {
                             {"data":"name"},
                             {"data":"PE"}
                         ]
+                    }, {
+                        "text":"test #2",
+                        "conditions": [
+                            {
+                                "column": {"data":"code"},
+                                "type": {"value":"contains"},
+                                "value":"G"
+                            }, {
+                                "column": {"data":"PE"},
+                                "type": {"value":"more"},
+                                "value": "8"
+                            }
+                        ],
+                        "visibleColumns": [
+                            {"data":"name"},
+                            {"data":"Volume"},
+                            {"data":"PE"}
+                        ]
                     }
                 ],
             }

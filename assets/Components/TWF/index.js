@@ -210,7 +210,7 @@ module.exports = function(resolve) {
                 },
                 // применяет фильтр к таблице
                 applyFilter: function() {
-                    console.debug('apply');
+                    // console.debug('apply');
                     var vm = this;
                     var filter = vm.activeFilter;
 
@@ -222,7 +222,7 @@ module.exports = function(resolve) {
                             }),
                         };
                     }
-                    console.debug('apply filter: ', filter);
+                    // console.debug('apply filter: ', filter);
 
                     // фильтрация
                     $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
@@ -244,46 +244,61 @@ module.exports = function(resolve) {
                     var tableColumns = Table.columns().dataSrc();
                     var userColumns = filter.visibleColumns;
 
-                    var currentOrder = [];
-                    var neededOrder1 = []; // видимые, в нужном порядке
-                    var neededOrder2 = []; // остальные
+                    var toShow = [];
+                    var toHide = [];
+                    var order = [];
 
                     _.each(tableColumns, function(columnDataPropName, idx) {
-                        currentOrder.push(idx);
                         var tableColumn = Table.column(idx); // текущая колонка в таблице
                         // 1 + - используется для прохождения ифов.
                         var userColumnIdx = 1 + _.findIndex(userColumns, {data: columnDataPropName}); // сохраненная пользователем
-                        try {
-                            // console.debug('set', userColumnIdx ? 'visible' : 'hidden', columnDataPropName);
-                            // https://datatables.net/reference/api/column().visible()
-                            tableColumn.visible(userColumnIdx, false);
+
+                        if (userColumnIdx && !tableColumn.visible()) {
+                            toShow.push(tableColumn);
                         }
-                        catch (err) {
-                            // TODO: разобраться почему DT косячит... ну либо я сам дурак :)
+                        if (!userColumnIdx && tableColumn.visible()) {
+                            toHide.push(tableColumn);
                         }
-                        if (userColumnIdx) {
-                            neededOrder1.push({
-                                currentIdx: idx,
-                                savedIdx: userColumnIdx,
-                            });
-                        }
-                        else {
-                            neededOrder2.push(idx);
-                        }
+
+                        order.push({
+                            userIdx: userColumnIdx || 9999,
+                            currIdx: idx,
+                        });
                     });
 
-                    if (filter.colReorderReset) {
-                        Table.colReorder.reset();
-                    }
-                    else {
-                        var order = _(neededOrder1)
-                            .sortBy('savedIdx')
-                            .map('currentIdx')
-                            .concat(neededOrder2)
-                            .value()
-                            ;
-                        Table.colReorder.order(order);
-                    }
+                    _.each(toShow.concat(toHide), function(c) {
+                        c.visible(!c.visible());
+                    });
+
+                    // var oldOrder = _(order)
+                    //     // .sortBy('userIdx')
+                    //     .map('currIdx')
+                    //     .value()
+                    //     ;
+                    // console.debug('old order (got):', _.map(oldOrder.slice(0, 4), function(idx) {
+                    //     return tableColumns[idx];
+                    // }));
+                    // console.debug('old order (real):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
+                    //     return tableColumns[idx];
+                    // }));
+
+                    var newOrder = _(order)
+                        .sortBy('userIdx')
+                        .map('currIdx')
+                        .value()
+                        ;
+                    // console.debug('new order (before, got):', _.map(newOrder.slice(0, 4), function(idx) {
+                    //     return tableColumns[idx];
+                    // }));
+                    // console.debug('new order (before, real):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
+                    //     return tableColumns[idx];
+                    // }));
+
+                    Table.colReorder.order(newOrder);
+
+                    // console.debug('new order (after):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
+                    //     return tableColumns[idx];
+                    // }));
 
                     vm.tbl.table.draw();
                     initTT();
@@ -363,7 +378,7 @@ module.exports = function(resolve) {
                 });
             },
             ready: function() {
-                initTT();
+                // initTT();
             }
         };
     })
