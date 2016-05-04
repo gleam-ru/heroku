@@ -101,7 +101,7 @@ function createColumns(params) {
                 '</span>',
             vueTitle: p.title,
             data: p.serverName,
-            filter: p.filter || 'number',
+            filter: p.filter || p.type || 'number',
             bVisible: false,
         };
     }));
