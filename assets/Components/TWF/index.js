@@ -52,6 +52,7 @@ module.exports = function(resolve) {
                 'editingFilterIdx',
             ],
             data: function() {
+                var vm = this;
                 return {
                     tableInfo: [],
                     filterTypes: {
@@ -148,6 +149,9 @@ module.exports = function(resolve) {
                     newFilter: {
                         text: 'Новый фильтр',
                         conditions: [],
+                        visibleColumns: [
+                            {data: vm.columns[0].data},
+                        ],
                     },
                 };
             },
@@ -212,6 +216,9 @@ module.exports = function(resolve) {
                 applyFilter: function() {
                     // console.debug('apply');
                     var vm = this;
+                    var Table = vm.tbl.table;
+                    var tableColumns = Table.columns().dataSrc();
+
                     var filter = vm.activeFilter;
 
                     if (!filter) {
@@ -232,7 +239,7 @@ module.exports = function(resolve) {
                                 return true;
                             }
                             var column = condition.column;
-                            var columnIdx = _.findIndex(vm.columns, column);
+                            var columnIdx = Table.columns().dataSrc().indexOf(column.data);
                             // aData == [value, value, ...] - row
                             var data = aData[columnIdx];
                             return condition.type.apply(data, condition.value);
@@ -240,8 +247,6 @@ module.exports = function(resolve) {
                     };
 
                     // видимые колонки
-                    var Table = vm.tbl.table;
-                    var tableColumns = Table.columns().dataSrc();
                     var userColumns = filter.visibleColumns;
 
                     var toShow = [];
@@ -303,6 +308,7 @@ module.exports = function(resolve) {
                     vm.tbl.table.draw();
                     initTT();
                 },
+
                 addFilter: function() {
                     var vm = this;
                     this.editor.show(_.cloneDeep(vm.newFilter), {
@@ -343,7 +349,7 @@ module.exports = function(resolve) {
                 saveToServer: function() {
                     var vm = this;
                     var msg = {
-                        page: vm.saveAs,
+                        page: vm.saveas,
                         data: vm.toJSON(),
                     };
                     console.debug('save:', msg);
@@ -366,6 +372,9 @@ module.exports = function(resolve) {
                 vm.editor.parent = vm;
 
                 _.each(vm.filters, function(filter) {
+                    if (!filter.conditions) {
+                        filter.conditions = [];
+                    }
                     _.each(filter.conditions, function(condition) {
                         condition.column = _.find(vm.columns, condition.column);
                         if (!condition.column) {

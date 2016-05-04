@@ -21,7 +21,7 @@ $(document).ready(function() {
                 template: [
                     '<div>',
                         '<TWF',
-                            ':saveAs="bonds/filters"',
+                            ':saveas="\'bonds/filters\'"',
                             ':info="info"',
                             ':rows="rows"',
                             ':columns="columns"',

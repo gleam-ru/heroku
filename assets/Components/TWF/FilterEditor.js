@@ -53,7 +53,7 @@ me.template = [
         '<div class="isolated">',
             '<visible-columns',
                 ':left="static.columns"',
-                ':right="visibleColumns"',
+                ':right.sync="visibleColumns"',
                 '>',
             '</visible-columns>',
         '</div>',
@@ -81,7 +81,7 @@ me.show = function(filter, additional) {
         callbacks: {
             open: function() {
                 var wrapper = this.wrap[0];
-                window.mpvm = new Vue({
+                new Vue({
                     el: wrapper,
                     data: function() {
                         return _.extend(_.cloneDeep(filter), {
@@ -211,7 +211,7 @@ me.show = function(filter, additional) {
                                         '<td class="right">',
                                             '<h4>Выбранные</h4>',
                                             '<ul id="sortable">',
-                                                '<li v-if="!right.length"><i>no items left...</i></li>',
+                                                '<li v-if="!right || !right.length"><i>no items left...</i></li>',
                                                 '<li',
                                                     'class="item"',
                                                     'v-for="i in right"',

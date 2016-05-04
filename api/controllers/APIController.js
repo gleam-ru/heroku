@@ -17,7 +17,7 @@ module.exports = {
         var data = msg.data;
 
         if (!user || !page || !data) {
-            console.error('data saving error (user/page/data):', user, page, data);
+            console.error('data saving error (user_id/page/data):', user, page, data);
             return res.send(500);
         }
 

@@ -9,7 +9,7 @@ $(document).ready(function() {
             template: [
                 '<div>',
                     '<TWF',
-                        ':saveas="shares/filters"',
+                        ':saveas="\'shares/filters\'"',
                         ':info="info"',
                         ':rows="rows"',
                         ':columns="columns"',
@@ -28,46 +28,46 @@ $(document).ready(function() {
                 ],
                 rows: createRows(_shares.data),
                 columns: createColumns(_shares.params),
-                // filters: us.filters || [],
-                filters: [
-                    {
-                        "text":"test #1",
-                        "conditions": [
-                            {
-                                "column": {"data":"code"},
-                                "type": {"value":"contains"},
-                                "value":"F"
-                            }, {
-                                "column": {"data":"PE"},
-                                "type": {"value":"less"},
-                                "value": "8"
-                            }
-                        ],
-                        "visibleColumns": [
-                            {"data":"code"},
-                            {"data":"name"},
-                            {"data":"PE"}
-                        ]
-                    }, {
-                        "text":"test #2",
-                        "conditions": [
-                            {
-                                "column": {"data":"code"},
-                                "type": {"value":"contains"},
-                                "value":"G"
-                            }, {
-                                "column": {"data":"PE"},
-                                "type": {"value":"more"},
-                                "value": "8"
-                            }
-                        ],
-                        "visibleColumns": [
-                            {"data":"name"},
-                            {"data":"Volume"},
-                            {"data":"PE"}
-                        ]
-                    }
-                ],
+                filters: us.filters || [],
+                // filters: [
+                //     {
+                //         "text":"test #1",
+                //         "conditions": [
+                //             {
+                //                 "column": {"data":"code"},
+                //                 "type": {"value":"contains"},
+                //                 "value":"F"
+                //             }, {
+                //                 "column": {"data":"PE"},
+                //                 "type": {"value":"less"},
+                //                 "value": "8"
+                //             }
+                //         ],
+                //         "visibleColumns": [
+                //             {"data":"code"},
+                //             {"data":"name"},
+                //             {"data":"PE"}
+                //         ]
+                //     }, {
+                //         "text":"test #2",
+                //         "conditions": [
+                //             {
+                //                 "column": {"data":"code"},
+                //                 "type": {"value":"contains"},
+                //                 "value":"G"
+                //             }, {
+                //                 "column": {"data":"PE"},
+                //                 "type": {"value":"more"},
+                //                 "value": "8"
+                //             }
+                //         ],
+                //         "visibleColumns": [
+                //             {"data":"name"},
+                //             {"data":"Volume"},
+                //             {"data":"PE"}
+                //         ]
+                //     }
+                // ],
             }
         });
     })
