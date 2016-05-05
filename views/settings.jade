@@ -69,7 +69,7 @@ block content
       action='/settings/update'
       method='post'
       v-el='form'
-      v-on='submit: beforeSubmit'
+      @submit='beforeSubmit'
       )
       p Email
         +tooltipster('Некоторые сервисы используют почту для оповещений. Их можно отключить.')
@@ -79,7 +79,7 @@ block content
         placeholder='Email'
         value=email
         v-model='email'
-        v-class='has-error: error_email, fillMePls: email.length == 0'
+        v-bind:class='{"has-error": error_email, fillMePls: email.length == 0}'
         )
       p Имя пользователя
         +tooltipster('Используется для входа на сайт без сторонних сервисов, а также как имя при комментировании. Не менее 3 символов.')
@@ -89,7 +89,7 @@ block content
         placeholder='Имя пользователя'
         value=username
         v-model='uname'
-        v-class='has-error: error_username'
+        v-bind:class='{"has-error": error_username}'
         )
       p Пароль
         +tooltipster('Используется для входа на сайт без сторонних сервисов. Не менее 3 символов.')
@@ -98,17 +98,17 @@ block content
         name='new_password'
         placeholder='Новый пароль'
         v-model='pwd_1'
-        v-class='has-error: error_new_pwd'
+        v-bind:class='{"has-error": error_new_pwd}'
         )
       input.mb-10(
         type='password' 
         placeholder='Повторите новый пароль' 
         v-model='pwd_2'
-        v-class='has-error: error_new_pwd'
+        v-bind:class='{"has-error": error_new_pwd}'
         )
       button.g-btn.type_midnight.size_small(
         type='submit'
-        v-class='disabled: hasErrors'
+        v-bind:class='{disabled: hasErrors}'
         )
         | Сохранить
   h3.ib.mb-10 Привязать аккаунты

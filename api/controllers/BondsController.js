@@ -32,75 +32,70 @@ module.exports = {
                 });
             })
             .catch(res.serverError)
+            ;
     },
 
     // получение сохраненных фильтров
     filters: function(req, res) {
-        /**
-         * Типо демо версии.
-         * Пользователи, у которых нет фильтров,
-         * вероятно зашли впервые.
-         *
-         * Я им создам несколько.
-         */
-        var defaultData = {
-            filters: [{
-                "id": "1",
-                "text": "Гос + Муни",
-                "conditions": [{
-                    "column": "percent",
-                    "type": "more",
-                    "value": "0"
-                }, {
-                    "column": "name",
-                    "type": "regexp",
-                    "value": "ОФЗ|Башкорт|БелгОб|ВлгОб|ВолгогОб|Волгогр|Волжск|ВологодОб|Воронеж|ВоронежОб|ВржОб|Казань|КалужОбл|Карелия|КемерОбл|КОМИ|Костром|КостромОб|Краснодар|КраснодКр|КраснЯрКр|ЛенОбл|ЛипецкОбл|МарЭл|МгдОбл|Мгор|Мордовия|НижгорОбл|Новосиб|Новсиб|ОмскАдм|ОмскОб|Оренб|ОренОбл|РязОбл|СамарОбл|СвердлОб|СмолОб|СПбГО|СтаврКрай|ТверОбл|ТомскАдм|ТомскОб|ТулОбл|Удмуртия|Хакас|ХМАО|Чувашия|Якут|ЯрОбл"
-                }],
-                "visibleColumns": []
-            }, {
-                "id": "4",
-                "text": "Краткосрочные",
-                "conditions": [{
-                    "column": "percent",
-                    "type": "more",
-                    "value": "0"
-                }, {
-                    "column": "expiresIn",
-                    "type": "less",
-                    "value": "100"
-                }],
-            }, {
-                "id": "5",
-                "text": "Долгосрочные",
-                "conditions": [{
-                    "column": "percent",
-                    "type": "more",
-                    "value": "0"
-                }, {
-                    "column": "expiresIn",
-                    "type": "more",
-                    "value": "365"
-                }],
-            }]
-        };
-
-
-        UserSettings.findOrCreate({
-            user: req.user ? req.user.id : 0,
-            page: 'bonds',
-        }, {
-            user: req.user ? req.user.id : 0,
-            page: 'bonds',
-            data: defaultData,
-        }, function(err, settings) {
-            if (err) {
-                log.error(err);
-                return res.send(500);
-            }
-            return res.send({
-                data: settings ? settings.data.filters : [],
+        var data = {};
+        UserSettings
+            .findOne({
+                user: req.user ? req.user.id : null,
+                page: 'bonds/filters',
             })
-        });
+            .then(function(us) {
+                data.us = (us && us.data) || {
+                    filters: [{
+                        "text": "Гос + Муни",
+                        "conditions": [
+                            {
+                                "column": {data: "percent"},
+                                "type": {value: "more"},
+                                "value": "0"
+                            }, {
+                                "column": {data: "name"},
+                                "type": {value: "regexp"},
+                                "value": "ОФЗ|Башкорт|БелгОб|ВлгОб|ВолгогОб|Волгогр|Волжск|ВологодОб|Воронеж|ВоронежОб|ВржОб|Казань|КалужОбл|Карелия|КемерОбл|КОМИ|Костром|КостромОб|Краснодар|КраснодКр|КраснЯрКр|ЛенОбл|ЛипецкОбл|МарЭл|МгдОбл|Мгор|Мордовия|НижгорОбл|Новосиб|Новсиб|ОмскАдм|ОмскОб|Оренб|ОренОбл|РязОбл|СамарОбл|СвердлОб|СмолОб|СПбГО|СтаврКрай|ТверОбл|ТомскАдм|ТомскОб|ТулОбл|Удмуртия|Хакас|ХМАО|Чувашия|Якут|ЯрОбл"
+                            },
+                        ],
+                        "visibleColumns": []
+                    }, {
+                        "text": "Краткосрочные",
+                        "conditions": [
+                            {
+                                "column": {data: "percent"},
+                                "type": {value: "more"},
+                                "value": "0"
+                            }, {
+                                "column": {data: "expiresIn"},
+                                "type": {value: "less"},
+                                "value": "100"
+                            },
+                        ],
+                    }, {
+                        "text": "Долгосрочные",
+                        "conditions": [
+                            {
+                                "column": {data: "percent"},
+                                "type": {value: "more"},
+                                "value": "0"
+                            }, {
+                                "column": {data: "expiresIn"},
+                                "type": {value: "more"},
+                                "value": "365"
+                            },
+                        ],
+                    }]
+                };
+            })
+            .then(function() {
+                return res.send({data: data});
+            })
+            .catch(function(err) {
+                console.error(err);
+                return res.send(500);
+            })
+            ;
     },
 
     // получение дополнительной информации о том, что вообще происходит :)

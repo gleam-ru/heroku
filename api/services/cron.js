@@ -38,15 +38,7 @@ cron.init = function(cb) {
     // пакование парса облигаций в дейли свечи
     // в 3:00 каждый пн,вт,ср,чт,пт
     cron.add('bondsNewDay', '0 3 * * 1,2,3,4,5', function() {
-        console.log('Напиши наконец-то', 'bondsNewDay')
-        // async.series([
-        //     dbTasks.bondsNewDay,
-        //     s3.clientToServer,
-        // ], function() {
-        //     if (err) {
-        //         console.error('cron new day error', err);
-        //     }
-        // });
+        console.log('Напиши наконец-то', 'bondsNewDay');
     });
 
 
@@ -65,11 +57,22 @@ cron.init = function(cb) {
     // получение недостающих свечей
     // в 22:00 каждый пн,вт,ср,чт,пт
     cron.add('sharesNewDay', '0 22 * * 1,2,3,4,5', function() {
-        var importer = require('./sharesImporter.js');
+        var importer = require('./DataProviders/sharesImporter.js');
         importer.fixMissedCandles()
             .catch(function(err) {
                 console.error('cron new day error', err);
             })
+    });
+
+    // получение данных от гугла
+    // каждый час, каждый пн,вт,ср,чт,пт
+    cron.add('sharesGoogle', '9 * * * 1,2,3,4,5', function() {
+        var importer = require('./DataProviders/sharesImporter.js');
+        provider.sharesGoogle.saveToDB()
+            .catch(function(err) {
+                console.error('cron sharesGoogle error', err);
+            })
+            ;
     });
 
     console.log('cron inited');

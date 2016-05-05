@@ -2,6 +2,9 @@ module.exports.bootstrap = function(cb) {
 
 
     // MODULES
+    global.moment   = require('moment');
+    global.fs       = require('fs-extra');
+    global._        = require('lodash');
     global.Q        = require('q');
     global.Q.series = function(list) {
         var done = Q();
@@ -14,13 +17,12 @@ module.exports.bootstrap = function(cb) {
         })
         return Q.all(results);
     }
-    global.moment   = require('moment');
-    global.fs       = require('fs-extra');
-    global._        = require('lodash');
 
     // проверить по DD.MM.YYYY перед заменой!!! некоторые сервисы требуют
     // повторной инициализации ddf
     global.ddf = 'DD.MM.YYYY'; // Default Date Format
+
+    global.appRoot = __dirname+'/..';
 
 
 
@@ -137,7 +139,7 @@ function(next) {
 
 
 //
-//
+// Добавление всем пользователям роли "пользователь"
 /*
 function(next) {
     var data = {};

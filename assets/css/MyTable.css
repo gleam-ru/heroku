@@ -133,8 +133,10 @@
         .my-table .table .buy .roundIcon {
             font-size: 14px;
             }
-    .my-table .table td {
+    .my-table .table td:not(.buttonColumn) {
         padding: 5px 5px 5px 15px;
+        }
+    .my-table .table td {
         border-color: rgba(0, 0, 0, 0.04);
         }
     .my-table .table td,
@@ -226,3 +228,127 @@
         width: 100%;
         height: 100%;
         }
+
+
+
+
+
+.v-filter-editor .row > * {display: inline-block;}
+.v-filter-editor .row .column-selector {width: calc(50% - 55px);}
+.v-filter-editor .row .type-selector {width: 20%;}
+.v-filter-editor .row .value-selector {width: 30%;}
+.v-filter-editor .row .row-remover {
+    width: 40px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+
+.visible-columns {
+    width: 100%;
+    }
+.visible-columns .left,
+.visible-columns .right {
+    border: solid 1px #ccc;
+    min-height: 100px;
+    padding: 20px;
+    width: 50%;
+    }
+.visible-columns ul, .visible-columns li {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    }
+
+/*.visible-columns li.item:hover {border-color: #bbb;}*/
+.visible-columns li.item {
+    padding: 3px;
+    /*border: solid 1px transparent;*/
+    transition: border-color .3s;
+    transition: opacity .3s;
+    cursor: pointer;
+    position: relative;
+    }
+.visible-columns .left li.item {
+    padding-right: 30px;
+    }
+.visible-columns .right li.item {
+    padding-left: 30px;
+    }
+
+#body .visible-columns .sort-ghost {opacity: 0;}
+
+.visible-columns .item {opacity: 0.6;}
+.visible-columns .item:hover {opacity: 1;}
+
+.visible-columns .item i.fa {
+    font-size: 22px;
+    vertical-align: middle;
+    padding: 0px 10px 0px 0px;
+    width: 30px;
+    text-align: left;
+    }
+
+.visible-columns .item i.fa.sampleIcon {
+    font-size: 14px;
+    opacity: 0.5;
+    width: 15px;
+    padding: 0px 0px 2px;
+    }
+
+.visible-columns input {
+    float: right;
+    font-size: 13px;
+    font-family: sans-serif;
+    padding: 5px;
+    }
+
+
+.my-table .table th .roundIcon {
+    font-size: 10px;
+    margin-left: 5px;
+    margin-top: -1px;
+    }
+
+
+
+.my-table td {
+  line-height: 30px;
+  }
+.my-table .roundIcon {
+  /*margin-right: 5px;*/
+  }
+  .my-table .roundIcon {
+    font-size: 14px;
+    }
+
+
+.sharesIconsColumn {
+    width: 170px !important;
+    }
+.sharesCodeColumn {
+    width: 50px !important;
+    }
+
+
+#body .v-filter-editor .moveRight {
+    position: absolute;
+    padding: 0px;
+    right: 0px;
+    top: 5px;
+    width: auto;
+    }
+
+
+#body .v-filter-editor .moveLeft {
+    position: absolute;
+    padding: 0px;
+    left: 0px;
+    top: 5px;
+    width: auto;
+    }
+
+.right h4>span {font-size: 10px;}

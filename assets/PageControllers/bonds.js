@@ -11,15 +11,38 @@ $(document).ready(function() {
     var calculator = initCalculator();
 
     var loaded = _.after(3, function() {
-        window.qwe = new MyTable({
-            el: '#bonds-table',
-            data: {
-                additional  : additional,
-                filters     : filters,
-                filters_api : href+'/updateFilter',
-                rows        : rows,
-                columns     : columns,
-                isReady     : function() {
+        System.importAll({
+            twf: '/Components/TWF/index.js',
+        })
+        .then(function(imported) {
+            window.imp = imported;
+            window.vm = new Vue({
+                el: '#bonds-table',
+                template: [
+                    '<div>',
+                        '<TWF',
+                            ':saveas="\'bonds/filters\'"',
+                            ':info="info"',
+                            ':rows="rows"',
+                            ':columns="columns"',
+                            ':filters="filters"',
+                            '>',
+                        '</TWF>',
+                    '</div>',
+                ].join(' '),
+                components: {
+                    'twf': imported.twf,
+                },
+                data: {
+                    info: [
+                        // {key: 'Данные обновлены', value: shares.info.updatedAt},
+                        {key: 'Ближайшее обновление', value: 'через 15 минут'},
+                    ],
+                    rows: rows,
+                    columns: columns,
+                    filters: filters,
+                },
+                compiled: function() {
                     view.mask(false);
                     // TODO: переделать нормально
                     var helper = $('.showHelp').first();
@@ -37,11 +60,20 @@ $(document).ready(function() {
                         window.mp_help.click();
                     });
 
-                    initTT();
-
-                },
-            }
-        });
+                    $('.tt').each(function() {
+                        $(this).tooltipster({
+                            position: 'top',
+                            maxWidth: 200,
+                        });
+                    });
+                }
+            });
+        })
+        .catch(function(err) {
+            console.error(err);
+            mp.alert('Что-то пошло не так!');
+        })
+        ;
     });
 
 
@@ -58,7 +90,7 @@ $(document).ready(function() {
     // получаю сохраненные фильтры
     $.get(href+'/filters')
     .done(function(loaded) {
-        filters = loaded.data;
+        filters = loaded.data.us.filters;
     })
     .fail(function(err) {
         alert('smth went wrong...');
@@ -95,7 +127,7 @@ $(document).ready(function() {
                 percent_woRT   : row[16],
                 percent_woRTCT : row[17],
                 risk           : row[18],
-            }
+            };
         });
     })
     .fail(function(err) {
@@ -110,11 +142,16 @@ $(document).ready(function() {
     // описание колонок для datatables
     columns = [
         {
-            id: "id",
             data: "id",
             title: "ID",
-            filterType: "number",
-            visible: false,
+            filter: "number",
+            bVisible: false,
+        }, {
+            data: "name",
+            title: "Наименование",
+            notHideable: true,
+            bVisible: true,
+            filter: "string",
         }, {
             id: "risk",
             data: "risk",
@@ -199,23 +236,36 @@ $(document).ready(function() {
                     '</div>',
                 ].join(' ');
             },
-            filterType: "string_moreless",
+            filter: "string_moreless",
         }, {
-            id: "name",
-            data: "name",
-            title: "Наименование",
-            filterType: "string",
-        }, {
-            className: "buttonColumn custom",
-            data: null,
-            defaultContent: Jade.els.roundIcon('fa-share'),
+            vueTitle: 'Rusbonds',
+            data: '__rusbonds',
+            notHideable: true,
+            bVisible: true,
+            className: "buttonColumn",
+            render: function(a, b, row, pos) {
+                return [
+                    '<span>',
+                        Jade.els.roundIcon('fa-share'),
+                    '</span>',
+                ].join(' ');
+            },
             handler: function(data) { // row data
                 window.open('https://www.google.ru/search?q=rusbonds+'+data.num);
             },
         }, {
-            className: "buttonColumn custom",
-            data: null,
-            defaultContent: Jade.els.roundIcon('fa-calculator'),
+            vueTitle: 'Калькулятор',
+            data: '__calc',
+            notHideable: true,
+            bVisible: true,
+            className: "buttonColumn",
+            render: function(a, b, row, pos) {
+                return [
+                    '<span>',
+                        Jade.els.roundIcon('fa-calculator'),
+                    '</span>',
+                ].join(' ');
+            },
             handler: function(data) { // row data
                 calculator.setData(data);
                 $.magnificPopup.open({
@@ -226,69 +276,75 @@ $(document).ready(function() {
                 });
             },
         }, {
-            className: "buttonColumn custom",
-            data: null,
-            defaultContent: Jade.els.roundIcon('fa-plus'),
+            vueTitle: 'Добавить в портфель',
+            data: '__add',
+            bVisible: true,
+            className: "buttonColumn",
+            render: function(a, b, row, pos) {
+                return [
+                    '<span>',
+                        Jade.els.roundIcon('fa-plus'),
+                    '</span>',
+                ].join(' ');
+            },
             handler: function() {
                 mp.alert(messages.not_implemented);
             },
         }, {
-            id: "bid",
             data: "bid",
+            bVisible: true,
             title: "Предл.",
-            filterType: "number",
+            filter: "number",
         }, {
-            id: "ask",
             data: "ask",
+            bVisible: true,
             title: "Спрос",
-            filterType: "number",
+            filter: "number",
         }, {
-            id: "endDate",
             data: "endDate",
+            bVisible: true,
             title: "Погаш.",
-            filterType: "date",
+            filter: "date",
         }, {
-            id: "expiresIn",
             data: "expiresIn",
+            bVisible: true,
             title: "Погаш. (дни)",
-            filterType: "number",
+            filter: "number",
         }, {
-            id: "cpVal",
             data: "cpVal",
             title: "Купон (%)",
-            filterType: "number",
-            visible: false,
+            filter: "number",
+            bVisible: false,
         }, {
-            id: "cpDur",
             data: "cpDur",
             title: "Купон (дни)",
-            filterType: "number",
-            visible: false,
+            filter: "number",
+            bVisible: false,
         }, {
-            id: "percent",
             data: "percent",
+            bVisible: true,
             className: "percent",
             vueTitle: 'Доходность (%)',
             title: "Д-1 (%)"+
                 '<span class="tt" title="Простая доходность">'+
                     Jade.els.roundIcon('fa-question')+
                 '</span>',
-            filterType: "number",
+            filter: "number",
         }, {
-            id: "percent_woRT",
             data: "percent_woRT",
+            bVisible: true,
             className: "percent_woRT",
-            filterType: "number",
+            filter: "number",
             vueTitle: 'Доходность (%, без налога с разницы покупка/продажа)',
             title: "Д-2 (%)"+
                 '<span class="tt" title="Доходность без налога с разницы покупка/продажа">'+
                     Jade.els.roundIcon('fa-question')+
                 '</span>',
         }, {
-            id: "percent_woRTCT",
             data: "percent_woRTCT",
+            bVisible: true,
             className: "percent_woRTCT",
-            filterType: "number",
+            filter: "number",
             vueTitle: 'Доходность (%, без всех налогов)',
             title: "Д-3 (%)"+
                 '<span class="tt" title="Доходность без налога с разницы покупка/продажа и налога с купона">'+
@@ -311,7 +367,7 @@ function initCalculator() {
                 bond: {
                     name: ''
                 },
-            }
+            };
         },
         watch: {
             bid: function() {
@@ -320,7 +376,7 @@ function initCalculator() {
 
                 vm.bid = parseFloat(vm.bid);
                 if (!vm.bid) {
-                    vm.bid = ''
+                    vm.bid = '';
                     vm.percent = '';
                     vm.percent_woRT = '';
                     vm.percent_woRTCT = '';
@@ -357,7 +413,7 @@ function initCalculator() {
         },
         methods: {
             getView: function() {
-                return $(this.$$.calculator)
+                return $(this.$el);
             },
             setData: function(data) {
                 var vm = this;
@@ -375,7 +431,7 @@ function initCalculator() {
         },
         compiled: function() {
             var vm = this;
-            vm.bid = vm.$$.bid;
+            vm.bid = vm.$els.bid;
         },
     });
 }

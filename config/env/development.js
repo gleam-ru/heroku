@@ -29,7 +29,7 @@ module.exports = {
 
     log: {
         level: 'silly',
-        custom: require('winston').loggers.get('logger'),
+        custom: require('winston').loggers.get('total'),
     }
 
 };

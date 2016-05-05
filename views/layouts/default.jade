@@ -15,10 +15,11 @@ doctype
 html
   head
     +PasteInlineData(['ddf', ddf])
+    +PasteInlineData(['user', user])
     include ./parts/_head.jade
     block postHead
 
-  body
+  body#body
     //- canvas
     block canvas
       .l-canvas.type_wide.col_cont.headerpos_fixed
@@ -70,7 +71,7 @@ html
               - var year = (new Date()).getUTCFullYear();
               |© 2014 - #{year} <a href="/">Бложик с подзаголовком</a> (v-0.9)
             //- metrika
-            .metrika.not-tablet(style='float: right; height: 0px; margin-top: -5px;')
+            //- .metrika.not-tablet(style='float: right; height: 0px; margin-top: -5px;')
               include ./parts/metrika.jade
             //- 
     //- eo footer

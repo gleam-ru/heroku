@@ -4,26 +4,112 @@
  * @description :: Server-side logic for managing shares
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-
 module.exports = {
+
     index: function(req, res) {
         var data = {
             title: 'Акции',
             shares: {
                 rows: [],
             },
-        }
+        };
 
-        provider.shares.getSharesTable()
-            .then(function(shares) {
-                if (!shares) {
-                    console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
-                }
-                data.shares.rows = shares;
+        Q()
+            .then(function() {
+                // return provider.sharesGoogle.saveToDB();
             })
             .then(function() {
-                res.render('services/shares/shares', data);
+                console.time('SharesController/index');
+                return Share.find({
+                    where: {
+                        dead: false,
+                    },
+                    select: [
+                        'id',
+                        'branch',
+                        'name',
+                        'code',
+                        'site',
+                        //
+                        'forums',
+                        'links',
+                        //
+                        'google',
+                    ],
+                })
+                ;
             })
+            .then(function(shares) {
+                console.timeEnd('SharesController/index');
+                return _.map(shares, function(s) {
+                    return _.extend(s, {
+                        href: s.code || s.id,
+                    });
+                });
+            })
+            .then(function(shares) {
+                if (!shares) {
+                    console.warn('Возвращен пустой список акций.');
+                    shares = [];
+                }
+                data.shares.rows = shares;
+                data.shares.params = provider.sharesGoogle.params;
+            })
+            .then(function() {
+                return UserSettings.findOne({
+                    user: req.user ? req.user.id : null,
+                    page: 'shares/filters',
+                });
+            })
+            .then(function(us) {
+                data.us = (us && us.data) || {
+                    // TODO: defaultsTo
+                    filters: [
+                        {
+                            text: 'test filter',
+                            conditions: []
+                        }, {
+                            text: 'one more',
+                            conditions: [
+                                {
+                                    column: {data: 'name'},
+                                    type: {value: 'contains'},
+                                    value: 'яро',
+                                }
+                            ]
+                        },
+                    ],
+                };
+            })
+            .then(function() {
+                return Statistics.findOne({name: 'sharesGoogleSaveToDB'});
+            })
+            .then(function(lastUpdate) {
+                data.shares.info = [];
+                if (lastUpdate) {
+                    data.shares.info.push({
+                        key: 'Данные обновлены',
+                        value: moment(lastUpdate.data).fromNow(),
+                    });
+                }
+
+                if (cron.tasks.sharesGoogle) {
+                    data.shares.info.push({
+                        key: 'Ближайшее обновление',
+                        value: moment(cron.tasks.sharesGoogle.next()).fromNow(),
+                    });
+                }
+                else {
+                    data.shares.info.push({
+                        key: 'Ближайшее обновление',
+                        value: '!!! cron не активирован !!!',
+                    });
+                }
+            })
+            .then(function() {
+                res.render('services/shares/new_shares', data);
+            });
+            ;
     },
 
     ticker: function(req, res) {
@@ -66,12 +152,12 @@ module.exports = {
                     });
                 }
                 else if (err.message === '301') {
-                    return res.redirect(err.redirectTo || '/')
+                    return res.redirect(err.redirectTo || '/');
                 }
                 else {
                     return res.serverError(err);
                 }
-            })
+            });
     },
 
     getTickerData: function(req, res) {
@@ -119,7 +205,7 @@ module.exports = {
                 data.branches = branches;
             })
             .then(function() {
-                return res.render('services/shares/editor', data)
+                return res.render('services/shares/editor', data);
             })
             .catch(function(err) {
                 if (err.message === '404') {
@@ -130,7 +216,7 @@ module.exports = {
                 else {
                     return res.serverError(err);
                 }
-            })
+            });
     },
 
     updateGeneral: function(req, res) {
@@ -272,7 +358,7 @@ module.exports = {
                 else {
                     return res.serverError(err);
                 }
-            })
+            });
     },
 
 
