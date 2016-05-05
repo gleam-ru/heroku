@@ -150,7 +150,6 @@ module.exports = function(resolve) {
                         text: 'Новый фильтр',
                         conditions: [],
                         visibleColumns: [
-                            {data: vm.columns[0].data},
                         ],
                     },
                 };
@@ -270,7 +269,7 @@ module.exports = function(resolve) {
                             currIdx: idx,
                         });
                     });
-
+console.log(toShow, toHide)
                     _.each(toShow.concat(toHide), function(c) {
                         c.visible(!c.visible());
                     });

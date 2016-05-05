@@ -133,7 +133,7 @@
         .my-table .table .buy .roundIcon {
             font-size: 14px;
             }
-    .my-table .table td {
+    .my-table .table td:not(.buttonColumn) {
         padding: 5px 5px 5px 15px;
         border-color: rgba(0, 0, 0, 0.04);
         }
@@ -247,19 +247,26 @@
     padding: 0px;
     }
 
-.visible-columns li.item:hover {border-color: #bbb;}
+/*.visible-columns li.item:hover {border-color: #bbb;}*/
 .visible-columns li.item {
     padding: 3px;
-    border: solid 1px transparent;
+    /*border: solid 1px transparent;*/
     transition: border-color .3s;
     transition: opacity .3s;
     cursor: pointer;
+    position: relative;
+    }
+.visible-columns .left li.item {
+    padding-right: 30px;
+    }
+.visible-columns .right li.item {
+    padding-left: 30px;
     }
 
-.visible-columns .sort-ghost {opacity: 0;}
+#body .visible-columns .sort-ghost {opacity: 0;}
 
-.visible-columns .left .item {opacity: 0.8;}
-.visible-columns .left .item:hover {opacity: 1;}
+.visible-columns .item {opacity: 0.6;}
+.visible-columns .item:hover {opacity: 1;}
 
 .visible-columns .item i.fa {
     font-size: 22px;
@@ -289,7 +296,7 @@
   line-height: 30px;
   }
 .my-table .roundIcon {
-  margin-right: 5px;
+  /*margin-right: 5px;*/
   }
   .my-table .roundIcon {
     font-size: 14px;
@@ -302,3 +309,23 @@
 .sharesCodeColumn {
     width: 50px !important;
     }
+
+
+#body .v-filter-editor .moveRight {
+    position: absolute;
+    padding: 0px;
+    right: 0px;
+    top: 5px;
+    width: auto;
+    }
+
+
+#body .v-filter-editor .moveLeft {
+    position: absolute;
+    padding: 0px;
+    left: 0px;
+    top: 5px;
+    width: auto;
+    }
+
+.right h4>span {font-size: 10px;}

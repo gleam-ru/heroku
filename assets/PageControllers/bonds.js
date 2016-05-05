@@ -144,12 +144,18 @@ $(document).ready(function() {
             data: "id",
             title: "ID",
             filter: "number",
-            visible: false,
+            bVisible: false,
         }, {
             data: "name",
             title: "Наименование",
+            notHideable: true,
+            bVisible: true,
             filter: "string",
         }, {
+            vueTitle: 'Rusbonds',
+            data: '__rusbonds',
+            notHideable: true,
+            bVisible: true,
             className: "buttonColumn custom",
             render: function(a, b, row, pos) {
                 return [
@@ -162,6 +168,10 @@ $(document).ready(function() {
                 window.open('https://www.google.ru/search?q=rusbonds+'+data.num);
             },
         }, {
+            vueTitle: 'Калькулятор',
+            data: '__calc',
+            notHideable: true,
+            bVisible: true,
             className: "buttonColumn custom",
             render: function(a, b, row, pos) {
                 return [
@@ -180,6 +190,9 @@ $(document).ready(function() {
                 });
             },
         }, {
+            vueTitle: 'Добавить в портфель',
+            data: '__add',
+            bVisible: true,
             className: "buttonColumn custom",
             render: function(a, b, row, pos) {
                 return [
@@ -193,32 +206,37 @@ $(document).ready(function() {
             },
         }, {
             data: "bid",
+            bVisible: true,
             title: "Предл.",
             filter: "number",
         }, {
             data: "ask",
+            bVisible: true,
             title: "Спрос",
             filter: "number",
         }, {
             data: "endDate",
+            bVisible: true,
             title: "Погаш.",
             filter: "date",
         }, {
             data: "expiresIn",
+            bVisible: true,
             title: "Погаш. (дни)",
             filter: "number",
         }, {
             data: "cpVal",
             title: "Купон (%)",
             filter: "number",
-            visible: false,
+            bVisible: false,
         }, {
             data: "cpDur",
             title: "Купон (дни)",
             filter: "number",
-            visible: false,
+            bVisible: false,
         }, {
             data: "percent",
+            bVisible: true,
             className: "percent",
             vueTitle: 'Доходность (%)',
             title: "Д-1 (%)"+
@@ -228,6 +246,7 @@ $(document).ready(function() {
             filter: "number",
         }, {
             data: "percent_woRT",
+            bVisible: true,
             className: "percent_woRT",
             filter: "number",
             vueTitle: 'Доходность (%, без налога с разницы покупка/продажа)',
@@ -237,6 +256,7 @@ $(document).ready(function() {
                 '</span>',
         }, {
             data: "percent_woRTCT",
+            bVisible: true,
             className: "percent_woRTCT",
             filter: "number",
             vueTitle: 'Доходность (%, без всех налогов)',

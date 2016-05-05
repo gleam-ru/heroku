@@ -205,11 +205,17 @@ me.show = function(filter, additional) {
                                                     '<i v-if="isAdded(i)" class="fa fa-check-square-o"></i>',
                                                     '<i v-else="isAdded(i)" class="fa fa-square-o"></i>',
                                                     '{{{ i.name | colorize allfilter }}}',
+                                                    '<i class="fa fa-chevron-right moveRight"></i>',
                                                 '</li>',
                                             '</ul>',
                                         '</td>',
                                         '<td class="right">',
-                                            '<h4>Выбранные</h4>',
+                                            '<h4>',
+                                                'Выбранные',
+                                                '<span class="tt" title="Выбранные колонки можно таскать">',
+                                                    Jade.els.roundIcon('fa-question'),
+                                                '</span>',
+                                            '</h4>',
                                             '<ul id="sortable">',
                                                 '<li v-if="!right || !right.length"><i>no items left...</i></li>',
                                                 '<li',
@@ -218,6 +224,7 @@ me.show = function(filter, additional) {
                                                     '@click="remove(i)"',
                                                     '>',
                                                     '{{ i.name }}',
+                                                    '<i v-if="isRemovable(i)" class="fa fa-chevron-left moveLeft"></i>',
                                                 '</li>',
                                             '</ul>',
                                         '</td>',
@@ -231,19 +238,24 @@ me.show = function(filter, additional) {
                                 };
                             },
                             methods: {
+                                isRemovable: function(i) {
+                                    return i && !i.notHideable && this.right.length > 1;
+                                },
                                 isAdded: function(i) {
                                     return _.findIndex(this.right, {name: i.name}) !== -1;
                                 },
-                                add: function(item) {
+                                add: function(item, force) {
                                     if (!this.isAdded(item)) {
                                         this.right.push(item);
                                     }
                                     else {
-                                        this.remove(item);
+                                        if (!force) {
+                                            this.remove(item);
+                                        }
                                     }
                                 },
                                 remove: function(item) {
-                                    if (this.right.length < 2) {
+                                    if (!this.isRemovable(item)) {
                                         return;
                                     }
                                     this.right.$remove(item);
@@ -278,8 +290,16 @@ me.show = function(filter, additional) {
                                     .value()
                                     ;
 
+                                _.each(vm.left, function(c) {
+                                    if (c.notHideable) {
+                                        vm.add(c, true);
+                                    }
+                                });
+
+
+
                                 if (vm.right.length < 1) {
-                                    vm.add(vm.left[0]);
+                                    vm.add(_.find(vm.left, {data: 'name'}) || vm.left[0]);
                                 }
 
                                 Sortable.create(document.getElementById('sortable'), {
@@ -293,6 +313,7 @@ me.show = function(filter, additional) {
                                     }
                                 });
 
+                                initTT();
                             },
                         }),
                     },
