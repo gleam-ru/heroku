@@ -6,7 +6,7 @@ module.exports = function(resolve) {
     .then(function() {
         return {
             template: [
-                '<div class="table">',
+                '<div class="table my-table">',
                     '<h3 v-el:header class="yes-select ib no-m">{{title}}</h3>',
                     '<table v-el:dt></table>',
                 '</div>',
@@ -33,6 +33,12 @@ module.exports = function(resolve) {
 
                         deferRender: true,
                         orderClasses: false,
+
+                        // http://stackoverflow.com/questions/16539578/datatables-warning-requested-unknown-parameter-0-from-the-data-source-for-row
+                        columnDefs: [{
+                            defaultContent: '',
+                            targets: '_all',
+                        }],
 
                         // определено в compiled
                         rows: [],

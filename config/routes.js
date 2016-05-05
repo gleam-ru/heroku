@@ -49,8 +49,6 @@ module.exports.routes = {
     'get  /services/shares/:id/info'     : 'Shares.getTickerData', // апи
     //---
     'post /services/shares/:id/update'   : 'Shares.updateGeneral',
-    //---
-    'get  /services/new_shares'          : 'Shares.new_shares',
     //
     // фильтры таблички
     'post /API/usersettings': 'API.updateUserSettings',

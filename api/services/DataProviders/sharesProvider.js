@@ -95,19 +95,35 @@ me.getAllFromDB = function() {
     return Q.resolve()
         .then(function() {
             // return [];
+            // return Share.find({dead: false});
             // return Share.find({dead: false}).populateAll();
             // return Share
             //     .find({dead: false})
             //     .prune(['dailyCandles'])
             //     .populateAll();
+            // return Share.find({dead: false});
             return Share.find({
                     where: {
                         dead: false,
                     },
-                    // select: ['reports'],
+                    select: [
+                        'id',
+                        'name',
+                        'code',
+                        // 'site',
+                        // 'forums',
+                        // 'links',
+                        // 'lastCandle',
+                        // 'indayCandle',
+                    ],
                 })
         })
-}
+        .then(function(shares) {
+            console.log(shares[0].toJSON());
+            return shares;
+        })
+        ;
+};
 
 // получает акцию по айдишнику
 // если нет в кэше - база+кэш+return
@@ -186,17 +202,18 @@ me.createSharesTableCache = function(shares) {
                     yesterday : s.lastCandle ? s.lastCandle.c : '',
                     forums    : s.forums,
                     links     : s.links,
-                }
+                };
             });
             cache.set('all_shares_table', toCache);
-            console.log('shares:createSharesTableCache_finished', toCache.length)
+            console.log('shares:createSharesTableCache_finished', toCache.length);
             return toCache;
         })
-}
+        ;
+};
 
 // получает данные для таблицы сервисы/акции
 me.getSharesTable = function() {
-    console.log('shares:getSharesTable')
+    console.log('shares:getSharesTable');
     return Q.resolve()
         .then(function() {
             var cached = cache.get('all_shares_table');
@@ -204,11 +221,12 @@ me.getSharesTable = function() {
                 return cached;
             }
             else {
-                console.warn('shares:getSharesTable:createSharesTableCache - обновляю не по расписанию')
+                console.warn('shares:getSharesTable:createSharesTableCache - обновляю не по расписанию');
                 return me.createSharesTableCache();
             }
         })
-}
+        ;
+};
 
 
 

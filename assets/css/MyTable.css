@@ -282,3 +282,23 @@
     margin-left: 5px;
     margin-top: -1px;
     }
+
+
+
+.my-table td {
+  line-height: 30px;
+  }
+.my-table .roundIcon {
+  margin-right: 5px;
+  }
+  .my-table .roundIcon {
+    font-size: 14px;
+    }
+
+
+.sharesIconsColumn {
+    width: 170px !important;
+    }
+.sharesCodeColumn {
+    width: 50px !important;
+    }

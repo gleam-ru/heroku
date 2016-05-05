@@ -6,9 +6,7 @@
  */
 module.exports = {
 
-    // страница для переосмысливания vue-страницы
-    // с таблицей с фильтрами
-    new_shares: function(req, res) {
+    index: function(req, res) {
         var data = {
             title: 'Акции',
             shares: {
@@ -16,15 +14,43 @@ module.exports = {
             },
         };
 
-        // provider.shares.getSharesTable()
         Q()
+            .then(function() {
+                console.time('SharesController/index');
+                return Share.find({
+                    where: {
+                        dead: false,
+                    },
+                    select: [
+                        'id',
+                        'branch',
+                        'name',
+                        'code',
+                        'site',
+                        //
+                        'forums',
+                        'links',
+                        //
+                        'google',
+                    ],
+                })
+                ;
+            })
+            .then(function(shares) {
+                console.timeEnd('SharesController/index');
+                return _.map(shares, function(s) {
+                    return _.extend(s, {
+                        href: s.code || s.id,
+                    });
+                });
+            })
             .then(function(shares) {
                 if (!shares) {
-                    console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
+                    console.warn('Возвращен пустой список акций.');
+                    shares = [];
                 }
-                else {
-                    data.shares.rows = shares;
-                }
+                data.shares.rows = shares;
+                data.shares.params = provider.sharesGoogle.params;
             })
             .then(function() {
                 return UserSettings.findOne({
@@ -34,7 +60,7 @@ module.exports = {
             })
             .then(function(us) {
                 data.us = (us && us.data) || {
-                    // defaultsTo
+                    // TODO: defaultsTo
                     filters: [
                         {
                             text: 'test filter',
@@ -60,53 +86,9 @@ module.exports = {
                 };
             })
             .then(function() {
-                data.shares.filters = [];
-            })
-            .then(function() {
-                var saved = cache.get('temp');
-                if (saved) {
-                    console.debug('from cache');
-                    return saved;
-                }
-                else {
-                    return provider.sharesGoogle.getFromDB();
-                }
-            })
-            .then(function(shares) {
-                cache.set('temp', shares);
-                data._shares = {
-                    data: shares,
-                    params: provider.sharesGoogle.params,
-                };
-            })
-            .then(function() {
-                temp = data;
                 res.render('services/shares/new_shares', data);
-            })
-            .catch(function(err) {
-                return res.serverError(err);
-            })
-            ;
-    },
-
-    index: function(req, res) {
-        var data = {
-            title: 'Акции',
-            shares: {
-                rows: [],
-            },
-        };
-
-        provider.shares.getSharesTable()
-            .then(function(shares) {
-                if (!shares) {
-                    console.warn('Возвращен пустой список акций. Вероятно какие-то проблемы с кэшем...');
-                }
-                data.shares.rows = shares;
-            })
-            .then(function() {
-                res.render('services/shares/shares', data);
             });
+            ;
     },
 
     ticker: function(req, res) {

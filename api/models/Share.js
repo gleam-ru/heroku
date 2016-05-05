@@ -32,6 +32,9 @@ module.exports = {
             data   : [],
         }},
 
+        // данные, полученные из гуглофинансов
+        google: {type: 'array', defaultsTo: []},
+
 
         // не существующие ныне компании
         dead          : {type: 'boolean', defaultsTo: false},
@@ -47,6 +50,39 @@ module.exports = {
     },
 
 
+    // получает данные за исключением указанных.
+    //
+    getAllWithoutCandles: function() {
+        var attrs = getAttrs(this, [
+            'dead',
+            'reports',
+            'divs',
+            'candles',
+            'lastCandle',
+            'mfd_id',
+            'shares_count',
+            ]);
+
+        console.time('share: getAllWithoutCandles');
+        return Q()
+            .then(function() {
+                return Share.find({
+                    where: {
+                        dead: false,
+                    },
+                    select: attrs,
+                })
+                ;
+            })
+            .then(function(shares) {
+                console.timeEnd('share: getAllWithoutCandles');
+                return shares;
+            })
+            ;
+    },
+
+
+
     // обновляю кэш после сохранения
     afterUpdate: function(updated, next) {
         provider.shares.cache(updated);
@@ -54,3 +90,18 @@ module.exports = {
     },
 
 };
+
+
+var getAttrs = function(model, exclude) {
+    var attrs = _.keys(model.attributes);
+    attrs = _.filter(attrs, function(i) {
+        if (!exclude) {
+            exclude = [];
+        }
+        if (typeof model.attributes[i] !== 'object') {
+            return false;
+        }
+        return exclude.indexOf(i) === -1;
+    });
+    return attrs;
+}
