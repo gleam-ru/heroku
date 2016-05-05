@@ -16,6 +16,9 @@ module.exports = {
 
         Q()
             .then(function() {
+                // return provider.sharesGoogle.saveToDB();
+            })
+            .then(function() {
                 console.time('SharesController/index');
                 return Share.find({
                     where: {
@@ -79,11 +82,29 @@ module.exports = {
                 };
             })
             .then(function() {
-                data.shares.info = {
-                    updatedAt: moment().format('DD.MM.YYYY - hh:mm:ss'),
-                    total: data.shares.rows.length,
-                    someMore: 'this is a string',
-                };
+                return Statistics.findOne({name: 'sharesGoogleSaveToDB'});
+            })
+            .then(function(lastUpdate) {
+                data.shares.info = [];
+                if (lastUpdate) {
+                    data.shares.info.push({
+                        key: 'Данные обновлены',
+                        value: moment(lastUpdate.data).fromNow(),
+                    });
+                }
+
+                if (cron.tasks.sharesGoogle) {
+                    data.shares.info.push({
+                        key: 'Ближайшее обновление',
+                        value: moment(cron.tasks.sharesGoogle.next()).fromNow(),
+                    });
+                }
+                else {
+                    data.shares.info.push({
+                        key: 'Ближайшее обновление',
+                        value: '!!! cron не активирован !!!',
+                    });
+                }
             })
             .then(function() {
                 res.render('services/shares/new_shares', data);

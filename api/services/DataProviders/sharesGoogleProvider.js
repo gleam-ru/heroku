@@ -17,8 +17,35 @@ me.parse = function() {
 // пример данных:
 // {name, code, cols: [{param.serverName: value}]}
 me.saveToDB = function(shares) {
-    console.warn('write some code here');
-    return Q();
+    var not_updated = [];
+    return Q()
+        .then(me.parse)
+        .then(function(parsed) {
+            return Q.all(_.map(parsed, function(p) {
+                return Share.update({code: p.code}, {google: p.cols})
+                    .then(function(updated) {
+                        if (!updated || !updated.length) {
+                            not_updated.push(p.code);
+                        }
+                        return updated;
+                    })
+                    ;
+            }));
+        })
+        .then(function(saved) {
+            console.warn('not_updated shares from google:', not_updated.length, not_updated);
+            return Statistics.findOrCreate({name: 'sharesGoogleSaveToDB'}, {name: 'sharesGoogleSaveToDB'})
+                .then(function(stat) {
+                    stat.data = new Date();
+                    return stat.save();
+                })
+                .then(function(stat) {
+                    return saved; // да, я отправляю сохраненные акции, а не статистику
+                })
+                ;
+        })
+        .catch(console.error)
+        ;
 };
 
 

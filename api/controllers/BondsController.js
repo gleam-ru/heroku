@@ -32,6 +32,7 @@ module.exports = {
                 });
             })
             .catch(res.serverError)
+            ;
     },
 
     // получение сохраненных фильтров

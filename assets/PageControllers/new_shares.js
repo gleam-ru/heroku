@@ -22,10 +22,7 @@ $(document).ready(function() {
                 'twf': imported.twf,
             },
             data: {
-                info: [
-                    {key: 'Данные обновлены', value: shares.info.updatedAt},
-                    {key: 'Ближайшее обновление', value: 'через 15 минут'},
-                ],
+                info: shares.info,
                 rows: createRows(shares.rows),
                 columns: createColumns(shares.params),
                 filters: us.filters || [],
@@ -165,9 +162,17 @@ function createColumns(params) {
             render: function(name, dunno, data) {
                 return '<a href="/services/shares/'+data.href+'">'+name+'</a>';
             }
+        }, {
+            title: 'Price',
+            data: 'QuoteLast',
+            filter: 'number',
+            bVisible: true,
         }
     ];
     return defaultColumns.concat(_.cMap(params, function(p) {
+        if (_.findIndex(defaultColumns, {data: p.serverName}) + 1) {
+            return;
+        }
         return {
             title: p.title+
                 '<span class="tt" title="'+p.desc+'">'+

@@ -441,7 +441,7 @@ me.getFullData = function() {
             function tickerFromResult(r) {
                 return {
                     name: r.title,
-                    code: r.ticker,
+                    code: r.ticker.toLowerCase(),
                     cols: r.columns,
                 };
             }

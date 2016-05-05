@@ -33,7 +33,7 @@ module.exports = {
         }},
 
         // данные, полученные из гуглофинансов
-        google: {type: 'array', defaultsTo: []},
+        google: {type: 'json', defaultsTo: {}},
 
 
         // не существующие ныне компании
