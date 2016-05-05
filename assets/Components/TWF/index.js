@@ -171,7 +171,7 @@ module.exports = function(resolve) {
             watch: {
                 activeFilterIdx: function() {
                     console.log('idx changed');
-                    this.applyFilter(this.activeFilter);
+                    this.applyFilter();
                 },
                 editingFilterIdx: function(idx) {
                     if (idx === null) {
@@ -188,6 +188,10 @@ module.exports = function(resolve) {
                 }
             },
             methods: {
+                // применяет фильтр к таблице
+                applyFilter: function() {
+                    this.tbl.applyFilter(this.activeFilter);
+                },
                 // обновляет фильтр
                 // отрабатывает во время "сохранить" в редакторе
                 updateFilter: function(idx, data) {
@@ -210,102 +214,6 @@ module.exports = function(resolve) {
 
                     // сохраняю изменения на сервер
                     this.saveToServer();
-                },
-                // применяет фильтр к таблице
-                applyFilter: function() {
-                    // console.debug('apply');
-                    var vm = this;
-                    var Table = vm.tbl.table;
-                    var tableColumns = Table.columns().dataSrc();
-
-                    var filter = vm.activeFilter;
-
-                    if (!filter) {
-                        filter = {
-                            colReorderReset: true,
-                            visibleColumns: _.cMap(vm.columns, function(c) {
-                                return c.bVisible && {data: c.data};
-                            }),
-                        };
-                    }
-                    // console.debug('apply filter: ', filter);
-
-                    // фильтрация
-                    $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
-                        return _.every(filter.conditions, function(condition) {
-                            if (!condition.column || !condition.type || !condition.value) {
-                                // console.warn('вероятно, битый condition', filter, condition);
-                                return true;
-                            }
-                            var column = condition.column;
-                            var columnIdx = Table.columns().dataSrc().indexOf(column.data);
-                            // aData == [value, value, ...] - row
-                            var data = aData[columnIdx];
-                            return condition.type.apply(data, condition.value);
-                        });
-                    };
-
-                    // видимые колонки
-                    var userColumns = filter.visibleColumns;
-
-                    var toShow = [];
-                    var toHide = [];
-                    var order = [];
-
-                    _.each(tableColumns, function(columnDataPropName, idx) {
-                        var tableColumn = Table.column(idx); // текущая колонка в таблице
-                        // 1 + - используется для прохождения ифов.
-                        var userColumnIdx = 1 + _.findIndex(userColumns, {data: columnDataPropName}); // сохраненная пользователем
-
-                        if (userColumnIdx && !tableColumn.visible()) {
-                            toShow.push(tableColumn);
-                        }
-                        if (!userColumnIdx && tableColumn.visible()) {
-                            toHide.push(tableColumn);
-                        }
-
-                        order.push({
-                            userIdx: userColumnIdx || 9999,
-                            currIdx: idx,
-                        });
-                    });
-
-                    _.each(toShow.concat(toHide), function(c) {
-                        c.visible(!c.visible());
-                    });
-
-                    // var oldOrder = _(order)
-                    //     // .sortBy('userIdx')
-                    //     .map('currIdx')
-                    //     .value()
-                    //     ;
-                    // console.debug('old order (got):', _.map(oldOrder.slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-                    // console.debug('old order (real):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-
-                    var newOrder = _(order)
-                        .sortBy('userIdx')
-                        .map('currIdx')
-                        .value()
-                        ;
-                    // console.debug('new order (before, got):', _.map(newOrder.slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-                    // console.debug('new order (before, real):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-
-                    Table.colReorder.order(newOrder);
-
-                    // console.debug('new order (after):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-
-                    vm.tbl.table.draw();
-                    initTT();
                 },
 
                 addFilter: function() {
@@ -382,6 +290,9 @@ module.exports = function(resolve) {
                         }
                         condition.column.text = condition.column.vueTitle || condition.column.title;
                         condition.type = _.find(vm.filterTypes[condition.column.filter], condition.type);
+                    });
+                    _.each(filter.visibleColumns, function(c) {
+                        _.extend(c, _.find(vm.columns, {data: c.data}));
                     });
                 });
             },

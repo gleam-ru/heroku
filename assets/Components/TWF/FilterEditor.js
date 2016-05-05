@@ -204,6 +204,7 @@ me.show = function(filter, additional) {
                                                     '>',
                                                     '<i v-if="isAdded(i)" class="fa fa-check-square-o"></i>',
                                                     '<i v-else="isAdded(i)" class="fa fa-square-o"></i>',
+                                                    '<i v-if="isButtonColumn(i)" class="fa fa-dot-circle-o sampleIcon"></i>',
                                                     '{{{ i.name | colorize allfilter }}}',
                                                     '<i class="fa fa-chevron-right moveRight"></i>',
                                                 '</li>',
@@ -223,6 +224,7 @@ me.show = function(filter, additional) {
                                                     'v-for="i in right"',
                                                     '@click="remove(i)"',
                                                     '>',
+                                                    '<i v-if="isButtonColumn(i)" class="fa fa-dot-circle-o sampleIcon"></i>',
                                                     '{{ i.name }}',
                                                     '<i v-if="isRemovable(i)" class="fa fa-chevron-left moveLeft"></i>',
                                                 '</li>',
@@ -238,6 +240,9 @@ me.show = function(filter, additional) {
                                 };
                             },
                             methods: {
+                                isButtonColumn: function(i) {
+                                    return i.className && i.className.indexOf('buttonColumn') !== -1;
+                                },
                                 isRemovable: function(i) {
                                     return i && !i.notHideable && this.right.length > 1;
                                 },
@@ -282,7 +287,15 @@ me.show = function(filter, additional) {
                                         return _.extend({}, c, {name: c.vueTitle || c.title});
                                     })
                                     .compact()
-                                    .sortBy('name')
+                                    .sortBy('name', function(i) {
+                                        // хитрая сортировка, выставляющая все иконки наверх
+                                        if (this.isButtonColumn(i)) {
+                                            return 0;
+                                        }
+                                        else {
+                                            return 1;
+                                        }
+                                    })
                                     .value()
                                     ;
 

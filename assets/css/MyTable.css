@@ -278,6 +278,13 @@
     text-align: left;
     }
 
+.visible-columns .item i.fa.sampleIcon {
+    font-size: 14px;
+    opacity: 0.5;
+    width: 15px;
+    padding: 0px 0px 2px;
+    }
+
 .visible-columns input {
     float: right;
     font-size: 13px;

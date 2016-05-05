@@ -156,7 +156,7 @@ $(document).ready(function() {
             data: '__rusbonds',
             notHideable: true,
             bVisible: true,
-            className: "buttonColumn custom",
+            className: "buttonColumn",
             render: function(a, b, row, pos) {
                 return [
                     '<span>',
@@ -172,7 +172,7 @@ $(document).ready(function() {
             data: '__calc',
             notHideable: true,
             bVisible: true,
-            className: "buttonColumn custom",
+            className: "buttonColumn",
             render: function(a, b, row, pos) {
                 return [
                     '<span>',
@@ -193,7 +193,7 @@ $(document).ready(function() {
             vueTitle: 'Добавить в портфель',
             data: '__add',
             bVisible: true,
-            className: "buttonColumn custom",
+            className: "buttonColumn",
             render: function(a, b, row, pos) {
                 return [
                     '<span>',
