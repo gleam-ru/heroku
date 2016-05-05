@@ -242,7 +242,7 @@ me.show = function(filter, additional) {
                                     return i && !i.notHideable && this.right.length > 1;
                                 },
                                 isAdded: function(i) {
-                                    return _.findIndex(this.right, {name: i.name}) !== -1;
+                                    return _.findIndex(this.right, {data: i.data}) !== -1;
                                 },
                                 add: function(item, force) {
                                     if (!this.isAdded(item)) {
@@ -269,6 +269,9 @@ me.show = function(filter, additional) {
                                     });
                                 }
                             },
+                            beforeCompile: function() {
+                                // debugger
+                            },
                             ready: function() {
                                 var vm = this;
                                 if (!vm.left) {
@@ -284,8 +287,8 @@ me.show = function(filter, additional) {
                                     ;
 
                                 vm.right = _(vm.right)
-                                    .map(function(c) {
-                                        return _.find(vm.left, c);
+                                    .cMap(function(c) {
+                                        return _.find(vm.left, {data: c.data});
                                     })
                                     .value()
                                     ;

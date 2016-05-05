@@ -269,7 +269,7 @@ module.exports = function(resolve) {
                             currIdx: idx,
                         });
                     });
-console.log(toShow, toHide)
+
                     _.each(toShow.concat(toHide), function(c) {
                         c.visible(!c.visible());
                     });

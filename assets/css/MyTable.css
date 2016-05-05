@@ -135,6 +135,8 @@
             }
     .my-table .table td:not(.buttonColumn) {
         padding: 5px 5px 5px 15px;
+        }
+    .my-table .table td {
         border-color: rgba(0, 0, 0, 0.04);
         }
     .my-table .table td,
