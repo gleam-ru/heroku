@@ -38,6 +38,7 @@ module.exports = function(resolve) {
             methods: {
                 select: function(idx) {
                     this.active = idx === this.active ? null : idx;
+                    window.location.hash = 'f='+idx;
                 },
                 remove: function(idx) {
                     var vm = this;

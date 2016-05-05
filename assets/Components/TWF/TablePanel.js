@@ -11,7 +11,7 @@ module.exports = function(resolve) {
                     '<table v-el:dt></table>',
                 '</div>',
             ].join(''),
-            props: ['title', 'rows', 'columns', 'info'],
+            props: ['title', 'rows', 'columns', 'info', 'filter'],
             data: function() {
                 return {
                     config: {
@@ -49,10 +49,17 @@ module.exports = function(resolve) {
                     table: null,
                 };
             },
+            watch: {
+                filter: function() {
+                    console.log('idx changed');
+                    this.applyFilter();
+                },
+            },
             methods: {
-                applyFilter: function(filter) {
+                applyFilter: function() {
                     // console.debug('apply');
                     var vm = this;
+                    var filter = vm.filter;
                     var Table = vm.table;
                     var tableColumns = Table.columns().dataSrc();
 
@@ -193,6 +200,9 @@ module.exports = function(resolve) {
                 vm.$nextTick(function() {
                     vm.table.draw();
                 });
+            },
+            ready: function() {
+                this.applyFilter();
             }
         };
     })

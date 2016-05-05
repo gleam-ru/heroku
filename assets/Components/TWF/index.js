@@ -38,6 +38,7 @@ module.exports = function(resolve) {
                         ':columns="columns"',
                         ':title="tableTitle"',
                         ':info.sync="tableInfo"',
+                        ':filter="activeFilter"',
                         '>',
                     '</tbl>',
                 '</div>',
@@ -169,10 +170,6 @@ module.exports = function(resolve) {
                 },
             },
             watch: {
-                activeFilterIdx: function() {
-                    console.log('idx changed');
-                    this.applyFilter();
-                },
                 editingFilterIdx: function(idx) {
                     if (idx === null) {
                         console.log('close editor');
@@ -188,10 +185,6 @@ module.exports = function(resolve) {
                 }
             },
             methods: {
-                // применяет фильтр к таблице
-                applyFilter: function() {
-                    this.tbl.applyFilter(this.activeFilter);
-                },
                 // обновляет фильтр
                 // отрабатывает во время "сохранить" в редакторе
                 updateFilter: function(idx, data) {
@@ -206,7 +199,7 @@ module.exports = function(resolve) {
 
                     // изменили активный фильтр
                     if (idx === this.activeFilterIdx) {
-                        this.applyFilter();
+                        this.tbl.applyFilter();
                     }
                     else {
                         this.activeFilterIdx = idx;
@@ -275,6 +268,11 @@ module.exports = function(resolve) {
                 window.twf = this;
                 var vm = this;
 
+                // by hash
+                var matches = window.location.hash.match(/f=(\d+)/i);
+                var selectedFilterIdx = parseInt(matches && matches[1]);
+                vm.activeFilterIdx = selectedFilterIdx > -1 ? selectedFilterIdx : null;
+
                 vm.editor = imported.editor;
                 vm.editor.parent = vm;
 
@@ -297,7 +295,6 @@ module.exports = function(resolve) {
                 });
             },
             ready: function() {
-                // initTT();
             }
         };
     })
