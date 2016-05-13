@@ -456,3 +456,11 @@ prop-editor {
         max-width: 400px;
         }
 
+
+sel-editor {
+    display: block;
+    margin-bottom: 10px;
+    }
+    sel-editor select {
+        max-width: 200px;
+        }

@@ -75,13 +75,6 @@ block postHead
         margin-left: 10px;
         }
 
-    sel-editor {
-      display: block;
-      margin-bottom: 10px;
-      }
-      sel-editor select {
-        max-width: 200px;
-        }
 
 
 block pageHead
@@ -111,25 +104,6 @@ block afterAll
   //- 
   //- TABs
   //- 
-  #info
-    ul
-      li
-        a.mr-10(
-          href='http://mfd.ru/marketdata/ticker/?id={{info.mfd_id}}'
-          target='_blank'
-          )
-          i.fa.fa-external-link
-        | MFD_id: {{info.mfd_id}}
-      li
-        a.mr-10(
-          href='/services/shares/{{ticker.id}}/info'
-          target='_blank'
-          )
-          i.fa.fa-external-link
-        | Всего свечей: {{info.candlesCount}}
-      li Крайняя daily свеча: {{info.lastDailyDate}}
-      li Крайняя inday свеча: {{info.lastIndayDate}}
-      li Количество сегодняшних свечей: {{info.indayCount}}
   #useful
     h4 Форумы
     template(
@@ -280,52 +254,6 @@ block afterAll
   //- 
   //- ELs
   //- 
-
-  #propEditor
-  
-  #kvEditor
-    input.key.ib(
-      type='text'
-      v-model='key_text'
-      placeholder='{{key_ph}}'
-      style='margin-right: 20px;'
-      )
-    input.value.ib(
-      type='text'
-      v-model='value_text'
-      placeholder='{{value_ph}}'
-      style='margin-right: 20px;'
-      )
-    button.g-btn.type_midnight.size_small(
-      type='submit'
-      v-on='click: removeData'
-      style='margin-right: 20px;'
-      )
-      | Удалить
-    button.g-btn.type_midnight.size_small(
-      type='submit'
-      v-class='invisible: !kv_is_modified'
-      v-on='click: sendData'
-      )
-      | Сохранить
-  
-  #selEditor
-    select.ib(
-      v-model='curr'
-      style='margin-right: 20px;'
-      )
-      option(
-        v-repeat='opt: model'
-        value='{{opt.id}}'
-        )
-        | {{opt.name}}
-    button.g-btn.type_midnight.size_small(
-      type='submit'
-      v-class='invisible: !is_modified'
-      v-on='click: sendData'
-      )
-      | Сохранить
-  
 
   #report(
     class='white-popup'

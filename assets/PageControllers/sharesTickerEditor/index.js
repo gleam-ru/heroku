@@ -5,8 +5,9 @@ $(document).ready(function() {
     System.importAll({
         router: '/bower_components/vue-router/dist/vue-router.js',
         // components:
-        kv:   '/PageControllers/sharesTickerEditor/kv-editor.js',
-        prop: '/PageControllers/sharesTickerEditor/prop-editor.js',
+        kv   : '/PageControllers/sharesTickerEditor/kv-editor.js',
+        prop : '/PageControllers/sharesTickerEditor/prop-editor.js',
+        sel  : '/PageControllers/sharesTickerEditor/sel-editor.js',
         // tabs:
         general : '/PageControllers/sharesTickerEditor/tab-general.js',
         div     : '/PageControllers/sharesTickerEditor/tab-div.js',
@@ -19,6 +20,7 @@ $(document).ready(function() {
 
         Vue.component('kv-editor', imported.kv);
         Vue.component('prop-editor', imported.prop);
+        Vue.component('sel-editor', imported.sel);
 
         var App = {
             template: [
@@ -59,7 +61,7 @@ $(document).ready(function() {
         }, {});
 
         router.map(routes);
-        router.start(Vue.extend(App), '#shares_editor');
+        router.start(App, '#shares_editor');
 
     })
     .catch(function(err) {
@@ -80,76 +82,11 @@ $(document).ready(function() {
     //         value : 'прибыль',
     //     }
     // ];
-/*
-    window.qwe = new VueTabs({
-        el: '#tabs',
-        data: {
-            tabs: [
-                {
-                    name      : 'Основное',
-                    alias     : 'general',
-                    component : 'tab_general',
-                    active    : false,
-                }, {
-                    name      : 'Дивиденды',
-                    alias     : 'divs',
-                    component : 'tab_divs',
-                    active    : false,
-                }, {
-                    name      : 'Полезности',
-                    alias     : 'useful',
-                    component : 'tab_useful',
-                    active    : false,
-                }, {
-                    name      : 'Отчетность',
-                    alias     : 'reports',
-                    component : 'tab_reports',
-                    active    : false,
-                }, {
-                    name      : 'Инфо',
-                    alias     : 'info',
-                    component : 'tab_info',
-                    active    : false,
-                // }, {
-                //     name      : 'Другое',
-                //     component : '',
-                //     active    : false,
-                }
-            ]
-        },
-        components: {
-            tab_info    : tab_info(),
-            tab_divs    : tab_divs(),
-            tab_useful  : tab_useful(),
-            tab_general : tab_general(),
-            tab_reports : tab_reports(),
-        },
-    });
-//*/
 
 
 });
 
 
-
-var tab_info = function() {
-    return {
-        template: '#info',
-        data: function() {
-            var info = {};
-            info.id = ticker.id;
-            info.mfd_id = ticker.mfd_id;
-            info.candlesCount = ticker.info.candlesCount;
-            info.lastDailyDate = ticker.info.lastDay;
-            info.lastIndayDate = ticker.info.lastCandle.date ? ticker.info.lastCandle.date : '...';
-            info.indayCount = ticker.info.indayCount ? ticker.info.indayCount : 0;
-            return {
-                info: info,
-                ticker: ticker,
-            }
-        },
-    }
-}
 
 var tab_divs = function() {
     return {
@@ -427,212 +364,6 @@ var tab_reports = function() {
             });
         },
     }
-}
-
-
-
-var propEditor = function() {
-    return ;
-}
-
-var kvEditor = function() {
-    return {
-        template: '#kvEditor',
-        paramAttributes: ['editor_id', 'prop', 'href', 'key', 'value', 'key_ph', 'value_ph'],
-
-        data: function() {
-            return {
-                key_orig: '',
-                key_text: '',
-                value_orig: '',
-                value_text: '',
-            }
-        },
-        computed: {
-            key_is_modified: function() {
-                if (this.key_orig === undefined && this.key_text === '') {
-                    return false;
-                }
-                return this.key_text !== this.key_orig;
-            },
-            value_is_modified: function() {
-                if (this.value_orig === undefined && this.value_text === '') {
-                    return false;
-                }
-                return this.value_text !== this.value_orig;
-            },
-            kv_is_modified: function() {
-                return this.key_is_modified || this.value_is_modified;
-            },
-        },
-        methods: {
-            sendData: function() {
-                var vm = this;
-
-                var el = $(vm.$el);
-                if (el.hasClass('disabled')) {
-                    return false;
-                }
-                el.disable();
-
-                $.post(href+vm.href, {
-                    message: {
-                        key   : vm.prop,
-                        value : {
-                            id    : vm.editor_id,
-                            key   : vm.key_text,
-                            value : vm.value_text,
-                        },
-                    }
-                })
-                .done(function() {
-                    vm.key_orig   = vm.key_text;
-                    vm.value_orig = vm.value_text;
-                    vm.setOrig(vm.key_text, vm.value_text);
-                    vm.$dispatch('kv-editor-saved', vm);
-                    el.enable();
-                });
-            },
-
-            removeData: function() {
-                var vm = this;
-
-                $.post(href+vm.href, {
-                    message: {
-                        key    : vm.prop,
-                        remove : true,
-                        value  : {
-                            id : vm.editor_id,
-                        },
-                    }
-                })
-                .done(function() {
-                    vm.key_orig   = vm.key_text;
-                    vm.value_orig = vm.value_text;
-                    vm.setOrig(vm.key_text, vm.value_text);
-                    vm.$dispatch('kv-editor-removed', vm);
-                });
-
-            },
-
-            getOrig: function() {
-                var orig = window;
-                var path = this.prop.split('.');
-                while (path.length) {
-                    var new_orig = orig[path.shift()];
-                    if (!new_orig) new_orig = {};
-                    orig = new_orig;
-                }
-                return orig;
-            },
-            setOrig: function(key, value) {
-                var orig = window;
-                var path = this.prop.split('.');
-                while (path.length) {
-                    var new_orig = orig[path.shift()];
-                    if (!new_orig) new_orig = {};
-                    orig = new_orig;
-                }
-
-                orig[key] = value;
-            }
-        },
-        compiled: function() {
-            var vm = this;
-            if (typeof vm.href === 'undefined') vm.href = '';
-            vm.key_orig = vm.key;
-            vm.key_text = vm.key;
-            vm.value_orig = vm.value;
-            vm.value_text = vm.value;
-        },
-    };
-}
-
-var selEditor = function() {
-    return {
-        template: '#selEditor',
-        paramAttributes: ['prop', 'model', 'href', 'ph'],
-
-        data: function() {
-            return {
-                orig: '',
-                curr: '',
-            }
-        },
-        computed: {
-            is_modified: function() {
-                if (this.orig === undefined && this.curr === '') {
-                    return false;
-                }
-                return this.curr !== this.orig;
-            },
-        },
-        methods: {
-            sendData: function() {
-                var vm = this;
-                var selected = _.find(vm.model, {name: vm.curr});
-
-                var el = $(vm.$el);
-                if (el.hasClass('disabled')) {
-                    return false;
-                }
-                el.disable();
-
-                $.post(href+vm.href, {
-                    message: {
-                        key   : vm.prop,
-                        value : selected.value,
-                    }
-                })
-                .done(function() {
-                    vm.orig = vm.curr;
-                    vm.setOrig(vm.curr);
-                    el.enable();
-                });
-            },
-            getOrig: function() {
-                var orig = window;
-                var path = this.prop.split('.');
-                while (path.length) {
-                    orig = orig[path.shift()];
-                }
-                return orig;
-            },
-            setOrig: function(value) {
-                var orig = window;
-                var path = this.prop.split('.');
-                while (path.length) {
-                    var new_orig = orig[path.shift()];
-                    if (!new_orig) new_orig = {};
-                    orig = new_orig;
-                }
-                orig = value;
-            }
-        },
-        compiled: function() {
-            var vm = this;
-            if (typeof vm.href === 'undefined') vm.href = '';
-
-            vm.model = [{
-                value: 0,
-                name: vm.ph,
-            }].concat(_.map(vm.model, function(sel) {
-                return {
-                    value: sel.id,
-                    name: sel.name,
-                }
-            }));
-
-            var orig = vm.getOrig() ? vm.getOrig().id : 0;
-            var found = _.find(vm.model, {value: orig});
-            if (!found) {
-                console.error('smth went wrong...')
-                found = {};
-            }
-            vm.orig = found.name;
-            vm.curr = found.name;
-        },
-    };
 }
 
 
