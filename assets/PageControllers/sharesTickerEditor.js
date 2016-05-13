@@ -18,10 +18,14 @@ $(document).ready(function() {
 
         var App = {
             template: [
-                '<div>',
+                '<div class="router-tabs">',
                     '<ul class="tabs-nav">',
-                        '<li v-for="i in tabs" v-link="i.url">{{i.title}}</li>',
+                        '<li v-for="i in tabs"><span v-link="i.url">{{i.title}}</span></li>',
                     '</ul>',
+
+                    // separator
+                    '<div style="margin: 20px 0px 40px 0px;" class="g-hr no-select"><span class="g-hr-h"></span></div>',
+
                     '<router-view class="tab"></router-view>',
                 '</div>',
             ].join(' '),
@@ -36,16 +40,16 @@ $(document).ready(function() {
         }
 
         var router = new VueRouter();
-        // тут делается что-то типо {url1: {component: Cmp}, url2: {...}}
-        var map = _.reduce(App.data().tabs, function(result, tab) {
-            console.debug(tab.cmp);
+
+        // тут получается что-то типо {url1: {component: Cmp}, url2: {...}}
+        var routes = _.reduce(App.data().tabs, function(result, tab) {
             result[tab.url] = {
                 component: tab.cmp,
             };
             return result;
         }, {});
 
-        router.map(map);
+        router.map(routes);
         router.start(Vue.extend(App), '#shares_editor');
 
     })
