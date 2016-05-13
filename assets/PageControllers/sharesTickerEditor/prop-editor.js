@@ -3,8 +3,9 @@
  * Пример использования:
 
     '<prop-editor',
-        'prop="ticker.code"',
         'ph="код (gazp)"',
+        ':value.sync="code"',
+        '@save="saveCode"', // callback is needed
         '>',
     '</prop-editor>',
 
@@ -18,86 +19,78 @@ module.exports = function(resolve) {
     .then(function() {
         return {
             template: [
-                '<input',
-                    'class="ib"',
-                    'type="text"',
-                    'v-model="prop_text"',
-                    'placeholder="ph"',
-                    'style="margin-right: 20px;"',
-                    '/>',
-                '<button',
-                    ':class="[\'g-btn\', \'type_midnight\', \'size_small\', {invisible: !prop_is_modified}]"',
-                    'type="submit"',
-                    '@click="sendData"',
-                    '>',
-                    'Сохранить',
-                '</button>',
+                '<div class="prop-editor">',
+                    '<input',
+                        'class="ib"',
+                        'type="text"',
+                        'v-model="currentValue"',
+                        'placeholder="ph"',
+                        'style="margin-right: 20px;"',
+                        '/>',
+                    '<button',
+                        ':class="[\'g-btn\', \'type_midnight\', \'size_small\', {invisible: !prop_is_modified}]"',
+                        'type="submit"',
+                        '@click="save"',
+                        '>',
+                        'Сохранить',
+                    '</button>',
+                '</div>',
             ].join(' '),
             //
             //
             //
-            props: ['prop', 'href', 'ph'],
+            props: ['ph', 'value', 'save'],
             data: function() {
                 return {
-                    prop_orig: '',
-                    prop_text: '',
+                    currentValue: '',
                 }
             },
             computed: {
                 prop_is_modified: function() {
-                    if (this.prop_orig === undefined && this.prop_text === '') {
-                        return false;
-                    }
-                    return this.prop_text !== this.prop_orig;
+                    return this.value !== this.currentValue;
                 },
             },
             //
             //
             //
             methods: {
-                sendData: function() {
+                setDisabled: function(state) {
                     var vm = this;
-
                     var el = $(vm.$el);
-                    if (el.hasClass('disabled')) {
-                        return false;
-                    }
-                    el.disable();
-
-                    $.post(href+vm.href, {
-                        message: {
-                            key   : vm.prop,
-                            value : vm.prop_text,
+                    if (state) {
+                        // деактивирую
+                        if (el.hasClass('disabled')) {
+                            return false;
                         }
-                    })
-                    .done(function() {
-                        vm.prop_orig = vm.prop_text;
-                        vm.setOrig(vm.prop_text);
+                        el.disable();
+                    }
+                    else {
                         el.enable();
+                    }
+                    return true;
+                },
+                save: function() {
+                    var vm = this;
+                    var state = vm.setDisabled(true);
+                    if (!state) {
+                        return;
+                    }
+
+                    var bak = vm.value;
+                    vm.value = vm.currentValue;
+
+                    this.$emit('save', function(err) {
+                        vm.setDisabled(false);
+                        if (err) {
+                            vm.value = bak;
+                            return deh(err);
+                        }
                     });
                 },
-                getOrig: function() {
-                    var orig = window;
-                    var path = this.prop.split('.');
-                    while (path.length) {
-                        orig = orig[path.shift()];
-                    }
-                    return orig;
-                },
-                setOrig: function(value) {
-                    var orig = window;
-                    var path = this.prop.split('.');
-                    while (path.length) {
-                        orig = orig[path.shift()];
-                    }
-                    orig = value;
-                }
             },
             compiled: function() {
                 var vm = this;
-                if (typeof vm.href === 'undefined') vm.href = '';
-                vm.prop_orig = vm.getOrig();
-                vm.prop_text = vm.getOrig();
+                vm.currentValue = vm.value;
             },
         };
     })

@@ -442,17 +442,17 @@ kv-editor {
 
 
 
-prop-editor {
+.prop-editor {
     display: block;
     margin-bottom: 10px;
     }
-    prop-editor.code input {
+    .prop-editor.code input {
         max-width: 100px;
         }
-    prop-editor.site input {
+    .prop-editor.site input {
         max-width: 400px;
         }
-    prop-editor.count input {
+    .prop-editor.count input {
         max-width: 400px;
         }
 
