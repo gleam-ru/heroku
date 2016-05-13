@@ -413,6 +413,17 @@ body::-webkit-scrollbar {
 
 
 
+
+
+.invisible {
+    visibility: hidden;
+    opacity: 0;
+    }
+.hidden {
+    display: none;
+    }
+
+
 kv-editor {
     display: block;
     margin-bottom: 10px;
@@ -426,3 +437,20 @@ kv-editor {
     kv-editor.link input.value {
         max-width: 400px;
         }
+
+
+
+prop-editor {
+    display: block;
+    margin-bottom: 10px;
+    }
+    prop-editor.code input {
+        max-width: 100px;
+        }
+    prop-editor.site input {
+        max-width: 400px;
+        }
+    prop-editor.count input {
+        max-width: 400px;
+        }
+

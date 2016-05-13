@@ -14,13 +14,6 @@ block postHead
     .divy > div {position: relative;}
     .divy .del {position: absolute; left: 330px; top: -8px;}
 
-    .invisible {
-      visibility: hidden;
-      opacity: 0;
-      }
-    .hidden {
-      display: none;
-      }
 
     .reports {
       width: 100%;
@@ -82,38 +75,12 @@ block postHead
         margin-left: 10px;
         }
 
-    prop-editor {
-      display: block;
-      margin-bottom: 10px;
-      }
-      prop-editor.code input {
-        max-width: 100px;
-        }
-      prop-editor.site input {
-        max-width: 400px;
-        }
-      prop-editor.count input {
-        max-width: 400px;
-        }
     sel-editor {
       display: block;
       margin-bottom: 10px;
       }
       sel-editor select {
         max-width: 200px;
-        }
-    kv-editor {
-      display: block;
-      margin-bottom: 10px;
-      }
-      kv-editor button {
-        margin-top: 3px !important;
-        }
-      kv-editor.link input.key {
-        max-width: 200px;
-        }
-      kv-editor.link input.value {
-        max-width: 400px;
         }
 
 
@@ -315,18 +282,6 @@ block afterAll
   //- 
 
   #propEditor
-    input.ib(
-      type='text'
-      v-model='prop_text'
-      placeholder='{{ph}}'
-      style='margin-right: 20px;'
-      )
-    button.g-btn.type_midnight.size_small(
-      type='submit'
-      v-class='invisible: !prop_is_modified'
-      v-on='click: sendData'
-      )
-      | Сохранить
   
   #kvEditor
     input.key.ib(
