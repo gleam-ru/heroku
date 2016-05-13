@@ -12,7 +12,7 @@ module.exports = function(resolve) {
         return {
             template: [
                 '<div>',
-                    '<div>tab-general</div>',
+                    '<div>tab-report</div>',
                 '</div>',
             ].join(' '),
             //

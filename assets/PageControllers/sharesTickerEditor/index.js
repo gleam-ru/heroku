@@ -8,22 +8,17 @@ $(document).ready(function() {
         kv:   '/PageControllers/sharesTickerEditor/kv-editor.js',
         prop: '/PageControllers/sharesTickerEditor/prop-editor.js',
         // tabs:
-        general: '/PageControllers/sharesTickerEditor/tab-general.js',
+        general : '/PageControllers/sharesTickerEditor/tab-general.js',
+        div     : '/PageControllers/sharesTickerEditor/tab-div.js',
+        useful  : '/PageControllers/sharesTickerEditor/tab-useful.js',
+        info    : '/PageControllers/sharesTickerEditor/tab-info.js',
+        report  : '/PageControllers/sharesTickerEditor/tab-report.js',
     })
     .then(function(imported) {
         var VueRouter = imported.router;
 
         Vue.component('kv-editor', imported.kv);
         Vue.component('prop-editor', imported.prop);
-
-
-        var Foo = Vue.extend({
-            template: '<p>This is foo!</p>'
-        });
-
-        var Bar = Vue.extend({
-            template: '<p>This is bar!</p>'
-        });
 
         var App = {
             template: [
@@ -43,9 +38,11 @@ $(document).ready(function() {
             data: function() {
                 return {
                     tabs: [
-                        {title: 'Основное', url: '/general', cmp: imported.general},
-                        {title: 'foo', url: '/foo', cmp: Foo},
-                        {title: 'bar', url: '/bar', cmp: Bar},
+                        {url: '/general',  cmp: imported.general,  title: 'Основное'},
+                        {url: '/div',      cmp: imported.div,      title: 'Дивиденды'},
+                        {url: '/useful',   cmp: imported.useful,   title: 'Полезности'},
+                        {url: '/report',   cmp: imported.report,   title: 'Отчетность'},
+                        {url: '/info',     cmp: imported.info,     title: 'Инфо'},
                     ],
                 };
             },
