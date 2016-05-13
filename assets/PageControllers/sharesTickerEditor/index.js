@@ -4,6 +4,7 @@ $(document).ready(function() {
 
     System.importAll({
         router: '/bower_components/vue-router/dist/vue-router.js',
+        kv: '/PageControllers/sharesTickerEditor/kv-editor.js',
     })
     .then(function(imported) {
         var VueRouter = imported.router;
@@ -29,6 +30,9 @@ $(document).ready(function() {
                     '<router-view class="tab"></router-view>',
                 '</div>',
             ].join(' '),
+            components: {
+                'kv-editor': imported.kv,
+            },
             data: function() {
                 return {
                     tabs: [

@@ -409,3 +409,20 @@ body::-webkit-scrollbar {
         }
 
 
+
+
+
+
+kv-editor {
+    display: block;
+    margin-bottom: 10px;
+    }
+    kv-editor button {
+        margin-top: 3px !important;
+        }
+    kv-editor.link input.key {
+        max-width: 200px;
+        }
+    kv-editor.link input.value {
+        max-width: 400px;
+        }
