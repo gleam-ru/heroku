@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     System.importAll({
         router: '/bower_components/vue-router/dist/vue-router.js',
-        //
+        // components:
         kv:   '/PageControllers/sharesTickerEditor/kv-editor.js',
         prop: '/PageControllers/sharesTickerEditor/prop-editor.js',
         // tabs:
@@ -12,6 +12,10 @@ $(document).ready(function() {
     })
     .then(function(imported) {
         var VueRouter = imported.router;
+
+        Vue.component('kv-editor', imported.kv);
+        Vue.component('prop-editor', imported.prop);
+
 
         var Foo = Vue.extend({
             template: '<p>This is foo!</p>'
@@ -31,13 +35,10 @@ $(document).ready(function() {
                     // separator
                     '<div style="margin: 20px 0px 40px 0px;" class="g-hr no-select"><span class="g-hr-h"></span></div>',
 
-
                     '<router-view class="tab"></router-view>',
                 '</div>',
             ].join(' '),
             components: {
-                'kv-editor'  : imported.kv,
-                'prop-editor': imported.prop,
             },
             data: function() {
                 return {

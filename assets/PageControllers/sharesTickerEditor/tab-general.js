@@ -11,7 +11,14 @@ module.exports = function(resolve) {
     .then(function() {
         return {
             template: [
-                '<div>tab-general</div>',
+                '<div>',
+                    '<div>tab-general</div>',
+                    '<prop-editor',
+                        'prop="ticker.code"',
+                        'ph="код (gazp)"',
+                        '>',
+                    '</prop-editor>',
+                '</div>',
             ].join(' '),
             //
             //
