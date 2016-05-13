@@ -380,8 +380,9 @@ body::-webkit-scrollbar {
     margin: 0;
     padding: 0;
     }
-    .router-tabs .tabs-nav li {
+    #body .router-tabs .tabs-nav li {
         display: inline-block;
+        margin: 0px;
         }
         .router-tabs .tabs-nav li * {
             font-size: 24px;
@@ -389,6 +390,7 @@ body::-webkit-scrollbar {
             }
         .router-tabs .tabs-nav li span:hover {color: #ffa412;}
         .router-tabs .tabs-nav li span {
+            display: inline-block;
             font-family: 'Roboto Slab';
             padding: 2px 3px;
             border-bottom: dashed 1px #CCC;
