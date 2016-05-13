@@ -3,7 +3,8 @@
  * Пример использования:
 
     '<prop-editor',
-        'ph="код (gazp)"',
+        'class="code"',
+        ':ph="\'код (gazp)\'"',
         ':value.sync="code"',
         '@save="saveCode"', // callback is needed
         '>',
@@ -24,7 +25,7 @@ module.exports = function(resolve) {
                         'class="ib"',
                         'type="text"',
                         'v-model="currentValue"',
-                        'placeholder="ph"',
+                        'placeholder="{{ph}}"',
                         'style="margin-right: 20px;"',
                         '/>',
                     '<button',
