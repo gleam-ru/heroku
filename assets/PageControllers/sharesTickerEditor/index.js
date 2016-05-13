@@ -4,8 +4,11 @@ $(document).ready(function() {
 
     System.importAll({
         router: '/bower_components/vue-router/dist/vue-router.js',
+        //
         kv:   '/PageControllers/sharesTickerEditor/kv-editor.js',
         prop: '/PageControllers/sharesTickerEditor/prop-editor.js',
+        // tabs:
+        general: '/PageControllers/sharesTickerEditor/tab-general.js',
     })
     .then(function(imported) {
         var VueRouter = imported.router;
@@ -39,6 +42,7 @@ $(document).ready(function() {
             data: function() {
                 return {
                     tabs: [
+                        {title: 'Основное', url: '/general', cmp: imported.general},
                         {title: 'foo', url: '/foo', cmp: Foo},
                         {title: 'bar', url: '/bar', cmp: Bar},
                     ],
