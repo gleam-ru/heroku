@@ -457,10 +457,10 @@ kv-editor {
         }
 
 
-sel-editor {
+.sel-editor {
     display: block;
     margin-bottom: 10px;
     }
-    sel-editor select {
+    .sel-editor select {
         max-width: 200px;
         }

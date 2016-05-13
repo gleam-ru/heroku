@@ -301,3 +301,10 @@ $(document).ready(function() {
     });
 
 });
+
+
+// Default Error Handler
+window.deh = function(err) {
+    console.error(err);
+    mp.alert('Что-то пошло не так...');
+}
