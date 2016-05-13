@@ -4,6 +4,7 @@ module.exports = function(grunt) {
         task: {
             ignorePath: "../../..",
             exclude: [
+                'vue-router.js',
                 'dataTables.colReorder.js',
                 '/Sortable',
                 'jquery.js',

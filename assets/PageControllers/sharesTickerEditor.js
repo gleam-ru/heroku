@@ -2,6 +2,60 @@ $(document).ready(function() {
     window.href = '/services/shares/'+ticker.id+'/update';
 
 
+    System.importAll({
+        router: '/bower_components/vue-router/dist/vue-router.js',
+    })
+    .then(function(imported) {
+        var VueRouter = imported.router;
+
+        var Foo = Vue.extend({
+            template: '<p>This is foo!</p>'
+        });
+
+        var Bar = Vue.extend({
+            template: '<p>This is bar!</p>'
+        });
+
+        var App = {
+            template: [
+                '<div>',
+                    '<ul class="tabs-nav">',
+                        '<li v-for="i in tabs" v-link="i.url">{{i.title}}</li>',
+                    '</ul>',
+                    '<router-view class="tab"></router-view>',
+                '</div>',
+            ].join(' '),
+            data: function() {
+                return {
+                    tabs: [
+                        {title: 'foo', url: '/foo', cmp: Foo},
+                        {title: 'bar', url: '/bar', cmp: Bar},
+                    ],
+                };
+            },
+        }
+
+        var router = new VueRouter();
+        // тут делается что-то типо {url1: {component: Cmp}, url2: {...}}
+        var map = _.reduce(App.data().tabs, function(result, tab) {
+            console.debug(tab.cmp);
+            result[tab.url] = {
+                component: tab.cmp,
+            };
+            return result;
+        }, {});
+
+        router.map(map);
+        router.start(Vue.extend(App), '#shares_editor');
+
+    })
+    .catch(function(err) {
+        console.error(err);
+        mp.alert('Что-то пошло не так!');
+    })
+    ;
+
+
     // var defaultFields = [
     //     {
     //         id    : 1,
@@ -13,7 +67,7 @@ $(document).ready(function() {
     //         value : 'прибыль',
     //     }
     // ];
-
+/*
     window.qwe = new VueTabs({
         el: '#tabs',
         data: {
@@ -58,7 +112,7 @@ $(document).ready(function() {
             tab_reports : tab_reports(),
         },
     });
-
+//*/
 
 
 });

@@ -179,6 +179,7 @@ module.exports = {
     //  ╠═╣ ║║║║║║║║║
     //  ╩ ╩═╩╝╩ ╩╩╝╚╝
 
+    // админка
     editorPage: function(req, res) {
         var id = req.param('id');
         var data = {};
