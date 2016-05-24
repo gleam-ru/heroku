@@ -12,7 +12,30 @@ module.exports = function(resolve) {
         return {
             template: [
                 '<div>',
-                    '<div>tab-div</div>',
+
+                    '<table>',
+                        '<tr>',
+                            '<th>Дата закрытия реестра</th>',
+                            '<th>Дата выплаты</th>',
+                            '<th>Дивиденд (руб.)</th>',
+                            '<th>% прибыли</th>',
+                        '</tr>',
+                        '<tr v-for="div in divs">',
+                            '<td>{{div.reestr}}</td>',
+                            '<td>{{div.paydate}}</td>',
+                            '<td>{{div.value}}</td>',
+                            '<td>{{div.profitpercent}}</td>',
+                        '</tr>',
+                    '</table>',
+
+                    '<button',
+                        'class="g-btn type_midnight size_small"',
+                        'type="submit"',
+                        '@click="update"',
+                        '>',
+                        'Обновить данные',
+                    '</button>',
+
                 '</div>',
             ].join(' '),
             //
@@ -21,7 +44,10 @@ module.exports = function(resolve) {
             props: [],
             data: function() {
                 return {
-                }
+                    //
+                    rest: window.updatehref,
+                    divs: ticker.divs || [],
+                };
             },
             computed: {
             },
@@ -29,6 +55,9 @@ module.exports = function(resolve) {
             //
             //
             methods: {
+                update: function() {
+                    console.log('update');
+                }
             },
             compiled: function() {
             },
