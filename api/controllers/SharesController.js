@@ -110,7 +110,6 @@ module.exports = {
             .then(function() {
                 res.render('services/shares/new_shares', data);
             });
-            ;
     },
 
     ticker: function(req, res) {
@@ -368,7 +367,6 @@ module.exports = {
     newUpdate: function(req, res) {
         var id = req.param('id');
         var msg = req.param('msg');
-        console.log('msg', msg);
 
         return Share
             .findOne({id: id})
@@ -393,6 +391,10 @@ module.exports = {
             });
     },
 
+
+    parseDivs: function(req, res) {
+        var id = req.param('id');
+    }
 
 
 

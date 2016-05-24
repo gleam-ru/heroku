@@ -21,7 +21,7 @@ module.exports = function(resolve) {
                             '<th>% прибыли</th>',
                         '</tr>',
                         '<tr v-for="div in divs">',
-                            '<td>{{div.reestr}}</td>',
+                            '<td>{{div.reestrdate}}</td>',
                             '<td>{{div.paydate}}</td>',
                             '<td>{{div.value}}</td>',
                             '<td>{{div.profitpercent}}</td>',

@@ -49,7 +49,7 @@ $(document).ready(function() {
             ready: function() {
                 window.App = this;
             }
-        }
+        };
 
         var router = new VueRouter();
 
