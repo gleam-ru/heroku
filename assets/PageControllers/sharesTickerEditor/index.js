@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    window.href = '/services/shares/'+ticker.id+'/update';
+    window.updatehref = '/services/shares/'+ticker.id+'/new_update';
 
 
     System.importAll({
@@ -35,8 +35,6 @@ $(document).ready(function() {
                     '<router-view class="tab"></router-view>',
                 '</div>',
             ].join(' '),
-            components: {
-            },
             data: function() {
                 return {
                     tabs: [
@@ -48,6 +46,9 @@ $(document).ready(function() {
                     ],
                 };
             },
+            ready: function() {
+                window.App = this;
+            }
         }
 
         var router = new VueRouter();

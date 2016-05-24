@@ -6,3 +6,8 @@ mixin roundIcon(name, disabled)
   span(class=disabled ? 'disabled' : '').fa-stack.fa-lg.roundIcon
     i.fa.fa-circle.fa-stack-2x
     i.fa.fa-stack-1x.fa-inverse(class=name)
+
+mixin separator()
+  div.g-hr.no-select
+    span.g-hr-h
+      i.fa.fa-chevron-down
