@@ -1,3 +1,10 @@
+/**
+ * TODO: отказаться от кэша...
+ * ну или кардинально его переделать.
+ *
+ */
+
+
 var importer = require('./sharesImporter.js');
 var me = {};
 
@@ -138,11 +145,13 @@ me.getById = function(id) {
             else {
                 return Q.resolve()
                     .then(function() {
-                        console.log('shares:getById:fromDB', id)
+                        console.log('shares:getById:fromDB', id);
+                        console.time('shares:getById:fromDB');
                         return Share.findOne({id: id}).populateAll();
                     })
                     .then(function(share) {
                         cache.set('share_by_id_'+id, share);
+                        console.timeEnd('shares:getById:fromDB');
                         return share;
                     })
             }

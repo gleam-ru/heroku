@@ -37,6 +37,7 @@ module.exports = {
                         'google',
                     ],
                 })
+                // .populateAll()
                 ;
             })
             .then(function(shares) {
@@ -184,7 +185,7 @@ module.exports = {
         var id = req.param('id');
         var data = {};
 
-        provider.shares.getById(id)
+        Share.findOne({id: id}).populateAll()
             .then(function(share) {
                 if (!share) {
                     throw new Error('404');
@@ -211,7 +212,7 @@ module.exports = {
             .catch(function(err) {
                 if (err.message === '404') {
                     return res.render('404', {
-                        msg: 'Тикер <b>'+href+'</b> не найден',
+                        msg: 'Тикер #<b>'+id+'</b> не найден',
                     });
                 }
                 else {
@@ -220,6 +221,7 @@ module.exports = {
             });
     },
 
+    // DEPRECATED
     updateGeneral: function(req, res) {
         var id = req.param('id');
         var message = req.param('message');
@@ -362,6 +364,34 @@ module.exports = {
             });
     },
 
+
+    newUpdate: function(req, res) {
+        var id = req.param('id');
+        var msg = req.param('msg');
+        console.log('msg', msg);
+
+        return Share
+            .findOne({id: id})
+            .then(function(share) {
+                if (!share) {
+                    throw new Error('404');
+                }
+                _.extend(share, msg);
+                return share.save().then(function() {return share;});
+            })
+            .then(function(share) {
+                console.info('share updated', share.id);
+                return res.ok();
+            })
+            .catch(function(err) {
+                if (err.message === '404') {
+                    return res.notFound();
+                }
+                else {
+                    return res.serverError(err);
+                }
+            });
+    },
 
 
 
