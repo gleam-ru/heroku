@@ -3,11 +3,11 @@ $(document).ready(function() {
 
 
     System.importAll({
-        router: '/bower_components/vue-router/dist/vue-router.js',
+        vtabs : '/Components/Tabs.js',
         // components:
-        kv   : '/PageControllers/sharesTickerEditor/kv-editor.js',
-        prop : '/PageControllers/sharesTickerEditor/prop-editor.js',
-        sel  : '/PageControllers/sharesTickerEditor/sel-editor.js',
+        kv      : '/PageControllers/sharesTickerEditor/kv-editor.js',
+        prop    : '/PageControllers/sharesTickerEditor/prop-editor.js',
+        sel     : '/PageControllers/sharesTickerEditor/sel-editor.js',
         // tabs:
         general : '/PageControllers/sharesTickerEditor/tab-general.js',
         div     : '/PageControllers/sharesTickerEditor/tab-div.js',
@@ -16,23 +16,19 @@ $(document).ready(function() {
         report  : '/PageControllers/sharesTickerEditor/tab-report.js',
     })
     .then(function(imported) {
-        var VueRouter = imported.router;
 
         Vue.component('kv-editor', imported.kv);
         Vue.component('prop-editor', imported.prop);
         Vue.component('sel-editor', imported.sel);
 
-        var App = {
+        window.App = new Vue({
+            el: '#shares_editor',
+            components: {
+                'v-tabs': imported.vtabs,
+            },
             template: [
-                '<div class="router-tabs">',
-                    '<ul class="tabs-nav">',
-                        '<li v-for="i in tabs"><span v-link="i.url">{{i.title}}</span></li>',
-                    '</ul>',
-
-                    // separator
-                    '<div style="margin: 20px 0px 40px 0px;" class="g-hr no-select"><span class="g-hr-h"></span></div>',
-
-                    '<router-view class="tab"></router-view>',
+                '<div>',
+                    '<v-tabs :tabs="tabs"></v-tabs>',
                 '</div>',
             ].join(' '),
             data: function() {
@@ -46,23 +42,20 @@ $(document).ready(function() {
                     ],
                 };
             },
-            ready: function() {
-                window.App = this;
-            }
-        };
+        });
 
-        var router = new VueRouter();
+        // var router = new VueRouter();
 
-        // тут получается что-то типо {url1: {component: Cmp}, url2: {...}}
-        var routes = _.reduce(App.data().tabs, function(result, tab) {
-            result[tab.url] = {
-                component: tab.cmp,
-            };
-            return result;
-        }, {});
+        // // тут получается что-то типо {url1: {component: Cmp}, url2: {...}}
+        // var routes = _.reduce(App.data().tabs, function(result, tab) {
+        //     result[tab.url] = {
+        //         component: tab.cmp,
+        //     };
+        //     return result;
+        // }, {});
 
-        router.map(routes);
-        router.start(App, '#shares_editor');
+        // router.map(routes);
+        // router.start(App, '#shares_editor');
 
     })
     .catch(function(err) {
@@ -70,21 +63,6 @@ $(document).ready(function() {
         mp.alert('Что-то пошло не так!');
     })
     ;
-
-
-    // var defaultFields = [
-    //     {
-    //         id    : 1,
-    //         key   : 'income',
-    //         value : 'выручка',
-    //     }, {
-    //         id    : 2,
-    //         key   : 'profit',
-    //         value : 'прибыль',
-    //     }
-    // ];
-
-
 });
 
 
