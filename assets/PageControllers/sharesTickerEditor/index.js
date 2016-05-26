@@ -44,19 +44,6 @@ $(document).ready(function() {
             },
         });
 
-        // var router = new VueRouter();
-
-        // // тут получается что-то типо {url1: {component: Cmp}, url2: {...}}
-        // var routes = _.reduce(App.data().tabs, function(result, tab) {
-        //     result[tab.url] = {
-        //         component: tab.cmp,
-        //     };
-        //     return result;
-        // }, {});
-
-        // router.map(routes);
-        // router.start(App, '#shares_editor');
-
     })
     .catch(function(err) {
         console.error(err);

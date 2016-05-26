@@ -292,6 +292,13 @@ $(document).ready(function() {
     }
 
 
+    window.promisedGet = function(url) {
+        return new Promise(function(resolve, reject) {
+            $.get(url).done(resolve).fail(reject);
+        });
+    }
+
+
     // lodash
     _.mixin({
         // compactMap
