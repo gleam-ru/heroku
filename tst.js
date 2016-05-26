@@ -9,7 +9,7 @@ var ddf = 'DD.MM.YYYY';
 /*----------------------------------------------*/
 
 var href = 'http://www.dohod.ru/ik/analytics/dividend/';
-var code = 'gazp';
+var code = 'mtss';
 
 var doParse = function() {
     return Q()
@@ -58,12 +58,15 @@ var doParse = function() {
                 }
 
                 var div = {
-                    reestrdate:     $(cells[0]).text().trim(),
-                    paydate:        $(cells[1]).text().trim(),
+                    reestrdate:     moment($(cells[0]).text(), ddf).format(ddf),
+                    paydate:        moment($(cells[1]).text(), ddf).format(ddf),
                     value:          $(cells[2]).text().trim(),
                     profitpercent:  $(cells[3]).text().trim().replace('%', ''),
                 };
 
+                if (row.hasClass('forecast')) {
+                    div.is_forecast = true;
+                }
                 if ($(cells[0]).find('img').length) {
                     div.reestrdate_recommended = true;
                 }

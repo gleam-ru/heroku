@@ -16,7 +16,15 @@ module.exports.bootstrap = function(cb) {
             results.push(done)
         })
         return Q.all(results);
-    }
+    };
+
+    // lodash
+    _.mixin({
+        // compactMap
+        cMap : function(arr, foo) {
+            return _.compact(_.map(arr, foo));
+        }
+    });
 
     // проверить по DD.MM.YYYY перед заменой!!! некоторые сервисы требуют
     // повторной инициализации ddf

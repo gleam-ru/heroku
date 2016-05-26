@@ -391,9 +391,52 @@ module.exports = {
             });
     },
 
-
+    // получает дивы указанной акции, если есть айдишник,
+    // если айдишника нет - получает все дивы
     parseDivs: function(req, res) {
         var id = req.param('id');
+        var divsParser = require('../services/DataProviders/sharesDivsParser');
+
+        return Q()
+            .then(function() {
+                if (id) {
+                    return Share.find({
+                        where: {
+                            id: id,
+                        },
+                        select: [
+                            'code',
+                        ],
+                    })
+                    ;
+                }
+                else {
+                    return Share.find({
+                        where: {
+                            dead: false,
+                        },
+                        select: [
+                            'code',
+                        ],
+                    })
+                    ;
+                }
+            })
+            .then(function(shares) {
+                if (!shares) {
+                    throw new Error('shares not found');
+                }
+                return divsParser.parse(_.cMap(shares, 'code'));
+            })
+            .then(function(data) {
+                if (data && data.length === 1) {
+                    return res.send(data[0]);
+                }
+                return res.ok();
+            })
+            .catch(function(err) {
+                return res.serverError(err);
+            });
     }
 
 

@@ -464,3 +464,12 @@ kv-editor {
     .sel-editor select {
         max-width: 200px;
         }
+
+
+
+.divs-table tr.forecast td {
+    opacity: 0.4;
+    }
+    .divs-table tr.forecast td.recommended {
+        opacity: 1;
+        }

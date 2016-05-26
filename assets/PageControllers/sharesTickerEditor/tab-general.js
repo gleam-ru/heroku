@@ -77,6 +77,7 @@ module.exports = function(resolve) {
             methods: {
                 saveCode: function(cb) {
                     this.save({code: this.code}, cb);
+                    window.ticker.code = this.code;
                 },
                 saveBranch: function(cb) {
                     // warn: особенности монго

@@ -26,6 +26,7 @@ module.exports = {
         links           : {type: 'array', defaultsTo: []},
 
         divs            : {type: 'array', defaultsTo: []},
+        divs_comment    : {type: 'string'},
 
         reports         : {type: 'json', defaultsTo: {
             fields : [],
