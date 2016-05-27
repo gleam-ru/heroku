@@ -75,6 +75,48 @@ cron.init = function(cb) {
             ;
     });
 
+    // получение данных от гугла
+    // 03:07 в субботу
+    cron.add('sharesDivsTotal', '21 3 * * 5', function() {
+        var divsParser = require('./DataProviders/sharesDivsParser.js');
+
+        return Q()
+            .then(function() {
+                return Share.find({
+                    where: {
+                        dead: false,
+                    },
+                    select: [
+                        'code',
+                    ],
+                })
+                ;
+            })
+            .then(function(shares) {
+                if (!shares) {
+                    throw new Error('shares not found');
+                }
+                return divsParser.parse(_.cMap(shares, 'code'));
+            })
+            .then(function() {
+                return Statistics
+                    .findOrCreate({
+                        name: 'sharesDivsUpdatedAt',
+                    }, {
+                        name: 'sharesDivsUpdatedAt',
+                    })
+                    .then(function(stat) {
+                        stat.data = new Date();
+                        return stat.save();
+                    })
+                    ;
+            })
+            .catch(function(err) {
+                console.error('cron sharesDivsTotal error', err);
+            })
+            ;
+    });
+
     console.log('cron inited');
     if (cb) cb();
 }
