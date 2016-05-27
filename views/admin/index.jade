@@ -1,6 +1,8 @@
 extends ../layouts/default.jade
 
 
+block postHead
+  script(src='/PageControllers/admin/index.js' defer)
 
 block pageHead
   h1 Админка
@@ -35,6 +37,8 @@ block content
   ul
     li
       a(href='/adm/shares_updateInday') Обновить inday свечи
+    li
+      a(href='#' id='divupdater') Обновить дивиденды ВСЕХ тикеров
     li
       a(href='/adm/shares_cache') Общий кэш
     li
