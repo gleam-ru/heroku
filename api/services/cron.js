@@ -117,6 +117,25 @@ cron.init = function(cb) {
             ;
     });
 
+    // дропаю ремемберми токены раз в неделю
+    // 02:01 в субботу
+    cron.add('dropRememberMes', '1 2 * * 7', function() {
+        return Q()
+            .then(function() {
+                return Passport.destroy({
+                    strategy: 'rememberme',
+                    createdAt: {'<': moment().add(-1, 'month').toDate()},
+                });
+            })
+            .then(function(destroyed) {
+                console.debug('destroyed', destroyed);
+            })
+            .catch(function(err) {
+                console.error('cron dropRememberMes error', err);
+            })
+            ;
+    });
+
     console.log('cron inited');
     if (cb) cb();
 }
