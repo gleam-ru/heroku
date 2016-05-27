@@ -8,6 +8,18 @@ module.exports = function(resolve) {
         return {
             template: [
                 '<div>',
+
+                    '<p>',
+                        'Данные предоставлены сайтом ',
+                        '<a href="http://www.dohod.ru/" target=_blank>dohod.ru</a>',
+                        '<span @click="openDonor">'+Jade.els.roundIcon('fa-share')+'</span>',
+                    '</p>',
+                    '<p>',
+                        '{{completeTicker.divs_comment}}',
+                    '</p>',
+
+                    '<svg v-el:svg style="height:400px;"></svg>',
+
                 '</div>',
             ].join(' '),
             //
@@ -23,113 +35,203 @@ module.exports = function(resolve) {
             //
             //
             //
+            methods: {
+                openDonor: function() {
+                    window.open('http://www.dohod.ru/ik/analytics/dividend/'+this.completeTicker.code);
+                },
+            },
             watch: {
                 completeTicker: function() {
                     var vm = this;
 
                     nv.addGraph(function() {
-                        var chart = nv.models.discreteBarChart()
-                          .x(function(d) { return d[0] })   //We can modify the data accessor functions...
-                          .y(function(d) { return d[1] })   //...in case your data is formatted differently.
-                          .tooltips(true)        //Don't show tooltips
-                          .showValues(true)       //...instead, show the bar value right on top of each bar.
-                          .color(["#2C3E50"])
-                          // .stacked(true)
-                        ;
+                        var chart = nv.models.multiChart()
+                            .interpolate('monotone')
+                            // .margin({bottom: 20, left: 20, right: 0, top: 0})
+                            ;
 
-                        // chart.tooltip.contentGenerator(function (obj) { return obj.data[2]})
-
-                        chart.xAxis
-                            .tickFormat(function(d) {
-                                return d3.time.format('%Y')(new Date(d))
+                        var data = _.map(vm.completeTicker.divs, function(d) {
+                            var date = moment(d.reestrdate, ddf);
+                            return _.extend({}, d, {
+                                profitpercent: parseFloat(d.profitpercent) || 0,
+                                value: parseFloat(d.value) || 0,
+                                year: moment(d.reestrdate, ddf).year(),
                             });
+                        });
+
+                        var min = _.min(_.map(data, 'year'));
+                        var max = _.max(_.map(data, 'year'));
+                        var current = min;
+
+                        while (current < max) {
+                            var found = _.find(data, {year: current});
+                            if (!found) {
+                                data.push({
+                                    profitpercent: 0,
+                                    value: 0,
+                                    year: current,
+                                });
+                            }
+                            current++;
+                        }
+                        data = _.sortBy(data, 'year');
 
 
-                        d3
-                            .select(vm.$el)
-                            .append('svg')
-                            .attr('height', 400)
-                            .datum(exampleData(vm.completeTicker))
+                        function calcAvg(arr, fr, to) {
+                            var avg = _(arr)
+                                .slice(_.max([fr, 0]), to + 1)
+                                .map('value')
+                                .mean()
+                                ;
+                            if (!avg) {
+                                avg = 0.0;
+                            }
+                            return avg;
+                        }
+
+                        data = _.map(data, function(d, i, arr) {
+                            var to = i;
+                            var from3  = to - 2;
+                            var from5  = to - 4;
+                            var from10 = to - 9;
+
+                            return _.extend(d, {
+                                avg3:  calcAvg(arr, from3, to),
+                                avg5:  calcAvg(arr, from5, to),
+                                avg10: calcAvg(arr, from10, to),
+                            });
+                        });
+
+                        chart.tooltip.contentGenerator(function (obj) {
+                            var d = data[obj.index];
+
+                            return [
+                                '<div class="nv-tt">',
+                                    '<h3><b>'+d.year+'</b></h3>',
+                                    '<table class="nv-tt-table">',
+                                        '<tr>',
+                                            '<td>Закрытие реестра</td>',
+                                            '<td>'+d.reestrdate+'</td>',
+                                        '</tr>',
+                                        '<tr>',
+                                            '<td>Дата выплаты</td>',
+                                            '<td>'+d.paydate+'</td>',
+                                        '</tr>',
+                                        '<tr>',
+                                            '<td>Дивиденд (руб.)</td>',
+                                            '<td>'+d.value+'</td>',
+                                        '</tr>',
+                                        '<tr>',
+                                            '<td>Процент прибыли</td>',
+                                            '<td>'+d.profitpercent+'%</td>',
+                                        '</tr>',
+                                        '<tr>',
+                                            '<td>Ср. див. за 3 года</td>',
+                                            '<td>'+d.avg3.toFixed(7)+'</td>',
+                                        '</tr>',
+                                        '<tr>',
+                                            '<td>Ср. див. за 5 лет</td>',
+                                            '<td>'+d.avg5.toFixed(7)+'</td>',
+                                        '</tr>',
+                                        '<tr>',
+                                            '<td>Ср. див. за 10 лет</td>',
+                                            '<td>'+d.avg10.toFixed(7)+'</td>',
+                                        '</tr>',
+                                    '</table>',
+                                '</div>',
+                            ].join(' ');
+                            // return JSON.stringify(obj);
+                        });
+
+
+                        var charts = [];
+
+                        charts.push({
+                            key: 'Дивиденд',
+                            type: 'bar',
+                            yAxis: 2,
+                            color: '#2C3E50',
+                            values: _.map(data, function(d, i) {
+                                return {
+                                    x: d.year,
+                                    y: d.value,
+                                };
+                            }),
+                        });
+
+                        // charts.push({
+                        //     key: 'Ср. за 3 года',
+                        //     type: 'line',
+                        //     color: '#bcbd22',
+                        //     yAxis: 2,
+                        //     values: _.map(data, function(d) {
+                        //         return {
+                        //             x: d.year,
+                        //             y: d.avg3,
+                        //         };
+                        //     }),
+                        // });
+                        charts.push({
+                            key: 'Ср. за 5 лет',
+                            type: 'line',
+                            color: '#fd8d3c',
+                            yAxis: 2,
+                            values: _.map(data, function(d) {
+                                return {
+                                    x: d.year,
+                                    y: d.avg5,
+                                };
+                            }),
+                        });
+                        // charts.push({
+                        //     key: 'Ср. за 10 лет',
+                        //     type: 'line',
+                        //     color: '#e6550d',
+                        //     yAxis: 2,
+                        //     values: _.map(data, function(d) {
+                        //         return {
+                        //             x: d.year,
+                        //             y: d.avg10,
+                        //         };
+                        //     }),
+                        // });
+
+                        charts.push({
+                            key: 'Процент прибыли',
+                            type: 'line',
+                            color: '#f00',
+                            yAxis: 1,
+                            values: _.map(data, function(d) {
+                                return {
+                                    x: d.year,
+                                    y: d.profitpercent,
+                                };
+                            }),
+                        });
+
+                        chart.lines1.interactive(false);
+                        chart.lines2.interactive(false);
+                        // chart.lines1.isArea(true);
+                        // chart.lines1.clipEdge(true);
+
+                        chart.yAxis1.tickFormat(function(d,i){
+                            return d3.format(',.1f')(d)+'%';
+                        });
+
+                        d3.select(vm.$els.svg)
+                            .datum(charts)
+                            .transition().duration(500)
                             .call(chart);
+
+                        d3.select('.bars2Wrap').node().parentNode.insertBefore(
+                            d3.select('.bars2Wrap').node(),
+                            d3.select('.lines1Wrap').node()
+                        );
 
                         nv.utils.windowResize(chart.update);
 
                         return chart;
                     });
-
-                    //Each bar represents a single discrete quantity.
-                    function exampleData(data) {
-                        window.data = data;
-
-                        var formattedDivs = _.map(data.divs, formatter);
-                        var minYear = _.min(formattedDivs, 'year').year;
-                        var currYear = moment().year();
-                        var tmp = {};
-                        for(var i = minYear; i <= currYear; i++) {
-                            tmp['_'+i] = {
-                                year: i,
-                                total: 0,
-                                divs: [],
-                            }
-                        }
-
-                        _.each(formattedDivs, function(d) {
-                            tmp['_'+d.year].total += parseFloat(d.value);
-                            tmp['_'+d.year].divs.push(d);
-                        })
-
-                        var newDivs = _.map(tmp, function(v) {
-                            return v;
-                        })
-
-
-                        newDivs = _.map(newDivs, function(d) {
-                            var nd = _.cloneDeep(d);
-                            nd.normal = [];
-                            nd.partitial = [];
-                            _.each(d.divs, function(div) {
-                                if (div.partitial) {
-                                    nd.partitial.push(div);
-                                }
-                                else {
-                                    nd.normal.push(div);
-                                }
-                            })
-                            return nd;
-                        })
-
-                        var total = {
-                            key: "Divs1",
-                            values: _.map(newDivs, function(d) {
-                                return [
-                                    moment('01.01.'+d.year, ddf).toDate().getTime(),
-                                    d.total,
-                                    ""
-                                ]
-                            })
-                        };
-
-                        return [total];
-                    }
-
-                    var formatter = function(d) {
-                        var formattedComment = "";
-                        if (d.comment) {
-                            formattedComment += "Промежуточный дивиденд: <br />";
-                            formattedComment += d.comment+": "+d.value+" "+d.currency+"<br />";
-                            formattedComment += "Отсечка: "+d.closed;
-                        }
-                        else {
-                            formattedComment += "Дивиденд: "+d.value+" "+d.currency+"<br />";
-                            formattedComment += "Отсечка: "+d.closed;
-                        }
-                        return _.extend({}, d, {
-                            year: moment(d.closed, ddf).year(),
-                            formattedComment: formattedComment,
-                            partitial: d.comment ? true : false,
-                        })
-                    }
-
                 },
             },
             //
@@ -166,8 +268,3 @@ module.exports = function(resolve) {
     ;
 };
 
-
-/**
- * Не уверен в актуальности с 26.05.2016
- *
- */

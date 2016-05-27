@@ -473,3 +473,11 @@ kv-editor {
     .divs-table tr.forecast td.recommended {
         opacity: 1;
         }
+
+
+.nv-tt * {
+    font-family: Arial;
+    }
+.nv-tt-table tr {
+    border-bottom: solid 1px #ccc;
+    }
