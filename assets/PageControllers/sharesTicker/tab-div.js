@@ -45,10 +45,14 @@ module.exports = function(resolve) {
                     var vm = this;
 
                     nv.addGraph(function() {
-                        var chart = nv.models.multiChart()
-                            .interpolate('monotone')
-                            // .margin({bottom: 20, left: 20, right: 0, top: 0})
-                            ;
+                        var chart = window.chart = nv.models.multiChart()
+                            .options({
+                                forceY: 0,
+                                interpolate: 'monotone',
+                                // showLegend: false,
+                                // margin: {left: 50, right: 25, top: 25, bottom: 30}
+                            });
+
 
                         var data = _.map(vm.completeTicker.divs, function(d) {
                             var date = moment(d.reestrdate, ddf);
@@ -75,7 +79,20 @@ module.exports = function(resolve) {
                             current++;
                         }
                         data = _.sortBy(data, 'year');
-
+                        // сворачиваю года в один "дивиденд"
+                        data = _.reduce(data, function(result, current) {
+                            var found = _.find(result, {year: current.year});
+                            if (found) {
+                                _.extend(found, {
+                                    value: found.value + current.value,
+                                    profitpercent: found.profitpercent + current.profitpercent,
+                                });
+                            }
+                            else {
+                                result.push(current);
+                            }
+                            return result;
+                        }, []);
 
                         function calcAvg(arr, fr, to) {
                             var avg = _(arr)
@@ -105,21 +122,27 @@ module.exports = function(resolve) {
                         chart.tooltip.contentGenerator(function (obj) {
                             var d = data[obj.index];
 
+                            function fix(val) {
+                                var symbols = -Math.log10(val) + 3;
+                                symbols = symbols < 0 ? 0 : symbols > 10 ? 10 : symbols;
+                                return val.toFixed(symbols);
+                            }
+
                             return [
                                 '<div class="nv-tt">',
                                     '<h3><b>'+d.year+'</b></h3>',
                                     '<table class="nv-tt-table">',
-                                        '<tr>',
-                                            '<td>Закрытие реестра</td>',
-                                            '<td>'+d.reestrdate+'</td>',
-                                        '</tr>',
-                                        '<tr>',
-                                            '<td>Дата выплаты</td>',
-                                            '<td>'+d.paydate+'</td>',
-                                        '</tr>',
+                                        // '<tr>',
+                                        //     '<td>Закрытие реестра</td>',
+                                        //     '<td>'+d.reestrdate+'</td>',
+                                        // '</tr>',
+                                        // '<tr>',
+                                        //     '<td>Дата выплаты</td>',
+                                        //     '<td>'+d.paydate+'</td>',
+                                        // '</tr>',
                                         '<tr>',
                                             '<td>Дивиденд (руб.)</td>',
-                                            '<td>'+d.value+'</td>',
+                                            '<td>'+fix(d.value)+'</td>',
                                         '</tr>',
                                         '<tr>',
                                             '<td>Процент прибыли</td>',
@@ -127,15 +150,15 @@ module.exports = function(resolve) {
                                         '</tr>',
                                         '<tr>',
                                             '<td>Ср. див. за 3 года</td>',
-                                            '<td>'+d.avg3.toFixed(7)+'</td>',
+                                            '<td>'+fix(d.avg3)+'</td>',
                                         '</tr>',
                                         '<tr>',
                                             '<td>Ср. див. за 5 лет</td>',
-                                            '<td>'+d.avg5.toFixed(7)+'</td>',
+                                            '<td>'+fix(d.avg5)+'</td>',
                                         '</tr>',
                                         '<tr>',
                                             '<td>Ср. див. за 10 лет</td>',
-                                            '<td>'+d.avg10.toFixed(7)+'</td>',
+                                            '<td>'+fix(d.avg10)+'</td>',
                                         '</tr>',
                                     '</table>',
                                 '</div>',
@@ -209,14 +232,45 @@ module.exports = function(resolve) {
                             }),
                         });
 
+                        charts.push({
+                            key: '100%',
+                            type: 'line',
+                            color: '#E08D8D',
+                            yAxis: 1,
+                            showLegend: false,
+                            // disabled: true,
+                            values: _.map(data, function(d) {
+                                return {
+                                    x: d.year,
+                                    y: 100,
+                                };
+                            }),
+                        });
+
+
+                        var dataY1 = _.flatMapDeep(charts, function(c) {
+                            return c.yAxis === 1 ? _.map(c.values, 'y') : [];
+                        });
+                        var dataY2 = _.flatMapDeep(charts, function(c) {
+                            return c.yAxis === 2 ? _.map(c.values, 'y') : [];
+                        });
+
+                        chart.yDomain1([0, _.max(dataY1)]);
+                        chart.yDomain2([0, _.max(dataY2)]);
+
+
                         chart.lines1.interactive(false);
+                        chart.lines1.forceY([0,100]);
+                        // chart.lines1.yDomain([100, 0]);
                         chart.lines2.interactive(false);
                         // chart.lines1.isArea(true);
                         // chart.lines1.clipEdge(true);
 
-                        chart.yAxis1.tickFormat(function(d,i){
-                            return d3.format(',.1f')(d)+'%';
-                        });
+                        chart.yAxis1
+                            .tickFormat(function(d,i){
+                                return d3.format(',.1f')(d)+'%';
+                            })
+                            ;
 
                         d3.select(vm.$els.svg)
                             .datum(charts)
