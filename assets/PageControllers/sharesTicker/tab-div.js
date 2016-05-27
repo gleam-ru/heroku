@@ -277,10 +277,13 @@ module.exports = function(resolve) {
                             .transition().duration(500)
                             .call(chart);
 
-                        d3.select('.bars2Wrap').node().parentNode.insertBefore(
-                            d3.select('.bars2Wrap').node(),
-                            d3.select('.lines1Wrap').node()
-                        );
+                        var barsNode = d3.select('.bars2Wrap').node();
+                        if (barsNode) {
+                            barsNode.parentNode.insertBefore(
+                                d3.select('.bars2Wrap').node(),
+                                d3.select('.lines1Wrap').node()
+                            );
+                        }
 
                         nv.utils.windowResize(chart.update);
 

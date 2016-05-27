@@ -495,7 +495,8 @@ window.createChart = function(el, data, cb) {
         ).domain();
 
         // lvc - LastVisibleCandle
-        var c = visibleCandles[visibleCandles.length - 1].close;
+        var lvc = _.last(visibleCandles);
+        var c = lvc && lvc.close;
 
         // чтобы график не упирался "в потолок"
         // if (visible_domain[1] / c < 1.1) visible_domain[1] = c * 1.1;
