@@ -247,11 +247,11 @@ module.exports = {
             if (results && results.lastUpdate && results.nextUpdate) {
                 data = [
                     {
-                        text: 'Данные обновлены',
+                        key: 'Данные обновлены',
                         value: moment(results.lastUpdate.data).fromNow(),
                     },
                     {
-                        text: 'Ближайшее обновление',
+                        key: 'Ближайшее обновление',
                         value: moment(results.nextUpdate.data).fromNow(),
                     },
                 ];

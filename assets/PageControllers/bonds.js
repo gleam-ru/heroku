@@ -34,10 +34,7 @@ $(document).ready(function() {
                     'twf': imported.twf,
                 },
                 data: {
-                    info: [
-                        // {key: 'Данные обновлены', value: shares.info.updatedAt},
-                        {key: 'Ближайшее обновление', value: 'через 15 минут'},
-                    ],
+                    info: additional,
                     rows: rows,
                     columns: columns,
                     filters: filters,
