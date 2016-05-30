@@ -25,6 +25,7 @@ module.exports = {
         var us = {
             user: user,
             page: page,
+            version: 1,
         };
 
         UserSettings.findOrCreate(us, us, function(err, settings) {

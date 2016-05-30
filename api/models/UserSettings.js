@@ -10,5 +10,7 @@ module.exports = {
         user: { model: 'User', required: true },
         page: { type: 'string', defaultsTo: '/', required: true },
         data: { type: 'json', defaultsTo: {}, required: true },
+
+        version: { type: 'integer', defaultsTo: 0 },
     }
 };
