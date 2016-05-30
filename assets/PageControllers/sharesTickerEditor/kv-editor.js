@@ -24,157 +24,74 @@ module.exports = function(resolve) {
     .then(function() {
         return {
             template: [
-                '<input',
-                    'class="key ib"',
-                    'type="text"',
-                    'v-model="key_text"',
-                    'placeholder="key_ph"',
-                    'style="margin-right: 20px;"',
-                    '/>',
-                '<input',
-                    'class="value ib"',
-                    'type="text"',
-                    'v-model="value_text"',
-                    'placeholder="value_ph"',
-                    'style="margin-right: 20px;"',
-                    '/>',
-                '<button',
-                    'class="g-btn type_midnight size_small"',
-                    'type="submit"',
-                    '@click="removeData"',
-                    'style="margin-right: 20px;"',
-                    '>',
-                    'Удалить',
-                '</button>',
-                '<button',
-                    ':class="[\'g-btn\', \'type_midnight\', \'size_small\', {invisible: !kv_is_modified}]"',
-                    'type="submit"',
-                    '@click="sendData"',
-                    '>',
-                    'Сохранить',
-                '</button>',
+                '<div class="kv-editor" :class="{modified: isModified}">',
+                    '<input',
+                        'class="key ib"',
+                        'type="text"',
+                        'v-model="key"',
+                        'placeholder="key"',
+                        'style="margin-right: 20px;"',
+                        '/>',
+                    '<input',
+                        'class="value ib"',
+                        'type="text"',
+                        'v-model="value"',
+                        'placeholder="value"',
+                        'style="margin-right: 20px;"',
+                        '/>',
+                    '<button',
+                        'class="g-btn type_midnight size_small"',
+                        'type="submit"',
+                        '@click="remove"',
+                        'style="margin-right: 20px;"',
+                        '>',
+                        'Удалить',
+                    '</button>',
+                '</div>',
             ].join(' '),
             //
             //
             //
-            props: ['editor_id', 'prop', 'href', 'key', 'value', 'key_ph', 'value_ph'],
+            props: ['key', 'value', 'modified', 'remove'],
             data: function() {
                 return {
                     key_orig: '',
-                    key_text: '',
                     value_orig: '',
-                    value_text: '',
-                }
+                };
             },
             computed: {
-                key_is_modified: function() {
-                    if (this.key_orig === undefined && this.key_text === '') {
-                        return false;
+                keyIsModified: function() {
+                    return this.key !== this.key_orig;
+                },
+                valueIsModified: function() {
+                    return this.value !== this.value_orig;
+                },
+                isModified: function() {
+                    return this.modified = this.keyIsModified || this.valueIsModified;
+                },
+            },
+            watch: {
+                modified: function(mod) {
+                    if (!mod) {
+                        this.setSaved();
                     }
-                    return this.key_text !== this.key_orig;
-                },
-                value_is_modified: function() {
-                    if (this.value_orig === undefined && this.value_text === '') {
-                        return false;
-                    }
-                    return this.value_text !== this.value_orig;
-                },
-                kv_is_modified: function() {
-                    return this.key_is_modified || this.value_is_modified;
-                },
+                }
             },
             //
             //
             //
             methods: {
-                sendData: function() {
-                    var vm = this;
-
-                    var el = $(vm.$el);
-                    if (el.hasClass('disabled')) {
-                        return false;
-                    }
-                    el.disable();
-
-                    $.post(href+vm.href, {
-                        message: {
-                            key   : vm.prop,
-                            value : {
-                                id    : vm.editor_id,
-                                key   : vm.key_text,
-                                value : vm.value_text,
-                            },
-                        }
-                    })
-                    .done(function() {
-                        vm.key_orig   = vm.key_text;
-                        vm.value_orig = vm.value_text;
-                        vm.setOrig(vm.key_text, vm.value_text);
-                        vm.$dispatch('kv-editor-saved', vm);
-                        el.enable();
-                    })
-                    .fail(function(err) {
-                        console.error(err);
-                        mp.alert('Что-то пошло не так');
-                    })
-                    ;
+                remove: function() {
+                    this.$emit('remove');
                 },
-
-                removeData: function() {
-                    var vm = this;
-
-                    $.post(href+vm.href, {
-                        message: {
-                            key    : vm.prop,
-                            remove : true,
-                            value  : {
-                                id : vm.editor_id,
-                            },
-                        }
-                    })
-                    .done(function() {
-                        vm.key_orig   = vm.key_text;
-                        vm.value_orig = vm.value_text;
-                        vm.setOrig(vm.key_text, vm.value_text);
-                        vm.$dispatch('kv-editor-removed', vm);
-                    })
-                    .fail(function(err) {
-                        console.error(err);
-                        mp.alert('Что-то пошло не так');
-                    })
-                    ;
-
-                },
-
-                getOrig: function() {
-                    var orig = window;
-                    var path = this.prop.split('.');
-                    while (path.length) {
-                        var new_orig = orig[path.shift()];
-                        if (!new_orig) new_orig = {};
-                        orig = new_orig;
-                    }
-                    return orig;
-                },
-                setOrig: function(key, value) {
-                    var orig = window;
-                    var path = this.prop.split('.');
-                    while (path.length) {
-                        var new_orig = orig[path.shift()];
-                        if (!new_orig) new_orig = {};
-                        orig = new_orig;
-                    }
-
-                    orig[key] = value;
+                setSaved: function() {
+                    this.key_orig = this.key;
+                    this.value_orig = this.value;
                 }
             },
             compiled: function() {
                 var vm = this;
-                if (typeof vm.href === 'undefined') vm.href = '';
-                vm.key_orig = vm.key;
-                vm.key_text = vm.key;
-                vm.value_orig = vm.value;
-                vm.value_text = vm.value;
+                vm.setSaved();
             },
         };
     })

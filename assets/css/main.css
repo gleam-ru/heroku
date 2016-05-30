@@ -426,17 +426,17 @@ body::-webkit-scrollbar {
     }
 
 
-kv-editor {
+.kv-editor {
     display: block;
     margin-bottom: 10px;
     }
-    kv-editor button {
+    .kv-editor button {
         margin-top: 3px !important;
         }
-    kv-editor.link input.key {
+    .kv-editor input.key {
         max-width: 200px;
         }
-    kv-editor.link input.value {
+    .kv-editor input.value {
         max-width: 400px;
         }
 
