@@ -170,7 +170,7 @@ module.exports = {
         });
 
         var conn = sails.config.connections[sails.config.models.connection];
-        var conn = sails.config.connections['mongolab'];
+        // var conn = sails.config.connections['mongolab'];
         var uri = 'mongodb://'+conn.user+':'+conn.password+'@'+conn.host+':'+conn.port+'/'+conn.database;
 
         console.info('backing up:', uri);
