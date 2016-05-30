@@ -101,6 +101,49 @@ me.parseSingle = function(code) {
 
             data.comment = $(body).find('#rightside-col > p').last().text().trim();
 
+
+
+            var topTable = $(body).find('.content-table').get(0);
+            var topRows = $(topTable).find('tr');
+            var topDivs = [];
+
+            for (var i = 0; i < topRows.length; i++) {
+                var topRow = $(topRows[i]);
+                var topCells = topRow.find('td');
+
+                if (topCells.length === 0) {
+                    continue;
+                }
+
+                if (topRow.hasClass('forecast')) {
+                    continue;
+                }
+
+                var topDiv = {
+                    year:           parseInt($(topCells[0]).text().trim()),
+                    value:          myParseFloat($(topCells[1]).text().trim()),
+                };
+
+                topDivs.push(topDiv);
+            }
+
+            _.each(topDivs, function(topDiv) {
+                var found = _.find(data.divs, function(div) {
+                    return topDiv.year === moment(div.reestrdate, ddf).year();
+                });
+                if (found) {
+                    return;
+                }
+
+                data.divs.push({
+                    reestrdate     : '01.01.'+topDiv.year,
+                    paydate        : '01.01.'+topDiv.year,
+                    value          : topDiv.value,
+                    profitpercent  : 0,
+                });
+            });
+
+
             return data;
         })
         .then(function(data) {
