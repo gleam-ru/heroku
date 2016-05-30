@@ -21,4 +21,43 @@ $(document).ready(function() {
         return false;
     });
 
+
+
+    $('#mongorestore').click(function(e) {
+
+        e.preventDefault();
+
+        mp.confirm('Восстановить базу из бекапа?', function() {
+            $('.content').mask();
+            $('#file').click();
+            $('#file').change(function(e) {
+                if (!$(this).val() || $(this).val() === '')
+                    return;
+                var uploadPath = '/adm/mongorestore';
+                var data = new FormData($('#mongorestoreUploadForm')[0]);
+                $.ajax({
+                    url: uploadPath,
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    success: function(data) {
+                        mp.alert('Восстановлено!');
+                        $('.content').unmask();
+                    },
+                    error: function(err) {
+                        console.error(err);
+                        mp.alert('что-то пошло не так...');
+                        $('.content').unmask();
+                    }
+                });
+            });
+
+        });
+
+
+        return false;
+    });
+
 });

@@ -82,6 +82,9 @@ module.exports.routes = {
     'get  /adm/shares_cache'       : 'Admin.shares_cache',
     'get  /adm/shares_dropCache'   : 'Admin.shares_dropCache',
     //---
+    'get  /adm/mongodump'          : 'Admin.mongodump',
+    'post /adm/mongorestore'       : 'Admin.mongorestore',
+    //---
     'post /adm/users'              : 'Admin.updateUserData',
 
 

@@ -157,5 +157,80 @@ module.exports = {
             console.warn('POST вникуда...');
         }
     },
+
+
+    // бекап базы
+    mongodump: function(req, res) {
+        req.connection.setTimeout(10 * 60 * 1000);
+
+        var backup = require('mongodb-backup');
+
+        res.writeHead(200, {
+            'Content-Type': 'application/x-tar' // force header for tar download
+        });
+
+        var conn = sails.config.connections[sails.config.models.connection];
+        var conn = sails.config.connections['mongolab'];
+        var uri = 'mongodb://'+conn.user+':'+conn.password+'@'+conn.host+':'+conn.port+'/'+conn.database;
+
+        console.info('backing up:', uri);
+
+        backup({
+            uri: uri,
+            // uri: 'mongodb://root:root@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>', // mongodb://<dbuser>:<dbpassword>@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>
+            // collections: ['user'], // save this collection only
+            stream: res, // send stream into client response
+            callback: function(err, data) {
+                if (err) {
+                    console.error(err);
+                    return res.serverError(err);
+                }
+            }
+        });
+    },
+
+    // восстанавливаю бд.
+    // Ждет стрим.
+    mongorestore: function(req, res) {
+        req.connection.setTimeout(10 * 60 * 1000);
+
+        console.info('uploading');
+        var file = req.file('file');
+
+        return Q.nbind(file.upload, file)({
+                maxBytes: 1024000000, //upload limit
+                dirname: '',
+            })
+            .then(function(uploaded) {
+                fs.renameSync(uploaded[0].fd, '.tmp/uploads/tar.tar');
+            })
+            .then(function() {
+                var restore  = require('mongodb-restore');
+
+                var conn = sails.config.connections[sails.config.models.connection];
+                var uri = 'mongodb://'+conn.user+':'+conn.password+'@'+conn.host+':'+conn.port+'/'+conn.database;
+
+                console.info('restoring');
+
+                restore({
+                    uri: uri, // mongodb://<dbuser>:<dbpassword>@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>
+                    stream: fs.createReadStream('.tmp/uploads/tar.tar'), // send this stream into db
+                    callback: function(err) { // callback after restore
+                        console.log('done', err, arguments);
+                        if (err) {
+                            throw err;
+                        }
+                        else {
+                            return res.ok();
+                        }
+                    },
+                    drop: true,
+                });
+            })
+            .catch(function(err) {
+                return res.serverError(err);
+            })
+            ;
+    },
 };
 

@@ -44,3 +44,20 @@ block content
     li
       a(href='/adm/shares_dropCache') Удалить кэш
 
+  h4 Dev
+  ul
+    li
+      a(href='/adm/mongodump') Mongo backup
+    li
+      a(href='#' id='mongorestore') Mongo restore from .tar
+      form.hidden#mongorestoreUploadForm(
+        action='/adm/mongorestore'
+        target='form_target'
+        method='post'
+        enctype='multipart/form-data'
+        )
+        input#file(
+          name='file'
+          type='file'
+          )
+      
