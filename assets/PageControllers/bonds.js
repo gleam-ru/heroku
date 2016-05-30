@@ -142,9 +142,9 @@ $(document).ready(function() {
     // описание колонок для datatables
     columns = [
         {
-            data: "id",
+            data: "num",
             title: "ID",
-            filter: "number",
+            filter: "string",
             bVisible: false,
         }, {
             id: "risk",
