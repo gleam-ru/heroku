@@ -67,18 +67,59 @@ module.exports = {
                     // TODO: defaultsTo
                     filters: [
                         {
-                            text: 'test filter',
-                            conditions: []
-                        }, {
-                            text: 'one more',
-                            conditions: [
+                            "text": "Разумный инвестор",
+                            "conditions": [
                                 {
-                                    column: {data: 'name'},
-                                    type: {value: 'contains'},
-                                    value: 'яро',
+                                    "column" : {"data": "MarketCap"},
+                                    "type"   : {"value": "more"},
+                                    "value"  : "100000000"
+                                }, {
+                                    "column" : {"data": "CurrentRatioYear"},
+                                    "type"   : {"value": "more"},
+                                    "value"  : "2"
+                                }, {
+                                    "column" : {"data": "Dividend"},
+                                    "type"   : {"value": "more"},
+                                    "value"  : "11"
+                                }, {
+                                    "column" : {"data": "RevenueGrowthRate10Years"},
+                                    "type"   : {"value": "more"},
+                                    "value"  : "6"
+                                }, {
+                                    "column" : {"data": "EPSGrowthRate10Years"},
+                                    "type"   : {"value": "more"},
+                                    "value"  : "15"
+                                }, {
+                                    "column" : {"data": "PE"},
+                                    "type"   : {"value": "more"},
+                                    "value"  : "1"
+                                }, {
+                                    "column" : {"data": "PE"},
+                                    "type"   : {"value": "less"},
+                                    "value"  : "12"
+                                }, {
+                                    "column" : {"data": "PriceToBook"},
+                                    "type"   : {"value": "more"},
+                                    "value"  : "0.2"
+                                }, {
+                                    "column" : {"data": "PriceToBook"},
+                                    "type"   : {"value": "less"},
+                                    "value"  : "0.8"
                                 }
+                            ],
+                            "visibleColumns": [
+                                {"data": "__adm"},
+                                {"data": "code"},
+                                {"data": "__moex"},
+                                {"data": "__site"},
+                                {"data": "__forums"},
+                                {"data": "__links"},
+                                {"data": "name"},
+                                {"data": "PE"},
+                                {"data": "QuoteLast"},
+                                {"data": "BookValuePerShareYear"},
                             ]
-                        },
+                        }
                     ],
                 };
             })
