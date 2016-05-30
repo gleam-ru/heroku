@@ -56,6 +56,10 @@ module.exports = function(resolve) {
                     return result;
                 }, {});
 
+                router.redirect({
+                    '*': _.first(vm.tabs).url || '',
+                });
+
                 router.map(routes);
                 router.start(App, vm.$el);
             }
