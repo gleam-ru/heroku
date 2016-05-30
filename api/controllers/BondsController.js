@@ -41,11 +41,54 @@ module.exports = {
         UserSettings
             .findOne({
                 user: req.user ? req.user.id : null,
+                version: {'>': 0},
                 page: 'bonds/filters',
             })
             .then(function(us) {
                 data.us = (us && us.data) || {
                     filters: [{
+                        "text": "ОФЗ",
+                        "conditions": [
+                            {
+                                "column": {data: "percent"},
+                                "type": {value: "more"},
+                                "value": "0"
+                            }, {
+                                "column": {data: "name"},
+                                "type": {value: "contains"},
+                                "value": "ОФЗ"
+                            },
+                        ],
+                        "visibleColumns": [
+                            {
+                                "data": "risk"
+                            },
+                            {
+                                "data": "name"
+                            },
+                            {
+                                "data": "__rusbonds"
+                            },
+                            {
+                                "data": "__calc"
+                            },
+                            {
+                                "data": "bid"
+                            },
+                            {
+                                "data": "ask"
+                            },
+                            {
+                                "data": "expiresIn"
+                            },
+                            {
+                                "data": "percent_woRT"
+                            },
+                            {
+                                "data": "percent_woRTCT"
+                            }
+                        ]
+                    }, {
                         "text": "Гос + Муни",
                         "conditions": [
                             {
@@ -58,7 +101,35 @@ module.exports = {
                                 "value": "ОФЗ|Башкорт|БелгОб|ВлгОб|ВолгогОб|Волгогр|Волжск|ВологодОб|Воронеж|ВоронежОб|ВржОб|Казань|КалужОбл|Карелия|КемерОбл|КОМИ|Костром|КостромОб|Краснодар|КраснодКр|КраснЯрКр|ЛенОбл|ЛипецкОбл|МарЭл|МгдОбл|Мгор|Мордовия|НижгорОбл|Новосиб|Новсиб|ОмскАдм|ОмскОб|Оренб|ОренОбл|РязОбл|СамарОбл|СвердлОб|СмолОб|СПбГО|СтаврКрай|ТверОбл|ТомскАдм|ТомскОб|ТулОбл|Удмуртия|Хакас|ХМАО|Чувашия|Якут|ЯрОбл"
                             },
                         ],
-                        "visibleColumns": []
+                        "visibleColumns": [
+                            {
+                                "data": "risk"
+                            },
+                            {
+                                "data": "name"
+                            },
+                            {
+                                "data": "__rusbonds"
+                            },
+                            {
+                                "data": "__calc"
+                            },
+                            {
+                                "data": "bid"
+                            },
+                            {
+                                "data": "ask"
+                            },
+                            {
+                                "data": "expiresIn"
+                            },
+                            {
+                                "data": "percent_woRT"
+                            },
+                            {
+                                "data": "percent_woRTCT"
+                            }
+                        ]
                     }, {
                         "text": "Краткосрочные",
                         "conditions": [
@@ -72,6 +143,35 @@ module.exports = {
                                 "value": "100"
                             },
                         ],
+                        "visibleColumns": [
+                            {
+                                "data": "risk"
+                            },
+                            {
+                                "data": "name"
+                            },
+                            {
+                                "data": "__rusbonds"
+                            },
+                            {
+                                "data": "__calc"
+                            },
+                            {
+                                "data": "bid"
+                            },
+                            {
+                                "data": "ask"
+                            },
+                            {
+                                "data": "expiresIn"
+                            },
+                            {
+                                "data": "percent_woRT"
+                            },
+                            {
+                                "data": "percent_woRTCT"
+                            }
+                        ]
                     }, {
                         "text": "Долгосрочные",
                         "conditions": [
@@ -85,6 +185,35 @@ module.exports = {
                                 "value": "365"
                             },
                         ],
+                        "visibleColumns": [
+                            {
+                                "data": "risk"
+                            },
+                            {
+                                "data": "name"
+                            },
+                            {
+                                "data": "__rusbonds"
+                            },
+                            {
+                                "data": "__calc"
+                            },
+                            {
+                                "data": "bid"
+                            },
+                            {
+                                "data": "ask"
+                            },
+                            {
+                                "data": "expiresIn"
+                            },
+                            {
+                                "data": "percent_woRT"
+                            },
+                            {
+                                "data": "percent_woRTCT"
+                            }
+                        ]
                     }]
                 };
             })
@@ -152,6 +281,7 @@ module.exports = {
         var us = {
             user: req.user.id,
             page: 'bonds',
+            version: 1,
         }
         // such an idiotic API...
         UserSettings.findOrCreate(us, us, function(err, settings) {

@@ -146,6 +146,29 @@ module.exports = function(resolve) {
                                 },
                             },
                         ],
+                        string_moreless: [
+                            {
+                                text: "Больше",
+                                value: "more",
+                                apply: function(a, b) {
+                                    return a.trim() > b.trim();
+                                },
+                            },
+                            {
+                                text: "Меньше",
+                                value: "less",
+                                apply: function(a, b) {
+                                    return a.trim() < b.trim();
+                                },
+                            },
+                            {
+                                text: "Не равен",
+                                value: "ne",
+                                apply: function(a, b) {
+                                    return a.trim() !== b.trim();
+                                },
+                            },
+                        ],
                     },
                     newFilter: {
                         text: 'Новый фильтр',

@@ -75,7 +75,7 @@ module.exports = function(resolve) {
                     // фильтрация
                     $.fn.dataTableExt.afnFiltering[0] = function(oSettings, aData) {
                         return _.every(filter.conditions, function(condition) {
-                            if (!condition.column || !condition.type || !condition.value) {
+                            if (!condition.column || !condition.type) {
                                 // console.warn('вероятно, битый condition', filter, condition);
                                 return true;
                             }
@@ -116,35 +116,13 @@ module.exports = function(resolve) {
                         c.visible(!c.visible());
                     });
 
-                    // var oldOrder = _(order)
-                    //     // .sortBy('userIdx')
-                    //     .map('currIdx')
-                    //     .value()
-                    //     ;
-                    // console.debug('old order (got):', _.map(oldOrder.slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-                    // console.debug('old order (real):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-
                     var newOrder = _(order)
                         .sortBy('userIdx')
                         .map('currIdx')
                         .value()
                         ;
-                    // console.debug('new order (before, got):', _.map(newOrder.slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
-                    // console.debug('new order (before, real):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
 
                     Table.colReorder.order(newOrder);
-
-                    // console.debug('new order (after):', _.map(Table.colReorder.order().slice(0, 4), function(idx) {
-                    //     return tableColumns[idx];
-                    // }));
 
                     Table.draw();
                     initTT();

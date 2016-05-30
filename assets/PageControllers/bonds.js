@@ -147,16 +147,12 @@ $(document).ready(function() {
             filter: "number",
             bVisible: false,
         }, {
-            data: "name",
-            title: "Наименование",
-            notHideable: true,
-            bVisible: true,
-            filter: "string",
-        }, {
             id: "risk",
             data: "risk",
             className: "risksColumn",
             vueTitle: 'Уровень риска',
+            bVisible: true,
+            width: 10,
             title: [
                 'A',
                 '<span',
@@ -230,13 +226,19 @@ $(document).ready(function() {
                 }
                 return [
                     '<div',
-                        'style=\'background:'+color+';\'',
+                        'style="background:'+color+';"',
                     '>',
                         data,
                     '</div>',
                 ].join(' ');
             },
             filter: "string_moreless",
+        }, {
+            data: "name",
+            title: "Наименование",
+            notHideable: true,
+            bVisible: true,
+            filter: "string",
         }, {
             vueTitle: 'Rusbonds',
             data: '__rusbonds',

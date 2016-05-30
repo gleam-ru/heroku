@@ -60,6 +60,7 @@ me.template = [
         // '',
         '<div class="isolated">',
             '<div class="control-buttons">',
+                '<span @click="save()">'+Jade.els.button('Сохранить как новый')+'</span>',
                 '<span @click="save(static.idx)">'+Jade.els.button('Сохранить')+'</span>',
                 '<span @click="cancel">'+Jade.els.button('Отмена')+'</span>',
             '</div>',
@@ -68,7 +69,9 @@ me.template = [
     '</div>',
 ].join(' ');
 
-
+me.data = {
+    // visibleColumns: [],
+};
 
 // открывает окно с редактированием фильтра
 me.show = function(filter, additional) {
@@ -84,10 +87,15 @@ me.show = function(filter, additional) {
                 new Vue({
                     el: wrapper,
                     data: function() {
-                        return _.extend(_.cloneDeep(filter), {
-                            static: _.extend({}, me.data, additional),
-                            // visibleColumns: [],
-                        });
+                        return _.extend(
+                            {
+                                visibleColumns: [],
+                            },
+                            _.cloneDeep(filter),
+                            {
+                                static: _.extend({}, me.data, additional),
+                                // visibleColumns: [],
+                            });
                     },
                     methods: {
                         add: function() {
@@ -289,7 +297,7 @@ me.show = function(filter, additional) {
                                     .compact()
                                     .sortBy('name', function(i) {
                                         // хитрая сортировка, выставляющая все иконки наверх
-                                        if (this.isButtonColumn(i)) {
+                                        if (vm.isButtonColumn(i)) {
                                             return 0;
                                         }
                                         else {
