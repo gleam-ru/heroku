@@ -17,6 +17,14 @@ module.exports = function(resolve) {
                     '<p>',
                         '{{completeTicker.divs_comment}}',
                     '</p>',
+                    '<h3>Учитывать прогноз: ',
+                        '<i',
+                            'class="fa cp"',
+                            ':class="{\'fa-check-square-o\': withForecast, \'fa-square-o\': !withForecast}"',
+                            '@click="withForecast = !withForecast"',
+                            '>',
+                        '</i>',
+                    '</h3>',
 
                     '<svg v-el:svg style="height:400px;"></svg>',
 
@@ -30,6 +38,7 @@ module.exports = function(resolve) {
                 return {
                     ticker: window.ticker || {},
                     completeTicker: {},
+                    withForecast: $.cookie('with_forecast') || false,
                 };
             },
             //
@@ -39,11 +48,8 @@ module.exports = function(resolve) {
                 openDonor: function() {
                     window.open('http://www.dohod.ru/ik/analytics/dividend/'+this.completeTicker.code);
                 },
-            },
-            watch: {
-                completeTicker: function() {
+                drawChart: function() {
                     var vm = this;
-
                     nv.addGraph(function() {
                         var chart = window.chart = nv.models.multiChart()
                             .options({
@@ -54,7 +60,10 @@ module.exports = function(resolve) {
                             });
 
 
-                        var data = _.map(vm.completeTicker.divs, function(d) {
+                        var data = _.cMap(vm.completeTicker.divs, function(d) {
+                            if (!vm.withForecast && d.is_forecast && !d.value_recommended) {
+                                return;
+                            }
                             var date = moment(d.reestrdate, ddf);
                             return _.extend({}, d, {
                                 profitpercent: parseFloat(d.profitpercent) || 0,
@@ -289,6 +298,16 @@ module.exports = function(resolve) {
 
                         return chart;
                     });
+
+                },
+            },
+            watch: {
+                withForecast: function(val) {
+                    $.cookie('with_forecast', val ? 'yep' : '');
+                    this.drawChart();
+                },
+                completeTicker: function() {
+                    this.drawChart();
                 },
             },
             //

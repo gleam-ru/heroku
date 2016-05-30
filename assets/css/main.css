@@ -22,7 +22,7 @@ input.fillMePls {
     box-shadow: 0px 0px 3px 1px #138132 !important;
     }
 
-.cur-p {cursor: pointer;}
+.cur-p, .cp {cursor: pointer;}
 
 /* _margin */
 .no-m  {margin: 0px !important;}
@@ -481,3 +481,7 @@ body::-webkit-scrollbar {
 .nv-tt-table tr {
     border-bottom: solid 1px #ccc;
     }
+
+
+
+#shares .tab p {margin-bottom: 10px;}
