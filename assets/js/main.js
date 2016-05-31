@@ -27,7 +27,7 @@ window.datatables_localization = {
         "sortAscending": ": активировать для сортировки столбца по возрастанию",
         "sortDescending": ": активировать для сортировки столбца по убыванию"
     }
-}
+};
 
 // стандартные сообщения
 window.messages = {
@@ -43,7 +43,7 @@ window.messages = {
     not_implemented: ''+
         '<p>Извините, данная возможность пока не реализована</p>'+
         '',
-}
+};
 
 window.hasRoles = function(roleNames) {
     var ok = false;
@@ -57,7 +57,7 @@ window.hasRoles = function(roleNames) {
         }
     })
     return ok;
-}
+};
 
 $(document).ready(function() {
     // lodash
@@ -69,7 +69,7 @@ $(document).ready(function() {
                 if (idx !== -1) {
                     first.push(_.pullAt(collection, idx));
                 }
-            })
+            });
             return first.concat(collection);
         }
     });
@@ -81,7 +81,7 @@ $(document).ready(function() {
         daysMin:     ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
         months:      ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
         monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
-    }
+    };
     $.pickmeup.format = "d-m-Y";
     $.pickmeup.position = "top";
     $.pickmeup.view = "years";
@@ -117,7 +117,7 @@ $(document).ready(function() {
 
             el.tooltipster(opts);
         });
-    }
+    };
     initTT();
 
 
@@ -142,10 +142,10 @@ $(document).ready(function() {
             // remove mask
             this.find('#mask').fadeOut(500, function(){ $(this).remove();});
         }
-    }
+    };
     $.fn.unmask = function() {
         this.mask(false);
-    }
+    };
     $.fn.disable = function(state) {
         if(state === undefined || state) {
             // disable
@@ -154,11 +154,10 @@ $(document).ready(function() {
         else {
             this.removeClass('disabled');
         }
-
-    }
+    };
     $.fn.enable = function() {
         this.disable(false);
-    }
+    };
 
 
 
@@ -181,7 +180,7 @@ $(document).ready(function() {
             el.find('#done').fadeOut(200, function(){ $(this).remove();});
             cb();
         }, 300);
-    }
+    };
 
 
 
@@ -200,7 +199,7 @@ $(document).ready(function() {
                 type: 'inline'
             },
         });
-    }
+    };
     // замена стандартному confirm
     window.mp.confirm = function(html, cb) {
         var popup = $('<div></div>');
@@ -229,7 +228,7 @@ $(document).ready(function() {
             },
             modal: true,
         });
-    }
+    };
 
 
 
@@ -237,8 +236,8 @@ $(document).ready(function() {
     System.config({
         baseURL: '/',
     });
-    System.importAll = function(hash) {
-        var hash = _.clone(hash);
+    System.importAll = function(_hash) {
+        var hash = _.clone(_hash);
         var results = {};
         return Promise.resolve()
             .then(function() {
@@ -254,14 +253,15 @@ $(document).ready(function() {
                         .import(src)
                         .then(function(imported) {
                             results[name] = imported;
-                        })
-                }))
+                        });
+                }));
             })
             .then(function() {
                 return results;
             })
             ;
     };
+    //*/
 
     // http://www.javascriptkit.com/javatutors/loadjavascriptcss.shtml
     window.loadFile = function(filename, filetype) {
@@ -276,6 +276,7 @@ $(document).ready(function() {
                         $.getScript(filename)
                             .done(resolve)
                             .fail(reject)
+                            ;
                     });
                 }
                 else if (filetype == "css") {
@@ -288,15 +289,15 @@ $(document).ready(function() {
                 else {
                     throw new Error('unknown file type');
                 }
-            })
-    }
+            });
+    };
 
 
     window.promisedGet = function(url) {
         return new Promise(function(resolve, reject) {
             $.get(url).done(resolve).fail(reject);
         });
-    }
+    };
 
 
     // lodash
@@ -314,4 +315,4 @@ $(document).ready(function() {
 window.deh = function(err) {
     console.error(err);
     mp.alert('Что-то пошло не так...');
-}
+};
