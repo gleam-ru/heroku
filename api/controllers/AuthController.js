@@ -146,7 +146,8 @@ var AuthController = {
                     var user = results[0];
                     var role = results[1];
                     user.roles.add(role.id);
-                    return user.save();
+                    user.save();
+                    return user;
                 })
                 .then(function(user) {
                     created.push(user);

@@ -118,7 +118,7 @@ module.exports = {
                 return res.render('admin/index', {
                     info: req.flash('info'),
                 });
-            })
+            });
     },
 
 
@@ -129,16 +129,18 @@ module.exports = {
     // обновление данных пользователя
     updateUserData: function(req, res) {
         var data = req.param('message');
+        console.info('data', data);
         if (data.type === 'userrole') {
             return Q.resolve()
                 .then(function() {
-                    return User.findOne({id: data.id}).populate('roles')
+                    return User.findOne({id: data.id}).populate(['roles']);
                 })
                 .then(function(user) {
+                    console.debug('user', user);
                     _.each(user.roles, function(existingRole) {
                         user.roles.remove(existingRole.id);
-                    })
-                    return user.save();
+                    });
+                    return user;
                 })
                 .then(function(user) {
                     return Role
@@ -146,12 +148,13 @@ module.exports = {
                         .then(function(roles) {
                             _.each(roles, function(role) {
                                 user.roles.add(role.id);
-                            })
+                            });
                             return user.save();
-                        })
+                        });
                 })
                 .then(res.ok)
                 .catch(res.serverError)
+                ;
         }
         else {
             console.warn('POST вникуда...');
