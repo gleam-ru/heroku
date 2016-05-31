@@ -64,7 +64,7 @@ me.parseSingle = function(code) {
             var rows = $(table).find('tr');
 
             if (!rows.length) {
-                console.warn('нет данных по дивидендам компании:', donor+code);
+                console.info('нет данных по дивидендам компании:', donor+code);
             }
 
             var data = {
