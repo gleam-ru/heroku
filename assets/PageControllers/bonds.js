@@ -311,6 +311,11 @@ $(document).ready(function() {
             filter: "number",
         }, {
             data: "cpVal",
+            title: "Купон (руб)",
+            filter: "number",
+            bVisible: false,
+        }, {
+            data: "cpYie",
             title: "Купон (%)",
             filter: "number",
             bVisible: false,
