@@ -138,13 +138,11 @@ var AuthController = {
                         User.create({
                             username: username,
                             email: email,
-                        }),
+                        }).populateAll(),
                         Role.findOne({name: 'user'}),
                     ])
                 })
-                .then(function(results) {
-                    var user = results[0];
-                    var role = results[1];
+                .spread(function(user, role) {
                     user.roles.add(role.id);
                     user.save();
                     return user;

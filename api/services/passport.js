@@ -202,25 +202,35 @@ function userByPassport(req, _passport, _user, done) {
             // в человеческом понимании это равносильно if (!passport)
             if (!asyncCb) {
                 asyncCb = passport;
-                User.create(_user, function(err, user) {
-                    if (err) {
-                        console.error('unable to create user ('+_passport.strategy+' auth)', err);
-                        return asyncCb(err);
-                    }
-                    Passport.create({
-                        strategy   : _passport.strategy,
-                        identifier : _passport.identifier,
-                        user       : user.id,
-                    }, function(err) {
-                        if (err) {
-                            console.error('unable to create passport ('+_passport.strategy+' auth)', err);
-                            return asyncCb(err);
-                        }
-                        req._just_registered = true;
-                        console.info('New '+_passport.strategy+' user! ID: '+user.id);
-                        asyncCb(null, user);
-                    });
-                });
+                Q.all([
+                    User.create(_user).populateAll(),
+                    Role.findOne({name: 'user'}),
+                ])
+                .spread(function(user, role) {
+                    user.roles.add(role.id);
+                    user.save();
+                    return user;
+                })
+                .then(function(user) {
+                    return Q.all([
+                        Passport.create({
+                            strategy   : _passport.strategy,
+                            identifier : _passport.identifier,
+                            user       : user.id,
+                        }),
+                        user,
+                    ]);
+                })
+                .spread(function(passport, user) {
+                    req._just_registered = true;
+                    console.info('New '+passport.strategy+' user! ID: '+passport.user);
+                    asyncCb(null, user);
+                })
+                .catch(function(err) {
+                    console.error('unable to create passport ('+_passport.strategy+' auth)', err);
+                    return asyncCb(err);
+                })
+                ;
             }
             else {
                 User.findOne(passport.user, asyncCb);
