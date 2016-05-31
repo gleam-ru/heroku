@@ -10,6 +10,7 @@ module.exports = function(grunt) {
                 'jquery.js',
                 'd3.js',
                 'techan.js',
+                'system.js',
             ],
             src: [
                 'views/layouts/parts/head.jade',
