@@ -9,7 +9,20 @@ module.exports = function(resolve) {
                 '<div class="router-tabs">',
                 '</div>',
             ].join(' '),
-            props: ['tabs'],
+            props: {
+                tabs: {
+                    type: Array,
+                    required: true
+                },
+                separator: {
+                    required: false,
+                    default: true,
+                },
+                storeroute: {
+                    required: false,
+                    default: false,
+                },
+            },
             data: function() {
                 return {};
             },
@@ -24,7 +37,7 @@ module.exports = function(resolve) {
                             '</ul>',
 
                             // separator
-                            '<div style="margin: 20px 0px 40px 0px;" class="g-hr no-select"><span class="g-hr-h"></span></div>',
+                            '<div v-if="separator" style="margin: 20px 0px 40px 0px;" class="g-hr no-select"><span class="g-hr-h"></span></div>',
 
                             '<div class="tab">',
                                 '<router-view></router-view>',
@@ -35,6 +48,7 @@ module.exports = function(resolve) {
                     data: function() {
                         return {
                             tabs: vm.tabs,
+                            separator: vm.separator,
                         };
                     },
                 };
@@ -57,7 +71,12 @@ module.exports = function(resolve) {
                 }, {});
 
                 router.redirect({
-                    '*': _.first(vm.tabs).url || '',
+                    '*': vm.storeroute && $.cookie('v-router') || _.first(vm.tabs).url || $.cookie('v-router') || '',
+                });
+
+                router.afterEach(function(transition) {
+                    $.cookie('v-router', transition.to.path);
+                    console.log('Successfully navigated to: ' + transition.to.path);
                 });
 
                 router.map(routes);

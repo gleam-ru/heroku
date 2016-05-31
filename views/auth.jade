@@ -16,8 +16,9 @@ block postHead
   script(src='/PageControllers/auth.js')
   style.
     form * {margin-bottom: 5px; max-width: 300px; display: block;}
-    #auth h3 {margin-top: 20px; text-transform: capitalize;}
-    #auth h3 a {text-transform: capitalize; border-bottom: dashed 1px #CCC;}
+    .router-tabs .tabs-nav {
+      margin: 20px 0px;
+      }
 
 
 
@@ -33,21 +34,17 @@ block breadcrumbs
 
 block content
   +providers(providers)
-  div#auth(v-cloak)
-    div.registering(
-      v-if='signUp'
-      )
-      h3.no-select {{signUpText}} | 
-        a.pointer(
-          @click='change_vue'
-          ) {{signInText}}
+  #auth(v-cloak)
+
+  .hidden
+    #registering
       for error in errors
         +error(error)
       form(
         role='form'
         action='/auth/register'
         method='post'
-        v-el='form'
+        v-el:form,
         @submit='beforeRegister'
         )
         input(
@@ -87,22 +84,15 @@ block content
           )
           | Регистрация
 
-    div.authentication(
-      v-if='signIn'
-      ) 
-      h3.no-select
-        a.pointer(
-          @click='change_vue'
-          ) {{signUpText}}
-        |  | {{signInText}}
+    #authentication
+      for error in errors
+        +error(error)
       form.login(
         role='form'
         action='/auth/login'
         method='post'
         @submit='beforeLogIn'
         )
-        for error in errors
-          +error(error)
         input(
           type='text'
           name='identifier' 
