@@ -2,6 +2,7 @@ module.exports.bootstrap = function(cb) {
 
 
     // MODULES
+    global.isDev    = false;
     global.moment   = require('moment');
     global.fs       = require('fs-extra');
     global._        = require('lodash');
@@ -50,6 +51,7 @@ module.exports.bootstrap = function(cb) {
 
     // TODO: сделать покрасиввее
     if (!sails.config.heroku) {
+        isDev = true;
         async.series([
             // filler.process,
             provider.init,
