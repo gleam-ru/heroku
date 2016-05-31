@@ -17,7 +17,7 @@ module.exports = function(grunt) {
             fileTypes: {
                 jade: {
                   replace: {
-                    js: 'script(src="{{filePath}}" defer)'
+                    js: 'script(src="{{filePath}}")'
                   }
                 }
             }
