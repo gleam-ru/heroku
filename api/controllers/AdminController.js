@@ -235,5 +235,23 @@ module.exports = {
             })
             ;
     },
+
+
+
+    updateAllCandles: function(req, res) {
+        var importer = require('../services/DataProviders/SharesImporter');
+
+        importer.totalUpdate()
+            .then(function() {
+                return res.send({msg: 'ok'});
+            })
+            .catch(function(err) {
+                return res.serverError(err);
+            })
+            ;
+
+    }
+
+
 };
 

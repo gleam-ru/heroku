@@ -23,6 +23,33 @@ $(document).ready(function() {
 
 
 
+
+    $('#candlesupdater').click(function(e) {
+
+        e.preventDefault();
+
+        mp.confirm('Это ОЧЕНЬ сложная операция. Продолжить?', function() {
+            $('.content').mask();
+
+            $.post('/API/update_all_shares_candles')
+            .done(function() {
+                console.log('done');
+            })
+            .fail(function(err) {
+                console.error(err);
+                mp.alert('что-то пошло не так');
+            })
+            .always(function() {
+                $('.content').unmask();
+            })
+            ;
+        });
+
+        return false;
+    });
+
+
+
     $('#mongorestore').click(function(e) {
 
         e.preventDefault();

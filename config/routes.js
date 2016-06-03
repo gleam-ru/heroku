@@ -54,8 +54,9 @@ module.exports.routes = {
     'post /services/shares/:id/parse_divs' : 'Shares.parseDivs',
     //
     // фильтры таблички
-    'post /API/usersettings': 'API.updateUserSettings',
-    'post /API/parse_divs'  : 'Shares.parseDivs',
+    'post /API/usersettings'               : 'API.updateUserSettings',
+    'post /API/parse_divs'                 : 'Shares.parseDivs',
+    'post /API/update_all_shares_candles'  : 'Admin.updateAllCandles',
     //
 
 

@@ -21,23 +21,7 @@ module.exports = {
             .then(function(branches) {
                 data.branches = branches;
                 console.time('SharesController/index');
-                return Share.find({
-                    where: {
-                        dead: false,
-                    },
-                    select: [
-                        'id',
-                        'branch',
-                        'name',
-                        'code',
-                        'site',
-                        //
-                        'forums',
-                        'links',
-                        //
-                        'google',
-                    ],
-                })
+                return Share.find({dead: false})
                 // .populateAll()
                 ;
             })
@@ -50,6 +34,7 @@ module.exports = {
                 });
             })
             .then(function(shares) {
+                console.debug('no time');
                 if (!shares) {
                     console.warn('Возвращен пустой список акций.');
                     shares = [];
@@ -58,12 +43,14 @@ module.exports = {
                 data.shares.params = provider.sharesGoogle.params;
             })
             .then(function() {
+                console.debug('no time2');
                 return UserSettings.findOne({
                     user: req.user ? req.user.id : null,
                     page: 'shares/filters',
                 });
             })
             .then(function(us) {
+                console.debug('us sett');
                 data.us = (us && us.data) || {
                     // TODO: defaultsTo
                     filters: [
@@ -125,9 +112,11 @@ module.exports = {
                 };
             })
             .then(function() {
+                console.debug('no time 3');
                 return Statistics.findOne({name: 'sharesGoogleSaveToDB'});
             })
             .then(function(lastUpdate) {
+                console.debug('stats');
                 data.shares.info = [];
                 if (lastUpdate) {
                     data.shares.info.push({
@@ -150,6 +139,7 @@ module.exports = {
                 }
             })
             .then(function() {
+                console.debug('render');
                 res.render('services/shares/new_shares', data);
             });
     },
