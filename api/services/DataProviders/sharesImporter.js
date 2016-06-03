@@ -21,9 +21,66 @@ me.process = function(cb) {
             console.error(err, err.stack)
         })
         .nodeify(cb)
-}
+        ;
+};
 
 
+// полное обновление всех свечек с отбрасыванием старых
+me.totalUpdate = function() {
+    var now = moment();
+    return Q()
+        .then(function() {
+            return Share.find({dead: false});
+        })
+        .then(function(shares) {
+            var tasks = [];
+            _.each(shares, function(share) {
+                var mfd_id = share.mfd_id;
+
+                if (!mfd_id) {
+                    console.warn('У акции', share.name, 'отсутствует много свечей и не привязан mfd_id');
+                    return;
+                }
+
+                //
+                if (sails.config.app.providers.shares.timeToForget < (now - moment(share.updatedAt))) {
+                    console.info('"забываем" эмитента:', share.name)
+                    tasks.push(Q.resolve()
+                        .then(function() {
+                            share.die();
+                            return;
+                        }))
+                        ;
+                    return;
+                }
+
+                tasks.push(
+                    Q.ninvoke(parser, 'getTicker', mfd_id)
+                    .then(function(candles_parsed) {
+                        return Candles.create({
+                            type: 'share history 1d',
+                            share: share,
+                            data: candles_parsed,
+                        });
+                    })
+                    .then(function(createdCandles) {
+                        var lastCandle = _.last(createdCandles.data);
+                        if (lastCandle) {
+                            share.lastCandle = lastCandle;
+                        }
+                        share.save();
+                    })
+                );
+            });
+            return Q
+                .all(tasks)
+                .then(function() {
+                    return shares;
+                })
+                ;
+        })
+        ;
+};
 
 
 // заполняет пропущенные свечи отдельным запросом для каждого эмитента
@@ -77,7 +134,7 @@ me.fixMissedCandles_individual = function() {
                     return shares;
                 })
         })
-}
+};
 
 
 // дополняет базу недостающими свечками
@@ -184,7 +241,7 @@ me.fixMissedCandles = function(shares) {
                 throw err;
             }
         })
-}
+};
 
 
 me.updateIndayCandles = function() {
@@ -254,7 +311,7 @@ me.updateIndayCandles = function() {
             console.error('sharesImporter:updateIndayCandles error!')
             console.error(err, err.stack);
         })
-}
+};
 
 //  ╔═╗  ╦═╗  ╦  ╦  ╦  ╔═╗  ╔╦╗  ╔═╗
 //  ╠═╝  ╠╦╝  ║  ╚╗╔╝  ╠═╣   ║   ║╣

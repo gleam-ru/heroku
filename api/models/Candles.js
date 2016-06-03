@@ -8,7 +8,7 @@
 module.exports = {
 
     attributes: {
-        type   : {type: 'string', required: true}, // daily/inday/last
+        type   : {type: 'string', required: true}, // share/.../
 
         share  : {model: 'Share', required: true}, // owner
 

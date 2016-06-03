@@ -14,12 +14,8 @@ module.exports = {
         site            : {type: 'string'},
         mfd_id          : {type: 'integer', unique: true, required: true},
 
-        candles         : {collection: 'Candles', via: 'share'},
-
-        // dailyCandles    : {type: 'array', defaultsTo: []},
+        candlesHistory  : {collection: 'Candles', via: 'share'},
         lastCandle      : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
-        // indayCandle     : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
-
 
         shares_count    : {type: 'integer', defaultsTo: 0},
         forums          : {type: 'array', defaultsTo: []},
