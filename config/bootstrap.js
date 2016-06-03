@@ -53,6 +53,7 @@ module.exports.bootstrap = function(cb) {
     if (!sails.config.heroku) {
         isDev = true;
         async.series([
+            migrations,
             // filler.process,
             provider.init,
             cache.init,
@@ -72,6 +73,7 @@ module.exports.bootstrap = function(cb) {
     else {
         cb();
         async.series([
+            migrations,
             filler.process,
             provider.init,
             cache.init,

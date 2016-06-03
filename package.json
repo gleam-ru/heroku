@@ -41,6 +41,7 @@
     "passport-yandex": "0.0.3",
     "q": "^1.4.1",
     "request": "^2.55.0",
+    "require-all": "^2.0.0",
     "s3": "^4.4.0",
     "sails": "github:balderdashy/sails#stable",
     "sails-hook-validation": "^0.2.0",
