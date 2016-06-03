@@ -1,10 +1,11 @@
 extends ../../layouts/default.jade
 
 block postHead
-  +PasteInlineData(['us', us])
-  +PasteInlineData(['shares', shares])
-  +PasteInlineData(['branches', branches])
-  script(src='/PageControllers/new_shares.js')
+  script(src="/bower_components/d3/d3.js")
+  script(src='/bower_components/nvd3/build/nv.d3.js')
+
+  +PasteInlineData(['tickers', tickers])
+  script(src='/PageControllers/branch.js')
   style.
 
 
@@ -19,9 +20,11 @@ block breadcrumbs
   +breadcrumbs([
       {name:'Главная', href:'/'},
       {name:'Сервисы', href:'/services'},
+      {name:'Акции', href:'/services/shares'},
       {name:title}
     ])
 
 block content
   #vue
+
     

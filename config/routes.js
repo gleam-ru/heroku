@@ -47,6 +47,7 @@ module.exports.routes = {
     'get  /services/shares/:href'        : 'Shares.ticker',
     'get  /services/shares/:id/edit'     : 'Shares.editorPage', // админка
     'get  /services/shares/:id/info'     : 'Shares.getTickerData', // апи
+    'get  /services/shares/branch/:id'   : 'Shares.branchPage', // "финансы", "нефтегаз" и пр.
     //---
     'post /services/shares/:id/update'     : 'Shares.updateGeneral',
     'post /services/shares/:id/new_update' : 'Shares.newUpdate',

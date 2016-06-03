@@ -161,7 +161,7 @@ me.params = [
         type: "number",
         title: "Div per share",
         desc: "Dividend per share is the total amount of dividend that shareholders receive over one year for each share owned.",
-        desc_ru: "ДИвиденды на акцию за 365/366 дней владения",
+        desc_ru: "Дивиденды на акцию за 365/366 дней владения",
     }, {
         name: "dividend_yield",
         serverName: "DividendYield",
@@ -259,7 +259,7 @@ me.params = [
         type: "number",
         title: "Interest coverage",
         desc: "Also known as Times Interest Earned, this is the ratio of Earnings Before Interest and Taxes for the most recent year divided by the Interest Expense for the same period.",
-        desc_ru: "Коэффицие?нт покры?тия проце?нтов: прибыль до выплаты процентов по кредиту и уплаты налогов к издержками по выплате процентов.",
+        desc_ru: "Коэффициент покрытия процентов: прибыль до выплаты процентов по кредиту и уплаты налогов к издержками по выплате процентов.",
     }, {
         name: "return_on_investment_trailing_12months",
         serverName: "ReturnOnInvestmentTTM",
@@ -329,7 +329,7 @@ me.params = [
         type: "number",
         title: "Beta",
         desc: "The measure of a fund's or a stock's risk in relation to the market or to an alternative benchmark.",
-        desc_ru: "Бета-коэффициент: отражаем изменчивость цены акции по отношению к изменению индекса акций",
+        desc_ru: "Бета-коэффициент: отражает изменчивость цены акции по отношению к изменению индекса акций",
     }, {
         name: "shares_floating",
         serverName: "Float",

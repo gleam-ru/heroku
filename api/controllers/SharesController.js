@@ -16,9 +16,10 @@ module.exports = {
 
         Q()
             .then(function() {
-                // return provider.sharesGoogle.saveToDB();
+                return Branch.find();
             })
-            .then(function() {
+            .then(function(branches) {
+                data.branches = branches;
                 console.time('SharesController/index');
                 return Share.find({
                     where: {
@@ -478,7 +479,44 @@ module.exports = {
             .catch(function(err) {
                 return res.serverError(err);
             });
-    }
+    },
+
+
+    branchPage: function(req, res) {
+        var id = req.param('id');
+        var data = {
+            title: 'Отрасль: ',
+            tickers: [],
+        };
+
+        Q.all([
+            Branch.findOne({id: id}),
+            Share.find({
+                where: {
+                    dead: false,
+                    branch: id,
+                },
+                select: [
+                    'id',
+                    'name',
+                    'code',
+                    //
+                    'google',
+                ],
+            }),
+        ])
+        .spread(function(branch, shares) {
+            if (!branch) {
+                throw new Error('404');
+            }
+            data.title += branch.name;
+            data.tickers = shares;
+        })
+        .then(function() {
+            return res.render('services/shares/branch', data);
+        })
+        ;
+    },
 
 
 

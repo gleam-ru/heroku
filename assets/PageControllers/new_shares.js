@@ -194,6 +194,19 @@ function createColumns(params) {
         },
     });
 
+    defaultColumns.push({
+        title: 'Отрасль',
+        data: 'branch',
+        filter: 'string',
+        bVisible: true,
+        notHideable: true,
+        render: function(branch, dunno, data) {
+            if (!branch) {
+                return '';
+            }
+            return '<a href="/services/shares/branch/'+data.branchId+'">'+branch+'</a>';
+        }
+    });
 
     defaultColumns.push({
         title: 'Code',
@@ -241,7 +254,11 @@ function createColumns(params) {
 
 function createRows(shares) {
     return _.map(shares, function(s) {
-        var row = _.extend({}, s, s.google);
+        var branch = _.find(branches, {id: s.branch});
+        var row = _.extend({}, s, s.google, {
+            branch: branch && branch.name,
+            branchId: branch && branch.id,
+        });
         delete row.google;
         return row;
     });
