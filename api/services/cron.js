@@ -56,7 +56,8 @@ cron.init = function(cb) {
 
     // получение недостающих свечей
     // в 22:00 каждый пн,вт,ср,чт,пт
-    cron.add('sharesNewDay', '0 22 * * 1,2,3,4,5', function() {
+    // cron.add('sharesNewDay', '0 22 * * 1,2,3,4,5', function() {
+    cron.add('sharesNewDay', '9 * * * 1,2,3,4,5', function() {
         var importer = require('./DataProviders/sharesImporter.js');
         importer.fixMissedCandles()
             .catch(function(err) {

@@ -71,7 +71,7 @@ module.exports = function(resolve) {
  *
  */
 window.createChart = function(el, data, cb) {
-    var candles = data.dailyCandles;
+    var candles = data.candlesHistory ? data.candlesHistory.data : [];
     // candles = candles.slice(0, 360);
     var accessor = techan.plot.candlestick().accessor();
     var parseDate = d3.time.format("%d.%m.%Y").parse;

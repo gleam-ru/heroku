@@ -27,7 +27,12 @@ $(document).ready(function() {
             },
             data: {
                 tickers: tickers || [],
-                opts: _.keys(_.find(tickers, 'google').google),
+                opts: _.map(googleParams, function(i) {
+                    return {
+                        name: i.title_ru,
+                        value: i.serverName,
+                    };
+                }),
                 currentOpt1: 'PE',
                 currentOpt2: 'LTDebtToAssetsYear',
             },

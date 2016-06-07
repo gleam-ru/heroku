@@ -14,7 +14,7 @@ module.exports = {
         site            : {type: 'string'},
         mfd_id          : {type: 'integer', unique: true, required: true},
 
-        candlesHistory  : {collection: 'Candles', via: 'share'},
+        candlesHistory  : {model: 'candles'},
         lastCandle      : {type: 'json', defaultsTo: {o:'',h:'',l:'',c:'',d:'',v:''}},
 
         shares_count    : {type: 'integer', defaultsTo: 0},

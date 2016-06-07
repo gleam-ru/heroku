@@ -44,7 +44,7 @@ me.totalUpdate = function() {
 
                 //
                 if (sails.config.app.providers.shares.timeToForget < (now - moment(share.updatedAt))) {
-                    console.info('"забываем" эмитента:', share.name)
+                    console.info('"забываем" эмитента:', share.name);
                     tasks.push(Q.resolve()
                         .then(function() {
                             share.die();
@@ -64,6 +64,7 @@ me.totalUpdate = function() {
                         });
                     })
                     .then(function(createdCandles) {
+                        share.candlesHistory = createdCandles;
                         var lastCandle = _.last(createdCandles.data);
                         if (lastCandle) {
                             share.lastCandle = lastCandle;
@@ -91,13 +92,12 @@ me.fixMissedCandles_individual = function() {
     return Q.resolve()
         .then(function() {
             console.log('get all shares from db...')
-            return Share
-                .find({dead: false})
+            return Share.find({dead: false}).populateAll();
         })
         .then(function(shares) {
             var tasks = [];
             _.each(shares, function(share) {
-                var candles_existing = share.dailyCandles;
+                var candles_existing = share.candlesHistory;
                 var lastSaved = _.last(candles_existing);
                 var lastDate = lastSaved ? moment(lastSaved.d, ddf) : moment(new Date(1900, 1, 1));
                 if ((now - lastDate) < limitations.time) {
@@ -112,8 +112,8 @@ me.fixMissedCandles_individual = function() {
                     tasks.push(Q
                         .ninvoke(parser, 'getTicker', mfd_id)
                         .then(function(candles_parsed) {
-                            share.dailyCandles = mergeCandles(candles_existing, candles_parsed);
-                            share.lastCandle = _.last(share.dailyCandles);
+                            share.candlesHistory = mergeCandles(candles_existing, candles_parsed);
+                            share.lastCandle = _.last(share.candlesHistory);
                             return share.save();
                         }))
                     return;
@@ -141,6 +141,8 @@ me.fixMissedCandles_individual = function() {
 me.fixMissedCandles = function(shares) {
     console.log('fix missed candles');
 
+    var accum = {};
+
     var now = moment();
     return Q.resolve()
         .then(function() {
@@ -148,17 +150,17 @@ me.fixMissedCandles = function(shares) {
                 return shares;
             }
             else {
-                console.log('find all shares')
-                return Share.find({dead: false});
+                console.log('find all shares');
+                return Share.find({dead: false, code: 'rual'}).populateAll();
             }
         })
         .then(function(shares) {
             var firstMissedDate = moment();
             var shareMfdIds = [];
 
-            console.log('formatting list-to-download')
+            console.log('formatting list-to-download');
             _.each(shares, function(share) {
-                var candles = share.dailyCandles;
+                var candles = share.candlesHistory && share.candlesHistory.data || [];
                 var lastSaved = _.last(candles);
                 var lastDate = lastSaved ? moment(lastSaved.d, ddf) : moment(new Date(1900, 1, 1));
 
@@ -190,36 +192,35 @@ me.fixMissedCandles = function(shares) {
                 throw new Error('candles_are_good');
             }
             console.info('Missed candles!', 'date:', firstMissedDate.format(ddf), 'count:', shareMfdIds.length);
-            return {
-                from: firstMissedDate,
-                ids: shareMfdIds,
-                shares: shares,
-            };
+
+            accum.from = firstMissedDate;
+            accum.ids = shareMfdIds;
+            accum.shares = shares;
+            return accum;
         })
-        .then(function(results) {
+        .then(function() {
             return Q
-                .ninvoke(parser, 'getByDate', results.from, results.ids)
+                .ninvoke(parser, 'getByDate', accum.from, accum.ids)
                 .then(function(parsed) {
                     console.log('parsed', _.keys(parsed).length, 'shares candles');
-                    return {
-                        shares: results.shares,
-                        parsed: parsed,
-                    }
+                    accum.parsed = parsed;
+                    return accum;
                 })
+                ;
         })
-        .then(function(results) {
+        .then(function() {
             var modified = [];
-            _.each(results.shares, function(share) {
-                var parsed = results.parsed[share.name];
+            _.each(accum.shares, function(share) {
+                var parsed = accum.parsed[share.name];
                 if (!parsed) {
                     return;
                 }
                 // мержу свечи
-                var candles_existing = share.dailyCandles;
+                var candles_existing = share.candlesHistory && share.candlesHistory.data || [];
                 var candles_parsed   = parsed.candles;
 
                 // сохраняю измененные данные об эмитенте
-                share.dailyCandles = mergeCandles(candles_existing, candles_parsed);
+                share.candlesHistory.data = mergeCandles(candles_existing, candles_parsed);
                 share.indayCandles = [];
                 modified.push(share);
             });
@@ -228,8 +229,7 @@ me.fixMissedCandles = function(shares) {
         .then(function(modified) {
             console.log('modified', modified.length, 'shares');
             Q.all(_.map(modified, function(share) {
-                share.lastCandle = _.last(share.dailyCandles);
-                return share.save()
+                return share.save();
             }))
         })
         .catch(function(err) {
@@ -320,12 +320,32 @@ me.updateIndayCandles = function() {
 
 // "умный" конкат - дописывает только несуществующие свечи
 function mergeCandles(_old, _new) {
-    var lastExisting = _.last(_old) || {d: '01.01.1900'};
-    var i = _.findIndex(_new, function(candle) {
-        return moment(lastExisting.d, ddf) < moment(candle.d, ddf);
+    var maxExistingDate = _(_old)
+        .map(function(c) {
+            return moment(c.d, ddf);
+        })
+        .max()
+        ;
+
+    var neededCandles = [];
+    _.each(_new, function(c) {
+        var date = moment(c.d, ddf);
+        if (maxExistingDate && maxExistingDate >= date) {
+            return;
+        }
+        if (moment().format(ddf) === c.d) {
+            // сегодняшние свечи - битые.
+            return;
+        }
+        neededCandles.push(c);
     });
-    _new.splice(0, i + 1);
-    return _old.concat(_new);
+
+    neededCandles = _.sortBy(neededCandles, function(c) {
+        return moment(c.d, ddf).unix();
+    });
+
+
+    return _old.concat(neededCandles);
 }
 
 

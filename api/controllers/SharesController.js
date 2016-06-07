@@ -44,12 +44,14 @@ module.exports = {
             })
             .then(function() {
                 console.debug('no time2');
+                console.time('SharesController/UserSettings.findOne');
                 return UserSettings.findOne({
                     user: req.user ? req.user.id : null,
                     page: 'shares/filters',
                 });
             })
             .then(function(us) {
+                console.timeEnd('SharesController/UserSettings.findOne');
                 console.debug('us sett');
                 data.us = (us && us.data) || {
                     // TODO: defaultsTo
@@ -194,7 +196,8 @@ module.exports = {
 
     getTickerData: function(req, res) {
         var id = req.param('id');
-        provider.shares.getById(id)
+        Share.findOne({id: id}).populateAll()
+        // provider.shares.getById(id)
             .then(function(share) {
                 if (!share) {
                     return res.send(404);
@@ -224,9 +227,9 @@ module.exports = {
                 data.ticker = _.extend(share, {
                     info         : {
                         mfd_id       : share.mfd_id,
-                        candlesCount : share.dailyCandles.length,
+                        candlesCount : share.candlesHistory && share.candlesHistory.data.length,
                         lastDay      : '00000000000000000',
-                        lastCandle   : _.last(share.dailyCandles),
+                        lastCandle   : _.last(share.candlesHistory &&share.candlesHistory.data ),
                         indayCount   : share.indayCandles.length,
                     }
                 });
@@ -477,6 +480,7 @@ module.exports = {
         var data = {
             title: 'Отрасль: ',
             tickers: [],
+            googleParams: provider.sharesGoogle.params,
         };
 
         Q.all([
