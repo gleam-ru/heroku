@@ -214,6 +214,9 @@ me.show = function(filter, additional) {
                                                     '<i v-else="isAdded(i)" class="fa fa-square-o"></i>',
                                                     '<i v-if="isButtonColumn(i)" class="fa fa-dot-circle-o sampleIcon"></i>',
                                                     '{{{ i.name | colorize allfilter }}}',
+                                                    '<span v-if="i.vueTooltip" class="tt moveRightTt" title="{{i.vueTooltip}}">',
+                                                        Jade.els.roundIcon('fa-question'),
+                                                    '</span>',
                                                     '<i class="fa fa-chevron-right moveRight"></i>',
                                                 '</li>',
                                             '</ul>',
@@ -337,7 +340,10 @@ me.show = function(filter, additional) {
                                     }
                                 });
 
-                                initTT();
+                                vm.$nextTick(function() {
+                                    initTT();
+                                    console.log('inited');
+                                });
                             },
                         }),
                     },

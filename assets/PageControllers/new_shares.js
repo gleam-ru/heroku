@@ -240,11 +240,12 @@ function createColumns(params) {
             return;
         }
         return {
-            title: p.title+
+            title: p.title_ru+
                 '<span class="tt" title="'+p.desc+'">'+
                     Jade.els.roundIcon('fa-question')+
                 '</span>',
-            vueTitle: p.title,
+            vueTitle: p.title_ru,
+            vueTooltip: p.desc_ru,
             data: p.serverName,
             filter: p.filter || p.type || 'number',
             bVisible: false,

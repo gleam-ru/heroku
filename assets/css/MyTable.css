@@ -352,3 +352,21 @@
     }
 
 .right h4>span {font-size: 10px;}
+
+
+.moveRightTt {
+    position: absolute;
+    padding: 0px;
+    right: 10px;
+    top: 0px;
+    }
+
+#body .moveRightTt i {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0px;
+    line-height: 30px;
+    }
+    #body .moveRightTt i.fa-question {
+        font-size: 14px;
+        }
