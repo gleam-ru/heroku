@@ -20,6 +20,7 @@ me.params = [
         serverName: "QuotePercChange",
         type: "number",
         title: "Quote change (%)",
+        title_ru: "Изменение цены за день (%)",
         desc: "The percent change between the stock price and the prior trading day's closing price.",
         desc_ru: "Процент изменения цены акции со вчерашней цены закрытия",
     }, {
@@ -27,6 +28,7 @@ me.params = [
         serverName: "PriceToBook",
         type: "number",
         title: "Price to book",
+        title_ru: "Цена к балансовой стоимости",
         desc: "The stock price divided by book value per share.",
         desc_ru: "Отношение цены акции к балансовой стоимости за минусом долгов.",
     }, {
@@ -34,6 +36,7 @@ me.params = [
         serverName: "PriceSales",
         type: "number",
         title: "Price to sales",
+        title_ru: "Цена к продажам",
         desc: "The stock price divided by annual sales per share.",
         desc_ru: "Цена акции к выручке за последний год на акцию",
     }, {
@@ -41,6 +44,7 @@ me.params = [
         serverName: "QuoteLast",
         type: "number",
         title: "Last price",
+        title_ru: "Текущая цена",
         desc: "The most recently reported trade price, which is not necessarily the most recently traded price.",
         desc_ru: "Последняя цена сделки",
     }, {
@@ -48,6 +52,7 @@ me.params = [
         serverName: "EPS",
         type: "number",
         title: "EPS",
+        title_ru: "Выручка на акцию",
         desc: "The net income per share according to the most recent quarterly report.",
         desc_ru: "Выручка на акцию по последнему квартальному отчету",
     }, {
@@ -55,6 +60,7 @@ me.params = [
         serverName: "High52Week",
         type: "number",
         title: "52w high",
+        title_ru: "52-недельный максимум",
         desc: "The highest closing price in the last 52 weeks.",
         desc_ru: "Максимальная цена закрытия за год",
     }, {
@@ -62,6 +68,7 @@ me.params = [
         serverName: "Low52Week",
         type: "number",
         title: "52w low",
+        title_ru: "52-недельный минимум",
         desc: "The lowest closing price in the last 52 weeks.",
         desc_ru: "Минимальная цена закрытия за год",
     }, {
@@ -69,6 +76,7 @@ me.params = [
         serverName: "Price52WeekPercChange",
         type: "number",
         title: "52w price change (%)",
+        title_ru: "52-недельное изменение цены (%)",
         desc: "The percent change in the price over the past year, plus or minus the nearest trading day.",
         desc_ru: "Процентное изменение цены акции за год.",
     }, {
@@ -76,6 +84,7 @@ me.params = [
         serverName: "Price50DayAverage",
         type: "number",
         title: "50d avg price",
+        title_ru: "50дневная средняя цена",
         desc: "The average price over the last 50 tradable days.",
         desc_ru: "Средняя цена за 50 торговых дней",
     }, {
@@ -83,6 +92,7 @@ me.params = [
         serverName: "Price150DayAverage",
         type: "number",
         title: "150d avg price",
+        title_ru: "150дневная средняя цена",
         desc: "The average price over the last 150 tradable days.",
         desc_ru: "Средняя цена за 150 торговых дней",
     }, {
@@ -90,6 +100,7 @@ me.params = [
         serverName: "Price200DayAverage",
         type: "number",
         title: "200d avg price",
+        title_ru: "200дневная средняя цена",
         desc: "The average price over the last 200 tradable days.",
         desc_ru: "Средняя цена за 200 торговых дней",
     }, {
@@ -97,6 +108,7 @@ me.params = [
         serverName: "Price13WeekPercChange",
         type: "number",
         title: "13w price change (%)",
+        title_ru: "Изменение цены за 13 недель (%)",
         desc: "The percent change in the price over the last thirteen weeks",
         desc_ru: "Процент изменения цены за последние тринадцать недель",
     }, {
@@ -104,6 +116,7 @@ me.params = [
         serverName: "Price26WeekPercChange",
         type: "number",
         title: "26w price change (%)",
+        title_ru: "Изменение цены за 26 недель (%)",
         desc: "The percent change in the price over the last twenty six weeks",
         desc_ru: "Процент изменения цены за последние шесть недель",
     }, {
@@ -111,6 +124,7 @@ me.params = [
         serverName: "MarketCap",
         type: "number",
         title: "Market cap",
+        title_ru: "Рыночная капитализация",
         desc: "Market capitalization is the total value of a company in the stock market. It is calculated by multiplying total shares outstanding by the current price per share.",
         desc_ru: "Рыночная капитализация (общая рыночная цена) компании, вычисленная по текущей цене акции",
     }, {
@@ -118,6 +132,7 @@ me.params = [
         serverName: "PE",
         type: "number",
         title: "P/E ratio",
+        title_ru: "Коэффициент Цена/Прибыль",
         desc: "The ratio of the stock price to the sum of its reported earnings, which may or may not account for dilution, over the last 4 quarters.",
         desc_ru: "Мультипликатор Цена к Прибыли, который может быть взят за 4 квартала или за меньший отчетный период",
     }, {
@@ -125,6 +140,7 @@ me.params = [
         serverName: "ForwardPE1Year",
         type: "number",
         title: "1y fwd P/E",
+        title_ru: "цена/прибыль на год вперед",
         desc: "The stock price divided by a forecast of this year's earnings.",
         desc_ru: "Прогнозный мультипликатор Цена к Прогнозу прибыли за будущий год",
     }, {
@@ -132,6 +148,7 @@ me.params = [
         serverName: "DividendRecentQuarter",
         type: "number",
         title: "Div recent quarter",
+        title_ru: "Сумма дивидендов на акцию за квартал",
         desc: "The dividend per share which was paid to shareholders in the most recent quarter.",
         desc_ru: "Сумма дивидендов, выплаченная на акцию в последнем квартале",
     }, {
@@ -139,6 +156,7 @@ me.params = [
         serverName: "DividendNextQuarter",
         type: "number",
         title: "Div next quarter",
+        title_ru: "Прогноз суммы дивидендов на акцию за квартал",
         desc: "The forecast value of the next quarterly dividend, per share, to be paid.",
         desc_ru: "Прогноз суммы дивидендов к выплате в следующем квартале",
     }, {
@@ -146,6 +164,7 @@ me.params = [
         serverName: "DPSRecentYear",
         type: "number",
         title: "Div per share (Recent yr)",
+        title_ru: "Сумма дивидендов на акцию за год",
         desc: "The sum of all dividends, per share, paid within the past year.",
         desc_ru: "Сумма всех дивидендов, выплаченных на акцию за последний год",
     }, {
@@ -153,6 +172,7 @@ me.params = [
         serverName: "IAD",
         type: "number",
         title: "Div rate indicated annual",
+        title_ru: "Прогноз суммы дивидендов на акцию за год",
         desc: "The forecast sum of all dividends, per share, to be paid in the coming year.",
         desc_ru: "Прогноз суммы дивидендов на акцию к следующем году",
     }, {
@@ -160,13 +180,15 @@ me.params = [
         serverName: "DividendPerShare",
         type: "number",
         title: "Div per share",
+        title_ru: "Дивиденды на акцию",
         desc: "Dividend per share is the total amount of dividend that shareholders receive over one year for each share owned.",
-        desc_ru: "Дивиденды на акцию за 365/366 дней владения",
+        desc_ru: "ДИвиденды на акцию за 365/366 дней владения",
     }, {
         name: "dividend_yield",
         serverName: "DividendYield",
         type: "number",
         title: "Div yield (%)",
+        title_ru: "Прогноз дивидендной доходности на год (%)",
         desc: "The value of the most recent dividend per share, multiplied by the number of times per year which dividends are typically paid, divided by the stock price.",
         desc_ru: "Грубый прогноз годовой дивидендной доходность в процентах от стоимости акции",
     }, {
@@ -174,6 +196,7 @@ me.params = [
         serverName: "Dividend",
         type: "number",
         title: "Div from cash flow",
+        title_ru: "Доля дивидендов от прибыли",
         desc: "A dividend is a portion of a company's profit paid to common and preferred shareholders.",
         desc_ru: "Доля дивидендов от прибыли компании.",
     }, {
@@ -181,6 +204,7 @@ me.params = [
         serverName: "BookValuePerShareYear",
         type: "number",
         title: "Book value/share",
+        title_ru: "Балансовая стоимость на акцию",
         desc: "A company's total assets minus its total liabilities, expressed per share.",
         desc_ru: "Балансовая стоимость на акцию: cтоимость активов за вычетом долгов в расчете на акцию",
     }, {
@@ -188,6 +212,7 @@ me.params = [
         serverName: "CashPerShareYear",
         type: "number",
         title: "Cash/share",
+        title_ru: "Ликвидные активы на акцию",
         desc: "The sum of cash and equivalents, such as liquid money market securities, expressed per share.",
         desc_ru: "Стоимость ликвидных активов(наличные, облигации) на акцию",
     }, {
@@ -195,6 +220,7 @@ me.params = [
         serverName: "CurrentRatioYear",
         type: "number",
         title: "Current ratio",
+        title_ru: "Коэффициент текущей ликвидности",
         desc: "The ratio of current assets divided by current liabilities. Current ratio is a measure of liquidity.",
         desc_ru: "Коэффициент текущей ликвидности: отношение оборотных активов к краткосрочных обязательствам",
     }, {
@@ -202,6 +228,7 @@ me.params = [
         serverName: "LTDebtToAssetsYear",
         type: "number",
         title: "LT debt/assets (Recent yr) (%)",
+        title_ru: "Долгосрочная задолженность к активам за год (%)",
         desc: "Total Long Term Debt for the most recent fiscal year divided by the Total Assets for same period.",
         desc_ru: "Доля долгосрочной задолженности к стоимости активов по годовому отчету",
     }, {
@@ -209,6 +236,7 @@ me.params = [
         serverName: "LTDebtToAssetsQuarter",
         type: "number",
         title: "LT debt/assets (Recent qtr) (%)",
+        title_ru: "Долгосрочная задолженность к активам за квартал (%)",
         desc: "Total Long Term Debt for the most recent quarter divided by the Total Assets for the same period.",
         desc_ru: "Доля долгосрочной задолженности к стоимости активов по квартальному отчету",
     }, {
@@ -216,6 +244,7 @@ me.params = [
         serverName: "TotalDebtToAssetsYear",
         type: "number",
         title: "Total debt/assets (Recent yr) (%)",
+        title_ru: "Задолженность к активам за год (%)",
         desc: "Total Debt for the most recent fiscal year divided by Total Assets for the same period.",
         desc_ru: "Отношение задолженности(краткосрочной+долгосрочной) к активам по годовому отчету",
     }, {
@@ -223,6 +252,7 @@ me.params = [
         serverName: "TotalDebtToAssetsQuarter",
         type: "number",
         title: "Total debt/assets (Recent qtr) (%)",
+        title_ru: "Задолженность к активам за квартал (%)",
         desc: "Total Debt for the most recent quarter divided by Total Assets for the same period.",
         desc_ru: "Отношение всей задолженности к активам по квартальному отчету",
     }, {
@@ -230,6 +260,7 @@ me.params = [
         serverName: "LTDebtToEquityYear",
         type: "number",
         title: "LT debt/equity (Recent yr) (%)",
+        title_ru: "Долгосрочная задолженность к акционерному капиталу за год (%)",
         desc: "Total Long Term Debt for the most recent fiscal year divided by Total Shareholder Equity for the same period.",
         desc_ru: "Отношение долгосрочной задолженности к акционерному капиталу по годовому отчету",
     }, {
@@ -237,6 +268,7 @@ me.params = [
         serverName: "LTDebtToEquityQuarter",
         type: "number",
         title: "LT debt/equity (Recent qtr) (%)",
+        title_ru: "Долгосрочная задолженность к акционерному капиталу за квартал (%)",
         desc: "Total Long Term Debt for the most recent quarter divided by Total Shareholder Equity for the same period.",
         desc_ru: "Отношение долгосрочной задолженности к акционерному капиталу по квартальному отчету",
     }, {
@@ -244,6 +276,7 @@ me.params = [
         serverName: "TotalDebtToEquityYear",
         type: "number",
         title: "Total debt/equity (Recent yr) (%)",
+        title_ru: "Задолженность к акционерному апиталу за год (%)",
         desc: "Total Debt for the most recent fiscal year divided by Total Shareholder Equity for the same period.",
         desc_ru: "Коэффициент финансовой зависимости: Отношение задолженности к акционерному капиталу по годовому отчету",
     }, {
@@ -251,6 +284,7 @@ me.params = [
         serverName: "TotalDebtToEquityQuarter",
         type: "number",
         title: "Total debt/equity (Recent qtr) (%)",
+        title_ru: "Задолженность к акционерному апиталу за квартал (%)",
         desc: "Total Debt for the most recent quarter divided by Total Shareholder Equity for the same period.",
         desc_ru: "Коэффициент финансовой зависимости: Отношение задолженности к акционерному капиталу по квартальному отчету",
     }, {
@@ -258,6 +292,7 @@ me.params = [
         serverName: "AINTCOV",
         type: "number",
         title: "Interest coverage",
+        title_ru: "Коэффициент покрытия процентов",
         desc: "Also known as Times Interest Earned, this is the ratio of Earnings Before Interest and Taxes for the most recent year divided by the Interest Expense for the same period.",
         desc_ru: "Коэффициент покрытия процентов: прибыль до выплаты процентов по кредиту и уплаты налогов к издержками по выплате процентов.",
     }, {
@@ -265,6 +300,7 @@ me.params = [
         serverName: "ReturnOnInvestmentTTM",
         type: "number",
         title: "Return on investment (TTM) (%)",
+        title_ru: "Возврат на инвестиции за 12 месяцев (%)",
         desc: "Trailing twelve month Income after taxes divided by the average (Total Long term Debt + Long term Liabilities + Shareholders Equity), expressed as a percentage.",
         desc_ru: "Возврат на инвестированный долгосрочный капитал: Прибыль после уплаты налогов к среднемесячному (за 12 месяцев) долгосрочному капиталу (Долгосрочная задолженность + Акционерный капитал)",
     }, {
@@ -272,6 +308,7 @@ me.params = [
         serverName: "ReturnOnInvestment5Years",
         type: "number",
         title: "Return on investment (5 yr avg) (%)",
+        title_ru: "Возврат на инвестиции за 5 лет (%)",
         desc: "Most recent 5y Avg. Income After Taxes divided by the average (Total Long term Debt + Long term Liabilities + Shareholders Equity), expressed as a percentage.",
         desc_ru: "Возврат на инвестированный долгосрочный капитал: Прибыль после уплаты налогов к среднемесячному (за 5 лет) долгосрочному капиталу (Долгосрочная задолженность + Акционерный капитал)",
     }, {
@@ -279,6 +316,7 @@ me.params = [
         serverName: "ReturnOnInvestmentYear",
         type: "number",
         title: "Return on investment (Recent yr) (%)",
+        title_ru: "Возврат на инвестиции за последний год (%)",
         desc: "Annual Income After Taxes divided by the average (Total Long term Debt + Long term Liabilities + Shareholders Equity), expressed as a percentage.",
         desc_ru: "Возврат на инвестированный долгосрочный капитал: Прибыль после уплаты налогов к среднемесячному (за год) долгосрочному капиталу (Долгосрочная задолженность + Акционерный капитал)",
     }, {
@@ -286,6 +324,7 @@ me.params = [
         serverName: "ReturnOnAssetsTTM",
         type: "number",
         title: "Return on assets (TTM) (%)",
+        title_ru: "Возврат на активы за 12 месяцев (%)",
         desc: "Trailing twelve month Income after taxes divided by the Average Total Assets, expressed as a percentage.",
         desc_ru: "Возврат на активы: Прибыль после уплаты налогов к среднемесячным (за 12 месяцев) активам",
     }, {
@@ -293,6 +332,7 @@ me.params = [
         serverName: "ReturnOnAssets5Years",
         type: "number",
         title: "Return on assets (5 yr avg) (%)",
+        title_ru: "Возврат на активы за 5 лет (%)",
         desc: "Most recent 5y Avg. Income after taxes divided by the Average Total Assets, expressed as a percentage.",
         desc_ru: "Возврат на активы: Прибыль после уплаты налогов к средней величине (за 5 лет) активов",
     }, {
@@ -300,6 +340,7 @@ me.params = [
         serverName: "ReturnOnAssetsYear",
         type: "number",
         title: "Return on assets (Recent yr) (%)",
+        title_ru: "Возврат на активы за последний год (%)",
         desc: "Most recent Year Income after taxes divided by the Average Total Assets, expressed as a percentage.",
         desc_ru: "Возврат на активы: Прибыль после уплаты налогов к средней величине (за год) активов",
     }, {
@@ -307,6 +348,7 @@ me.params = [
         serverName: "ReturnOnEquityTTM",
         type: "number",
         title: "Return on equity (TTM) (%)",
+        title_ru: "Возврат на капитал за 12 месяцев (%)",
         desc: "Trailing twelve month Income divided by the Average Common Equity, expressed as a percentage.",
         desc_ru: "Возврат на капитал: Прибыль после уплаты налогов к средней величине (за 12 месяцев) акционерного капитала",
     }, {
@@ -314,6 +356,7 @@ me.params = [
         serverName: "ReturnOnEquity5Years",
         type: "number",
         title: "Return on equity (5 yr avg) (%)",
+        title_ru: "Возврат на капитал за 5 лет (%)",
         desc: "Most recent 5y Avg. Income divided by the Average Common Equity, expressed as a percentage.",
         desc_ru: "Возврат на капитал: Прибыль после уплаты налогов к средней величине (за 5 лет) акционерного капитала",
     }, {
@@ -321,6 +364,7 @@ me.params = [
         serverName: "ReturnOnEquityYear",
         type: "number",
         title: "Return on equity (Recent yr) (%)",
+        title_ru: "Возврат на капитал за последний год (%)",
         desc: "Most recent fiscal year Income divided by the Average Common Equity, expressed as a percentage.",
         desc_ru: "Возврат на капитал: Прибыль после уплаты налогов к средней величине (за год) акционерного капитала",
     }, {
@@ -328,6 +372,7 @@ me.params = [
         serverName: "Beta",
         type: "number",
         title: "Beta",
+        title_ru: "Бета",
         desc: "The measure of a fund's or a stock's risk in relation to the market or to an alternative benchmark.",
         desc_ru: "Бета-коэффициент: отражает изменчивость цены акции по отношению к изменению индекса акций",
     }, {
@@ -335,6 +380,7 @@ me.params = [
         serverName: "Float",
         type: "number",
         title: "Float",
+        title_ru: "Доля акций в свободном обращении",
         desc: "Shares outstanding, excluding those owned by insiders, owned by 5%-or-more owners, or subject to SEC rule 144 (regarding restricted securities).",
         desc_ru: "Доля акций в свободном обращении (кроме инсайдеров и владельцев более чем 5% пакетами)",
     }, {
@@ -342,6 +388,7 @@ me.params = [
         serverName: "InstitutionalPercentHeld",
         type: "number",
         title: "Institutional percent held",
+        title_ru: "Процент институциональных держателей акций",
         desc: "The percent of the outstanding common shares held by institutional investors, such as pension plans.",
         desc_ru: "Процент акций, которыми владеют институциональные инвесторы, такие как пенсионные фонды",
     }, {
@@ -349,6 +396,7 @@ me.params = [
         serverName: "Volume",
         type: "number",
         title: "Volume",
+        title_ru: "Объем торгов",
         desc: "The number of shares of stock traded in a given period of time. Note that some markets report volume on both buy and sell sides, whereas others report it on only one.",
         desc_ru: "Количество сделок с акцией за определенный период",
     }, {
@@ -356,6 +404,7 @@ me.params = [
         serverName: "AverageVolume",
         type: "number",
         title: "Average volume",
+        title_ru: "Средний объем торгов",
         desc: "The average volume over some time period, usually one year.",
         desc_ru: "Среднее количество сделок с акцией за период, как правило за один год",
     }, {
@@ -363,6 +412,7 @@ me.params = [
         serverName: "GrossMargin",
         type: "number",
         title: "Gross margin (%)",
+        title_ru: "Прибыль от продаж (%)",
         desc: "The ratio of gross income to net sales, expressed as a percent.",
         desc_ru: "Прибыль от продаж в процентах: Грязная прибыль к выручке от продаж",
     }, {
@@ -370,6 +420,7 @@ me.params = [
         serverName: "EBITDMargin",
         type: "number",
         title: "EBITDA margin (%)",
+        title_ru: "Прибыль до вычета процентов от продаж (%)",
         desc: "The ratio of EBITDA (Earnings Before Interest, Taxes, Depreciation and Amortization) to total revenue.",
         desc_ru: "Прибыль до вычета процентов по кредитам и налогов выраженная в процентах от выручки",
     }, {
@@ -377,6 +428,7 @@ me.params = [
         serverName: "OperatingMargin",
         type: "number",
         title: "Operating margin (%)",
+        title_ru: "Операционная прибыль (%)",
         desc: "The ratio of operating income to revenue.",
         desc_ru: "Операционная прибыль в процентах: Прибыль от основной деятельности к выручке",
     }, {
@@ -384,6 +436,7 @@ me.params = [
         serverName: "NetProfitMarginPercent",
         type: "number",
         title: "Net profit margin (%)",
+        title_ru: "Чистая прибыль к выручке (%)",
         desc: "The ratio of net income to revenue.",
         desc_ru: "Чистая прибыль к выручке в процентах",
     }, {
@@ -391,6 +444,7 @@ me.params = [
         serverName: "NetIncomeGrowthRate5Years",
         type: "number",
         title: "5y net income growth rate",
+        title_ru: "Среднегодовой темп роста чистой прибыли за 5 лет",
         desc: "The compound average annual growth rate of net income, which may or may not account for dilution, over the past 5 years.",
         desc_ru: "Среднегодовой темп роста чистой прибыли, который может разбавляться за 5 лет",
     }, {
@@ -398,6 +452,7 @@ me.params = [
         serverName: "RevenueGrowthRate5Years",
         type: "number",
         title: "5y revenue growth rate",
+        title_ru: "Среднегодовой темп прироста выручки за 5 лет",
         desc: "The compound average annual growth rate of revenue over the past 5 years.",
         desc_ru: "Среднегодовой темп прироста выручки за 5 лет",
     }, {
@@ -405,6 +460,7 @@ me.params = [
         serverName: "RevenueGrowthRate10Years",
         type: "number",
         title: "10y revenue growth rate",
+        title_ru: "Среднегодовой темп прироста выручки за 10 лет",
         desc: "The compound average annual growth rate of revenue over the past 10 years.",
         desc_ru: "Среднегодовой темп прироста выручки за 10 лет",
     }, {
@@ -412,6 +468,7 @@ me.params = [
         serverName: "EPSGrowthRate5Years",
         type: "number",
         title: "5y EPS growth rate",
+        title_ru: "Среднегодовой процент роста прибыли за 5 лет",
         desc: "The percentage change in earnings per share over the past 5 years.",
         desc_ru: "Среднегодовой процент прироста прибыли за 5 лет",
     }, {
@@ -419,6 +476,7 @@ me.params = [
         serverName: "EPSGrowthRate10Years",
         type: "number",
         title: "10y EPS growth rate",
+        title_ru: "Процент прироста прибыли за 10 лет",
         desc: "The percentage change in earnings per share over the past 10 years.",
         desc_ru: "Процент прироста прибыли за 10 лет",
     },
