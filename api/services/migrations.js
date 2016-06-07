@@ -1,7 +1,5 @@
-var appRoot = process.env.I_AM_HEROKU ? __dirname+'/..' : __dirname;
-
 var migrations = require('require-all')({
-    dirname:  appRoot+'/migrations',
+    dirname:  __dirname+'/Migrations',
     recursive: false,
     resolve: function(migration) {
         return migration;
