@@ -1,0 +1,26 @@
+extends ../layouts/default.jade
+
+
+block postHead
+
+block pageHead
+  h1 #{title}
+block pageHead_small
+  p тут происходит магия
+
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Админка', href:'/admin'},
+      {name:'Домены',  href:'/admin/domains'},
+    ])
+
+
+block content
+  h4 Домены
+  ul
+    li
+      a(href='/adm/domains/branch') Отрасли
+    //- li
+      a(href='/adm/domains') Редактор доменов
+      

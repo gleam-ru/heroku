@@ -1,0 +1,30 @@
+extends ../layouts/default.jade
+
+
+
+block pageHead
+  h1 #{title}
+block pageHead_small
+  p тут происходит магия
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Админка', href:'/admin'},
+      {name:'Домены',  href:'/admin/domains'},
+      {name:'Редактирование'},
+    ])
+
+block postHead
+  script(src='/PageControllers/domainEdit.js')
+  +PasteInlineData([
+    'rows', rows
+  ])
+  style.
+    #body th {font-weight: bold;}
+    .roundIcon {font-size: 14px;}
+
+block content
+  #vue
+
+
+

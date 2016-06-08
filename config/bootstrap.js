@@ -57,7 +57,7 @@ module.exports.bootstrap = function(cb) {
             // filler.process,
             provider.init,
             cache.init,
-            cron.init,
+            // cron.init,
         ],
         function(err) {
             // if (err) return cb(err);

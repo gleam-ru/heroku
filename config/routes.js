@@ -78,6 +78,9 @@ module.exports.routes = {
     'get  /adm/bonds_reparse'      : 'Admin.bonds_reparse',
     'get  /adm/bonds_cache'        : 'Admin.bonds_cache',
     'get  /adm/users'              : 'Admin.all_users',
+    'get  /adm/domains'            : 'Admin.domains',
+    'get  /adm/domains/:domain'    : 'Admin.edit_domain',
+    'post /API/domain'             : 'Admin.update_domain_record',
     'get  /adm/users/:id/edit'     : 'Admin.userEditor',
     //---
     'get  /adm/shares_updateInday' : 'Admin.shares_updateInday',

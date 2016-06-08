@@ -12,6 +12,76 @@ module.exports = {
         });
     },
 
+    domains: function(req, res) {
+        return res.render('admin/domains', {
+            title: 'Редактирование доменов',
+        });
+    },
+
+    edit_domain: function(req, res) {
+        var domain = req.param('domain');
+        var Model = sails.models[domain];
+
+        if (!Model) {
+            return res.notFound('Model: '+domain);
+        }
+
+        return Q()
+            .then(function() {
+                return Model.find();
+            })
+            .then(function(rows) {
+                return res.render('admin/domainEdit', {
+                    title: 'Редактирование таблицы: '+domain,
+                    rows: rows,
+                });
+            })
+            .catch(res.serverError)
+            ;
+
+    },
+
+    update_domain_record: function(req, res) {
+        var msg = req.param('msg');
+        console.debug(msg);
+
+        if (!msg) {
+            return res.badRequest('msg');
+        }
+
+        var Model = sails.models[msg.table];
+        if (!Model) {
+            return res.badRequest('model');
+        }
+
+        if (!msg.row) {
+            return res.badRequest('msg.row');
+        }
+        var rec = msg.row;
+
+        if (msg.remove) {
+            if (!rec.id) {
+                return res.badRequest('drop id is required');
+            }
+            return Model.destroy({id: rec.id}).then(function(dropped) {
+                console.debug('dropped', msg.table, dropped);
+                return res.ok();
+            });
+        }
+
+        if (!rec.id) {
+            return Model.create(rec).then(function(created) {
+                console.debug('created', msg.table, created);
+                return res.ok();
+            });
+        }
+
+        return Model.update({id: rec.id}, rec).then(function(updated) {
+            console.debug('updated', msg.table, updated);
+            return res.ok();
+        });
+    },
+
     // страница со списком пользователей
     all_users: function(req, res) {
         var data = {

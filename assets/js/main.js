@@ -60,6 +60,9 @@ window.hasRoles = function(roleNames) {
 };
 
 $(document).ready(function() {
+
+    window.cnt = $('.content');
+
     // lodash
     _.mixin({
         sortByValues: function(collection, values) {
