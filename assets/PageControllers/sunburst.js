@@ -30,7 +30,14 @@ $(document).ready(function() {
                 opts: [
                     {name: 'количеству компаний', value: 'byCount'},
                     {name: 'рыночной капитализации', value: 'MarketCap'},
-                    {name: 'объему торгов', value: 'Volume'},
+                    {name: 'выручке за последний год', value: 'EARNINGS'},
+                    {name: 'стоимости ликвидных активов (наличные, облигации)', value: 'CASH'},
+                    {name: 'cтоимости активов за вычетом долгов', value: 'BALANCE'},
+                    {name: 'обязательствам (краткосрочные + долгосрочные)', value: 'DEBT'},
+                    {name: 'дивиденды за 365 дней', value: 'DIVS'},
+                    // {name: 'EV', value: 'EV'},
+                    // {name: 'DEBT', value: 'DEBT'},
+                    // {name: 'EBITDA', value: 'EBITDA'},
                 ],
                 currentOpt: 'MarketCap',
                 hovered: null,
@@ -73,6 +80,65 @@ $(document).ready(function() {
                     });
                     return data;
                 },
+                getSize: function(t) { // t - ticker
+                    var opt = this.currentOpt;
+                    if (opt === 'byCount') {
+                        return 1;
+                    }
+                    var sharesCount = t.MarketCap / t.QuoteLast;
+
+                    var earnings = t.MarketCap / t.PriceSales;
+                    if (opt === 'EARNINGS') {
+                        // выручка за последний год
+                        return earnings;
+                    }
+
+                    var divs = sharesCount * t.DividendPerShare;
+                    if (opt === 'DIVS') {
+                        // дивы за 365 дней
+                        return divs;
+                    }
+
+                    var balance = sharesCount * t.BookValuePerShareYear;
+                    // EV
+                    if (opt === 'BALANCE') {
+                        // cтоимость активов за вычетом долгов
+                        return balance;
+                    }
+
+                    var cash = sharesCount * t.CashPerShareYear;
+                    if (opt === 'CASH') {
+                        // Стоимость ликвидных активов(наличные, облигации)
+                        return cash;
+                    }
+
+                    var debt = t.TotalDebtToAssetsYear * balance / (100 - t.TotalDebtToAssetsYear);
+                    // DEBT
+                    if (opt === 'DEBT') {
+                        // краткосрочные + долгосрочные
+                        return debt;
+                    }
+
+                    // // Получено от Сергея:
+                    // if (opt === 'DEBT') {
+                    //     return t.Float * (t.QuoteLast * t.TotalDebtToEquityYear);
+                    // }
+                    // if (opt === 'EBITDA') {
+                    //     return t.Float * (t.EBITDMargin * t.QuoteLast / t.PriceSales);
+                    // }
+                    // if (opt === 'EV') {
+                    //     return t.Float * (t.Float * t.QuoteLast + t.CashPerShareYear - t.QuoteLast * t.LTDebtToEquityYear);
+                    // }
+                    //
+
+                    if (opt) {
+                        return t[opt] || 0;
+                    }
+                    else {
+                        console.warn('что-то в поломалось в логике');
+                        return 1;
+                    }
+                },
                 createChart: function() {
                     var vm = this;
 
@@ -88,16 +154,9 @@ $(document).ready(function() {
                     var partition = d3.layout.partition()
                         .sort(null)
                         .value(function(d) {
-                            var opt = vm.currentOpt;
-                            if (opt === 'byCount') {
-                                return 1;
-                            }
-                            else if (opt) {
-                                return d[opt] || 0;
-                            }
-                            else {
-                                console.warn('что-то в поломалось в логике');
-                            }
+                            var size = vm.getSize(d);
+                            console.log(d.name, size);
+                            return (size < 0 || size === Infinity) ? 1 : size;
                         })
                         ;
 
@@ -115,7 +174,7 @@ $(document).ready(function() {
 
                     function format_name(d) {
                         var name = d.name;
-                        return '<b>' + name + '</b><br> (' + format_number(d.value) + ')';
+                        return '<b>' + name + '</b><br> (' + format_number(d.value.toFixed(0)) + ')';
                     }
 
 
@@ -179,6 +238,7 @@ $(document).ready(function() {
                             ;
 
                     function click(d) {
+                        console.debug(_.extend({}, d));
                         if (!d.name) {
                             return;
                         }
