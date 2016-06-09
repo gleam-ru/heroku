@@ -5,7 +5,7 @@ me.process = function(cb) {
         _role(),
         // _statistics(),
         _admin(),
-        _branches(),
+        // // _branches(), // лучше не включать.
         // _shares(),
         // _bond_JamesBond(),
     ])
