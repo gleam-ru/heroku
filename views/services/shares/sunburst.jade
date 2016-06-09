@@ -1,0 +1,44 @@
+extends ../../layouts/default.jade
+
+block postHead
+  script(src="/bower_components/d3/d3.js")
+  script(src='/bower_components/nvd3/build/nv.d3.js')
+  //- script(src='http://nvd3-community.github.io/nvd3/build/nv.d3.js')
+
+  +PasteInlineData(['branches', branches])
+  +PasteInlineData(['tickers', tickers])
+  script(src='/PageControllers/sunburst.js')
+  style.
+    path:hover {opacity: 0.7;}
+    path {stroke: #fff; opacity: 1; transition: opacity .2s;}
+    path.leaf {cursor: pointer;}
+    .sunburst_tooltip {
+      position: absolute;
+      z-index: 10;
+      border-radius: 3px;
+      border: 1px solid #555;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 5px 10px;
+      }
+    .sunburst .my-select {display: inline-block;}
+    .sunburst > div {line-height: 40px;}
+
+
+
+
+
+block pageHead
+  h1 #{title}
+block pageHead_small
+  | 
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Сервисы', href:'/services'},
+      {name:'Весь рынок'},
+    ])
+
+block content
+  #vue
+
+    

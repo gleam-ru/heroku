@@ -143,7 +143,9 @@ module.exports = {
             .then(function() {
                 console.debug('render');
                 res.render('services/shares/new_shares', data);
-            });
+            })
+            .catch(res.serverError)
+            ;
     },
 
     ticker: function(req, res) {
@@ -510,6 +512,39 @@ module.exports = {
             return res.render('services/shares/branch', data);
         })
         ;
+    },
+
+
+    // /services/sunburst
+    sunburst: function(req, res) {
+        var data = {
+            title: 'Весь Российский фондовый рынок',
+            tickers: [],
+            branches: [],
+        };
+
+        Q()
+            .then(function(branches) {
+                console.time('SharesController/sunburst');
+                return Q.all([
+                    Share.find({dead: false}),
+                    Branch.find(),
+                ]);
+            })
+            .spread(function(shares, branches) {
+                console.timeEnd('SharesController/sunburst');
+                data.branches = branches;
+                data.tickers  =  _.map(shares, function(s) {
+                    return _.extend(s, {
+                        href: s.code || s.id,
+                    });
+                });
+            })
+            .then(function() {
+                res.render('services/shares/sunburst', data);
+            })
+            .catch(res.serverError)
+            ;
     },
 
 

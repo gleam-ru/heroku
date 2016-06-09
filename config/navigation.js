@@ -44,6 +44,10 @@ module.exports.navigation = [
                 name     : "Акции",
                 href     : "/services/shares",
             },
+            {
+                name     : "Весь рынок",
+                href     : "/services/sunburst",
+            },
         ]
     },
 
