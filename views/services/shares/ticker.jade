@@ -4,6 +4,7 @@ block postHead
   link(rel='stylesheet', href='/css/sharesTickerPlot.css')
   script(src="/bower_components/d3/d3.js")
   script(src="/bower_components/techan/dist/techan.js")
+  //- script(src='http://nvd3-community.github.io/nvd3/build/nv.d3.js')
   script(src='/bower_components/nvd3/build/nv.d3.js')
   +PasteInlineData([
     'ticker', ticker
@@ -13,6 +14,8 @@ block postHead
 
   style.
     #shares {min-height: 300px;}
+    h3 {margin: 0px; padding-left: 3px;}
+    #body .g-hr {margin-bottom: 10px !important;}
 
 
 

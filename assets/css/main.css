@@ -534,3 +534,14 @@ h1 .roundIcon {
                 color: #bbb;
                 padding-left: 10px;
                 }
+
+
+
+.clickable:not(.clicked) {
+    display: inline-block;
+    font-family: 'Roboto Slab';
+    padding: 2px 3px;
+    border-bottom: dashed 1px #CCC;
+    cursor: pointer;
+    color: #1abc9c;
+    }
