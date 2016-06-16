@@ -34,21 +34,6 @@ module.exports.bootstrap = function(cb) {
     global.appRoot = __dirname+'/..';
 
 
-
-
-    if (process.env.I_AM_HEROKU) {
-        sails.config.amazon.s3.key    = process.env.AMAZON_S3_KEY;
-        sails.config.amazon.s3.secret = process.env.AMAZON_S3_SECRET;
-    }
-
-
-    // создаем нужные директории
-    var fs = require('fs-extra');
-    if (!fs.existsSync(sails.config.app.dataDir)) {
-        fs.mkdirSync(sails.config.app.dataDir);
-    }
-
-
     // TODO: сделать покрасиввее
     if (!sails.config.heroku) {
         isDev = true;
