@@ -30,7 +30,7 @@ me.totalUpdate = function() {
     var now = moment();
     return Q()
         .then(function() {
-            return Share.find({dead: false, code: 'gazp'});
+            return Share.find({dead: false});
         })
         .then(function(shares) {
             console.info('удаляю все исторические свечи: share history 1d');
