@@ -66,7 +66,8 @@ me.saveBonds = function(parsedBonds, cb) {
                 .findOne({name: 'bondsUpdatedAt'})
                 .then(function(stat) {
                     stat.data = lastSuccess;
-                    return stat.save();
+                    stat.save();
+                    return stat;
                 })
                 .then(function(stat) {
                     console.log('stat updated', moment(stat.data).format(ddf));
