@@ -151,7 +151,7 @@ me.fixMissedCandles = function(shares) {
             }
             else {
                 console.log('find all shares');
-                return Share.find({dead: false, code: 'rual'}).populateAll();
+                return Share.find({dead: false}).populateAll();
             }
         })
         .then(function(shares) {
