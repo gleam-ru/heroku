@@ -195,20 +195,6 @@ function createColumns(params) {
     });
 
     defaultColumns.push({
-        title: 'Отрасль',
-        data: 'branch',
-        filter: 'string',
-        bVisible: true,
-        notHideable: true,
-        render: function(branch, dunno, data) {
-            if (!branch) {
-                return '';
-            }
-            return '<a href="/services/shares/branch/'+data.branchId+'">'+branch+'</a>';
-        }
-    });
-
-    defaultColumns.push({
         title: 'Code',
         data: 'code',
         filter: 'string',
@@ -225,6 +211,37 @@ function createColumns(params) {
         notHideable: true,
         render: function(name, dunno, data) {
             return '<a href="/services/shares/'+data.href+'">'+name+'</a>';
+        }
+    });
+
+    defaultColumns.push({
+        title: 'Отрасль',
+        data: 'branch',
+        filter: 'string',
+        bVisible: true,
+        notHideable: true,
+        render: function(branch, dunno, data) {
+            if (!branch) {
+                return '';
+            }
+            return '<a href="/services/shares/branch/'+data.branchId+'">'+branch+'</a>';
+        }
+    });
+
+    defaultColumns.push({
+        title: 'Изменение за день',
+        data: 'calculated_dayPercent',
+        filter: 'number',
+        bVisible: true,
+        notHideable: false,
+        render: function(value, dunno, data) {
+            return value;
+            if (value >= 0) {
+                return '+'+value+'%';
+            }
+            else {
+                return value+'%';
+            }
         }
     });
 
@@ -260,6 +277,12 @@ function createRows(shares) {
             branch: branch && branch.name,
             branchId: branch && branch.id,
         });
+        if (s.indayCandle && s.lastCandle) {
+            var fr = s.lastCandle.c;
+            var to = s.indayCandle.c;
+            var price = fr;
+            row.calculated_dayPercent = (((to / price) - 1) * 100).toFixed(2);
+        }
         delete row.google;
         return row;
     });
