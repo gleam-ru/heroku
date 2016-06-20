@@ -237,7 +237,7 @@ me.fixMissedCandles = function(shares) {
                 return Q.resolve();
             }
             else {
-                console.error('err in sharesImporter');
+                console.error('err in sharesImporter', err, err.stack);
                 throw err;
             }
         })
