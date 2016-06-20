@@ -334,20 +334,22 @@ me.updateIndayCandles = function() {
     var accum = {};
     return Q.resolve()
         .then(function() {
-            console.log('updateIndayCandles:getSharesList')
+            console.log('updateIndayCandles:getSharesList');
             return Share.find({
                     where: {
                         dead: false,
                     },
                     select: ['name', 'mfd_id', 'indayCandle'],
-                })
+                });
         })
         .then(function(shares) {
             accum.shares = shares;
-            return Q.ninvoke(parser, 'getInday', _.map(shares, 'mfd_id'))
+            var ids = _.map(shares, 'mfd_id');
+            // console.log('updateIndayCandles:', ids);
+            return Q.ninvoke(parser, 'getInday', ids);
         })
         .then(function(parsed) {
-            console.log('updateIndayCandles:formatParsedShares')
+            console.log('updateIndayCandles:formatParsedShares');
             accum.tasks = [];
             var task;
             _.each(parsed, function(data, name) {
@@ -358,7 +360,7 @@ me.updateIndayCandles = function() {
                     l: 0,
                     c: 0,
                     v: 0,
-                }
+                };
                 _.extend(data.indayCandle, _.last(data.candles));
                 data.indayCandle.v = 0;
                 _.each(data.candles, function(candle) {
@@ -369,7 +371,7 @@ me.updateIndayCandles = function() {
                         data.indayCandle.l = candle.l;
                     }
                     data.indayCandle.v += candle.v;
-                })
+                });
                 task = Q.resolve()
                     .then(function() {
                         var originalShare = _.find(accum.shares, {name: name});
@@ -377,25 +379,25 @@ me.updateIndayCandles = function() {
                         return originalShare.save();
                     })
                     .catch(function(err) {
-                        console.error('updateIndayCandles:saving error!')
-                        console.error(err, err.stack)
-                    })
+                        console.error('updateIndayCandles:saving error!');
+                        console.error(err, err.stack);
+                    });
                 accum.tasks.push(task);
-            })
+            });
         })
         .then(function() {
-            console.log('updateIndayCandles:saving')
+            console.log('updateIndayCandles:saving');
             return Q.all(accum.tasks);
         })
         .then(function(updated) {
-            console.log('updateIndayCandles:done')
+            console.log('updateIndayCandles:done');
             accum = null;
             return updated;
         })
         .catch(function(err) {
-            console.error('sharesImporter:updateIndayCandles error!')
+            console.error('sharesImporter:updateIndayCandles error!');
             console.error(err, err.stack);
-        })
+        });
 };
 
 //  ╔═╗  ╦═╗  ╦  ╦  ╦  ╔═╗  ╔╦╗  ╔═╗
