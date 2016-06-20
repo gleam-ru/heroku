@@ -191,6 +191,16 @@ module.exports = {
             });
     },
 
+    shares_snd: function(req, res) {
+        // TODO: callback?
+        cron.tasks.sharesNewDay.go();
+        //
+        req.flash('info', 'processing...');
+        return res.render('admin/index', {
+            info: req.flash('info'),
+        });
+    },
+
 
 
 

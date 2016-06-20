@@ -88,6 +88,7 @@ module.exports.routes = {
     'get  /adm/users/:id/edit'     : 'Admin.userEditor',
     //---
     'get  /adm/shares_updateInday' : 'Admin.shares_updateInday',
+    'get  /adm/shares_snd'         : 'Admin.shares_snd',
     'get  /adm/shares_cache'       : 'Admin.shares_cache',
     'get  /adm/shares_dropCache'   : 'Admin.shares_dropCache',
     //---
