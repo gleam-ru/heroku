@@ -49,9 +49,10 @@ module.exports.routes = {
     'get  /services/shares/:id/info'     : 'Shares.getTickerData', // апи
     'get  /services/shares/branch/:id'   : 'Shares.branchPage', // "финансы", "нефтегаз" и пр.
     //---
-    'post /services/shares/:id/update'     : 'Shares.updateGeneral',
-    'post /services/shares/:id/new_update' : 'Shares.newUpdate',
-    'post /services/shares/:id/parse_divs' : 'Shares.parseDivs',
+    'post /services/shares/:id/update'        : 'Shares.updateGeneral',
+    'post /services/shares/:id/new_update'    : 'Shares.newUpdate',
+    'post /services/shares/:id/parse_divs'    : 'Shares.parseDivs',
+    'post /services/shares/:id/parse_candles' : 'Shares.parseCandles',
 
     // Sunburst
     'get  /services/sunburst': 'Shares.sunburst',

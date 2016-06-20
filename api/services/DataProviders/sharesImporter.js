@@ -30,7 +30,20 @@ me.totalUpdate = function() {
     var now = moment();
     return Q()
         .then(function() {
-            return Share.find({dead: false});
+            return Share.find({dead: false, code: 'gazp'});
+        })
+        .then(function(shares) {
+            console.info('удаляю все исторические свечи: share history 1d');
+            return Q()
+                .then(function() {
+                    return Candles.destroy({
+                        type: 'share history 1d',
+                    });
+                })
+                .then(function() {
+                    return shares;
+                })
+                ;
         })
         .then(function(shares) {
             var tasks = [];
@@ -84,6 +97,77 @@ me.totalUpdate = function() {
 };
 
 
+me.forceUpdateCandles = function(shares) {
+    console.log('force update candles');
+
+    var now = moment();
+    return Q.resolve()
+        .then(function() {
+            if (!shares || !shares.length) {
+                return [];
+            }
+            return shares;
+        })
+        .then(function(shares) {
+            var tasks = [];
+            _.each(shares, function(share) {
+                var task = Q();
+                var mfd_id = share.mfd_id;
+                if (!mfd_id) {
+                    console.warn('У акции', share.name, '(code:', share.code, ') не привязан mfd_id');
+                    return;
+                }
+                if (now - moment(share.updatedAt) > sails.config.app.providers.shares.timeToForget) {
+                    console.info('"забываем" эмитента:', share.name);
+                    tasks.push(share.die);
+                    return;
+                }
+                if (!share.candlesHistory) {
+                    console.warn('У акции', share.name, '(code:', share.code, ') отсутствует candlesHistory');
+                    task = task.then(function() {
+                        return Candles.destroy({
+                            type: 'share history 1d',
+                            share: share.id,
+                        });
+                    })
+                    .then(function() {
+                        return Candles.create({
+                            type: 'share history 1d',
+                            share: share.id,
+                        });
+                    })
+                    .then(function(history) {
+                        share.candlesHistory = history;
+                    })
+                    ;
+                }
+
+                task = task.then(function() {
+                    return Q.ninvoke(parser, 'getTicker', mfd_id)
+                })
+                .then(function(candles_parsed) {
+                    var merged = mergeCandles([], candles_parsed);
+                    share.candlesHistory.data = merged;
+                    share.lastCandle = _.last(merged);
+                    return share.save()
+                        .then(function() {
+                            return share;
+                        })
+                        ;
+                })
+                ;
+
+                tasks.push(task);
+            });
+            return Q
+                .all(tasks)
+                .then(function(shares) {
+                    return shares;
+                })
+                ;
+        });
+};
+
 // заполняет пропущенные свечи отдельным запросом для каждого эмитента
 me.fixMissedCandles_individual = function() {
     console.log('individual fix missed candles');
@@ -91,13 +175,13 @@ me.fixMissedCandles_individual = function() {
     var now = moment();
     return Q.resolve()
         .then(function() {
-            console.log('get all shares from db...')
+            console.log('get all shares from db...');
             return Share.find({dead: false}).populateAll();
         })
         .then(function(shares) {
             var tasks = [];
             _.each(shares, function(share) {
-                var candles_existing = share.candlesHistory;
+                var candles_existing = share.candlesHistory && share.candlesHistory.data || [];
                 var lastSaved = _.last(candles_existing);
                 var lastDate = lastSaved ? moment(lastSaved.d, ddf) : moment(new Date(1900, 1, 1));
                 if ((now - lastDate) < limitations.time) {
@@ -112,8 +196,9 @@ me.fixMissedCandles_individual = function() {
                     tasks.push(Q
                         .ninvoke(parser, 'getTicker', mfd_id)
                         .then(function(candles_parsed) {
-                            share.candlesHistory = mergeCandles(candles_existing, candles_parsed);
-                            share.lastCandle = _.last(share.candlesHistory);
+                            var merged = mergeCandles(candles_existing, candles_parsed);
+                            _.extend(share.candlesHistory, {data: merged});
+                            share.lastCandle = _.last(merged);
                             return share.save();
                         }))
                     return;

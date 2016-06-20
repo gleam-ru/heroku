@@ -476,6 +476,32 @@ module.exports = {
             });
     },
 
+    // получает дивы указанной акции, если есть айдишник,
+    // если айдишника нет - получает все дивы
+    parseCandles: function(req, res) {
+        var id = req.param('id');
+        var importer = require('../services/DataProviders/sharesImporter');
+
+        return Q()
+            .then(function() {
+                return Share.find({id: id}).populateAll();
+            })
+            .then(function(shares) {
+                return importer.forceUpdateCandles(shares);
+            })
+            .then(function(shares) {
+                var ticker = shares && _.first(shares);
+                return ticker && ticker.candlesHistory.data.length || null;
+            })
+            .then(function(count) {
+                return res.send({downloaded: true});
+            })
+            .catch(function(err) {
+                return res.serverError(err);
+            })
+            ;
+    },
+
 
     branchPage: function(req, res) {
         var id = req.param('id');
