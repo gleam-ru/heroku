@@ -436,7 +436,9 @@ module.exports = function(resolve) {
 
                 $.get('/services/shares/'+vm.ticker.id+'/info')
                 .done(function(data) {
-                    vm.completeTicker = window.completeTicker = data;
+                    vm.completeTicker = window.completeTicker = _.extend({
+                        candlesHistory: []
+                    }, data);
                 })
                 .fail(function(msg) {
                     console.error(msg);
