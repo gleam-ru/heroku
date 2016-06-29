@@ -80,8 +80,14 @@ me.fetchFromDB = function() {
 me.cache = function(bonds) {
     var b = _(bonds)
         .compact()
-        .map(calculate)
-        .map(format)
+        .map(function(bond) {
+            var calculated = calculate(bond);
+            var formatted = format(calculated);
+            if (!calculated || !formatted) {
+                console.warn('calculated/formatted bond is false', bond);
+            }
+            return formatted;
+        })
         .value()
         ;
     if (!b.length) {
@@ -102,7 +108,6 @@ me.cache = function(bonds) {
 // рассчет динамических ключей облигации
 // на основании сохраненных
 function calculate(bond) {
-    console.debug('test 1', bond);
     var now = moment();
     var flashback = sails.config.app.providers.bonds.flashback;
 
@@ -180,7 +185,6 @@ function calculate(bond) {
         bond.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / partOfYear * 100;
     }
 
-    console.debug('test 2', bond);
 
     return bond;
 }
@@ -188,7 +192,6 @@ function calculate(bond) {
 
 // приводит облигацию к виду, который ожидает клиент
 function format(bond) {
-    console.debug('test 3', bond);
     bond.endDate = moment(bond.endDate, ddf).format(ddf);
     bond.cpDate  = moment(bond.cpDate, ddf).format(ddf);
     var nums = [
@@ -210,7 +213,6 @@ function format(bond) {
         bond[num] = bond[num] ? (1 * bond[num].toFixed(2)) : '';
     });
 
-    console.debug('test 4', bond);
 
     return [
         bond.id,
