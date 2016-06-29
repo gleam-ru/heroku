@@ -39,11 +39,17 @@ me.saveBonds = function(parsedBonds, cb) {
                     if (parsed.risk) {
                         found.risk = parsed.risk;
                     }
-                    nextPromice = found.save();
+                    nextPromice = Q()
+                        .then(function() {
+                            found.save();
+                            return found;
+                        });
                 }
                 else {
-                    nextPromice = Bond
-                        .create(parsed)
+                    nextPromice = Q()
+                        .then(function() {
+                            return Bond.create(parsed);
+                        });
                 }
                 return nextPromice
                     .catch(function(err) {
