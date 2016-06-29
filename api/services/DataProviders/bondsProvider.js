@@ -83,8 +83,9 @@ me.cache = function(bonds) {
         .map(calculate)
         .map(format)
         .value()
+        ;
     if (!b.length) {
-        console.warn('Просьба закэшировать странные (пустые) облигации...')
+        console.warn('Просьба закэшировать странные (пустые) облигации...', bonds && bonds.length);
     }
     cache.set('bonds', b);
     console.info('bonds cache updated:', b.length);

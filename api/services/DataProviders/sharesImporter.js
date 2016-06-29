@@ -96,7 +96,8 @@ me.totalUpdate = function() {
         ;
 };
 
-
+// дропаю существующие и создаю новые свечи
+// с загрузкой с мфд
 me.forceUpdateCandles = function(shares) {
     console.log('force update candles');
 
