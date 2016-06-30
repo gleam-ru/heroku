@@ -24,6 +24,17 @@ me.saveBonds = function(parsedBonds, cb) {
             return Q.all(_.map(parsedBonds, function(parsed) {
                 var found = _.find(bonds, {num: parsed.num, name: parsed.name})
                 var nextPromice;
+                var catchFoo = function(err) {
+                    if (err === 'forever_bond' || err.originalError === 'forever_bond') {
+                    }
+                    else if (err === 'stale_bond' || err.originalError === 'stale_bond') {
+                    }
+                    else {
+                        console.error('save bond error', err)
+                        throw err;
+                    }
+                    return;
+                }
                 if (found) {
                     _.extend(found, {
                         bid       : parsed.bid || 0,
@@ -41,28 +52,19 @@ me.saveBonds = function(parsedBonds, cb) {
                     }
                     nextPromice = Q()
                         .then(function() {
-                            found.save();
+                            found.save()
+                                .catch(catchFoo);
                             return found;
                         });
                 }
                 else {
                     nextPromice = Q()
                         .then(function() {
-                            return Bond.create(parsed);
+                            return Bond.create(parsed)
+                                .catch(catchFoo);
                         });
                 }
-                return nextPromice
-                    .catch(function(err) {
-                        if (err === 'forever_bond' || err.originalError === 'forever_bond') {
-                        }
-                        else if (err === 'stale_bond' || err.originalError === 'stale_bond') {
-                        }
-                        else {
-                            console.error('save bond error', err)
-                            throw err;
-                        }
-                        return;
-                    });
+                return nextPromice;
             }))
         })
         .then(function(bonds) {
