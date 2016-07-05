@@ -1,3 +1,6 @@
+// http://www.corntab.com/pages/crontab-gui
+
+// UTC TIME!!! (нужно отнимать от желаемых 3 часа, перед тем как писать)
 var later = require("later");
 
 var cron = {};
@@ -24,8 +27,6 @@ cron.add = function(name, pattern, foo) {
 }
 
 cron.init = function(cb) {
-    // UTC TIME!!!
-    // http://www.corntab.com/pages/crontab-gui
     cron.add('bondsParser', '45 5,6,7,8,9,10,11,12,13,14,15,16 * * 1,2,3,4,5', function() {
         provider.bonds
             .hardUpdate()
@@ -45,7 +46,8 @@ cron.init = function(cb) {
 
 
     // обновление inday свечей
-    cron.add('sharesInday', '25,55 5,6,7,8,9,10,11,12,13,14,15,16 * * 1,2,3,4,5', function() {
+    cron.add('sharesInday', '*/12 13,14,15,16,17,18,19,20,21,22 * * 1,2,3,4,5', function() {
+        console.log('sharesInday by cron');
         provider.shares
             .updateIndayCandles()
             .catch(function(err) {
@@ -55,13 +57,14 @@ cron.init = function(cb) {
     });
 
     // получение недостающих свечей
-    // в 22:00 каждый пн,вт,ср,чт,пт
-    cron.add('sharesNewDay', '13 4 * * 1,2,3,4,5,6,7', function() {
+    cron.add('sharesNewDay', '13 8 * * *', function() {
         var importer = require('./DataProviders/sharesImporter.js');
+        console.info('sharesNewDay by cron');
         importer.fixMissedCandles()
             .catch(function(err) {
                 console.error('cron new day error', err);
             })
+            ;
     });
 
     // получение данных от гугла

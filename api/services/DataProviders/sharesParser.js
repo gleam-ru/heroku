@@ -38,8 +38,10 @@ me.getInday = function(tickers, cb) {
         // подготовка ссылки
         var url = ''+
             'http://mfd.ru/export/handler.ashx?'+qs(_.extend({}, query, {
-                'Period'  : '5', // 30 min
-                'Tickers' : range.toString(),
+                'Period'    : '3', // 10 min
+                'Tickers'   : range.toString(),
+                'StartDate' : moment().format(ddf),
+                'EndDate'   : moment().format(ddf),
             }));
         // запрос на сервер
         request({
