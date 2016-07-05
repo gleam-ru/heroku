@@ -1,0 +1,19 @@
+extends ./layouts/default.jade
+
+block postHead
+  script(src='/PageControllers/favorites.js')
+
+
+
+block pageHead
+  h1 #{title}
+block pageHead_small
+  | Список отслеживания
+block breadcrumbs
+  +breadcrumbs([
+      {name:'Главная', href:'/'},
+      {name:'Избранное', href:'/favorites'},
+    ])
+
+block content
+  #vue

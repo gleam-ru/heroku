@@ -30,6 +30,15 @@ module.exports.navigation = [
     },
 
     //
+    // Избранное
+    //
+    {
+        name     : "Избранное",
+        href     : "/favorites",
+        canSee   : ["user"],
+    },
+
+    //
     // Сервисы
     //
     {

@@ -14,6 +14,47 @@ module.exports = {
 
         data   : {type: 'array', defaultsTo: []}, //{o:'',h:'',l:'',c:'',d:'',v:''},
 
+    },
+
+
+    //  ╦ ╦╔═╗╔═╗╦╔═╔═╗
+    //  ╠═╣║ ║║ ║╠╩╗╚═╗
+    //  ╩ ╩╚═╝╚═╝╩ ╩╚═╝╝
+
+    beforeCreate: function (candles, next) {
+        saveLastCandle(candles, next);
+    },
+
+    beforeUpdate: function (candles, next) {
+        saveLastCandle(candles, next);
     }
 };
 
+
+/**
+ * Сохраняю крайнюю свечу (вчерашнюю), чтобы удобнее было считать проценты
+ *
+ */
+function saveLastCandle(candles, next) {
+    if (candles.type !== 'share history 1d') {
+        return next(null, candles);
+    }
+
+    return Q()
+        .then(function() {
+            return Share.findOne({id: candles.share});
+        })
+        .then(function(share) {
+            if (!share) {
+                console.warn('no share found...');
+                return;
+            }
+            share.lastCandle = _.last(candles.data);
+            return share.save();
+        })
+        .then(function() {
+            return candles;
+        })
+        .nodeify(next)
+        ;
+}

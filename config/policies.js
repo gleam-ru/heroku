@@ -36,4 +36,8 @@ module.exports.policies = {
         '*': ['rememberMe', 'authenticated', 'isAdmin'],
     },
 
+    Favorites: {
+        '*': ['rememberMe', 'authenticated'],
+    },
+
 };

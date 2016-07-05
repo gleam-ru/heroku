@@ -29,6 +29,13 @@ module.exports.routes = {
 
 
     //
+    // Favorites
+    //
+    'get  /favorites': 'Favorites',
+
+
+
+    //
     // Services
     //
     'get  /services': 'Services',
