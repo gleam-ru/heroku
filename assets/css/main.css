@@ -615,7 +615,7 @@ h1 .roundIcon {
 
     .w-portfolio-item .item .center {
         padding: 10px 0;
-        min-height: 120px;
+        min-height: 140px;
         }
     .w-portfolio-item .item .center .name {
         font-size: 18px;
@@ -665,3 +665,10 @@ h1 .roundIcon {
     font-size: 12px;
     }
 
+#body .w-portfolio-item {
+    margin-bottom: 40px;
+    padding: 0 10px;
+    }
+#body .w-portfolio-item-h {
+    background-color: #ecf0f1;
+    }
