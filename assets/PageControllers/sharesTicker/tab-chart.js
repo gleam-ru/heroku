@@ -72,6 +72,12 @@ module.exports = function(resolve) {
  */
 window.createChart = function(el, data, cb) {
     var candles = data.candlesHistory ? data.candlesHistory.data : [];
+    if (data.indayCandle && data.indayCandle.o && data.indayCandle.c) {
+        if (!data.indayCandle.v) {
+            data.indayCandle.v = 1;
+        }
+        candles.push(data.indayCandle);
+    }
     // candles = candles.slice(0, 360);
     var accessor = techan.plot.candlestick().accessor();
     var parseDate = d3.time.format("%d.%m.%Y").parse;
