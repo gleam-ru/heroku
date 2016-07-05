@@ -1,6 +1,10 @@
 $(document).ready(function() {
     System.importAll({
         twf: '/Components/TWF/index.js',
+        //
+        _data: {
+            fav: '/API/shares/favorites',
+        },
     })
     .then(function(imported) {
         window.imp = imported;
@@ -23,7 +27,7 @@ $(document).ready(function() {
             },
             data: {
                 info: shares.info,
-                rows: createRows(shares.rows),
+                rows: createRows(shares.rows, imported._data.fav),
                 columns: createColumns(shares.params),
                 filters: us.filters || [],
             }
@@ -192,9 +196,130 @@ function createColumns(params) {
                 '</a>',
             ].join(' ');
         },
+        handler: function() {
+            mp.alert(messages.not_implemented);
+        },
     });
 
+
     defaultColumns.push({
+        vueTitle: 'Favorites',
+        data: '__favorites',
+        bVisible: true,
+        notHideable: true,
+        className: "buttonColumn",
+        render: function(a, b, row, pos) {
+            if (row._favorite) {
+                return [
+                    '<a class="inTableIcon"',
+                        'title="Удалить из избранного"',
+                        'href="#"',
+                        '>',
+                        Jade.els.roundIcon('fa-heart'),
+                    '</a>',
+                ].join(' ');
+            }
+            else {
+                return [
+                    '<a class="inTableIcon"',
+                        'title="Добавить в избранное"',
+                        'href="#"',
+                        '>',
+                        Jade.els.roundIcon('fa-heart-o'),
+                    '</a>',
+                ].join(' ');
+            }
+        },
+        handler: function(item, dtCell, dtColumn, dtTable) {
+            if (!hasRoles(['user'])) {
+                mp.alert('Чтобы добавить акцию в избранное нужно авторизироваться в системе.');
+            }
+
+            if (item._favorite && item._favorite.id) {
+                // акция уже в избранном
+                mp.confirm('Акция <b>'+item.name+'</b> будет удалена из избранного', function() {
+                    var msg = {
+                        share: item.id,
+                        remove: true,
+                    };
+                    $.post('/API/shares/favorites', {msg: msg})
+                        .done(function(removed) {
+                            console.log('done (remove):', msg, removed);
+                            if (removed && removed.length) {
+                                item._favorite = null;
+                                dtCell.invalidate();
+                            }
+                            else {
+                                deh();
+                            }
+                        })
+                        .fail(deh)
+                        ;
+
+                });
+                return;
+            }
+
+            var popup = $([
+                '<div class="white-popup add-to-favorites">',
+                    '<h3>',
+                        'Добавить акцию в избранное',
+                    '</h3>',
+                    '<div class="content">',
+                        '<p>',
+                            'Название: ',
+                            '<b>'+item.name+'</b>',
+                        '</p>',
+                        '<p>',
+                            'Причина добавления: ',
+                            '<textarea class="reason" rows="4" placeholder="может быть пустой"></textarea>',
+                        '</p>',
+                    '</div>',
+                '</div>',
+            ].join(''));
+
+            var btns = $('<div class="row"></div>');
+                var ok = $(Jade.els.button('OK'));
+                    ok.bind('click', function() {
+                        var popup = $(this).closest('.add-to-favorites');
+                        var reason = popup.find('textarea').val();
+                        popup.mask();
+                        var msg = {
+                            share: item.id,
+                            reason: reason,
+                        };
+                        $.post('/API/shares/favorites', {msg: msg})
+                            .always(function() {
+                                popup.unmask();
+                            })
+                            .done(function(saved) {
+                                console.log('done:', msg, saved);
+                                item._favorite = saved;
+                                dtCell.invalidate();
+                                $.magnificPopup.close();
+                            })
+                            .fail(deh)
+                            ;
+                    });
+                var cancel = $(Jade.els.button('Отмена'));
+                    cancel.bind('click', function() {
+                        $.magnificPopup.close();
+                    });
+                btns.append(ok);
+                btns.append(cancel);
+            popup.append(btns);
+
+            $.magnificPopup.open({
+                items: {
+                    src: popup,
+                    type: 'inline'
+                },
+                modal: true,
+            });
+        },
+    });
+
+     defaultColumns.push({
         title: 'Code',
         data: 'code',
         filter: 'string',
@@ -270,12 +395,14 @@ function createColumns(params) {
     }));
 }
 
-function createRows(shares) {
+function createRows(shares, favorites) {
     return _.map(shares, function(s) {
         var branch = _.find(branches, {id: s.branch});
+        var favorite = _.find(favorites, {id: s.id});
         var row = _.extend({}, s, s.google, {
             branch: branch && branch.name,
             branchId: branch && branch.id,
+            _favorite: favorite && favorite._favorite,
         });
         if (s.indayCandle && s.lastCandle) {
             var fr = s.lastCandle.c;

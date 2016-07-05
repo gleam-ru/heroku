@@ -45,7 +45,7 @@
     "s3": "^4.4.0",
     "sails": "github:balderdashy/sails#stable",
     "sails-hook-validation": "^0.2.0",
-    "sails-mongo": "^0.11.2",
+    "sails-mongo": "^0.11.7",
     "sails-mysql": "^0.10.11",
     "sanitize-html": "^1.11.2",
     "templatizer": "^1.3.0",

@@ -137,7 +137,7 @@ $(document).ready(function() {
     $.fn.mask = function(state) {
         if(state === undefined || state) {
             // add mask
-            var mask = $("<div id='mask'><img src='/img/loading.png'/></div>");
+            var mask = $("<div id='mask'><img src='/img/loading.gif'/></div>");
             if (this.find('#mask').length > 0) return;
             this.append(mask);
         }
@@ -241,8 +241,21 @@ $(document).ready(function() {
     });
     System.importAll = function(_hash) {
         var hash = _.clone(_hash);
-        var results = {};
+        var results = {
+            _data: {},
+        };
         return Promise.resolve()
+            .then(function() {
+                var _data = _.clone(hash._data);
+                delete hash._data;
+                return Promise.all(_.map(_data, function(src, name) {
+                    return $.get(src)
+                        .then(function(loaded) {
+                            results._data[name] = loaded;
+                        })
+                        ;
+                }));
+            })
             .then(function() {
                 var raw = _.clone(hash._raw);
                 delete hash._raw;

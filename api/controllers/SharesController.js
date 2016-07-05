@@ -574,6 +574,83 @@ module.exports = {
     },
 
 
+    favorites: function(req, res) {
+        var msg = req.param('msg');
+        console.log('fav:', msg);
+
+        if (!msg || !msg.share) {
+            return res.badRequest();
+        }
+
+        var shareId = msg.share;
+
+        var foo = Q();
+
+        if (msg.remove) {
+            foo = foo.then(function() {
+                console.debug('remove: ', {
+                    user: req.user.id,
+                    type: 'share',
+                    data: {
+                        id: shareId,
+                    },
+                });
+                return Favorites.destroy({
+                    user: req.user.id,
+                    type: 'share',
+                    data: {
+                        id: shareId,
+                    },
+                })
+                .catch(res.serverError)
+                ;
+            });
+        }
+        else {
+            foo = foo.then(function() {
+                return Favorites.create({
+                    user: req.user.id,
+                    type: 'share',
+                    data: {
+                        id: shareId,
+                    },
+                    msg: msg.reason,
+                })
+                .catch(res.serverError)
+                ;
+            });
+        }
+
+        return foo
+            .then(res.ok)
+            .catch(res.serverError)
+            ;
+    },
+
+
+    getFavorites: function(req, res) {
+        return Q()
+            .then(function() {
+                return Favorites.find({
+                    user: req.user.id,
+                    type: 'share',
+                });
+            })
+            .then(function(fav) {
+                var shareIds = _.map(fav, 'data.id');
+                return [fav, Share.find({id: shareIds})];
+            })
+            .spread(function(fav, shares) {
+                return res.send(_.map(shares, function(s) {
+                    var favorite = _.find(fav, {data: {id: s.id}});
+                    s._favorite = favorite;
+                    return s;
+                }));
+            })
+            .catch(res.serverError)
+            ;
+    },
+
 
 };
 

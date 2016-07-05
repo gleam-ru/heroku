@@ -26,6 +26,9 @@ module.exports.policies = {
     // Админка акций
     SharesController: {
         'editorPage': ['rememberMe', 'authenticated', 'isSharesFiller'],
+        //
+        'favorites':     ['rememberMe', 'authenticated'],
+        'getFavorites':  ['rememberMe', 'authenticated'],
     },
 
     // Админка

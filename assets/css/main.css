@@ -108,8 +108,8 @@ ul.no-dots>li {list-style: none;}
     background: #fff;
     }
     #mask img {
-        left: calc(50% - 45px);
-        top: 150px;
+        left: calc(50% - 71px);
+        top: calc(50% - 50px);
         height: 100px;
         position: absolute;
         }
@@ -543,5 +543,14 @@ h1 .roundIcon {
     padding: 2px 3px;
     border-bottom: dashed 1px #CCC;
     cursor: pointer;
-    color: #1abc9c;
     }
+
+.add-to-favorites textarea {
+    height: 60px;
+    margin-top: 5px;
+    }
+    .add-to-favorites .content > p {
+        margin-bottom: 10px;
+        }
+
+

@@ -53,10 +53,13 @@ module.exports.routes = {
     'post /services/shares/:id/new_update'    : 'Shares.newUpdate',
     'post /services/shares/:id/parse_divs'    : 'Shares.parseDivs',
     'post /services/shares/:id/parse_candles' : 'Shares.parseCandles',
-
     // Sunburst
     'get  /services/sunburst': 'Shares.sunburst',
     //
+
+    'get  /API/shares/favorites' : 'Shares.getFavorites',
+    'post /API/shares/favorites' : 'Shares.favorites',
+
 
     // фильтры таблички
     'post /API/usersettings'               : 'API.updateUserSettings',

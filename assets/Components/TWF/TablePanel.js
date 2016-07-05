@@ -16,13 +16,13 @@ module.exports = function(resolve) {
                 return {
                     config: {
                         pageLength: 10,
-                        stateSave: true,
-                        stateDuration: 999999999,
-                        stateSaveParams: function (settings, data) {
-                            data.search.search = "";
-                            data.columns = [];
-                            data.order = [];
-                        },
+                        // stateSave: true,
+                        // stateDuration: 999999999,
+                        // stateSaveParams: function (settings, data) {
+                        //     data.search.search = "";
+                        //     data.columns = [];
+                        //     data.order = [];
+                        // },
                         sScrollX: '100%',
                         bScrollCollapse: true,
                         // http://legacy.datatables.net/usage/options
@@ -31,7 +31,7 @@ module.exports = function(resolve) {
                         paging: true,
                         language: datatables_localization,
 
-                        deferRender: true,
+                        // deferRender: true,
                         orderClasses: false,
 
                         // http://stackoverflow.com/questions/16539578/datatables-warning-requested-unknown-parameter-0-from-the-data-source-for-row
@@ -165,12 +165,13 @@ module.exports = function(resolve) {
 
                 $(tableEl).on('click', '.buttonColumn', function() {
                     var table = vm.table;
-                    var clickedColumnIndex = table.cell($(this)).index().column;
+                    var dtCell = table.cell($(this));
+                    var clickedColumnIndex = dtCell.index().column;
                     var dtColumn = table.column(clickedColumnIndex);
                     var column = _.find(vm.columns, {data: dtColumn.dataSrc()});
                     if (column && column.handler) {
                         var data = table.row($(this).parents('tr')).data();
-                        column.handler(data);
+                        column.handler(data, dtCell, dtColumn, table);
                         return false;
                     }
                 });
