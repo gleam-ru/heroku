@@ -249,11 +249,24 @@ $(document).ready(function() {
                 var _data = _.clone(hash._data);
                 delete hash._data;
                 return Promise.all(_.map(_data, function(src, name) {
-                    return $.get(src)
-                        .then(function(loaded) {
-                            results._data[name] = loaded;
-                        })
-                        ;
+                    return new Promise(function(ok, neok) {
+                        $.get(src)
+                            .then(function(loaded) {
+                                results._data[name] = loaded;
+                                ok();
+                            })
+                            .fail(function(err) {
+                                if (err.status === 403) {
+                                    results._data[name] = null;
+                                    ok();
+                                    return;
+                                }
+                                neok(err);
+                                throw err;
+                            })
+                            ;
+                    })
+                    ;
                 }));
             })
             .then(function() {
