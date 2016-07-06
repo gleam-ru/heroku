@@ -37,6 +37,7 @@ module.exports = {
  */
 function saveLastCandle(candles, next) {
     if (candles.type !== 'share history 1d') {
+        console.warn('bad type');
         return next(null, candles);
     }
 
@@ -50,6 +51,7 @@ function saveLastCandle(candles, next) {
                 return;
             }
             share.lastCandle = _.last(candles.data);
+            console.warn('last candle: ', share.name, share.lastCandle);
             return share.save();
         })
         .then(function() {

@@ -307,7 +307,6 @@ me.fixMissedCandles = function(shares) {
 
                 // сохраняю измененные данные об эмитенте
                 share.candlesHistory.data = mergeCandles(candles_existing, candles_parsed);
-                share.indayCandles = [];
                 modified.push(share);
             });
             return modified;

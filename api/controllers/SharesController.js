@@ -230,8 +230,7 @@ module.exports = {
                     info         : {
                         mfd_id       : share.mfd_id,
                         candlesCount : share.candlesHistory && share.candlesHistory.data.length,
-                        lastDay      : '00000000000000000',
-                        lastCandle   : _.last(share.candlesHistory &&share.candlesHistory.data ),
+                        lastCandle   : share.lastCandle,
                         indayCount   : share.indayCandles.length,
                     }
                 });
@@ -494,7 +493,7 @@ module.exports = {
                 return ticker && ticker.candlesHistory.data && ticker.candlesHistory.data.length || null;
             })
             .then(function(count) {
-                return res.send({downloaded: true});
+                return res.send({downloaded: count});
             })
             .catch(function(err) {
                 return res.serverError(err);

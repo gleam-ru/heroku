@@ -34,13 +34,7 @@ module.exports = function(resolve) {
                             'Всего свечей: {{info.candlesCount}}',
                         '</li>',
                         '<li>',
-                            'Крайняя daily свеча: {{info.lastDailyDate}}',
-                        '</li>',
-                        '<li>',
-                            'Крайняя inday свеча: {{info.lastIndayDate}}',
-                        '</li>',
-                        '<li>',
-                            'Количество сегодняшних свечей: {{info.indayCount}}',
+                            'Вчерашняя daily свеча: {{info.yesterdayDailyDate}}',
                         '</li>',
                     '</ul>',
                 '</div>',
@@ -54,9 +48,7 @@ module.exports = function(resolve) {
                 info.id = ticker.id;
                 info.mfd_id = ticker.mfd_id;
                 info.candlesCount = ticker.info.candlesCount;
-                info.lastDailyDate = ticker.info.lastDay;
-                info.lastIndayDate = ticker.info.lastCandle && ticker.info.lastCandle.date ? ticker.info.lastCandle.date : '...';
-                info.indayCount = ticker.info.indayCount ? ticker.info.indayCount : 0;
+                info.yesterdayDailyDate = ticker.info.lastCandle && ticker.info.lastCandle.d;
                 return {
                     info: info,
                     ticker: ticker,
