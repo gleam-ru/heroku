@@ -491,7 +491,7 @@ module.exports = {
             })
             .then(function(shares) {
                 var ticker = shares && _.first(shares);
-                return ticker && ticker.candlesHistory.data.length || null;
+                return ticker && ticker.candlesHistory.data && ticker.candlesHistory.data.length || null;
             })
             .then(function(count) {
                 return res.send({downloaded: true});
