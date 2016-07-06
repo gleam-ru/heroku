@@ -34,8 +34,12 @@ $(document).ready(function() {
         });
     })
     .catch(function(err) {
+        if (err.status === 403) {
+            // forbidden
+            return;
+        }
         console.error(err);
-        mp.alert('Что-то пошло не так!');
+        mp.alert('Что-то пошло не так!11');
     })
     ;
 });

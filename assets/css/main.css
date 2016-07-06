@@ -603,7 +603,7 @@ h1 .roundIcon {
                 }
             .w-portfolio-item .item .head .at-right .price {
                 font-size: 25px;
-                color: #576676;
+                /*color: #576676;*/
                 }
             .w-portfolio-item .item .head .at-right .percent {
                 }
@@ -650,7 +650,6 @@ h1 .roundIcon {
         }
         .w-portfolio-item .item .footer ul {
             margin: 0px;
-            /*margin: 5px 0px 0px 0px;*/
             }
             .w-portfolio-item .item .footer ul li {
                 list-style: none;
