@@ -46,7 +46,7 @@ cron.init = function(cb) {
 
 
     // обновление inday свечей
-    cron.add('sharesInday', '*/12 13,14,15,16,17,18,19,20,21,22 * * 1,2,3,4,5', function() {
+    cron.add('sharesInday', '*/15 7,8,9,10,11,12,13,14,15,16 * * 1,2,3,4,5', function() {
         console.log('sharesInday by cron');
         provider.shares
             .updateIndayCandles()
@@ -57,7 +57,7 @@ cron.init = function(cb) {
     });
 
     // получение недостающих свечей
-    cron.add('sharesNewDay', '13 8 * * *', function() {
+    cron.add('sharesNewDay', '13 5 * * *', function() {
         var importer = require('./DataProviders/sharesImporter.js');
         console.info('sharesNewDay by cron');
         importer.fixMissedCandles()

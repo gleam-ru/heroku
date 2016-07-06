@@ -23,6 +23,7 @@ block content
     tr 
       th #
       th email
+      th createdAt
       th roles
       th roles
     - var i = 1
@@ -30,6 +31,7 @@ block content
       tr
         td #{i++}
         td #{user.email}
+        td #{moment(user.createdAt).format(ddf)}
         td
           each role in user.roles
             b #{role.name}

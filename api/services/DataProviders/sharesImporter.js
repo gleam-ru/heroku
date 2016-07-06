@@ -314,7 +314,7 @@ me.fixMissedCandles = function(shares) {
         })
         .then(function(modified) {
             console.log('modified', modified.length, 'shares');
-            Q.all(_.map(modified, function(share) {
+            Q.series(_.map(modified, function(share) {
                 return share.save();
             }))
         })
