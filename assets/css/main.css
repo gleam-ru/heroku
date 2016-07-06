@@ -579,10 +579,10 @@ h1 .roundIcon {
         border-bottom: solid 1px #dce2e5;
         height: 44px;
         }
-        .w-portfolio-item .item .head .green {
+        .w-portfolio-item .item .head .at-right.green {
             color: #008000;
             }
-        .w-portfolio-item .item .head .red {
+        .w-portfolio-item .item .head .at-right.red {
             color: #c00000;
             }
         .w-portfolio-item .item .head .code {
@@ -592,20 +592,23 @@ h1 .roundIcon {
             font-size: 30px;
             display: inline-block;
             }
-        .w-portfolio-item .item .head .percent {
-            font-size: 20px;
+        .w-portfolio-item .item .head .at-right {
+            font-size: 12px;
             float: right;
             font-weight: bold;
+            text-align: right;
             }
-        .w-portfolio-item .item .head .price-diff {
-            margin-top: -20px;
-            float: right;
-            font-weight: bold;
-            }
-        .w-portfolio-item .item .head .percent i,
-        .w-portfolio-item .item .head .price-diff i {
-            margin-left: 3px;
-            }
+            .w-portfolio-item .item .head .at-right > span {
+                display: block;
+                }
+            .w-portfolio-item .item .head .at-right .price {
+                font-size: 25px;
+                color: #576676;
+                }
+            .w-portfolio-item .item .head .at-right .percent {
+                }
+            .w-portfolio-item .item .head .at-right .price-diff {
+                }
         .w-portfolio-item .item .head .name {
             line-height: 15px;
             font-size: 15px;
