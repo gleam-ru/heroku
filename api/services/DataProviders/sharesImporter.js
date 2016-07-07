@@ -226,6 +226,7 @@ me.fixMissedCandles_individual = function() {
 // дополняет базу недостающими свечками
 me.fixMissedCandles = function(shares) {
     console.log('fix missed candles');
+    console.log('fix missed candles 2', shares);
 
     var accum = {};
 
