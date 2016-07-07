@@ -52,9 +52,13 @@ function saveLastCandle(candles, next) {
             }
             share.lastCandle = _.last(candles.data);
             console.warn('last candle: ', share.name, share.lastCandle);
-            return share.save();
+            return share.save().then(function() {
+                console.warn('last candle (%s) of %s is saved', share.lastCandle && share.lastCandle.d, share.name);
+                console.warn('arguments', arguments);
+            });
         })
         .then(function() {
+            console.warn('before next');
             return candles;
         })
         .nodeify(next)
