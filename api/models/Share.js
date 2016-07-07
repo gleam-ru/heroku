@@ -47,7 +47,6 @@ module.exports = {
 
     beforeUpdate: function (share, next) {
         console.debug('before update share');
-        console.debug('before update share', this);
         console.debug('before update share', share.lastCandle);
         return next(null, share);
     },
