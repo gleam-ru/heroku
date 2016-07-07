@@ -45,6 +45,10 @@ block afterAll
       span %
     table
       tr
+        td ISIN: 
+        td
+          span(v-text='bond.num')
+      tr
         td Номинал: 
         td
           span(v-text='bond.rate')
