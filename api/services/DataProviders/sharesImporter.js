@@ -307,6 +307,7 @@ me.fixMissedCandles = function(shares) {
 
                 // сохраняю измененные данные об эмитенте
                 share.candlesHistory.data = mergeCandles(candles_existing, candles_parsed);
+                share.lastCandle = _.last(share.candlesHistory.data);
                 return share;
             });
         })
@@ -314,7 +315,7 @@ me.fixMissedCandles = function(shares) {
             console.log('modified', modified.length, 'shares');
             Q.series(_.map(modified, function(share) {
                 return share.save();
-            }))
+            }));
         })
         .catch(function(err) {
             if (err.originalError === 'candles_are_good') {

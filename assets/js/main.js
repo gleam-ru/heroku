@@ -274,7 +274,7 @@ $(document).ready(function() {
                 delete hash._raw;
                 return Promise.all(_.map(raw, function(src) {
                     return loadFile(src);
-                }))
+                }));
             })
             .then(function() {
                 return Promise.all(_.map(hash, function(src, name) {
