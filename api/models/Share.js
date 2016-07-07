@@ -41,9 +41,15 @@ module.exports = {
         },
 
         getDailyCandles: function() {
-            var candles = _.find(this.candles, {type: 'daily'});
-            return candles ? candles : [];
+            return Candles.findOne({type: 'share history 1d', share: this});
         },
+    },
+
+    beforeUpdate: function (share, next) {
+        console.debug('before update share');
+        console.debug('before update share', this);
+        console.debug('before update share', share.lastCandle);
+        return next(null, share);
     },
 
 

@@ -296,8 +296,7 @@ me.fixMissedCandles = function(shares) {
                 ;
         })
         .then(function() {
-            var modified = [];
-            _.each(accum.shares, function(share) {
+            return _.cMap(accum.shares, function(share) {
                 var parsed = accum.parsed[share.name];
                 if (!parsed) {
                     return;
@@ -308,9 +307,8 @@ me.fixMissedCandles = function(shares) {
 
                 // сохраняю измененные данные об эмитенте
                 share.candlesHistory.data = mergeCandles(candles_existing, candles_parsed);
-                modified.push(share);
+                return share;
             });
-            return modified;
         })
         .then(function(modified) {
             console.log('modified', modified.length, 'shares');
