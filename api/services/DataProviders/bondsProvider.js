@@ -111,6 +111,11 @@ function calculate(bond) {
     var now = moment();
     var flashback = sails.config.app.providers.bonds.flashback;
 
+    // check if it is government bond
+    if(bond.name.indexOf('ОФЗ') > -1) {
+      bond.government = true;
+    }
+
     // купонный доход
     if (bond.cpDur <= 0) {
         // облигация без купона
@@ -175,14 +180,31 @@ function calculate(bond) {
 
         // налоги по разнице между покупкой и продажей
         var taxes_rate = (bond.bid < 100) ? (1 - 0.01 * bond.bid) * bond.rate * taxes : 0;
-        // налоги по купону
-        var taxes_cp = kd * taxes;
+        // налоги по купону считаем только не для гос облигаций
+	    var taxes_cp = 0;
+	    if (!bond.government) {
+	        taxes_cp = kd * taxes;
+	    }
 
         bond.percent = (sell_price / buy_price - 1) / partOfYear * 100;
         // withoutRateTaxes
         bond.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / partOfYear * 100;
         // withoutRateTaxes and CouponTaxes
         bond.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / partOfYear * 100;
+
+        // calculate duration of bond
+        if (futureCps != Number.POSITIVE_INFINITY && futureCps != Number.NEGATIVE_INFINITY)
+        {
+            var bondNotionalWithCp = (bond.cpVal + bond.rate) / bond.rate;
+            console.info('Bond notional + cp', bond.name, bondNotionalWithCp, futureCps, bond.cpVal);
+            bond.duration = 0.0;
+            for (var i = 1; i <= futureCps; i++) {
+                bond.duration = bond.duration + ((i * bond.cpVal) / Math.pow(bondNotionalWithCp,i));
+                console.info('Bond duration step', i, Math.pow(bondNotionalWithCp,i), bond.duration);
+            }
+            bond.duration = (bond.duration / bond.price) * bond.cpDur;
+            console.info('Bond duration', bond.name, bond.duration, bond.price);
+        }
     }
 
 
@@ -208,6 +230,7 @@ function format(bond) {
         'percent',
         'percent_woRT',
         'percent_woRTCT',
+        'duration',
     ];
     _.each(nums, function(num) {
         bond[num] = bond[num] ? (1 * bond[num].toFixed(2)) : '';
@@ -234,6 +257,7 @@ function format(bond) {
         bond.percent_woRT,
         bond.percent_woRTCT,
         bond.risk,
+        bond.duration,
     ];
 }
 
