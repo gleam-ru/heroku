@@ -38,18 +38,20 @@ me.parse = function(callback) {
     // /*
     me.isParsing = true;
     console.time('bonds_parsing')
-    async.parallel({
+    async.waterfall({
         arsagera: function(asyncCb) {
             // {code: risk, code: risk, ...}
             // Парсим арсагеру.
             return parseArsagera(donorRisks).nodeify(asyncCb);
         },
         twoStocks: function(asyncCb) {
+            console.log('arsagera complete');
             // [{}, {}]
             // получает данные из первого, многостраничного донора.
             return getTotalBondsData(donor1, [], 1, asyncCb);
         },
         finam: function(asyncCb) {
+            console.log('2stocks complete');
             // [{name:'', ask:'', bid:''}, {}, ...]
             // получает недостающие данные из второго донора
             return parseDonor2(donor2, asyncCb);
@@ -60,6 +62,7 @@ me.parse = function(callback) {
             console.error('parsing trouble (p2)!!!', err.stack);
             return callback(err);
         }
+        console.log('finam complete');
 
         var arsagera = results.arsagera;
         var donor1 = results.twoStocks;
