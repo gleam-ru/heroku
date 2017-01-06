@@ -38,14 +38,13 @@ me.parse = function(callback) {
     // /*
     me.isParsing = true;
     console.time('bonds_parsing')
-    async.waterfall({
+    async.parallel({
         arsagera: function(asyncCb) {
             // {code: risk, code: risk, ...}
             // Парсим арсагеру.
             return parseArsagera(donorRisks).nodeify(asyncCb);
         },
-        twoStocks: function(asyncCb) {
-            console.log('arsagera complete');
+        twoStocks: function(asyncCb) {            
             // [{}, {}]
             // получает данные из первого, многостраничного донора.
             return getTotalBondsData(donor1, [], 1, asyncCb);
@@ -96,6 +95,7 @@ function parseArsagera(url) {
             return qRequest({uri: url, encoding: null});
         })
         .then(function(response) {
+            console.log('ars responded');
             var body = iConv.decode(response.body, 'cp-1251');
             var links = $(body).find('#main > div.content.work_area a');
             var link = {};
@@ -268,8 +268,12 @@ function getPageBondsData(src, callback, counter) {
         uri: src,
         encoding: null,
         timeout: 1000 * 60 * 5, // 5 min
+        rejectUnauthorized: false, // оно крашилось с непонятной ошибкой. Это мне подсказал великий SOW 06.01.2017
     }, function(error, response, body) {
-        if(error) return callback(error);
+        if (error) {
+            console.log('gpbd failed');
+            return callback(error);
+        }
         body = iConv.decode(body, 'cp-1251');
         var bonds = parseBondsPage(body);
         if (!bonds) {
@@ -295,7 +299,10 @@ function getPageBondsData(src, callback, counter) {
 function getTotalBondsData(src, data, i, callback) {
     console.log('donor-1 is parsing page #'+i);
     getPageBondsData(src+i, function(err, result) {
-        if(err) return callback(err);
+        if (err) {
+            console.error('gtbd failed');
+            return callback(err);
+        }
         if(result.length === 0) {
             data = _.flatten(data);
             return callback(null, data);
@@ -316,7 +323,6 @@ function parseDonor2(url, callback) {
     request({
         uri: donor2,
         encoding: null,
-        rejectUnauthorized: false,
     }, function(error, response, body) {
         if(error) {
             console.error('ошибка в получении данных из донора-2');
