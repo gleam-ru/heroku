@@ -56,7 +56,8 @@ me.parse = function(callback) {
         },
     }, function(err, results) {
         if (err) {
-            console.error('parsing trouble!!!', err)
+            console.error('parsing trouble (p1)!!!', err);
+            console.error('parsing trouble (p2)!!!', err.stack);
             return callback(err);
         }
 
@@ -311,7 +312,8 @@ function getTotalBondsData(src, data, i, callback) {
 function parseDonor2(url, callback) {
     request({
         uri: donor2,
-        encoding: null
+        encoding: null,
+        rejectUnauthorized: false,
     }, function(error, response, body) {
         if(error) {
             console.error('ошибка в получении данных из донора-2');
