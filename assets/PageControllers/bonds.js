@@ -124,6 +124,7 @@ $(document).ready(function() {
                 percent_woRT   : row[16],
                 percent_woRTCT : row[17],
                 risk           : row[18],
+                duration       : row[19],
             };
         });
     })
@@ -325,6 +326,11 @@ $(document).ready(function() {
             filter: "number",
             bVisible: false,
         }, {
+           data: "duration",
+           title: "Дюрация (дни)",
+           filter: "number",
+           bVisible: true,
+        }, {
             data: "percent",
             bVisible: true,
             className: "percent",
@@ -412,6 +418,15 @@ function initCalculator() {
                 vm.percent_woRT = ((sell_price - taxes_rate) / buy_price - 1) / partOfYear * 100;
                 // withoutRateTaxes and CouponTaxes
                 vm.percent_woRTCT = ((sell_price - taxes_rate - taxes_cp) / buy_price - 1) / partOfYear * 100;
+
+                // calculate duration of bond
+                var bondNotionalWithCp = bond.cpVal + bond.rate;
+                var bondDuration = 0;
+                for (var i = 1; i <= futureCps; i++) {
+                    bondDuration = bondDuration + (i * bond.cpVal) / Math.pow(bondNotionalWithCp,i);
+                }
+                console.info('Bond duration', bond.name, bond.duration);
+                vm.duration = bondDuration / bond.price;
             },
             // TODO: дописать обратную связь
         },

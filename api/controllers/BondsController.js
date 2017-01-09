@@ -82,6 +82,9 @@ module.exports = {
                                 "data": "expiresIn"
                             },
                             {
+                                "data": "duration"
+                            },
+                            {
                                 "data": "percent_woRT"
                             },
                             {
@@ -122,6 +125,9 @@ module.exports = {
                             },
                             {
                                 "data": "expiresIn"
+                            },
+                            {
+                                "data": "duration"
                             },
                             {
                                 "data": "percent_woRT"
@@ -166,6 +172,9 @@ module.exports = {
                                 "data": "expiresIn"
                             },
                             {
+                                "data": "duration"
+                            },
+                            {
                                 "data": "percent_woRT"
                             },
                             {
@@ -206,6 +215,9 @@ module.exports = {
                             },
                             {
                                 "data": "expiresIn"
+                            },
+                            {
+                                "data": "duration"
                             },
                             {
                                 "data": "percent_woRT"

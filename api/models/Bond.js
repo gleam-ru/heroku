@@ -34,6 +34,8 @@ module.exports = {
             this.dead = true;
             return this.save();
         },
+	    government     : {type: 'boolean', defaultsTo: false},
+	    duration       : {type: 'float'},
     },
 
 
@@ -71,10 +73,12 @@ function format(bond, next) {
         bond.dead = true;
         return next('stale_bond');
     }
+    bond.duration  = parseFloat(bond.duration);
 
     // приводим даты к виду, ожидаемому базой
     bond.endDate   = bond.endDate.format(ddf);
     bond.cpDate    = bond.cpDate.format(ddf);
+
 
     return next();
 }
